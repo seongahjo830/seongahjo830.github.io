@@ -12,7 +12,7 @@
     "target": {
       "namespace": "android_app",
       "package_name": "io.github.seongahjo830.twa.pro",
-      "sha256_cert_fingerprints": ["A5:53:0D:01:4F:F7:09:92:A7:9A:3E:35:C0:D1:4A:51:13:6A:24:48:53:98:37:15:EF:2D:9F:6A:17:3F:4C:E2"]
+      "sha256_cert_fingerprints": ["9E:51:0F:DA:B2:38:BD:F5:00:52:62:07:33:CF:56:74:2B:08:99:72:26:AE:5A:A7:F3:97:14:11:88:5B:5C:A2"]
     }
   }
 ]
