@@ -118,7 +118,6 @@
       <button class="opt-b" data-v="2"><span class="rk"></span><span><span class="ot">② 콜센터용</span><span class="os">전문 용어 + 처리 메모</span></span></button>
       <button class="opt-b" data-v="3"><span class="rk"></span><span><span class="ot">③ 짧게</span><span class="os">한눈에 보는 짧은 이름</span></span></button>
     </div>
-    <textarea id="cmt" placeholder="(선택) 왜 그게 제일 좋았는지, 아쉬운 점이 있으면 적어주세요"></textarea>
     <button class="submit" id="go" disabled>투표하기</button>
 
     <div class="result" id="res">
@@ -127,7 +126,7 @@
       <div class="total" id="tot"></div>
       <button class="again" id="again">다음 분께 넘기기 (새로 투표)</button>
     </div>
-    <div class="adminline">한 휴대폰을 돌려가며 투표하면 결과가 쌓여요 · <a id="export">결과 내보내기</a> · <a id="reset">초기화</a></div>
+    <div class="adminline">모든 사람 결과가 자동으로 한곳에 모여요 · <a id="peek">📊 투표 안 하고 결과만 보기</a></div>
   </div>
 </div>
 
@@ -253,29 +252,38 @@ document.querySelectorAll('.tab').forEach(tab=>{
   };
 });
 
-/* ▼▼▼ 구글폼 설정 — 폼 만든 뒤 이 3칸만 채우면 끝 ▼▼▼
-   1) 구글폼 만들기 → 질문2개: ① "어떤 버전?"(객관식) ② "의견"(장문)
-   2) 미리채우기 링크(︙→ 응답 미리 채우기)에서 entry.숫자 2개 복사
-   3) 보내기 주소 끝의 .../viewform 을 .../formResponse 로 바꿔 action에 넣기      */
-const GFORM = {
-  action: "",            // 예: https://docs.google.com/forms/d/e/1FAIpf.../formResponse
-  entryVersion: "",      // 예: entry.123456789  (어떤 버전 질문)
-  entryComment: "",      // 예: entry.987654321  (의견 질문)
-};
-function sendToGoogle(versionLabel, comment){
-  if(!GFORM.action || !GFORM.entryVersion) return;           // 미설정이면 로컬만
-  const fd = new FormData();
-  fd.append(GFORM.entryVersion, versionLabel);
-  if(GFORM.entryComment) fd.append(GFORM.entryComment, comment||"");
-  // no-cors: 응답은 못 읽지만 구글 시트엔 정상 기록됨
-  fetch(GFORM.action, {method:"POST", mode:"no-cors", body:fd}).catch(()=>{});
+/* ===== 서버 집계 (counterapi.dev, 무인증·무료) — 모든 사람 투표가 한곳에 모임 =====
+   리셋하려면 아래 NS(네임스페이스)만 새 이름으로 바꿔 재배포하면 0부터 다시 시작 */
+const CAPI = "https://api.counterapi.dev/v1";
+const NS   = "sasacall2026jun01";
+const KEYS = {1:"verlong", 2:"vercc", 3:"vershort"};
+const NAMES={1:'① 길게 설명',2:'② 콜센터용',3:'③ 짧게'};
+
+async function incr(n){
+  const r = await fetch(`${CAPI}/${NS}/${KEYS[n]}/up`); return (await r.json()).count;
 }
-/* ▲▲▲ 구글폼 설정 끝 ▲▲▲ */
+async function readAll(){
+  const out = {1:0,2:0,3:0};
+  await Promise.all([1,2,3].map(async n=>{
+    try{ const r=await fetch(`${CAPI}/${NS}/${KEYS[n]}/`); const j=await r.json(); out[n]=+j.count||0; }
+    catch(e){ out[n]=0; }
+  }));
+  return out;
+}
+function renderBars(v){
+  const tot=(+v[1])+(+v[2])+(+v[3]), win=Math.max(v[1],v[2],v[3]);
+  let h='';
+  [1,2,3].forEach(n=>{
+    const c=+v[n], pct=tot?Math.round(c/tot*100):0, w=(c===win&&tot>0)?'w':'';
+    h+=`<div class="bar ${w}"><div class="bl2"><span>${NAMES[n]}</span><span>${c}표 · ${pct}%</span></div>
+      <div class="track"><div class="fill" style="width:${pct}%"></div></div></div>`;
+  });
+  document.getElementById('bars').innerHTML=h;
+  document.getElementById('tot').textContent = tot ? `지금까지 총 ${tot}표 · 1등 강조` : '아직 투표가 없어요';
+}
 
 /* 투표 */
-const KEY='callver_votes_v1', CKEY='callver_cmts_v1';
-const NAMES={1:'① 길게 설명',2:'② 콜센터용',3:'③ 짧게'};
-let pick=null;
+let pick=null, busy=false;
 const go=document.getElementById('go'), res=document.getElementById('res');
 document.querySelectorAll('.opt-b').forEach(b=>{
   b.onclick=()=>{
@@ -284,49 +292,28 @@ document.querySelectorAll('.opt-b').forEach(b=>{
     go.disabled=false;
   };
 });
-function getVotes(){try{return JSON.parse(localStorage.getItem(KEY))||{1:0,2:0,3:0}}catch(e){return{1:0,2:0,3:0}}}
-function getCmts(){try{return JSON.parse(localStorage.getItem(CKEY))||[]}catch(e){return[]}}
-function renderBars(){
-  const v=getVotes(), tot=(+v[1])+(+v[2])+(+v[3]);
-  const win=Math.max(v[1],v[2],v[3]);
-  let h='';
-  [1,2,3].forEach(n=>{
-    const c=+v[n], pct=tot?Math.round(c/tot*100):0, w=(c===win&&tot>0)?'w':'';
-    h+=`<div class="bar ${w}"><div class="bl2"><span>${NAMES[n]}</span><span>${c}표 · ${pct}%</span></div>
-      <div class="track"><div class="fill" style="width:${pct}%"></div></div></div>`;
-  });
-  document.getElementById('bars').innerHTML=h;
-  document.getElementById('tot').textContent=`지금까지 총 ${tot}표`;
-}
-go.onclick=()=>{
-  if(!pick) return;
-  const v=getVotes(); v[pick]=(+v[pick])+1; localStorage.setItem(KEY,JSON.stringify(v));
-  const cmt=document.getElementById('cmt').value.trim();
-  if(cmt){const cs=getCmts(); cs.push({v:pick,t:cmt}); localStorage.setItem(CKEY,JSON.stringify(cs));}
-  sendToGoogle(NAMES[pick], cmt);                     // 구글폼으로도 전송
-  document.getElementById('picked').textContent=NAMES[pick];
-  renderBars(); res.classList.add('on'); go.disabled=true;
+async function showResult(label){
+  if(label) document.getElementById('picked').textContent=label;
+  document.querySelector('.thanks').style.display = label ? '' : 'none';
+  res.classList.add('on');
+  document.getElementById('bars').innerHTML='<div class="total">불러오는 중…</div>';
   res.scrollIntoView({behavior:'smooth',block:'center'});
+  renderBars(await readAll());
+}
+go.onclick=async ()=>{
+  if(!pick || busy) return;
+  busy=true; go.disabled=true; go.textContent='기록 중…';
+  try{ await incr(pick); }catch(e){}
+  await showResult(NAMES[pick]);
+  go.textContent='투표하기'; busy=false;
 };
 document.getElementById('again').onclick=()=>{
   pick=null; go.disabled=true; res.classList.remove('on');
   document.querySelectorAll('.opt-b').forEach(x=>x.classList.remove('sel'));
-  document.getElementById('cmt').value='';
   document.querySelector('.tab[data-tab="1"]').click();
   document.querySelector('.vote h3').scrollIntoView({behavior:'smooth'});
 };
-document.getElementById('reset').onclick=()=>{
-  if(confirm('투표 결과를 모두 지울까요?')){localStorage.removeItem(KEY);localStorage.removeItem(CKEY);renderBars();alert('초기화했어요.');}
-};
-document.getElementById('export').onclick=()=>{
-  const v=getVotes(), cs=getCmts();
-  let txt=`전화 설명 버전 투표 결과\n① 길게: ${v[1]}표\n② 콜센터: ${v[2]}표\n③ 짧게: ${v[3]}표\n\n의견(${cs.length}):\n`;
-  cs.forEach(c=>txt+=`- [${NAMES[c.v]}] ${c.t}\n`);
-  const blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download='버전투표결과.txt'; a.click();
-};
-renderBars();
+document.getElementById('peek').onclick=(e)=>{ e.preventDefault(); showResult(null); };
 </script>
 </body>
 </html>
