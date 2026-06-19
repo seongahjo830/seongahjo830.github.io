@@ -314,6 +314,8 @@ document.getElementById('again').onclick=()=>{
   document.querySelector('.vote h3').scrollIntoView({behavior:'smooth'});
 };
 document.getElementById('peek').onclick=(e)=>{ e.preventDefault(); showResult(null); };
+/* 사장님 결과 전용: 주소 끝에 #결과(또는 #results) 붙여 열면 자동으로 집계 표시 */
+if(/result|결과/i.test(decodeURIComponent(location.hash))){ showResult(null); }
 </script>
 </body>
 </html>
