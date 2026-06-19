@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>전화 종류 설명 — 3가지 버전 비교 설문</title>
+<style>
+  :root{
+    --bg:#FBFAF7; --ink:#23201B; --soft:#8A8275; --line:#ECE7DD; --card:#FFF;
+    --must:#D14B4B; --reco:#3B72D9; --opt:#A39B8E; --sub:#9A9388; --accent:#1D4ED8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    -webkit-text-size-adjust:100%;}
+  .wrap{max-width:580px;margin:0 auto;padding:14px 14px 40px}
+  h1{font-size:19px;letter-spacing:-.02em}
+  .lead{color:var(--soft);font-size:12.5px;margin:5px 0 12px;line-height:1.55}
+  .lead b{color:var(--ink)}
+
+  /* 탭 */
+  .tabs{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;
+    background:var(--bg);padding:8px 0 9px;border-bottom:1px solid var(--line)}
+  .tab{cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:11px;
+    padding:8px 4px 7px;text-align:center;transition:.12s;user-select:none}
+  .tab .n{font-size:10px;color:var(--sub);font-weight:700}
+  .tab .ttl{font-size:12.5px;font-weight:800;letter-spacing:-.01em;margin-top:1px;line-height:1.2}
+  .tab.on{border-color:var(--accent);background:#EEF3FF;box-shadow:0 1px 0 var(--accent) inset}
+  .tab.on .ttl{color:var(--accent)} .tab.on .n{color:var(--accent)}
+
+  .panel{display:none;animation:fade .18s} .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .pnote{font-size:11.5px;color:var(--soft);margin:11px 2px 9px;line-height:1.5}
+  .pnote b{color:var(--ink)}
+  h2{font-size:13.5px;margin:18px 0 8px;display:flex;align-items:center;gap:5px}
+  h2 .why{color:var(--soft);font-weight:500;font-size:11px}
+
+  /* ===== 공통 카드 — 3버전 동일 양식, 글자만 다름 ===== */
+  .card{display:flex;gap:10px;background:var(--card);border:1px solid var(--line);
+    border-radius:11px;padding:10px 12px;margin-bottom:6px;align-items:flex-start}
+  .card.lb{border-left-width:4px}
+  .card .e{font-size:18px;flex:0 0 22px;text-align:center;line-height:1.4}
+  .card .t{font-size:14px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .card .s{font-size:12px;color:var(--soft);line-height:1.55;margin-top:3px}
+
+  .must{background:var(--must)} .reco{background:var(--reco)} .opt{background:var(--opt)}
+  .g{border-left-color:#3E9D5E} .r{border-left-color:#D14B4B}
+  .bl{border-left-color:#3B72D9} .am{border-left-color:#C98A1E} .gy{border-left-color:#9A9388}
+  .badge{font-size:9px;font-weight:800;padding:1px 6px;border-radius:20px}
+  .badge.must{background:#FBEAEA;color:#B23B3B}
+  .badge.reco{background:#E8F0FF;color:#2E5DB8}
+  .badge.opt{background:#F0EDE6;color:#8A8275}
+  .legend{font-size:10.5px;color:var(--soft);margin:7px 2px 0;display:flex;gap:11px;flex-wrap:wrap}
+  .legend span{display:flex;align-items:center;gap:4px}
+  .legend i{width:7px;height:7px;border-radius:50%;display:inline-block}
+
+  /* ===== 투표 ===== */
+  .vote{margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 15px}
+  .vote h3{font-size:15px;letter-spacing:-.01em}
+  .vote p{font-size:12px;color:var(--soft);margin:5px 0 13px;line-height:1.5}
+  .opts{display:grid;gap:7px}
+  .opt-b{cursor:pointer;border:1.5px solid var(--line);background:#FCFBF9;border-radius:12px;
+    padding:11px 13px;display:flex;align-items:center;gap:10px;transition:.12s;text-align:left}
+  .opt-b:hover{border-color:#CFC8BB}
+  .opt-b.sel{border-color:var(--accent);background:#EEF3FF}
+  .opt-b .rk{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:0 0 auto}
+  .opt-b.sel .rk{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 3px #fff}
+  .opt-b .ot{font-size:13.5px;font-weight:800} .opt-b .os{font-size:11px;color:var(--soft);margin-top:1px}
+  textarea{width:100%;margin-top:11px;border:1px solid var(--line);border-radius:11px;padding:10px 12px;
+    font-family:inherit;font-size:13px;resize:vertical;min-height:58px;background:#FCFBF9;color:var(--ink)}
+  textarea::placeholder{color:#B7AF9F}
+  .submit{margin-top:11px;width:100%;border:0;background:var(--accent);color:#fff;font-weight:800;
+    font-size:14px;padding:13px;border-radius:12px;cursor:pointer;font-family:inherit;letter-spacing:-.01em}
+  .submit:disabled{background:#C9C2B6;cursor:not-allowed}
+
+  /* 결과 */
+  .result{margin-top:14px;display:none}
+  .result.on{display:block;animation:fade .2s}
+  .thanks{font-size:13.5px;font-weight:800;text-align:center;margin-bottom:12px}
+  .thanks b{color:var(--accent)}
+  .bar{margin-bottom:9px}
+  .bar .bl2{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:3px}
+  .bar .track{height:11px;background:#F0EDE6;border-radius:7px;overflow:hidden}
+  .bar .fill{height:100%;border-radius:7px;background:var(--accent);transition:width .5s}
+  .bar.w .fill{background:#3E9D5E}
+  .total{font-size:11px;color:var(--soft);text-align:center;margin-top:7px}
+  .again{display:block;margin:11px auto 0;border:1px solid var(--line);background:#fff;color:var(--soft);
+    font-size:11.5px;padding:7px 14px;border-radius:20px;cursor:pointer;font-family:inherit}
+  .adminline{text-align:center;margin-top:16px;font-size:10px;color:#C9C2B6}
+  .adminline a{color:#C9C2B6;cursor:pointer;text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📞 전화 종류 설명 — 어떤 버전이 제일 나아요?</h1>
+  <div class="lead">
+    같은 내용을 <b>3가지 방식</b>으로 적어봤어요. 위 칸을 눌러 <b>① 길게 · ② 콜센터 · ③ 짧게</b>를
+    번갈아 본 뒤, 맨 아래에서 <b>제일 이해하기 쉬운 것</b>에 투표해 주세요.
+  </div>
+
+  <div class="tabs">
+    <div class="tab on" data-tab="1"><div class="n">버전 ①</div><div class="ttl">길게 설명</div></div>
+    <div class="tab" data-tab="2"><div class="n">버전 ②</div><div class="ttl">콜센터용</div></div>
+    <div class="tab" data-tab="3"><div class="n">버전 ③</div><div class="ttl">짧게</div></div>
+  </div>
+
+  <!-- 패널들 (JS가 채움) -->
+  <div class="panel on v1" data-panel="1"></div>
+  <div class="panel v2" data-panel="2"></div>
+  <div class="panel v3" data-panel="3"></div>
+
+  <!-- 투표 -->
+  <div class="vote">
+    <h3>🗳️ 어떤 버전이 제일 이해하기 쉬웠나요?</h3>
+    <p>딱 하나만 골라주세요. 하고 싶은 말이 있으면 아래에 적어주셔도 좋아요.</p>
+    <div class="opts">
+      <button class="opt-b" data-v="1"><span class="rk"></span><span><span class="ot">① 길게 설명</span><span class="os">한 줄씩 풀어서 친절하게</span></span></button>
+      <button class="opt-b" data-v="2"><span class="rk"></span><span><span class="ot">② 콜센터용</span><span class="os">전문 용어 + 처리 메모</span></span></button>
+      <button class="opt-b" data-v="3"><span class="rk"></span><span><span class="ot">③ 짧게</span><span class="os">한눈에 보는 짧은 이름</span></span></button>
+    </div>
+    <textarea id="cmt" placeholder="(선택) 왜 그게 제일 좋았는지, 아쉬운 점이 있으면 적어주세요"></textarea>
+    <button class="submit" id="go" disabled>투표하기</button>
+
+    <div class="result" id="res">
+      <div class="thanks">고맙습니다! 🙌 <b id="picked"></b>을(를) 골라주셨어요.</div>
+      <div id="bars"></div>
+      <div class="total" id="tot"></div>
+      <button class="again" id="again">다음 분께 넘기기 (새로 투표)</button>
+    </div>
+    <div class="adminline">한 휴대폰을 돌려가며 투표하면 결과가 쌓여요 · <a id="export">결과 내보내기</a> · <a id="reset">초기화</a></div>
+  </div>
+</div>
+
+<script>
+const TYPES = [
+ {e:"📲",easy:"놓친전화 되걸기",cc:"인바운드 콜백",en:"Missed-call Callback",pri:"",
+  d:"환자분이 전화했는데 우리가 못 받았을 때, 우리가 다시 걸어드리는 전화예요.",
+  act:"부재중 인입콜 회신, 당일 1차 시도"},
+ {e:"⏰",easy:"예약대로 오실지 확인",cc:"예약 리마인드 콜",en:"Appointment Reminder",pri:"",
+  d:"예약 날짜가 다가오면 “그날 오시는 거 맞으세요?” 하고 미리 한 번 확인하는 전화예요.",
+  act:"예약 D-1 확정 콜"},
+ {e:"🕗",easy:"지각 체크",cc:"노쇼 방지 콜",en:"Late·No-show Check",pri:"",
+  d:"예약 시간이 됐는데 아직 안 오시면 “혹시 오고 계세요?” 하고 챙기는 전화예요.",
+  act:"예약시간 경과 시 즉시 컨택"},
+ {e:"💗",easy:"치료 후 안부",cc:"해피콜",en:"Post-care Follow-up",pri:"",
+  d:"치료받고 가신 다음에 “불편한 데는 없으세요?” 하고 안부를 여쭙는 전화예요.",
+  act:"시술 후 1~3일 경과 관찰"},
+ {e:"👋",easy:"오래된 환자 모셔오기",cc:"휴면환자 윈백",en:"Win-back Call",pri:"",
+  d:"한참 안 오신 환자분께 “오랜만에 한 번 들르세요” 하고 다시 모셔오는 전화예요.",
+  act:"6개월+ 미내원 재활성화"},
+ {e:"🪥",easy:"정기검진 알림",cc:"정기 리콜",en:"Routine Recall",pri:"must",
+  d:"6개월쯤 지나면 “검진하고 스케일링 받으실 때가 됐어요” 하고 알려드리는 전화예요.",
+  act:"리콜 주기 도래, 검진·SC 안내"},
+ {e:"🧩",easy:"남은치료 마저",cc:"미완료 치료 리콜",en:"Incomplete-tx Recall",pri:"must",
+  d:"치료를 하다 만 분께 “남은 치료를 마저 받으셔야 해요” 하고 챙기는 전화예요.",
+  act:"중단된 치료건 재개 유도"},
+ {e:"💬",easy:"상담만 한 분",cc:"미예약 팔로업",en:"Consult Follow-up",pri:"reco",
+  d:"상담만 받고 예약은 안 하신 분께 “생각 정리되셨어요?” 하고 다시 권해드리는 전화예요.",
+  act:"상담 후 미예약건 전환"},
+ {e:"🪑",easy:"빈예약칸 채우기",cc:"취소 충원 콜",en:"Cancellation Backfill",pri:"reco",
+  d:"누가 예약을 취소해서 자리가 비면, 그 빈 자리에 다른 분을 채워 넣는 전화예요.",
+  act:"취소 슬롯 백필"},
+ {e:"➡️",easy:"다음치료 잡기",cc:"다음단계 부킹",en:"Next-step Booking",pri:"reco",
+  d:"오늘 치료가 끝났으면 “다음에 또 오셔야 해요” 하고 다음 예약을 미리 잡는 전화예요.",
+  act:"차기 치료 단계 예약"},
+ {e:"🔄",easy:"노쇼 다시잡기",cc:"노쇼 리커버리",en:"No-show Recovery",pri:"opt",
+  d:"예약하고 안 오신 분께 “다시 날짜 잡으실래요?” 하고 예약을 다시 잡는 전화예요.",
+  act:"노쇼 건 재예약"},
+ {e:"💴",easy:"미수금 안내",cc:"미수금 리마인더",en:"Balance Reminder",pri:"opt",
+  d:"아직 안 내신 금액이 있으면 “남은 금액 안내드려요” 하고 알려드리는 전화예요.",
+  act:"미수 잔액 안내"},
+];
+const RESULTS = [
+ {e:"✅",easy:"연결됨",cc:"통화 완료",en:"Connected",cls:"g",
+  d:"전화를 받으셔서 이야기를 잘 마친 거예요.",act:"통화 완료, 결과 기록"},
+ {e:"❌",easy:"안받음",cc:"무응답·부재중",en:"No Answer",cls:"r",
+  d:"전화를 안 받으셨어요.",act:"무응답/부재, 재시도 큐로"},
+ {e:"🔁",easy:"다시걸기",cc:"재시도 예정",en:"Retry Scheduled",cls:"bl",
+  d:"지금은 안 됐으니 나중에 다시 걸 거예요.",act:"재시도 일정 등록"},
+ {e:"☎️",easy:"번호오류",cc:"결번·오류",en:"Wrong Number",cls:"am",
+  d:"번호가 틀렸거나 없는 번호예요.",act:"번호 검증 플래그"},
+ {e:"🚫",easy:"연락 금지",cc:"수신거부 (DNC)",en:"Opted out",cls:"r",
+  d:"“전화하지 말아주세요” 하신 분이라 더는 안 걸어요.",act:"발신 리스트 제외"},
+ {e:"💬",easy:"콜백요청",cc:"콜백 요청",en:"Callback Requested",cls:"bl",
+  d:"“이따 다시 걸어주세요” 하고 부탁하신 거예요.",act:"콜백 슬롯 배정"},
+ {e:"📱",easy:"문자로",cc:"메시지 전환",en:"Switched to SMS",cls:"gy",
+  d:"전화 대신 문자로 보내드리기로 한 거예요.",act:"SMS 채널 전환"},
+];
+const PRI = {must:["필수","p1"],reco:["권장","p2"],opt:["선택","p3"]};
+const esc = s => s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* 짧은 이름 (○○ 콜 패턴: 핵심단어 1개 + 콜, 약어 변질 방지) */
+const SHORT={
+ "Missed-call Callback":"놓친전화 콜",
+ "Appointment Reminder":"예약확인 콜",
+ "Late·No-show Check":"지각 콜",
+ "Post-care Follow-up":"안부 콜",
+ "Win-back Call":"재방문 콜",
+ "Routine Recall":"정기검진 콜",
+ "Incomplete-tx Recall":"남은치료 콜",
+ "Consult Follow-up":"상담만 콜",
+ "Cancellation Backfill":"빈자리 콜",
+ "Next-step Booking":"다음예약 콜",
+ "No-show Recovery":"노쇼 콜",
+ "Balance Reminder":"미수금 콜",
+};
+/* 3버전은 양식 동일, 글자만 다름 — 같은 .card 템플릿으로 렌더 */
+const VER = {
+ long:{
+   note:'<b>버전 ① 길게 설명</b> — 전화마다 한 줄씩 풀어서 설명한 이름이에요.',
+   tt:t=>esc(t.easy), ts:t=>esc(t.d),
+   rt:r=>esc(r.easy), rs:r=>esc(r.d) },
+ cc:{
+   note:'<b>버전 ② 콜센터용</b> — 직원이 바로 쓰는 전문 용어예요.',
+   tt:t=>esc(t.cc), ts:t=>esc(t.act)+' · 🇺🇸 '+esc(t.en),
+   rt:r=>esc(r.cc), rs:r=>esc(r.act)+' · 🇺🇸 '+esc(r.en) },
+ short:{
+   note:'<b>버전 ③ 짧게</b> — 「○○ 콜」 한 단어로 줄인 이름이에요.',
+   tt:t=>esc(SHORT[t.en]||t.easy), ts:t=>'📞 '+esc(t.cc),
+   rt:r=>esc(r.easy), rs:r=>'📞 '+esc(r.cc) },
+};
+function build(key){
+  const V=VER[key];
+  let h=`<div class="pnote">${V.note}</div>`;
+  h+='<h2>📞 전화 종류 <span class="why">— 왜 거나?</span></h2>';
+  TYPES.forEach(t=>{
+    const badge=t.pri?`<span class="badge ${t.pri}">${PRI[t.pri][0]}</span>`:'';
+    h+=`<div class="card"><span class="e">${t.e}</span><div>
+      <div class="t">${V.tt(t)} ${badge}</div>
+      <div class="s">${V.ts(t)}</div></div></div>`;
+  });
+  h+=`<div class="legend"><span><i class="must"></i>필수</span><span><i class="reco"></i>권장</span>
+    <span><i class="opt"></i>선택</span><span>· 점 없음 = 기본 5종</span></div>`;
+  h+='<h2>🏷️ 전화 결과 <span class="why">— 어떻게 됐나?</span></h2>';
+  RESULTS.forEach(r=>{
+    h+=`<div class="card lb ${r.cls}"><span class="e">${r.e}</span><div>
+      <div class="t">${V.rt(r)}</div>
+      <div class="s">${V.rs(r)}</div></div></div>`;
+  });
+  return h;
+}
+document.querySelector('[data-panel="1"]').innerHTML = build('long');
+document.querySelector('[data-panel="2"]').innerHTML = build('cc');
+document.querySelector('[data-panel="3"]').innerHTML = build('short');
+
+/* 탭 전환 */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.onclick = ()=>{
+    const n = tab.dataset.tab;
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===tab));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.dataset.panel===n));
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+});
+
+/* ▼▼▼ 구글폼 설정 — 폼 만든 뒤 이 3칸만 채우면 끝 ▼▼▼
+   1) 구글폼 만들기 → 질문2개: ① "어떤 버전?"(객관식) ② "의견"(장문)
+   2) 미리채우기 링크(︙→ 응답 미리 채우기)에서 entry.숫자 2개 복사
+   3) 보내기 주소 끝의 .../viewform 을 .../formResponse 로 바꿔 action에 넣기      */
+const GFORM = {
+  action: "",            // 예: https://docs.google.com/forms/d/e/1FAIpf.../formResponse
+  entryVersion: "",      // 예: entry.123456789  (어떤 버전 질문)
+  entryComment: "",      // 예: entry.987654321  (의견 질문)
+};
+function sendToGoogle(versionLabel, comment){
+  if(!GFORM.action || !GFORM.entryVersion) return;           // 미설정이면 로컬만
+  const fd = new FormData();
+  fd.append(GFORM.entryVersion, versionLabel);
+  if(GFORM.entryComment) fd.append(GFORM.entryComment, comment||"");
+  // no-cors: 응답은 못 읽지만 구글 시트엔 정상 기록됨
+  fetch(GFORM.action, {method:"POST", mode:"no-cors", body:fd}).catch(()=>{});
+}
+/* ▲▲▲ 구글폼 설정 끝 ▲▲▲ */
+
+/* 투표 */
+const KEY='callver_votes_v1', CKEY='callver_cmts_v1';
+const NAMES={1:'① 길게 설명',2:'② 콜센터용',3:'③ 짧게'};
+let pick=null;
+const go=document.getElementById('go'), res=document.getElementById('res');
+document.querySelectorAll('.opt-b').forEach(b=>{
+  b.onclick=()=>{
+    pick=b.dataset.v;
+    document.querySelectorAll('.opt-b').forEach(x=>x.classList.toggle('sel',x===b));
+    go.disabled=false;
+  };
+});
+function getVotes(){try{return JSON.parse(localStorage.getItem(KEY))||{1:0,2:0,3:0}}catch(e){return{1:0,2:0,3:0}}}
+function getCmts(){try{return JSON.parse(localStorage.getItem(CKEY))||[]}catch(e){return[]}}
+function renderBars(){
+  const v=getVotes(), tot=(+v[1])+(+v[2])+(+v[3]);
+  const win=Math.max(v[1],v[2],v[3]);
+  let h='';
+  [1,2,3].forEach(n=>{
+    const c=+v[n], pct=tot?Math.round(c/tot*100):0, w=(c===win&&tot>0)?'w':'';
+    h+=`<div class="bar ${w}"><div class="bl2"><span>${NAMES[n]}</span><span>${c}표 · ${pct}%</span></div>
+      <div class="track"><div class="fill" style="width:${pct}%"></div></div></div>`;
+  });
+  document.getElementById('bars').innerHTML=h;
+  document.getElementById('tot').textContent=`지금까지 총 ${tot}표`;
+}
+go.onclick=()=>{
+  if(!pick) return;
+  const v=getVotes(); v[pick]=(+v[pick])+1; localStorage.setItem(KEY,JSON.stringify(v));
+  const cmt=document.getElementById('cmt').value.trim();
+  if(cmt){const cs=getCmts(); cs.push({v:pick,t:cmt}); localStorage.setItem(CKEY,JSON.stringify(cs));}
+  sendToGoogle(NAMES[pick], cmt);                     // 구글폼으로도 전송
+  document.getElementById('picked').textContent=NAMES[pick];
+  renderBars(); res.classList.add('on'); go.disabled=true;
+  res.scrollIntoView({behavior:'smooth',block:'center'});
+};
+document.getElementById('again').onclick=()=>{
+  pick=null; go.disabled=true; res.classList.remove('on');
+  document.querySelectorAll('.opt-b').forEach(x=>x.classList.remove('sel'));
+  document.getElementById('cmt').value='';
+  document.querySelector('.tab[data-tab="1"]').click();
+  document.querySelector('.vote h3').scrollIntoView({behavior:'smooth'});
+};
+document.getElementById('reset').onclick=()=>{
+  if(confirm('투표 결과를 모두 지울까요?')){localStorage.removeItem(KEY);localStorage.removeItem(CKEY);renderBars();alert('초기화했어요.');}
+};
+document.getElementById('export').onclick=()=>{
+  const v=getVotes(), cs=getCmts();
+  let txt=`전화 설명 버전 투표 결과\n① 길게: ${v[1]}표\n② 콜센터: ${v[2]}표\n③ 짧게: ${v[3]}표\n\n의견(${cs.length}):\n`;
+  cs.forEach(c=>txt+=`- [${NAMES[c.v]}] ${c.t}\n`);
+  const blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='버전투표결과.txt'; a.click();
+};
+renderBars();
+</script>
+</body>
+</html>
