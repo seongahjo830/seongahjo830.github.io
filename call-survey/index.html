@@ -94,25 +94,14 @@
 <div class="wrap">
   <h1>📞 전화 종류 설명 — 어떤 버전이 제일 나아요?</h1>
   <div class="lead">
-    같은 내용을 <b>3가지 방식</b>으로 적어봤어요. 위 칸을 눌러 <b>① 길게 · ② 콜센터 · ③ 짧게</b>를
-    번갈아 본 뒤, 맨 아래에서 <b>제일 이해하기 쉬운 것</b>에 투표해 주세요.
+    같은 내용을 <b>3가지 방식</b>으로 적어봤어요. 아래 <b>① 길게 · ② 콜센터 · ③ 짧게</b> 탭을
+    번갈아 본 뒤, <b>제일 이해하기 쉬운 것</b>에 바로 여기서 투표해 주세요.
   </div>
 
-  <div class="tabs">
-    <div class="tab on" data-tab="1"><div class="n">버전 ①</div><div class="ttl">길게 설명</div></div>
-    <div class="tab" data-tab="2"><div class="n">버전 ②</div><div class="ttl">콜센터용</div></div>
-    <div class="tab" data-tab="3"><div class="n">버전 ③</div><div class="ttl">짧게</div></div>
-  </div>
-
-  <!-- 패널들 (JS가 채움) -->
-  <div class="panel on v1" data-panel="1"></div>
-  <div class="panel v2" data-panel="2"></div>
-  <div class="panel v3" data-panel="3"></div>
-
-  <!-- 투표 -->
+  <!-- 투표 (맨 위) -->
   <div class="vote">
     <h3>🗳️ 어떤 버전이 제일 이해하기 쉬웠나요?</h3>
-    <p>딱 하나만 골라주세요. 하고 싶은 말이 있으면 아래에 적어주셔도 좋아요.</p>
+    <p>딱 하나만 골라주세요. (아래 ①②③을 비교해 보고 고르시면 됩니다 ↓)</p>
     <div class="opts">
       <button class="opt-b" data-v="1"><span class="rk"></span><span><span class="ot">① 길게 설명</span><span class="os">한 줄씩 풀어서 친절하게</span></span></button>
       <button class="opt-b" data-v="2"><span class="rk"></span><span><span class="ot">② 콜센터용</span><span class="os">전문 용어 + 처리 메모</span></span></button>
@@ -128,6 +117,17 @@
     </div>
     <div class="adminline">모든 사람 결과가 자동으로 한곳에 모여요 · <a id="peek">📊 투표 안 하고 결과만 보기</a></div>
   </div>
+
+  <div class="tabs">
+    <div class="tab on" data-tab="1"><div class="n">버전 ①</div><div class="ttl">길게 설명</div></div>
+    <div class="tab" data-tab="2"><div class="n">버전 ②</div><div class="ttl">콜센터용</div></div>
+    <div class="tab" data-tab="3"><div class="n">버전 ③</div><div class="ttl">짧게</div></div>
+  </div>
+
+  <!-- 패널들 (JS가 채움) -->
+  <div class="panel on v1" data-panel="1"></div>
+  <div class="panel v2" data-panel="2"></div>
+  <div class="panel v3" data-panel="3"></div>
 </div>
 
 <script>
@@ -248,7 +248,7 @@ document.querySelectorAll('.tab').forEach(tab=>{
     const n = tab.dataset.tab;
     document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===tab));
     document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.dataset.panel===n));
-    window.scrollTo({top:0,behavior:'smooth'});
+    document.querySelector('.tabs').scrollIntoView({behavior:'smooth',block:'start'});
   };
 });
 
