@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoRecall — 원장님 차트 속 안 캔 금맥</title>
+<style>
+:root{
+  --bg:#0B1220;
+  --bg2:#0F1A2E;
+  --panel:#121F38;
+  --panel2:#16223C;
+  --ink:#EAF0FA;
+  --ink-soft:#AFC0DC;
+  --ink-dim:#7C8FB0;
+  --line:rgba(168,190,225,.14);
+  --line-strong:rgba(168,190,225,.26);
+  --gold:#E7B64B;
+  --gold-2:#F4D27A;
+  --gold-deep:#B8862B;
+  --blue:#3E6FE0;
+  --good:#4FB286;
+  --bad:#E26D6D;
+  --radius:18px;
+  --maxw:1100px;
+  --ff:"Pretendard","Apple SD Gothic Neo",-apple-system,"Segoe UI","Malgun Gothic",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:var(--ff);
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(231,182,75,.10), transparent 60%),
+    radial-gradient(900px 500px at -10% 20%, rgba(62,111,224,.10), transparent 55%),
+    linear-gradient(180deg,#0B1220 0%,#0A1020 100%);
+  color:var(--ink);
+  font-size:17px;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{max-width:100%}
+a{color:inherit}
+h1,h2,h3{line-height:1.25;margin:0 0 .4em;letter-spacing:-.02em;font-weight:800}
+p{margin:0 0 1em}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+.section{padding:74px 0;position:relative}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:800;letter-spacing:.04em;
+  color:var(--gold-2);text-transform:none;
+  padding:6px 13px;border:1px solid rgba(231,182,75,.34);
+  border-radius:999px;background:rgba(231,182,75,.07);margin-bottom:20px;
+}
+.muted{color:var(--ink-soft)}
+.dim{color:var(--ink-dim)}
+.gold{color:var(--gold-2)}
+.center{text-align:center}
+.badge-ex{
+  display:inline-block;font-size:11.5px;font-weight:700;color:#0B1220;
+  background:var(--gold-2);border-radius:6px;padding:2px 7px;vertical-align:middle;
+  letter-spacing:-.01em;
+}
+.badge-soft{
+  display:inline-block;font-size:11.5px;font-weight:700;color:var(--ink-soft);
+  border:1px solid var(--line-strong);border-radius:6px;padding:2px 7px;
+}
+
+/* ---------- HERO / 금맥 ---------- */
+.hero{
+  position:relative;overflow:hidden;
+  padding:84px 0 70px;
+  border-bottom:1px solid var(--line);
+}
+.vein-canvas{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+}
+.vein-canvas svg{width:100%;height:100%;display:block;opacity:.9}
+.hero .wrap{position:relative;z-index:2}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:46px;align-items:center}
+.hero-catch{
+  font-size:clamp(30px,6vw,52px);font-weight:900;line-height:1.16;letter-spacing:-.03em;
+  margin-bottom:22px;
+}
+.hero-catch .l2{
+  display:block;
+  background:linear-gradient(92deg,var(--gold-2),var(--gold) 60%,var(--gold-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero-sub{font-size:clamp(17px,2.3vw,20px);color:var(--ink-soft);max-width:30em;margin-bottom:14px}
+.hero-mine-line{
+  font-size:clamp(16px,2vw,18px);font-weight:700;color:var(--gold-2);
+  margin-bottom:30px;
+}
+.hero-mine-line b{color:var(--ink);font-weight:900}
+.cta-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  font-family:var(--ff);font-weight:800;font-size:17px;cursor:pointer;
+  border-radius:14px;padding:16px 26px;min-height:54px;border:1px solid transparent;
+  text-decoration:none;transition:transform .12s ease,box-shadow .2s ease,background .2s;
+}
+.btn-gold{
+  background:linear-gradient(180deg,var(--gold-2),var(--gold));
+  color:#231806;box-shadow:0 10px 30px rgba(231,182,75,.30),inset 0 1px 0 rgba(255,255,255,.4);
+}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(231,182,75,.42)}
+.btn-ghost{background:rgba(255,255,255,.04);border-color:var(--line-strong);color:var(--ink)}
+.btn-ghost:hover{background:rgba(255,255,255,.08)}
+.cta-micro{font-size:13.5px;color:var(--ink-dim);margin-top:14px}
+.cta-micro b{color:var(--ink-soft);font-weight:700}
+
+/* 금괴 미니 일러스트 (hero 우측) */
+.ore-illus{
+  position:relative;aspect-ratio:1/.9;border-radius:var(--radius);
+  border:1px solid var(--line);
+  background:
+    radial-gradient(120% 90% at 50% 120%, rgba(231,182,75,.22), transparent 60%),
+    linear-gradient(180deg, #0C1730, #0A1226);
+  overflow:hidden;display:flex;align-items:flex-end;justify-content:center;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+.ore-illus .ground{
+  position:absolute;left:0;right:0;bottom:0;height:46%;
+  background:linear-gradient(180deg, rgba(231,182,75,.05), rgba(231,182,75,.16));
+  border-top:1px dashed rgba(231,182,75,.35);
+}
+.ore-illus .lbl{position:absolute;left:14px;top:13px;font-size:12.5px;color:var(--ink-dim);font-weight:700}
+.ore-illus .nug{position:absolute;border-radius:40% 55% 45% 60%/55% 45% 60% 40%;
+  background:linear-gradient(140deg,var(--gold-2),var(--gold-deep));
+  box-shadow:0 0 18px rgba(231,182,75,.55), inset 0 2px 4px rgba(255,255,255,.4);}
+.ore-illus .count{
+  position:relative;z-index:2;margin-bottom:18px;text-align:center;
+}
+.ore-illus .count .big{font-size:clamp(38px,8vw,56px);font-weight:900;color:var(--gold-2);line-height:1;
+  text-shadow:0 0 30px rgba(231,182,75,.4)}
+.ore-illus .count .cap{font-size:13.5px;color:var(--ink-soft);margin-top:6px;font-weight:700}
+
+/* ---------- 면죄/공감 띠 ---------- */
+.empathy{
+  background:linear-gradient(180deg,rgba(62,111,224,.06),transparent);
+  border-bottom:1px solid var(--line);
+}
+.empathy .big-q{font-size:clamp(22px,4vw,32px);font-weight:900;line-height:1.3;letter-spacing:-.02em;max-width:18em}
+.empathy .big-q em{font-style:normal;color:var(--gold-2)}
+
+/* ---------- 손실: 새는 매출 ---------- */
+.leak-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}
+.leak-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:26px 24px;position:relative;overflow:hidden;
+}
+.leak-card.bad{border-color:rgba(226,109,109,.32)}
+.leak-card h3{font-size:18px;display:flex;align-items:center;gap:9px}
+.leak-card p{font-size:15.5px;color:var(--ink-soft);margin:0}
+.leak-card .ic{font-size:22px}
+.leak-card .drip{
+  position:absolute;right:-10px;top:-10px;width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,rgba(226,109,109,.18),transparent 70%);
+}
+
+/* ---------- 비교: 관리 vs 안 함 ---------- */
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+.vs-card{border-radius:var(--radius);padding:26px 24px;border:1px solid var(--line)}
+.vs-card .tag{font-weight:800;font-size:14px;margin-bottom:12px;display:inline-block;padding:5px 12px;border-radius:999px}
+.vs-no .tag{color:#E9B4B4;background:rgba(226,109,109,.12);border:1px solid rgba(226,109,109,.3)}
+.vs-yes{background:linear-gradient(180deg,rgba(231,182,75,.10),rgba(231,182,75,.03));border-color:rgba(231,182,75,.34)}
+.vs-yes .tag{color:var(--gold-2);background:rgba(231,182,75,.14);border:1px solid rgba(231,182,75,.4)}
+.vs-list{list-style:none;margin:0;padding:0}
+.vs-list li{padding:9px 0 9px 28px;position:relative;font-size:15.5px;color:var(--ink-soft);border-top:1px solid var(--line)}
+.vs-list li:first-child{border-top:0}
+.vs-no .vs-list li::before{content:"✕";position:absolute;left:0;top:9px;color:var(--bad);font-weight:900}
+.vs-yes .vs-list li::before{content:"✓";position:absolute;left:0;top:9px;color:var(--gold-2);font-weight:900}
+
+/* ---------- 정제소 (핵심 데모) ---------- */
+.refine{background:linear-gradient(180deg,#0A1124,#0C1630);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.refine-stage{
+  display:grid;grid-template-columns:1fr auto 1.25fr;gap:20px;align-items:stretch;margin-top:26px;
+}
+.stage-box{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px;display:flex;flex-direction:column;min-height:340px;position:relative;
+}
+.stage-box .cap{font-size:13px;font-weight:800;color:var(--ink-dim);margin-bottom:12px;letter-spacing:.02em}
+.ore-field{
+  flex:1;position:relative;border-radius:12px;overflow:hidden;
+  background:radial-gradient(120% 120% at 30% 0%, rgba(255,255,255,.03), transparent),#0A1020;
+  border:1px solid var(--line);
+}
+.ore-dot{position:absolute;border-radius:50%;background:rgba(168,190,225,.30)}
+.ore-dot.g{background:rgba(231,182,75,.85);box-shadow:0 0 8px rgba(231,182,75,.7)}
+.ore-note{position:absolute;bottom:10px;left:12px;right:12px;font-size:12.5px;color:var(--ink-dim)}
+.refine-arrow{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-width:120px;
+}
+.refine-btn{
+  font-family:var(--ff);font-weight:900;font-size:15px;cursor:pointer;border:0;
+  background:linear-gradient(180deg,var(--gold-2),var(--gold));color:#231806;
+  border-radius:14px;padding:16px 18px;min-height:56px;width:100%;
+  box-shadow:0 10px 26px rgba(231,182,75,.30);transition:transform .12s,box-shadow .2s;line-height:1.3;
+}
+.refine-btn:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(231,182,75,.42)}
+.refine-btn:disabled{opacity:.6;cursor:default;transform:none}
+.flow-tube{width:100%;height:8px;border-radius:999px;background:rgba(231,182,75,.14);overflow:hidden;position:relative}
+.flow-tube i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-2));transition:width .9s ease}
+.flow-cap{font-size:12px;color:var(--ink-dim);text-align:center}
+.bars-wrap{display:flex;flex-direction:column;gap:14px;justify-content:center;flex:1}
+.bar-card{
+  border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+  background:linear-gradient(180deg,rgba(231,182,75,.10),rgba(231,182,75,.02));
+  opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s;
+}
+.bar-card.show{opacity:1;transform:none}
+.bar-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
+.bar-card .nm{font-weight:900;font-size:17px}
+.bar-card .nm small{font-weight:700;color:var(--ink-dim);font-size:12.5px;margin-left:6px}
+.bar-card .val{font-weight:900;color:var(--gold-2);font-size:16px;white-space:nowrap}
+.bar-card .meta{display:flex;flex-wrap:wrap;gap:8px;font-size:13px;color:var(--ink-soft)}
+.bar-card .chip{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-weight:700}
+.bar-card .chip.time{color:var(--gold-2);border-color:rgba(231,182,75,.34)}
+.refine-empty{display:flex;align-items:center;justify-content:center;flex:1;color:var(--ink-dim);font-size:14px;text-align:center;padding:16px}
+.refine-tagline{
+  margin-top:24px;text-align:center;font-size:clamp(17px,3vw,22px);font-weight:900;
+}
+.refine-tagline .hl{color:var(--gold-2)}
+
+/* ---------- 마케팅비 비교 ---------- */
+.mkt-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px;align-items:stretch}
+.mkt-card{border-radius:var(--radius);padding:26px 24px;border:1px solid var(--line);position:relative;overflow:hidden}
+.mkt-card .who{font-size:14px;font-weight:800;color:var(--ink-soft);margin-bottom:6px}
+.mkt-card .num{font-size:clamp(30px,6vw,44px);font-weight:900;letter-spacing:-.03em;line-height:1}
+.mkt-card .unit{font-size:15px;color:var(--ink-dim);font-weight:700;margin-top:6px}
+.mkt-new{background:linear-gradient(180deg,rgba(226,109,109,.10),transparent);border-color:rgba(226,109,109,.30)}
+.mkt-new .num{color:#F0A6A6}
+.mkt-old{background:linear-gradient(180deg,rgba(231,182,75,.12),rgba(231,182,75,.03));border-color:rgba(231,182,75,.38)}
+.mkt-old .num{color:var(--gold-2)}
+.mkt-bar{height:18px;border-radius:999px;margin-top:16px;overflow:hidden;background:rgba(255,255,255,.05)}
+.mkt-bar i{display:block;height:100%;border-radius:999px}
+.mkt-new .mkt-bar i{width:100%;background:linear-gradient(90deg,#9B4A4A,#E26D6D)}
+.mkt-old .mkt-bar i{width:6%;background:linear-gradient(90deg,var(--gold-deep),var(--gold-2))}
+.mkt-punch{margin-top:24px;text-align:center;font-size:clamp(17px,3vw,22px);font-weight:900}
+.mkt-punch .hl{color:var(--gold-2)}
+
+/* ---------- 미니 자가체크 ---------- */
+.check-list{display:grid;gap:12px;margin-top:8px}
+.check-item{
+  display:flex;align-items:flex-start;gap:14px;background:var(--panel);
+  border:1px solid var(--line);border-radius:14px;padding:16px 18px;cursor:pointer;
+  transition:border-color .2s,background .2s;user-select:none;
+}
+.check-item:hover{border-color:var(--line-strong)}
+.check-item.on{border-color:rgba(231,182,75,.5);background:linear-gradient(180deg,rgba(231,182,75,.10),transparent)}
+.check-box{
+  flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--line-strong);
+  display:flex;align-items:center;justify-content:center;font-weight:900;color:transparent;margin-top:1px;transition:.2s;
+}
+.check-item.on .check-box{background:var(--gold-2);border-color:var(--gold-2);color:#231806}
+.check-item .txt{font-size:15.5px;color:var(--ink);font-weight:600}
+.check-result{
+  margin-top:18px;text-align:center;font-size:17px;font-weight:800;
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;
+}
+.check-result .cnt{color:var(--gold-2);font-size:26px}
+
+/* ---------- 자가진단 계산기 ---------- */
+.calc{background:linear-gradient(180deg,#0A1124,#0C1428);border-top:1px solid var(--line)}
+.calc-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:26px;margin-top:26px;align-items:start}
+.calc-panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px 24px}
+.field{margin-bottom:24px}
+.field:last-child{margin-bottom:0}
+.field .flabel{display:flex;justify-content:space-between;align-items:baseline;font-weight:700;font-size:15px;margin-bottom:10px;gap:10px}
+.field .fval{color:var(--gold-2);font-weight:900;font-size:18px}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:999px;
+  background:linear-gradient(90deg,var(--gold-deep),var(--gold-2)) no-repeat;
+  background-size:var(--fill,50%) 100%;outline:none;
+}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;
+  background:#fff;border:3px solid var(--gold);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--gold);cursor:pointer}
+input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(231,182,75,.4)}
+.field .ftrack{position:relative}
+.field .fhint{font-size:12.5px;color:var(--ink-dim);margin-top:8px;display:flex;justify-content:space-between}
+.result-panel{background:linear-gradient(180deg,rgba(231,182,75,.10),rgba(231,182,75,.02));border:1px solid rgba(231,182,75,.34);border-radius:var(--radius);padding:26px 24px}
+.res-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.res-cell{background:rgba(8,14,28,.55);border:1px solid var(--line);border-radius:14px;padding:16px}
+.res-cell .rl{font-size:13px;color:var(--ink-soft);font-weight:700;margin-bottom:6px}
+.res-cell .rv{font-size:clamp(22px,4vw,30px);font-weight:900;letter-spacing:-.02em;line-height:1}
+.res-cell .rv small{font-size:14px;color:var(--ink-dim);font-weight:700;margin-left:3px}
+.res-cell.gold .rv{color:var(--gold-2)}
+.res-cell.recover .rv{color:var(--good)}
+.score-wrap{background:rgba(8,14,28,.55);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:4px}
+.score-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.score-top .sl{font-weight:700;font-size:14px;color:var(--ink-soft)}
+.score-top .sv{font-weight:900;font-size:30px;color:var(--gold-2)}
+.score-bar{height:12px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;position:relative}
+.score-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#B85A5A,var(--gold) 55%,var(--good));transition:width .5s}
+.score-marks{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-dim);margin-top:8px}
+.calc-formula{font-size:12.5px;color:var(--ink-dim);margin-top:16px;line-height:1.7}
+.calc-formula b{color:var(--ink-soft)}
+.calc-note{font-size:12.5px;color:var(--ink-dim);margin-top:12px}
+
+/* ---------- 빈 데스크 ---------- */
+.desk-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+.slot-board{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+.slot-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line)}
+.slot-row:first-child{border-top:0}
+.slot-time{width:64px;flex:none;font-weight:800;color:var(--ink-soft);font-size:14px}
+.slot-fill{flex:1;height:30px;border-radius:8px;display:flex;align-items:center;padding:0 12px;font-size:13px;font-weight:700}
+.slot-busy{background:rgba(62,111,224,.18);border:1px solid rgba(62,111,224,.34);color:#BFD0F4}
+.slot-empty{background:repeating-linear-gradient(45deg,rgba(231,182,75,.07),rgba(231,182,75,.07) 8px,transparent 8px,transparent 16px);border:1px dashed rgba(231,182,75,.45);color:var(--gold-2)}
+
+/* ---------- 후기 스트립 ---------- */
+.reviews{background:linear-gradient(180deg,rgba(62,111,224,.05),transparent)}
+.rev-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px}
+.rev-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px;position:relative}
+.rev-card .quote{font-size:15.5px;color:var(--ink);line-height:1.7;margin-bottom:16px}
+.rev-card .quote::before{content:"“";color:var(--gold);font-size:34px;font-weight:900;line-height:0;margin-right:2px;vertical-align:-12px}
+.rev-card .who{font-size:13.5px;color:var(--ink-dim);font-weight:700}
+.rev-card .stars{color:var(--gold-2);font-size:14px;letter-spacing:2px;margin-bottom:12px}
+
+/* ---------- 최종 CTA ---------- */
+.final{
+  background:
+    radial-gradient(800px 400px at 50% -20%, rgba(231,182,75,.16), transparent 60%),
+    linear-gradient(180deg,#0C1630,#0A1226);
+  border-top:1px solid var(--line);text-align:center;
+}
+.final h2{font-size:clamp(26px,5vw,40px);font-weight:900}
+.final .lead{font-size:clamp(17px,2.4vw,20px);color:var(--ink-soft);max-width:26em;margin:0 auto 28px}
+.trust-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:24px}
+.trust-pill{font-size:13.5px;font-weight:700;color:var(--ink-soft);background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:9px 15px}
+.trust-pill b{color:var(--gold-2)}
+
+/* footer */
+.foot{padding:40px 0 120px;text-align:center;color:var(--ink-dim);font-size:13px;border-top:1px solid var(--line)}
+.foot p{margin:.3em 0}
+
+/* sticky mobile cta */
+.sticky-cta{
+  display:none;position:fixed;left:0;right:0;bottom:0;z-index:900;
+  background:rgba(11,18,32,.94);backdrop-filter:blur(10px);border-top:1px solid var(--line-strong);
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+}
+.sticky-cta a{
+  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;
+  background:linear-gradient(180deg,var(--gold-2),var(--gold));color:#231806;font-weight:900;font-size:17px;
+  border-radius:13px;text-decoration:none;
+}
+.sticky-cta .mc{font-size:11.5px;color:var(--ink-dim);text-align:center;margin-top:5px}
+
+/* ---------- responsive ---------- */
+@media (max-width:880px){
+  .hero-grid{grid-template-columns:1fr;gap:30px}
+  .ore-illus{max-width:420px;margin:0 auto}
+  .leak-grid,.vs-grid,.mkt-grid,.calc-grid,.desk-grid,.rev-strip{grid-template-columns:1fr}
+  .refine-stage{grid-template-columns:1fr}
+  .refine-arrow{flex-direction:row;min-width:0;padding:6px 0}
+  .refine-btn{width:auto;flex:1}
+  .desk-grid{gap:22px}
+  .section{padding:56px 0}
+  body{padding-bottom:84px}
+  .sticky-cta{display:block}
+  #recallFab{bottom:84px!important}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .section{padding:48px 0}
+  .res-row{grid-template-columns:1fr}
+  .btn{width:100%}
+  .cta-row{flex-direction:column;align-items:stretch}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .vein-pulse{opacity:.55!important}
+}
+.vein-pulse{transform-origin:center;animation:veinPulse 3.4s ease-in-out infinite}
+.vein-pulse.v2{animation-delay:1.1s}
+.vein-pulse.v3{animation-delay:2.0s}
+@keyframes veinPulse{0%,100%{opacity:.35}50%{opacity:.95}}
+.spark{animation:spark 2.6s ease-in-out infinite}
+@keyframes spark{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.1)}}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO : 금맥 ============ -->
+<header class="hero" id="top">
+  <div class="vein-canvas" aria-hidden="true">
+    <svg viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="vg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#F4D27A"/>
+          <stop offset="1" stop-color="#B8862B"/>
+        </linearGradient>
+        <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0" stop-color="#F4D27A" stop-opacity=".5"/>
+          <stop offset="1" stop-color="#F4D27A" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <!-- 땅속 광맥 라인 -->
+      <g fill="none" stroke="url(#vg)" stroke-linecap="round">
+        <path class="vein-pulse" d="M-20 200 C 200 150, 320 320, 540 300 S 900 360, 1220 270" stroke-width="3" opacity=".5"/>
+        <path class="vein-pulse v2" d="M-20 420 C 260 380, 380 520, 620 470 S 980 440, 1220 520" stroke-width="2.4" opacity=".4"/>
+        <path class="vein-pulse v3" d="M-20 320 C 180 360, 420 240, 640 360 S 1000 300, 1220 380" stroke-width="2" opacity=".35"/>
+        <path d="M180 200 L 220 300 M540 300 L 560 420 M620 470 L 660 360 M900 360 L 940 270" stroke-width="1.4" opacity=".28"/>
+      </g>
+      <!-- 금 결정 점 -->
+      <g fill="url(#vg)">
+        <circle class="spark" cx="220" cy="300" r="6"/>
+        <circle class="spark" cx="540" cy="300" r="8" style="animation-delay:.6s"/>
+        <circle class="spark" cx="660" cy="360" r="5" style="animation-delay:1.2s"/>
+        <circle class="spark" cx="940" cy="270" r="7" style="animation-delay:.9s"/>
+        <circle class="spark" cx="380" cy="500" r="5" style="animation-delay:1.6s"/>
+        <circle class="spark" cx="1040" cy="430" r="6" style="animation-delay:.3s"/>
+      </g>
+      <circle cx="540" cy="300" r="120" fill="url(#glow)"/>
+      <circle cx="940" cy="270" r="100" fill="url(#glow)"/>
+    </svg>
+  </div>
+
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">⛏️ 원내 설치형 · 차트는 읽기만 · 무료 체험</span>
+        <h1 class="hero-catch">
+          안 오는 환자는 없습니다.
+          <span class="l2">안 부른 환자만 있을 뿐.</span>
+        </h1>
+        <p class="hero-sub">원장님 차트 속에, <b class="gold">아직 안 캔 금맥</b>이 있습니다. 신환을 광고로 모셔오기 전에 — 이미 쌓인 구환부터.</p>
+        <p class="hero-mine-line">잠든 구환 <b>약 600명</b> = 아직 캐지 않은 자산 <span class="badge-ex">예시·가정값</span></p>
+        <div class="cta-row">
+          <a href="#refine" class="btn btn-gold">⛏️ 내 금맥부터 눈으로 보기</a>
+          <a href="#calc" class="btn btn-ghost">5분 자가진단</a>
+        </div>
+        <p class="cta-micro">설치는 원내 PC에 1대 · <b>차트는 읽기만, 한 글자도 못 바꿉니다</b> · 발송·결제 없음 · 언제든 끄기</p>
+      </div>
+
+      <div class="ore-illus" aria-hidden="true">
+        <span class="lbl">원장님 차트 데이터베이스</span>
+        <div class="ground"></div>
+        <i class="nug" style="width:34px;height:30px;left:18%;bottom:14%"></i>
+        <i class="nug" style="width:22px;height:20px;left:34%;bottom:8%"></i>
+        <i class="nug" style="width:44px;height:38px;left:52%;bottom:18%"></i>
+        <i class="nug" style="width:26px;height:24px;left:72%;bottom:10%"></i>
+        <i class="nug" style="width:18px;height:16px;left:84%;bottom:20%"></i>
+        <div class="count">
+          <div class="big" data-count="600">0</div>
+          <div class="cap">잠든 구환 = 캐지 않은 금괴</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 면죄 / 공감 ============ -->
+<section class="section empathy">
+  <div class="wrap">
+    <span class="eyebrow">🤍 먼저, 면죄부부터</span>
+    <p class="big-q">대형 치과가 데스크를 체계적으로 굴리는 건 <em>인력과 시스템</em>이 있기 때문입니다.<br>구환에게 다시 연락하지 못한 건 <em>게을러서가 아니라</em>, 진료 보며 수천 명을 혼자 챙기는 게 <em>구조적으로 역부족</em>이라서입니다.</p>
+    <p class="muted" style="max-width:34em;margin-top:18px">AutoRecall은 원장님을 대신해 "혼자선 역부족인 그 일"만 떠맡습니다. 판단은 원장님이, 정리는 도구가.</p>
+  </div>
+</section>
+
+<!-- ============ 손실회피 : 새는 매출 ============ -->
+<section class="section">
+  <div class="wrap">
+    <span class="eyebrow">💧 원장님 모르는 사이</span>
+    <h2 style="font-size:clamp(24px,4.5vw,34px)">구환 매출은, 조용히 새고 있습니다.</h2>
+    <p class="muted" style="max-width:32em">한 번 멀어진 환자는 다시 안 오는 게 아닙니다. <b class="gold">구환이 먼저 전화해주는 옆 치과</b>로 갈 뿐입니다.</p>
+    <div class="leak-grid">
+      <div class="leak-card bad">
+        <div class="drip"></div>
+        <h3><span class="ic">🩸</span>새는 매출</h3>
+        <p>치료 중단·정기검진 이탈로 멀어진 구환. 차트에 남아 있지만, 아무도 부르지 않아 그대로 멈춘 매출입니다.</p>
+      </div>
+      <div class="leak-card bad">
+        <div class="drip"></div>
+        <h3><span class="ic">📞</span>옆 치과로 가는 길</h3>
+        <p>먼저 안부 전화 한 통 오면 환자는 "거기 챙겨주네"라고 느낍니다. 그 한 통을 우리가 안 걸면, 다른 곳이 겁니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 비교: 관리 vs 안 함 ============ -->
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <span class="eyebrow">⚖️ 같은 차트, 다른 결과</span>
+    <div class="vs-grid">
+      <div class="vs-card vs-no">
+        <span class="tag">관리 안 하는 치과</span>
+        <ul class="vs-list">
+          <li>구환은 차트 속에 잠든 채 잊혀짐</li>
+          <li>빈 진료 시간을 광고비로 메우려 함</li>
+          <li>"왜 안 오지"는 알지만 누구를 부를지 모름</li>
+          <li>환자는 안부 전화 오는 옆 치과로 이동</li>
+        </ul>
+      </div>
+      <div class="vs-card vs-yes">
+        <span class="tag">관리하는 치과</span>
+        <ul class="vs-list">
+          <li>잠든 구환을 오늘 걸 명단으로 깨움</li>
+          <li>빈 시간 = 다음 예약창으로 전환</li>
+          <li>"오늘 이 3명"이 데스크에 떠 있음</li>
+          <li>환자가 "여기 챙겨주네"라고 느낌</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 정제소 (핵심 아하) ============ -->
+<section class="section refine" id="refine">
+  <div class="wrap">
+    <span class="eyebrow">🏭 이 페이지의 핵심 · 구환 정제소</span>
+    <h2 style="font-size:clamp(24px,4.8vw,36px)">흩어진 수천 개 차트 →<br><span class="gold">오늘 전화할 3명</span></h2>
+    <p class="muted" style="max-width:34em">원광석(raw ore)처럼 흩어진 차트를, 실제로 통화할 수 있는 형태로 정제합니다. 아래 버튼을 눌러 직접 보세요.</p>
+
+    <div class="refine-stage">
+      <!-- LEFT : raw ore -->
+      <div class="stage-box">
+        <div class="cap">⬅ 흩어진 차트 (원광석)</div>
+        <div class="ore-field" id="oreField" aria-hidden="true"></div>
+        <p class="ore-note">수천 개의 점 = 잠든 구환 차트. 어디서부터 걸어야 할지 보이지 않습니다.</p>
+      </div>
+
+      <!-- MIDDLE : refine -->
+      <div class="refine-arrow">
+        <button class="refine-btn" id="refineBtn">⛏️ AutoRecall<br>정제 시작</button>
+        <div class="flow-tube"><i id="flowFill"></i></div>
+        <div class="flow-cap" id="flowCap">대기 중</div>
+      </div>
+
+      <!-- RIGHT : 금괴 카드 -->
+      <div class="stage-box">
+        <div class="cap">➡ 오늘 걸 3통 (정제된 금괴)</div>
+        <div class="bars-wrap" id="barsWrap">
+          <div class="refine-empty" id="refineEmpty">정제 전에는 비어 있습니다.<br>왼쪽 버튼을 눌러보세요.</div>
+
+          <div class="bar-card" data-i="1">
+            <div class="top">
+              <div class="nm">김◯◯ <small>52세 · 여</small></div>
+              <div class="val">예상 ₩42만</div>
+            </div>
+            <div class="meta">
+              <span class="chip">끊긴 사유: 보철 중단 7개월</span>
+              <span class="chip time">⏰ 오늘 14–16시 권장</span>
+            </div>
+          </div>
+
+          <div class="bar-card" data-i="2">
+            <div class="top">
+              <div class="nm">박◯◯ <small>41세 · 남</small></div>
+              <div class="val">예상 ₩28만</div>
+            </div>
+            <div class="meta">
+              <span class="chip">끊긴 사유: 정기검진 11개월 무내원</span>
+              <span class="chip time">⏰ 오늘 점심 직후</span>
+            </div>
+          </div>
+
+          <div class="bar-card" data-i="3">
+            <div class="top">
+              <div class="nm">이◯◯ <small>36세 · 여</small></div>
+              <div class="val">예상 ₩61만</div>
+            </div>
+            <div class="meta">
+              <span class="chip">끊긴 사유: 임플란트 상담 후 미진행</span>
+              <span class="chip time">⏰ 오늘 18시 이후</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="refine-tagline">명단이 아니라, <span class="hl">오늘 당장 걸 수 있게 가공된 '3통'.</span></p>
+    <p class="center dim" style="font-size:13px;margin-top:8px">위 가명·금액·사유는 <span class="badge-ex">가상 예시</span> 입니다. 실제 데이터는 원장님 차트에서 원내 PC 안에서만 처리됩니다.</p>
+  </div>
+</section>
+
+<!-- ============ 마케팅비 비교 (핵심2) ============ -->
+<section class="section" id="mkt">
+  <div class="wrap">
+    <span class="eyebrow">💰 이 페이지의 또 다른 핵심</span>
+    <h2 style="font-size:clamp(24px,4.8vw,36px)">마케팅비 쓰기 전에,<br><span class="gold">이미 쌓인 구환부터.</span></h2>
+    <p class="muted" style="max-width:34em">신환 한 명을 광고로 모셔오는 비용과, 이미 차트에 있는 구환 한 명을 다시 깨우는 비용을 나란히 두면 — 답은 분명합니다.</p>
+
+    <div class="mkt-grid">
+      <div class="mkt-card mkt-new">
+        <div class="who">신환 1명 · 광고로 모셔오기</div>
+        <div class="num">₩15만</div>
+        <div class="unit">획득 비용(추정) <span class="badge-ex">예시·가정값</span></div>
+        <div class="mkt-bar"><i></i></div>
+      </div>
+      <div class="mkt-card mkt-old">
+        <div class="who">구환 1명 · 다시 깨우기</div>
+        <div class="num">₩0 <span style="font-size:18px;color:var(--ink-dim);font-weight:700">에 가까움</span></div>
+        <div class="unit">전화 한 통 · 광고 없이 가진 자산 <span class="badge-ex">예시·가정값</span></div>
+        <div class="mkt-bar"><i></i></div>
+      </div>
+    </div>
+    <p class="mkt-punch">이미 차트에 쌓인 구환 = <span class="hl">광고 없이 가진 금광.</span></p>
+    <p class="center dim" style="font-size:13px;margin-top:8px">단가는 <span class="badge-soft">예시·가정값</span> 이며 치과·지역·채널마다 다릅니다. 의료 결과를 보장하지 않으며, 운영(데스크) 도구입니다.</p>
+  </div>
+</section>
+
+<!-- ============ 빈 데스크 ============ -->
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <span class="eyebrow">🪑 빈 시간 = 기회</span>
+    <div class="desk-grid">
+      <div class="slot-board" aria-hidden="true">
+        <div class="slot-row"><span class="slot-time">10:00</span><span class="slot-fill slot-busy">예약 · 김환자</span></div>
+        <div class="slot-row"><span class="slot-time">11:00</span><span class="slot-fill slot-empty">⛏️ 비어 있음 — 다음 예약창</span></div>
+        <div class="slot-row"><span class="slot-time">14:00</span><span class="slot-fill slot-busy">예약 · 정환자</span></div>
+        <div class="slot-row"><span class="slot-time">15:00</span><span class="slot-fill slot-empty">⛏️ 비어 있음 — 다음 예약창</span></div>
+        <div class="slot-row"><span class="slot-time">18:00</span><span class="slot-fill slot-empty">⛏️ 비어 있음 — 다음 예약창</span></div>
+      </div>
+      <div>
+        <h2 style="font-size:clamp(22px,4vw,30px)">비어 있는 데스크 시간은,<br><span class="gold">채워 넣을 빈 칸</span>입니다.</h2>
+        <p class="muted">오늘 비어 있는 시간에 맞춰, 그 시간대에 부르기 좋은 구환을 짝지어 줍니다. 빈 슬롯이 손실이 아니라 <b class="gold">다음 예약을 채울 기회</b>가 됩니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 미니 자가체크 ============ -->
+<section class="section" style="padding-top:0">
+  <div class="wrap" style="max-width:760px">
+    <span class="eyebrow">✅ 우리 치과는 몇 가지나?</span>
+    <h2 style="font-size:clamp(22px,4vw,30px)">해당되는 항목을 눌러보세요.</h2>
+    <div class="check-list" id="checkList">
+      <div class="check-item"><div class="check-box">✓</div><div class="txt">치료 도중 안 오게 된 환자를 따로 챙기지 못한다</div></div>
+      <div class="check-item"><div class="check-box">✓</div><div class="txt">정기검진 시기가 지난 구환에게 연락을 못 한다</div></div>
+      <div class="check-item"><div class="check-box">✓</div><div class="txt">"오늘 누구에게 전화할지" 데스크에서 정하기 어렵다</div></div>
+      <div class="check-item"><div class="check-box">✓</div><div class="txt">빈 진료 시간을 광고로 메우려 한 적이 있다</div></div>
+      <div class="check-item"><div class="check-box">✓</div><div class="txt">상담만 받고 진행 안 한 환자를 다시 못 불렀다</div></div>
+    </div>
+    <div class="check-result" id="checkResult">
+      해당 <span class="cnt" id="checkCnt">0</span> / 5 — 항목을 눌러 확인해 보세요.
+    </div>
+  </div>
+</section>
+
+<!-- ============ 자가진단 계산기 ============ -->
+<section class="section calc" id="calc">
+  <div class="wrap">
+    <span class="eyebrow">🧮 5분 자가진단 · 화면 안에서만 계산</span>
+    <h2 style="font-size:clamp(24px,4.8vw,36px)">우리 차트엔 얼마가 잠들어 있을까요?</h2>
+    <p class="muted" style="max-width:34em">슬라이더만 움직이면 됩니다. <b>아무것도 저장·전송하지 않습니다</b> — 이 화면 안에서만 계산합니다.</p>
+
+    <div class="calc-grid">
+      <div class="calc-panel">
+        <div class="field">
+          <div class="flabel"><label for="sActive">활성 환자 수 (명)</label><span class="fval"><span id="vActive">2,000</span></span></div>
+          <div class="ftrack"><input type="range" id="sActive" min="300" max="5000" step="50" value="2000" aria-describedby="hActive"></div>
+          <div class="fhint" id="hActive"><span>300</span><span>5,000</span></div>
+        </div>
+        <div class="field">
+          <div class="flabel"><label for="sChurn">끊김율 (%)</label><span class="fval"><span id="vChurn">30</span>%</span></div>
+          <div class="ftrack"><input type="range" id="sChurn" min="10" max="50" step="1" value="30" aria-describedby="hChurn"></div>
+          <div class="fhint" id="hChurn"><span>10%</span><span>50%</span></div>
+        </div>
+        <div class="field">
+          <div class="flabel"><label for="sValue">1인 평균 치료가치 (만원)</label><span class="fval"><span id="vValue">60</span>만</span></div>
+          <div class="ftrack"><input type="range" id="sValue" min="30" max="150" step="5" value="60" aria-describedby="hValue"></div>
+          <div class="fhint" id="hValue"><span>30만</span><span>150만</span></div>
+        </div>
+        <p class="calc-note">※ 모든 수치는 <span class="badge-ex">예시·가정값</span> 이며 입력값에 따른 단순 계산입니다. 의료 결과를 보장하지 않습니다.</p>
+      </div>
+
+      <div class="result-panel">
+        <div class="res-row">
+          <div class="res-cell gold">
+            <div class="rl">잠든 환자</div>
+            <div class="rv"><span id="rSleep">600</span><small>명</small></div>
+          </div>
+          <div class="res-cell">
+            <div class="rl">잠든 매출(추정)</div>
+            <div class="rv"><span id="rLost">3.6</span><small>억원</small></div>
+          </div>
+        </div>
+        <div class="res-cell recover" style="margin-bottom:16px">
+          <div class="rl">현실적으로 회수 가능한 규모(15% 가정)</div>
+          <div class="rv"><span id="rRecover">5,400</span><small>만원</small></div>
+        </div>
+        <div class="score-wrap">
+          <div class="score-top"><span class="sl">우리 치과 구환관리 점수</span><span class="sv"><span id="rScore">52</span></span></div>
+          <div class="score-bar"><i id="scoreFill" style="width:52%"></i></div>
+          <div class="score-marks"><span>0</span><span>평균 60</span><span>상위 82</span><span>100</span></div>
+        </div>
+        <p class="calc-formula">
+          <b>계산식 공개</b><br>
+          잠든환자 = 활성 × 끊김율<br>
+          잃은매출 = 잠든환자 × 1인가치<br>
+          회수가능 = 잠든환자 × 1인가치 × 0.15<br>
+          점수 = clamp(round(100 − 끊김율 × 1.6), 0, 100) · 평균 60 / 상위 82 <span class="badge-ex">예시</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 후기 스트립 ============ -->
+<section class="section reviews">
+  <div class="wrap">
+    <span class="eyebrow">🗣️ 먼저 써본 원장님들 <span class="badge-soft" style="margin-left:6px">가상 예시 · 원장 검수 필요</span></span>
+    <h2 style="font-size:clamp(22px,4vw,30px)">"명단 보던 시간이, 통화 시간으로 바뀌었습니다."</h2>
+    <div class="rev-strip">
+      <div class="rev-card">
+        <div class="stars">★★★★★</div>
+        <p class="quote">엑셀 뒤지던 30분이 사라졌어요. 아침에 '오늘 이 3명'이 떠 있으니 데스크가 바로 전화를 돕니다.</p>
+        <div class="who">— 수도권 1인 원장 (가상 예시)</div>
+      </div>
+      <div class="rev-card">
+        <div class="stars">★★★★★</div>
+        <p class="quote">광고비부터 늘리려 했는데, 이미 있던 구환을 먼저 깨우니 빈 시간이 줄었습니다. 순서가 틀렸던 거죠.</p>
+        <div class="who">— 지방 중형 치과 대표원장 (가상 예시)</div>
+      </div>
+      <div class="rev-card">
+        <div class="stars">★★★★★</div>
+        <p class="quote">차트를 못 건드린다는 점이 안심이었어요. 읽기만 하고, 부를 사람만 골라줍니다. 판단은 제가 하고요.</p>
+        <div class="who">— 개원 3년차 원장 (가상 예시)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 최종 CTA ============ -->
+<section class="section final" id="cta">
+  <div class="wrap" style="max-width:760px">
+    <span class="eyebrow" style="margin-left:auto;margin-right:auto;display:inline-flex">⛏️ 무위험으로 시작</span>
+    <h2>원장님 금맥부터,<br>5분 만에 눈으로 확인하세요.</h2>
+    <p class="lead">게을러서가 아니었습니다. 혼자선 역부족이었을 뿐. 이제 그 일만 도구에게 맡기세요.</p>
+    <div class="cta-row" style="justify-content:center">
+      <a href="#refine" class="btn btn-gold">⛏️ 내 차트의 금맥 보기 — 무료</a>
+      <a href="#calc" class="btn btn-ghost">먼저 자가진단부터</a>
+    </div>
+    <p class="cta-micro" style="margin-top:16px">부담 없이 — 차트는 읽기만 하고, 마음에 안 들면 언제든 끄면 됩니다.</p>
+    <div class="trust-row">
+      <span class="trust-pill">🏥 <b>원내 PC</b> 설치형</span>
+      <span class="trust-pill">👀 차트 <b>읽기만</b> · 수정 불가</span>
+      <span class="trust-pill">🚫 자동 <b>발송·결제 없음</b></span>
+      <span class="trust-pill">⏱️ <b>5분</b> 설치</span>
+      <span class="trust-pill">🔌 <b>언제든 끄기</b></span>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <p><b style="color:var(--gold-2)">AutoRecall</b> — 잠든 구환을 오늘 걸 3통으로.</p>
+  <p>후기·수치·가명·금액은 모두 <b>가상 예시</b>이며 원장 검수가 필요합니다. 본 도구는 데스크 <b>운영 도구</b>로, 의료 효과·치료 결과를 보장하지 않습니다.</p>
+  <p class="dim">차트 데이터는 원내 PC 안에서만 처리되며, 자가진단 계산은 이 화면 안에서만 이뤄지고 저장·전송되지 않습니다.</p>
+</footer>
+
+<!-- 모바일 sticky CTA -->
+<div class="sticky-cta">
+  <a href="#refine">⛏️ 내 금맥부터 보기 — 무료</a>
+  <div class="mc">차트는 읽기만 · 언제든 끄기</div>
+</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- hero count up ---- */
+  function countUp(el){
+    var target = parseInt(el.getAttribute('data-count'),10)||0;
+    if(reduce){ el.textContent = target.toLocaleString(); return; }
+    var start=null, dur=1400;
+    function step(ts){
+      if(!start) start=ts;
+      var p=Math.min((ts-start)/dur,1);
+      var e=1-Math.pow(1-p,3);
+      el.textContent = Math.round(target*e).toLocaleString();
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var heroCount=document.querySelector('.ore-illus .big[data-count]');
+  if(heroCount){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){ if(en.isIntersecting){ countUp(heroCount); io.disconnect(); }});
+    },{threshold:.4});
+    io.observe(heroCount);
+  }
+
+  /* ---- ore field dots ---- */
+  var field=document.getElementById('oreField');
+  if(field){
+    var N=120, html='';
+    for(var i=0;i<N;i++){
+      var s=(Math.random()*3+2).toFixed(1);
+      var x=(Math.random()*94+1).toFixed(1);
+      var y=(Math.random()*88+1).toFixed(1);
+      var gold = Math.random()<0.10 ? ' g' : '';
+      html+='<i class="ore-dot'+gold+'" style="width:'+s+'px;height:'+s+'px;left:'+x+'%;top:'+y+'%"></i>';
+    }
+    field.innerHTML=html+'<div class="ore-note" style="position:absolute">·</div>';
+  }
+
+  /* ---- refine demo ---- */
+  var btn=document.getElementById('refineBtn');
+  var fill=document.getElementById('flowFill');
+  var cap=document.getElementById('flowCap');
+  var empty=document.getElementById('refineEmpty');
+  var cards=document.querySelectorAll('.bar-card');
+  var done=false;
+  function runRefine(){
+    if(done) return; done=true;
+    btn.disabled=true; btn.innerHTML='정제 중…';
+    if(empty) empty.style.display='none';
+    fill.style.width='100%';
+    cap.textContent='차트 정제 중…';
+    var delay = reduce?0:1;
+    cards.forEach(function(c,idx){
+      setTimeout(function(){ c.classList.add('show'); }, reduce?0:(700+idx*420));
+    });
+    setTimeout(function(){
+      cap.textContent='완료 · 오늘 걸 3통';
+      btn.innerHTML='✅ 정제 완료';
+    }, reduce?0:1900);
+  }
+  if(btn) btn.addEventListener('click', runRefine);
+  /* auto-run when scrolled into view (once) */
+  if(btn && !reduce){
+    var rio=new IntersectionObserver(function(es){
+      es.forEach(function(en){ if(en.isIntersecting && !done){ setTimeout(runRefine,500); rio.disconnect(); }});
+    },{threshold:.45});
+    rio.observe(document.getElementById('refine'));
+  } else if(btn && reduce){
+    /* reduced motion: show cards immediately */
+    if(empty) empty.style.display='none';
+    cards.forEach(function(c){ c.classList.add('show'); });
+    fill.style.width='100%'; cap.textContent='완료 · 오늘 걸 3통'; done=true; btn.disabled=true; btn.innerHTML='✅ 정제 완료';
+  }
+
+  /* ---- mini check ---- */
+  var items=document.querySelectorAll('#checkList .check-item');
+  var cnt=document.getElementById('checkCnt');
+  var resBox=document.getElementById('checkResult');
+  function refreshCheck(){
+    var n=document.querySelectorAll('#checkList .check-item.on').length;
+    cnt.textContent=n;
+    var msg;
+    if(n===0) msg='해당 <span class="cnt" id="checkCnt">0</span> / 5 — 항목을 눌러 확인해 보세요.';
+    else if(n<=2) msg='해당 <span class="cnt">'+n+'</span> / 5 — 이미 새고 있는 매출이 있습니다.';
+    else if(n<=4) msg='해당 <span class="cnt">'+n+'</span> / 5 — 깨울 구환이 꽤 쌓여 있습니다.';
+    else msg='해당 <span class="cnt">5</span> / 5 — 금맥이 통째로 잠들어 있어요. 자가진단을 추천합니다.';
+    resBox.innerHTML=msg;
+  }
+  items.forEach(function(it){
+    it.addEventListener('click',function(){ it.classList.toggle('on'); refreshCheck(); });
+  });
+
+  /* ---- calculator ---- */
+  var sActive=document.getElementById('sActive');
+  var sChurn=document.getElementById('sChurn');
+  var sValue=document.getElementById('sValue');
+  var vActive=document.getElementById('vActive');
+  var vChurn=document.getElementById('vChurn');
+  var vValue=document.getElementById('vValue');
+  var rSleep=document.getElementById('rSleep');
+  var rLost=document.getElementById('rLost');
+  var rRecover=document.getElementById('rRecover');
+  var rScore=document.getElementById('rScore');
+  var scoreFill=document.getElementById('scoreFill');
+
+  function setFill(el){
+    var min=+el.min, max=+el.max, v=+el.value;
+    var pct=((v-min)/(max-min))*100;
+    el.style.setProperty('--fill', pct+'%');
+  }
+  function fmt(n){ return Math.round(n).toLocaleString(); }
+  function calc(){
+    var active=+sActive.value, churn=+sChurn.value, value=+sValue.value;
+    vActive.textContent=active.toLocaleString();
+    vChurn.textContent=churn;
+    vValue.textContent=value;
+    setFill(sActive); setFill(sChurn); setFill(sValue);
+
+    var sleep=Math.round(active*churn/100);
+    var lostMan=sleep*value;            // 만원 단위
+    var recoverMan=sleep*value*0.15;    // 만원 단위
+    var score=Math.max(0,Math.min(100,Math.round(100-churn*1.6)));
+
+    rSleep.textContent=fmt(sleep);
+    // 잃은매출: 만원 → 억 변환 (1억=10000만원)
+    rLost.textContent=(lostMan/10000).toFixed(1);
+    rRecover.textContent=fmt(recoverMan);
+    rScore.textContent=score;
+    scoreFill.style.width=score+'%';
+  }
+  [sActive,sChurn,sValue].forEach(function(s){ if(s){ s.addEventListener('input',calc); }});
+  calc();
+})();
+</script>
+
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기" style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);font-family:'Pretendard',-apple-system,'Segoe UI','Malgun Gothic',sans-serif;opacity:.94;"><span style="font-size:15px">📋</span><span>후보 목록</span></a>
+<style>#recallFab:hover{opacity:1}@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
