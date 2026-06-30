@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AutoRecall — 우리 직원에게</title>
+<style>
+  :root{
+    --bg:#FAF8F4; --card:#FFFEFB; --ink:#23201A; --soft:#564F44; --faint:#938B7C;
+    --line:#E9E3D7; --accent:#3E6B53; --accent-d:#2C4F3C; --tint:#E9F2EC; --gold:#9C7A2E;
+    --r:18px;
+    --serif:"Iowan Old Style","Apple SD Gothic Neo",Georgia,"Nanum Myeongjo",serif;
+    --sans:"Pretendard","Apple SD Gothic Neo",-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.78;font-size:17px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:0 22px}
+  a{color:inherit}
+  nav{position:sticky;top:0;z-index:20;background:rgba(250,248,244,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{font-weight:800;letter-spacing:-.03em;font-size:18px}.brand .d{color:var(--accent)}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:16px;text-decoration:none;border-radius:12px;padding:14px 24px;background:var(--accent);color:#fff;border:0;cursor:pointer;transition:.18s;font-family:var(--sans)}
+  .btn:hover{background:var(--accent-d)}.btn.lg{padding:17px 30px;font-size:17px}.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+  nav .btn{padding:10px 18px;font-size:14px}
+  .eye{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-d)}
+  .hero{padding:70px 0 26px;text-align:center}
+  .hero h1{font-family:var(--serif);font-size:clamp(32px,5.6vw,54px);font-weight:800;letter-spacing:-.02em;line-height:1.22;margin:16px 0 0}
+  .hero h1 em{font-style:italic;color:var(--accent)}
+  .hero p{font-size:clamp(17px,2.3vw,20px);color:var(--soft);max-width:600px;margin:22px auto 0}
+  .hero .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+  .hero .re{font-size:13.5px;color:var(--faint);margin-top:14px}
+  section{padding:54px 0}
+  .h2{font-family:var(--serif);font-size:clamp(25px,4vw,38px);font-weight:800;letter-spacing:-.02em;text-align:center;line-height:1.3}
+  .lead{text-align:center;color:var(--soft);max-width:600px;margin:14px auto 0;font-size:16.5px}
+  /* 직원이 이미 하는 일 (긴 체크리스트, 다 됨) */
+  .doing{max-width:680px;margin:38px auto 0;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:28px 30px;box-shadow:0 14px 36px -24px rgba(50,40,20,.3)}
+  .doing .dt{font-weight:800;font-size:15px;color:var(--accent-d);margin-bottom:14px}
+  .doing ul{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .doing li{font-size:14.5px;color:var(--soft);padding-left:26px;position:relative}
+  .doing li::before{content:"✓";position:absolute;left:0;color:var(--accent);font-weight:800}
+  @media(max-width:560px){.doing ul{grid-template-columns:1fr}}
+  /* 딱 하나 안 되는 일 */
+  .one{max-width:680px;margin:30px auto 0;background:var(--tint);border:1px solid #CFE2D6;border-radius:var(--r);padding:28px 30px;text-align:center}
+  .one .k{font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--accent-d)}
+  .one h3{font-family:var(--serif);font-size:clamp(20px,3vw,27px);margin:10px 0 8px;letter-spacing:-.02em}
+  .one p{color:var(--soft);font-size:15.5px}
+  .one .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+  .one .chips span{background:#fff;border:1px solid var(--line);border-radius:30px;padding:7px 13px;font-size:13px;font-weight:600;color:var(--soft)}
+  /* 편지 */
+  .letter{max-width:680px;margin:44px auto 0;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(28px,5vw,48px);box-shadow:0 18px 44px -26px rgba(50,40,20,.32);font-family:var(--serif)}
+  .letter p{font-size:18.5px;color:var(--ink);margin-bottom:16px;line-height:1.9}
+  .letter p.lead2{font-size:21px}
+  .letter b{background:linear-gradient(transparent 62%,#D8E7DD 0);font-weight:700}
+  .letter .sign{text-align:right;color:var(--faint);font-size:15px;margin-top:24px}
+  /* 해결 */
+  .help{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:760px;margin:36px auto 0}
+  .st{border:1px solid var(--line);border-radius:var(--r);padding:24px;text-align:center;background:var(--bg)}
+  .st .e{font-size:30px}.st b{display:block;margin:10px 0 6px;font-family:var(--sans)}.st span{font-size:14px;color:var(--soft)}
+  @media(max-width:620px){.steps{grid-template-columns:1fr}}
+  .final{text-align:center;padding:70px 0}
+  .final h2{font-family:var(--serif);font-size:clamp(26px,4.4vw,42px);font-weight:800;letter-spacing:-.02em}
+  .final h2 em{font-style:italic;color:var(--accent)}
+  .final p{color:var(--soft);max-width:520px;margin:16px auto 0}
+  footer{border-top:1px solid var(--line);padding:28px 0 46px;text-align:center;font-size:13px;color:var(--faint)}
+</style>
+</head>
+<body>
+  <nav><div class="wrap">
+    <div class="brand">Auto<span class="d">●</span>Recall</div>
+    <a href="#install" class="btn">무료로 시작</a>
+  </div></nav>
+
+  <header class="hero"><div class="wrap">
+    <span class="eye">To our hardworking staff</span>
+    <h1>우리 직원은 이미,<br><em>할 수 있는 걸 다 하고 있습니다.</em></h1>
+    <p>접수·수납·보험·예약·응대… 하루 종일 손이 쉴 틈이 없죠. 리콜을 못 챙긴 건 마음이 없어서가 아니라, 두 손이 이미 가득 차 있어서입니다.</p>
+    <div class="btns"><a href="#install" class="btn lg">직원에게 도구 쥐어주기</a><a href="#letter" class="btn ghost lg">왜 그런지 읽기</a></div>
+    <p class="re">덴트웹 차트 그대로 · 직원이 새로 배울 것 없음</p>
+  </div></header>
+
+  <section><div class="wrap">
+    <h2 class="h2">우리 데스크가 매일 해내는 일</h2>
+    <p class="lead">이 많은 걸 동시에 돌리고 있습니다. 정말로요.</p>
+    <div class="doing">
+      <div class="dt">하루 동안, 쉬지 않고 —</div>
+      <ul>
+        <li>접수·대기 환자 응대</li>
+        <li>수납·카드·영수증 처리</li>
+        <li>보험 청구·서류</li>
+        <li>예약 잡기·변경·확인 전화</li>
+        <li>워크인·컴플레인 응대</li>
+        <li>다음 날 예약 리마인드</li>
+        <li>전화 응대(끊임없이)</li>
+        <li>진료실·원장 사이 조율</li>
+      </ul>
+    </div>
+    <div class="one">
+      <div class="k">그런데 딱 하나, 사람 손으로는 안 되는 일</div>
+      <h3>흩어진 ‘챙길 환자’를 빠짐없이 모아 전화하기</h3>
+      <p>각각 다른 날짜·다른 차트에 흩어져 있어, 눈앞 업무를 보면서 한 명도 안 빠뜨리긴 어렵습니다.</p>
+      <div class="chips">
+        <span>6개월 스케일링</span><span>3개월 정기검진</span><span>“다음 달 체크”</span><span>임플란트 정기점검</span><span>보철 점검</span>
+      </div>
+    </div>
+  </div></section>
+
+  <section id="letter" style="padding-top:6px"><div class="wrap">
+    <div class="letter">
+      <p class="lead2">원장님께.</p>
+      <p>혹시 ‘왜 리콜이 잘 안 돌까’ 답답하셨다면 — 직원을 탓할 일이 아닙니다. 직원은 이미 하루를 꽉 채워 일하고 있어요.</p>
+      <p>문제는 사람이 아니라 <b>도구</b>입니다. 흩어진 환자를 모으고, 순서를 정하고, 빠뜨리지 않게 기억하는 일 — 이건 원래 사람 머리로 매일 해내기 어려운 종류의 일이에요.</p>
+      <p>그 한 가지만 도구가 거들면, <b>지금도 열심히인 직원이 더 잘하게 됩니다.</b> 직원을 더 몰아붙이는 게 아니라, 손 하나를 더 보태주는 거예요.</p>
+      <p class="sign">— 직원을 아끼는 마음으로, AutoRecall</p>
+    </div>
+  </div></section>
+
+  <section class="help"><div class="wrap">
+    <h2 class="h2">도구가 거드는 건, 딱 이 세 가지</h2>
+    <p class="lead">직원이 하던 일을 뺏지 않습니다. 사람이 못 하던 부분만 메웁니다.</p>
+    <div class="steps">
+      <div class="st"><div class="e">📥</div><b>모아주기</b><span>흩어진 도래 환자를 매일 아침 한곳에</span></div>
+      <div class="st"><div class="e">🔢</div><b>순서 정하기</b><span>오늘 챙길 사람을 위에서부터</span></div>
+      <div class="st"><div class="e">🧠</div><b>기억하기</b><span>“다음 달”이라던 환자도 그때 다시</span></div>
+    </div>
+  </div></section>
+
+  <section class="final" id="install"><div class="wrap">
+    <h2>열심히 하는 직원에게,<br><em>딱 이것만 도와주세요.</em></h2>
+    <p>무료 버전으로 ‘오늘 챙길 명단’부터. 직원의 하루가 한결 가벼워지고, 빠지던 환자가 돌아옵니다.</p>
+    <div style="margin-top:26px"><a href="#" class="btn lg">무료로 직원 손에 쥐어주기</a></div>
+  </div></section>
+
+  <footer>AutoRecall · 치과 리콜(재내원) 자동화 · 데스크 업무를 돕는 도구 · 수치·효과는 예시이며 결과를 보장하지 않습니다</footer>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
