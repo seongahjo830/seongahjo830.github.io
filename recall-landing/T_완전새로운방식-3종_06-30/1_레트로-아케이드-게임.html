@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>AutoRecall — INSERT COIN, 새는 매출을 막아라 (레트로 아케이드)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="치과 재내원(리콜) 자동화 AutoRecall. 안 오는 환자는 없습니다, 안 부른 환자만 있을 뿐. 30초 자가진단으로 잠든 환자와 새는 매출을 레트로 아케이드 게임처럼 확인하세요. 설치형 데스크톱 도구, 차트(덴트웹)는 읽기만, 환자정보는 원내 로컬에서만.">
+<style>
+  :root{
+    --cyan:#19E0FF; --magenta:#FF3DCA; --yellow:#FFE049; --green:#46F08A;
+    --bg:#05060f; --bg2:#0a0c1c; --panel:#0e1130; --ink:#eaf4ff;
+    --dim:#8fa3c8; --line:#23306a;
+    --mono:'Courier New',ui-monospace,'SFMono-Regular',Menlo,monospace;
+    --ko:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--ko);
+    line-height:1.75;
+    -webkit-text-size-adjust:100%;
+    overflow-x:hidden;
+    position:relative;
+  }
+  /* CRT 스캔라인 + 비네팅 (순수 CSS) */
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:9000; pointer-events:none;
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0.22) 3px,
+      rgba(0,0,0,0.22) 4px
+    );
+    mix-blend-mode:multiply;
+    animation:scan 8s linear infinite;
+  }
+  body::after{
+    content:"";
+    position:fixed; inset:0; z-index:9001; pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.55) 100%);
+  }
+  @keyframes scan{ from{background-position:0 0;} to{background-position:0 8px;} }
+
+  .mono{font-family:var(--mono); letter-spacing:.04em;}
+  .tnum{font-variant-numeric:tabular-nums;}
+
+  .wrap{max-width:1000px; margin:0 auto; padding:0 18px;}
+  section{position:relative; z-index:1; padding:64px 0;}
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1; transform:none;}
+
+  /* 픽셀 블록 보더 (다층 box-shadow 계단 테두리) */
+  .pixbox{
+    background:var(--panel);
+    border:0;
+    box-shadow:
+      0 -4px 0 0 var(--line), 0 4px 0 0 var(--line),
+      -4px 0 0 0 var(--line), 4px 0 0 0 var(--line),
+      0 -8px 0 0 #000, 0 8px 0 0 #000,
+      -8px 0 0 0 #000, 8px 0 0 0 #000;
+    margin:0 8px;
+  }
+  .pixbox.cyan{box-shadow:0 -4px 0 0 var(--cyan),0 4px 0 0 var(--cyan),-4px 0 0 0 var(--cyan),4px 0 0 0 var(--cyan),0 -8px 0 0 #051a22,0 8px 0 0 #051a22,-8px 0 0 0 #051a22,8px 0 0 0 #051a22;}
+  .pixbox.mag{box-shadow:0 -4px 0 0 var(--magenta),0 4px 0 0 var(--magenta),-4px 0 0 0 var(--magenta),4px 0 0 0 var(--magenta),0 -8px 0 0 #2a0820,0 8px 0 0 #2a0820,-8px 0 0 0 #2a0820,8px 0 0 0 #2a0820;}
+  .pixbox.yel{box-shadow:0 -4px 0 0 var(--yellow),0 4px 0 0 var(--yellow),-4px 0 0 0 var(--yellow),4px 0 0 0 var(--yellow),0 -8px 0 0 #2a2400,0 8px 0 0 #2a2400,-8px 0 0 0 #2a2400,8px 0 0 0 #2a2400;}
+  .pixbox.grn{box-shadow:0 -4px 0 0 var(--green),0 4px 0 0 var(--green),-4px 0 0 0 var(--green),4px 0 0 0 var(--green),0 -8px 0 0 #052a17,0 8px 0 0 #052a17,-8px 0 0 0 #052a17,8px 0 0 0 #052a17;}
+
+  /* 픽셀 버튼 */
+  .pxbtn{
+    display:inline-block; cursor:pointer;
+    font-family:var(--mono); font-weight:700; letter-spacing:.06em;
+    font-size:15px; text-decoration:none;
+    padding:14px 22px; margin:6px 6px;
+    color:#04121a; background:var(--cyan);
+    border:0; image-rendering:pixelated;
+    box-shadow:0 4px 0 0 #0a7d92, 0 8px 0 0 #064252, 4px 0 0 0 #0a7d92, -4px 0 0 0 #0a7d92;
+    transition:transform .08s ease;
+  }
+  .pxbtn:active{transform:translateY(4px); box-shadow:0 0 0 0 #0a7d92,4px 0 0 0 #0a7d92,-4px 0 0 0 #0a7d92;}
+  .pxbtn.mag{background:var(--magenta); color:#1a0212; box-shadow:0 4px 0 0 #99225f,0 8px 0 0 #5a1438,4px 0 0 0 #99225f,-4px 0 0 0 #99225f;}
+  .pxbtn.mag:active{box-shadow:0 0 0 0 #99225f,4px 0 0 0 #99225f,-4px 0 0 0 #99225f;}
+  .pxbtn.yel{background:var(--yellow); color:#221c00; box-shadow:0 4px 0 0 #998400,0 8px 0 0 #5a4d00,4px 0 0 0 #998400,-4px 0 0 0 #998400;}
+  .pxbtn.yel:active{box-shadow:0 0 0 0 #998400,4px 0 0 0 #998400,-4px 0 0 0 #998400;}
+  .pxbtn.grn{background:var(--green); color:#04220f; box-shadow:0 4px 0 0 #1f9956,0 8px 0 0 #105a32,4px 0 0 0 #1f9956,-4px 0 0 0 #1f9956;}
+  .pxbtn.grn:active{box-shadow:0 0 0 0 #1f9956,4px 0 0 0 #1f9956,-4px 0 0 0 #1f9956;}
+
+  .stagetag{
+    display:inline-block; font-family:var(--mono); font-weight:700;
+    font-size:12px; letter-spacing:.16em; color:#04121a;
+    background:var(--yellow); padding:5px 12px; margin-bottom:14px;
+    box-shadow:3px 3px 0 0 #000;
+  }
+  h2.head{
+    font-family:var(--mono); font-weight:700; letter-spacing:.02em;
+    font-size:clamp(22px,5vw,34px); line-height:1.25; margin:0 0 12px;
+    color:var(--cyan); text-shadow:2px 2px 0 #06303b, 4px 4px 0 #000;
+  }
+  .lead{color:var(--dim); font-size:clamp(15px,2.4vw,18px); margin:0 0 26px; max-width:760px;}
+
+  /* ===== HERO (타이틀 스크린) ===== */
+  #hero{
+    min-height:100svh; display:flex; flex-direction:column; justify-content:center;
+    padding:34px 18px 48px; text-align:center;
+    background:
+      radial-gradient(80% 60% at 50% 10%, rgba(25,224,255,0.10), transparent 60%),
+      radial-gradient(70% 50% at 50% 100%, rgba(255,61,202,0.10), transparent 60%),
+      var(--bg);
+  }
+  .hud{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    max-width:1000px; margin:0 auto; width:100%; gap:10px;
+    font-family:var(--mono); font-size:13px; letter-spacing:.06em; flex-wrap:wrap;
+  }
+  .hud .lbl{color:var(--magenta); font-size:11px; display:block; letter-spacing:.14em;}
+  .hud .val{color:var(--yellow); font-size:clamp(14px,3vw,18px); font-weight:700;}
+  .hud .oneup{color:var(--green);}
+  .hud .oneup .val{color:var(--green);}
+  .titlewrap{margin:42px auto 8px; max-width:1000px;}
+  .bigtitle{
+    font-family:var(--mono); font-weight:700;
+    font-size:clamp(40px,13vw,118px); line-height:0.92; letter-spacing:.02em;
+    color:var(--cyan);
+    text-shadow:
+      3px 0 0 var(--magenta), -3px 0 0 var(--yellow),
+      0 6px 0 #04303b, 0 10px 0 #000;
+    word-break:break-word;
+  }
+  .subtitle{
+    font-family:var(--ko); font-weight:800; margin-top:14px;
+    font-size:clamp(16px,4.4vw,26px); color:var(--ink);
+  }
+  .kick{font-family:var(--mono); color:var(--green); font-size:13px; letter-spacing:.1em; margin-top:10px;}
+  .pressstart{
+    font-family:var(--mono); font-weight:700; color:var(--yellow);
+    font-size:clamp(16px,4vw,22px); letter-spacing:.08em; margin:28px 0 10px;
+    animation:blink 1.05s steps(1) infinite;
+  }
+  @keyframes blink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
+  .heroline{
+    font-family:var(--ko); font-weight:800; margin:18px auto 4px; max-width:720px;
+    font-size:clamp(18px,4.6vw,28px); line-height:1.4; color:#fff;
+  }
+  .herocap{color:var(--dim); font-size:13px; max-width:680px; margin:10px auto 0; font-family:var(--mono); letter-spacing:.02em;}
+  .insertcoin{
+    margin-top:30px; font-family:var(--mono); color:var(--magenta);
+    font-size:14px; letter-spacing:.1em; animation:blink 1.4s steps(1) infinite;
+  }
+  .ctaRow{margin-top:18px;}
+
+  /* 적/카드 그리드 */
+  .grid{display:grid; gap:26px; margin-top:8px;}
+  .g2{grid-template-columns:repeat(2,1fr);}
+  @media(max-width:680px){.g2{grid-template-columns:1fr;}}
+
+  .enemy{padding:22px 20px;}
+  .enemy .emoji{font-size:34px; line-height:1; display:block; margin-bottom:10px;}
+  .enemy .etitle{font-weight:800; color:var(--ink); font-size:16px; margin-bottom:8px;}
+  .enemy .esub{color:var(--dim); font-size:14px;}
+  .enemy .enum{font-family:var(--mono); color:var(--magenta); font-size:12px; letter-spacing:.14em; margin-bottom:6px; display:block;}
+
+  /* 보스 경고 (장3) */
+  .boss{padding:30px 24px; text-align:center;}
+  .bosswarn{font-family:var(--mono); color:var(--magenta); font-size:13px; letter-spacing:.2em; animation:blink 1.2s steps(1) infinite;}
+  .bossnum{font-family:var(--mono); font-weight:700; font-size:clamp(54px,18vw,120px); color:var(--yellow); line-height:1; text-shadow:0 0 18px rgba(255,224,73,.35),3px 3px 0 #000; margin:6px 0;}
+  .bigquote{font-weight:800; font-size:clamp(18px,4vw,26px); color:#fff; max-width:760px; margin:18px auto 10px; line-height:1.45;}
+  .quotesub{color:var(--dim); max-width:720px; margin:0 auto; font-size:15px;}
+
+  /* 면죄 (장4) */
+  .gameover{font-family:var(--mono); font-weight:700; color:var(--magenta); font-size:clamp(22px,6vw,40px); letter-spacing:.08em; text-align:center; text-shadow:3px 3px 0 #000; margin-bottom:6px;}
+  .gameover small{display:block; color:var(--green); font-size:clamp(13px,3vw,18px); letter-spacing:.04em; margin-top:8px;}
+  .reasons{list-style:none; padding:0; margin:24px auto 0; max-width:760px;}
+  .reasons li{position:relative; padding:14px 16px 14px 44px; margin:0 8px 14px; background:var(--bg2); color:var(--ink); font-size:15px; box-shadow:-4px 0 0 0 var(--magenta), 0 3px 0 0 #000;}
+  .reasons li::before{content:"▸"; position:absolute; left:18px; top:13px; color:var(--magenta); font-family:var(--mono);}
+
+  /* 파워업 (장5) */
+  .powerup{padding:20px; display:grid; grid-template-columns:1fr; gap:14px;}
+  .pu-row{display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:stretch;}
+  @media(max-width:680px){.pu-row{grid-template-columns:1fr;}}
+  .pu-bad,.pu-good{padding:14px 16px; font-size:14px;}
+  .pu-bad{background:#15091a; color:var(--dim); box-shadow:inset -3px 0 0 0 var(--magenta);}
+  .pu-good{background:#06221a; color:var(--ink); box-shadow:inset -3px 0 0 0 var(--green);}
+  .pu-good .gname{font-weight:800; color:var(--green); display:block; margin-bottom:4px;}
+  .pu-good .eff{display:inline-block; margin-top:8px; font-family:var(--mono); font-size:12px; color:#04220f; background:var(--green); padding:3px 9px; letter-spacing:.04em;}
+  .pu-badlbl{font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--magenta); display:block; margin-bottom:5px;}
+
+  /* 자가진단 콘솔 (장6) */
+  .console{padding:24px 22px;}
+  .slot{margin-bottom:24px;}
+  .slot .toprow{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .slot label{font-weight:800; font-size:15px; color:var(--ink);}
+  .slot .out{font-family:var(--mono); font-weight:700; color:var(--cyan); font-size:20px;}
+  .slot .hint{color:var(--dim); font-size:12.5px; margin:4px 0 10px;}
+  input[type=range]{
+    -webkit-appearance:none; appearance:none; width:100%; height:14px; margin:6px 0;
+    background:#0a1030; border:2px solid var(--line); cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:22px; height:22px; background:var(--cyan); border:0; box-shadow:0 0 0 2px #04121a,3px 3px 0 0 #000; cursor:pointer;}
+  input[type=range]::-moz-range-thumb{width:22px; height:22px; background:var(--cyan); border:0; box-shadow:0 0 0 2px #04121a,3px 3px 0 0 #000; cursor:pointer;}
+  .miniBtn{font-family:var(--mono); font-size:12px; cursor:pointer; color:var(--yellow); background:transparent; border:2px solid var(--yellow); padding:4px 10px; margin-top:6px;}
+  .miniBtn:active{background:var(--yellow); color:#221c00;}
+
+  .results{margin-top:20px; display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+  @media(max-width:680px){.results{grid-template-columns:1fr;}}
+  .rcard{padding:16px; background:var(--bg2); box-shadow:0 3px 0 0 #000, -3px 0 0 0 var(--line);}
+  .rcard .rl{font-size:12.5px; color:var(--dim); letter-spacing:.04em;}
+  .rcard .rv{font-family:var(--mono); font-weight:700; font-size:clamp(20px,5vw,28px); margin-top:4px;}
+  .rcard.c1 .rv{color:var(--magenta);} .rcard.c2 .rv{color:var(--yellow);}
+  .rcard.c3 .rv{color:var(--green);} .rcard.c4 .rv{color:var(--cyan);}
+  .scorebarWrap{margin-top:16px; background:#0a1030; height:26px; border:2px solid var(--line); overflow:hidden;}
+  .scorebar{height:100%; width:0%; background:linear-gradient(90deg,var(--magenta),var(--yellow),var(--green)); transition:width .5s ease;}
+  .formula{margin-top:16px; font-size:11.5px; color:var(--dim); font-family:var(--mono); line-height:1.7; letter-spacing:.01em;}
+
+  /* 리더보드 (장7) */
+  .lb{padding:22px;}
+  .lbrow{display:grid; grid-template-columns:120px 1fr 64px; gap:12px; align-items:center; margin-bottom:16px;}
+  @media(max-width:520px){.lbrow{grid-template-columns:90px 1fr 54px; gap:8px;}}
+  .lbrow .name{font-family:var(--mono); font-size:13px; color:var(--ink); letter-spacing:.02em;}
+  .lbrow .track{background:#0a1030; height:24px; border:2px solid var(--line); overflow:hidden;}
+  .lbrow .fill{height:100%; width:0%; transition:width .6s ease;}
+  .lbrow.me .fill{background:var(--cyan);} .lbrow.avg .fill{background:var(--yellow);} .lbrow.top .fill{background:var(--green);}
+  .lbrow .sc{font-family:var(--mono); font-weight:700; text-align:right; font-size:15px;}
+  .lbrow.me .sc{color:var(--cyan);} .lbrow.avg .sc{color:var(--yellow);} .lbrow.top .sc{color:var(--green);}
+  #verdict{margin-top:14px; font-weight:800; color:#fff; font-size:clamp(15px,3.2vw,19px); line-height:1.5;}
+
+  /* 설치 (장8) */
+  .continue{text-align:center; font-family:var(--mono); color:var(--yellow); font-size:clamp(18px,5vw,30px); letter-spacing:.06em; animation:blink 1.1s steps(1) infinite; margin-bottom:6px;}
+  .coin{text-align:center; font-family:var(--mono); color:var(--green); font-size:14px; letter-spacing:.12em; margin-bottom:20px;}
+  .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:8px 0 26px;}
+  @media(max-width:680px){.steps{grid-template-columns:repeat(2,1fr);}}
+  .step{padding:16px 14px; text-align:center; background:var(--bg2); box-shadow:0 3px 0 0 #000,-3px 0 0 0 var(--cyan);}
+  .step .n{font-family:var(--mono); font-weight:700; color:var(--cyan); font-size:22px;}
+  .step .t{font-size:13.5px; color:var(--ink); margin-top:6px;}
+  .faq{margin-top:12px;}
+  .faq details{background:var(--bg2); margin:0 8px 12px; box-shadow:0 3px 0 0 #000,-3px 0 0 0 var(--magenta);}
+  .faq summary{cursor:pointer; padding:14px 16px; font-weight:800; color:var(--ink); font-size:15px; list-style:none;}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::before{content:"▸ "; color:var(--magenta); font-family:var(--mono);}
+  .faq details[open] summary::before{content:"▾ ";}
+  .faq .a{padding:0 16px 16px; color:var(--dim); font-size:14.5px;}
+  .failavoid{margin:26px 8px 0; padding:18px 20px; text-align:center; background:#1a0212; box-shadow:0 4px 0 0 #000, inset 0 0 0 2px var(--magenta);}
+  .failavoid b{color:var(--magenta); font-family:var(--mono); font-size:clamp(15px,3.6vw,20px); letter-spacing:.02em;}
+
+  .guardrail{font-size:11.5px; color:var(--dim); max-width:840px; margin:30px auto 10px; line-height:1.8; font-family:var(--ko);}
+  .sitefoot{text-align:center; font-family:var(--mono); font-size:11.5px; color:#5d6f99; letter-spacing:.03em; padding:8px 18px 60px; line-height:1.8;}
+
+  hr.pix{border:0; height:6px; margin:8px 0; background:repeating-linear-gradient(90deg,var(--line) 0,var(--line) 8px,transparent 8px,transparent 16px);}
+  .cardpad{padding:24px 22px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+    body::before{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ STAGE 1 — HERO / 타이틀 스크린 ============ -->
+<section id="hero">
+  <div class="hud" aria-label="점수판">
+    <div>
+      <span class="lbl">HI-SCORE</span>
+      <span class="val">잃은 매출 ₩<span id="hiscore" class="tnum">0</span></span>
+    </div>
+    <div class="oneup">
+      <span class="lbl">1UP</span>
+      <span class="val">잠든 환자 <span id="oneup" class="tnum">0</span></span>
+    </div>
+  </div>
+
+  <div class="titlewrap">
+    <div class="bigtitle">AUTORECALL</div>
+    <div class="subtitle">치과 재내원(리콜) 자동화</div>
+    <div class="kick mono">치과 재내원(리콜) 자동화 · AutoRecall</div>
+  </div>
+
+  <div class="pressstart">▶ PRESS START (자가진단 시작)</div>
+
+  <p class="heroline">안 오는 환자는 없습니다.<br>안 부른 환자만 있을 뿐.</p>
+  <p class="herocap">설치형 데스크톱 도구 · 차트(덴트웹)는 읽기만 · 환자정보는 원내 로컬에서만</p>
+  <p class="herocap" style="color:var(--ink);max-width:720px;font-family:var(--ko);font-size:14.5px;letter-spacing:0;margin-top:14px;">
+    오늘 누구에게 전화할지, 우리 치과 차트가 이미 알고 있습니다. 30초 자가진단으로 — 지금 새고 있는 매출과 잠든 환자부터 확인해 보세요.
+  </p>
+
+  <div class="ctaRow">
+    <a href="#diag" class="pxbtn">자가진단 ▶</a>
+    <a href="#install" class="pxbtn mag">무료 설치</a>
+  </div>
+
+  <div class="insertcoin">INSERT COIN — 무료 설치</div>
+</section>
+
+<!-- ============ STAGE 2 — 통증 (적 등장) ============ -->
+<section id="pain">
+  <div class="wrap reveal">
+    <span class="stagetag mono">STAGE 2 — ENEMY APPEARS</span>
+    <h2 class="head">혹시, 이런 적 없으세요?</h2>
+    <p class="lead">매출이 줄어서가 아닙니다. 줄어드는 게 안 보여서입니다.</p>
+    <div class="grid g2">
+      <div class="pixbox mag enemy">
+        <span class="enum mono">ENEMY 01</span>
+        <span class="emoji">🗂️</span>
+        <div class="etitle">스케일링·정기검진 6개월 지난 환자 명단이, 지금 어디 있는지 모른다.</div>
+        <div class="esub">흩어진 차트 어딘가 — 모아 본 적이 없다.</div>
+      </div>
+      <div class="pixbox mag enemy">
+        <span class="enum mono">ENEMY 02</span>
+        <span class="emoji">🎯</span>
+        <div class="etitle">오늘 누구한테 전화할지, 결국 '감'으로 찍는다.</div>
+        <div class="esub">기준이 없으니 매번 사람마다 다르다.</div>
+      </div>
+      <div class="pixbox mag enemy">
+        <span class="enum mono">ENEMY 03</span>
+        <span class="emoji">🔁</span>
+        <div class="etitle">전화했던 사람한테 또 전화한다 — 기록이 안 남아서.</div>
+        <div class="esub">'전화했다는 말'은 남지만 '전화한 기록'은 없다.</div>
+      </div>
+      <div class="pixbox mag enemy">
+        <span class="enum mono">ENEMY 04</span>
+        <span class="emoji">💤</span>
+        <div class="etitle">상담만 받고 사라진 임플란트·교정 환자, 누군지 모른다.</div>
+        <div class="esub">가장 큰 매출이 가장 조용히 빠진다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 3 — 손실 (보스 경고) ============ -->
+<section id="loss">
+  <div class="wrap reveal">
+    <span class="stagetag mono">STAGE 3 — BOSS WARNING</span>
+    <div class="pixbox yel boss">
+      <div class="bosswarn mono">⚠ WARNING ⚠</div>
+      <div class="bossnum tnum">71%</div>
+      <p class="bigquote">"좋은 콜 리스트가 있어도, 걸 시간이 없으면 0원입니다."</p>
+      <p class="quotesub">내부 차트 분석(예시): 방치된 환자의 <b style="color:var(--yellow)">71%</b>가 치료계획 후 30일 안에 떠날지 말지를 정합니다. 그 사이에도, 환자는 조용히 옆 치과로 갑니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 4 — 면죄 (GAME OVER는 네 탓이 아니다) ============ -->
+<section id="absolve">
+  <div class="wrap reveal">
+    <span class="stagetag mono">STAGE 4 — CONTINUE</span>
+    <div class="gameover mono">GAME OVER는 네 탓이 아니다
+      <small>리콜, 안 하는 게 아니라 못 하는 겁니다.</small>
+    </div>
+    <p class="lead" style="text-align:center;margin:18px auto 0;">문제는 게으름이 아닙니다. '안 보인다'는 것입니다.</p>
+    <ul class="reasons">
+      <li>데스크의 1순위는 눈앞의 환자 응대입니다. 큐에 좋은 대상이 쌓여도, 발신은 뒤로 밀립니다.</li>
+      <li>바쁜 날엔 응대하느라 놓치고, 한가한 날엔 '전화할 환자가 없는 게' 아닙니다 — 누군지 모를 뿐.</li>
+      <li>한 사람이 수천 명을 기억하고 전화까지 돌리기엔, 하루가 너무 짧습니다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ STAGE 5 — 해결 (파워업 5종) ============ -->
+<section id="solve">
+  <div class="wrap reveal">
+    <span class="stagetag mono">STAGE 5 — POWER UP</span>
+    <h2 class="head">이 상황을, 이렇게 풉니다</h2>
+    <p class="lead">AutoRecall은 차트를 읽어 '오늘 누구부터'를 점수순으로 띄워 줍니다. 사람이 못 하는 세 가지만 도구가 대신합니다.</p>
+
+    <div class="pixbox grn powerup">
+      <div class="pu-row">
+        <div class="pu-bad"><span class="pu-badlbl mono">NOW — 지금</span>빈 슬롯이 생겼는데 채울 사람을 못 찾는 날 — 취소·노쇼로 비는 시간, 그냥 흘려보냅니다.</div>
+        <div class="pu-good"><span class="gname">🔥 슬롯 필러 추천</span>당일 빈 시간에 맞는 환자를 즉시 추천(타이밍 ×3.0 가중).<span class="eff mono">→ 비는 의자를 매출로</span></div>
+      </div>
+      <hr class="pix">
+      <div class="pu-row">
+        <div class="pu-bad"><span class="pu-badlbl mono">NOW — 지금</span>6개월 도래 환자가 명단 없이 흩어져 있음 — 시기를 사람이 일일이 확인합니다.</div>
+        <div class="pu-good"><span class="gname">📅 타이밍 기반 자동 큐</span>마지막 내원 6~12개월(스위트스폿) 환자를 자동으로 줄 세움.<span class="eff mono">→ 놓치는 정기검진 0</span></div>
+      </div>
+      <hr class="pix">
+      <div class="pu-row">
+        <div class="pu-bad"><span class="pu-badlbl mono">NOW — 지금</span>고가 치료 상담만 받고 안 온 환자 방치 — 가장 큰 매출이 가장 조용히 사라집니다.</div>
+        <div class="pu-good"><span class="gname">💰 고가치 우선 발굴콜</span>임플란트·교정 미착수 환자를 우선순위 상단에.<span class="eff mono">→ 잠든 큰 건부터 회수</span></div>
+      </div>
+      <hr class="pix">
+      <div class="pu-row">
+        <div class="pu-bad"><span class="pu-badlbl mono">NOW — 지금</span>누구한테 전화할지 '감'으로 정함 — 기준이 없어 매번 다르고, 좋은 대상이 묻힙니다.</div>
+        <div class="pu-good"><span class="gname">🎯 점수제 큐</span>(관심−부정)×기본가치×타이밍으로 '오늘 누를 몇 명'을 자동 정렬.<span class="eff mono">→ 천 명의 명단이 오늘 누를 몇 명으로</span></div>
+      </div>
+      <hr class="pix">
+      <div class="pu-row">
+        <div class="pu-bad"><span class="pu-badlbl mono">NOW — 지금</span>전화 결과가 기록에 안 남음 — 같은 사람한테 또 전화하고, 보고서는 수기로 씁니다.</div>
+        <div class="pu-good"><span class="gname">🧾 결과 버튼 1번</span>부재중·거절·예약완료를 한 번 누르면 다음 액션과 데이터가 자동 정리.<span class="eff mono">→ '전화한 말' 대신 '전화한 기록'</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 6 — 자가진단 (HUD 콘솔) ============ -->
+<section id="diag">
+  <div class="wrap reveal">
+    <span class="stagetag mono">STAGE 6 — CONTROL PANEL</span>
+    <h2 class="head">그래서, 우리 치과는 지금 어떤 상태일까요?</h2>
+    <p class="lead">숫자 3개만 움직여 보세요. 잠든 환자와 새고 있는 매출이 그 자리에서 나옵니다.</p>
+
+    <div class="pixbox cyan console">
+      <div class="slot">
+        <div class="toprow"><label for="s-patients">전체 환자 수</label><span class="out tnum" id="o-patients">3,000명</span></div>
+        <div class="hint">차트에 등록된 누적 환자 수(대략)</div>
+        <input type="range" id="s-patients" min="500" max="20000" step="100" value="3000" aria-label="전체 환자 수">
+      </div>
+
+      <div class="slot">
+        <div class="toprow"><label for="s-rate">6개월+ 연락 끊긴 비율</label><span class="out tnum" id="o-rate">35%</span></div>
+        <div class="hint">마지막 내원 6개월이 지나도록 연락이 끊긴 환자 비율</div>
+        <input type="range" id="s-rate" min="5" max="70" step="1" value="35" aria-label="6개월 이상 연락 끊긴 환자 비율(퍼센트)">
+        <button class="miniBtn mono" id="btn-avg" type="button">잘 모르겠어요 → 업계 평균(35%) 적용</button>
+      </div>
+
+      <div class="slot">
+        <div class="toprow"><label for="s-fee">재방문 1회 평균 진료비</label><span class="out tnum" id="o-fee">8만원</span></div>
+        <div class="hint">다시 온 환자 1명이 1회 내원에서 쓰는 평균 금액(만원)</div>
+        <input type="range" id="s-fee" min="3" max="60" step="1" value="8" aria-label="재방문 1회 평균 진료비(만원)">
+      </div>
+
+      <div class="results">
+        <div class="rcard c1"><div class="rl">잠든 환자 (연락 끊김)</div><div class="rv tnum" id="r-sleep">1,050명</div></div>
+        <div class="rcard c2"><div class="rl">지금 잃고 있는 매출 (연, 추정)</div><div class="rv tnum" id="r-lost">8,400만원</div></div>
+        <div class="rcard c3"><div class="rl">되돌릴 수 있는 매출 (보수적)</div><div class="rv tnum" id="r-back">1,260만원</div></div>
+        <div class="rcard c4"><div class="rl">리콜 관리 점수 (0~100)</div><div class="rv tnum" id="r-score">65점</div></div>
+      </div>
+      <div class="scorebarWrap" aria-hidden="true"><div class="scorebar" id="scorebar"></div></div>
+
+      <p class="formula">계산식(투명 공개) · 잠든 환자 = 전체 × 연락끊김율 · 잃은 매출 = 잠든 × 1회 진료비 · 되돌릴 매출 = 잠든 × 0.15 × 1회 진료비 · 관리 점수 = (1 − 연락끊김율) × 100. ※ 모든 숫자는 예시·가정값이며 결과를 보장하지 않습니다. 입력값은 저장·전송하지 않고 이 화면 안에서만 계산됩니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 7 — 벤치마크 (리더보드) ============ -->
+<section id="bench">
+  <div class="wrap reveal">
+    <span class="stagetag mono">STAGE 7 — LEADERBOARD</span>
+    <h2 class="head">동급 치과와 비교하면?</h2>
+    <p class="lead">리콜 관리 점수 기준입니다. 점수가 낮을수록 — 되돌릴 여지가 가장 큽니다.</p>
+
+    <div class="pixbox mag lb">
+      <div class="lbrow me">
+        <span class="name mono">▶ 우리 치과</span>
+        <div class="track"><div class="fill" id="lb-me"></div></div>
+        <span class="sc tnum" id="lb-me-sc">65</span>
+      </div>
+      <div class="lbrow avg">
+        <span class="name mono">동급 평균</span>
+        <div class="track"><div class="fill" id="lb-avg"></div></div>
+        <span class="sc tnum">60</span>
+      </div>
+      <div class="lbrow top">
+        <span class="name mono">상위 25%</span>
+        <div class="track"><div class="fill" id="lb-top"></div></div>
+        <span class="sc tnum">82</span>
+      </div>
+      <p id="verdict"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STAGE 8 — 설치 (CONTINUE? / 1 COIN) ============ -->
+<section id="install">
+  <div class="wrap reveal">
+    <span class="stagetag mono">STAGE 8 — CONTINUE?</span>
+    <div class="continue mono">CONTINUE? &nbsp;9...8...7...</div>
+    <div class="coin mono">▷ 1 COIN — 무료 버전 ◁</div>
+
+    <h2 class="head" style="text-align:center;">이 숫자는 추정입니다.<br>진짜 내 차트의 명단으로 보려면.</h2>
+    <p class="lead" style="text-align:center;margin:0 auto 24px;">설치하면, 위 슬라이더가 아니라 우리 치과 실제 환자로 오늘 누를 명단이 점수순으로 뜹니다. 복잡한 설정 없이, 쓰던 차트(덴트웹) 그대로.</p>
+
+    <div class="steps">
+      <div class="step"><div class="n mono">1</div><div class="t">설치 (2분)</div></div>
+      <div class="step"><div class="n mono">2</div><div class="t">차트 연결</div></div>
+      <div class="step"><div class="n mono">3</div><div class="t">오늘 리콜 큐</div></div>
+      <div class="step"><div class="n mono">4</div><div class="t">전화 → 결과 버튼</div></div>
+    </div>
+
+    <div style="text-align:center;">
+      <a href="#" onclick="return false" class="pxbtn grn" style="font-size:17px;padding:16px 28px;">무료 버전 설치하기 ▶</a>
+    </div>
+
+    <div class="faq">
+      <details>
+        <summary>직원을 감시하나요?</summary>
+        <div class="a">아니요. 데스크를 돕는 도구입니다. 평가·감시용이 아닙니다.</div>
+      </details>
+      <details>
+        <summary>통제권은 누구에게?</summary>
+        <div class="a">실장에게 있습니다. 누구에게 걸지·말지는 사람이 정합니다.</div>
+      </details>
+      <details>
+        <summary>수신 거부 환자는?</summary>
+        <div class="a">'전화하지 마라' 1번 표시 = 큐에서 영구 제외됩니다.</div>
+      </details>
+      <details>
+        <summary>환자 정보가 새나요?</summary>
+        <div class="a">전부 원내 로컬에서만 처리. 차트는 읽기만 하고 절대 수정하지 않습니다.</div>
+      </details>
+    </div>
+
+    <div class="failavoid">
+      <b>안 깔면 — 이 누수는 다음 달에도, 그대로입니다.</b>
+    </div>
+
+    <p class="guardrail">※ AutoRecall은 전화 우선순위 정리를 돕는 운영 도구이며, 치료 효과·결과를 보장하지 않습니다. · 화면의 점수·금액·평균값은 예시·가정값으로 원장 검수가 필요합니다. · 수신거부·동의 범위는 정보통신망법 등 규정과 각 치과 정책에 맞춰 운영됩니다. · 한글 우선 표기.</p>
+  </div>
+  <p class="sitefoot mono">AutoRecall · 치과 재내원(리콜) 자동화 · 레트로 아케이드 게임 · 2026-06-30 · 카피·수치 원장 검수 전 초안</p>
+</section>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------- 금액 한글 표기 ----------
+  function won(manwon){
+    if(manwon >= 10000){
+      var eok = manwon/10000;
+      if(eok >= 10){ return String(Math.round(eok)) + '억원'; }
+      return String(Math.round(eok*10)/10) + '억원';
+    }
+    return manwon.toLocaleString('ko-KR') + '만원';
+  }
+  function comma(n){ return n.toLocaleString('ko-KR'); }
+
+  // ---------- HUD 카운트업 ----------
+  var hiTarget = 84000000, upTarget = 347;
+  var hiEl = document.getElementById('hiscore');
+  var upEl = document.getElementById('oneup');
+  if(reduce){
+    hiEl.textContent = comma(hiTarget);
+    upEl.textContent = comma(upTarget);
+  } else {
+    var start = null, dur = 1600;
+    function step(ts){
+      if(start === null) start = ts;
+      var p = Math.min((ts - start)/dur, 1);
+      var ease = 1 - Math.pow(1-p, 3);
+      hiEl.textContent = comma(Math.round(hiTarget*ease));
+      upEl.textContent = comma(Math.round(upTarget*ease));
+      if(p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // ---------- 자가진단 계산 ----------
+  var sP = document.getElementById('s-patients');
+  var sR = document.getElementById('s-rate');
+  var sF = document.getElementById('s-fee');
+  var oP = document.getElementById('o-patients');
+  var oR = document.getElementById('o-rate');
+  var oF = document.getElementById('o-fee');
+  var rSleep = document.getElementById('r-sleep');
+  var rLost = document.getElementById('r-lost');
+  var rBack = document.getElementById('r-back');
+  var rScore = document.getElementById('r-score');
+  var bar = document.getElementById('scorebar');
+  var lbMe = document.getElementById('lb-me');
+  var lbMeSc = document.getElementById('lb-me-sc');
+  var lbAvg = document.getElementById('lb-avg');
+  var lbTop = document.getElementById('lb-top');
+  var verdict = document.getElementById('verdict');
+
+  function compute(){
+    var patients = parseInt(sP.value, 10);
+    var ratePct = parseInt(sR.value, 10);
+    var fee = parseInt(sF.value, 10);
+    var rate = ratePct/100;
+
+    oP.textContent = comma(patients) + '명';
+    oR.textContent = ratePct + '%';
+    oF.textContent = fee + '만원';
+
+    var sleep = Math.round(patients * rate);
+    var lost = sleep * fee;                       // 만원 단위
+    var back = Math.round(sleep * 0.15 * fee);    // 만원 단위
+    var score = Math.round((1 - rate) * 100);
+
+    rSleep.textContent = comma(sleep) + '명';
+    rLost.textContent = won(lost);
+    rBack.textContent = won(back);
+    rScore.textContent = score + '점';
+    bar.style.width = score + '%';
+
+    // 리더보드 (라이브 연동)
+    lbMe.style.width = score + '%';
+    lbMeSc.textContent = score;
+    lbAvg.style.width = '60%';
+    lbTop.style.width = '82%';
+
+    if(score < 60){
+      verdict.textContent = '동급 평균(60점)보다 ' + (60 - score) + '점 아래 — 되돌릴 여지가 가장 큽니다.';
+    } else if(score < 82){
+      verdict.textContent = '상위 25%(82점)까지 ' + (82 - score) + '점 — 이 격차가 그대로 새는 매출입니다.';
+    } else {
+      verdict.textContent = '상위권입니다. 사람 손으로 이만큼 유지 중 — 이제 시스템으로 굳히세요.';
+    }
+  }
+  sP.addEventListener('input', compute);
+  sR.addEventListener('input', compute);
+  sF.addEventListener('input', compute);
+  document.getElementById('btn-avg').addEventListener('click', function(){
+    sR.value = 35; compute();
+  });
+  compute();
+
+  // ---------- 스크롤 등장 ----------
+  var reveals = document.querySelectorAll('.reveal');
+  if(reduce || !('IntersectionObserver' in window)){
+    reveals.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(function(el){ io.observe(el); });
+  }
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

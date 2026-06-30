@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>단독 — 사라진 8,200만원, 치과 차트 속에 잠들어 있었다 · 데일리 리콜</title>
+<meta name="description" content="탐사보도 브로드시트로 읽는 치과 재내원(리콜) 누수. 6개월째 안 부른 환자가 조용히 빠져나간다 — 독자 자가진단 코너로 우리 치과 누수액을 직접 확인.">
+<style>
+  :root{
+    --paper:#F3EFE3; --ink:#16130D; --soft:#3C362B; --faint:#7A7263; --rule:#16130D;
+    --accent:#1F6F54; --loss:#A23816;
+    --serif:"Nanum Myeongjo","Noto Serif KR",Georgia,"Times New Roman",serif;
+    --sans:"Pretendard","Apple SD Gothic Neo",-apple-system,"Segoe UI","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{background:#D9D3C4;color:var(--ink);font-family:var(--serif);line-height:1.62;font-size:17px;-webkit-font-smoothing:antialiased}
+  .sheet{max-width:1040px;margin:0 auto;background:var(--paper);
+    background-image:radial-gradient(rgba(22,19,13,.05) .6px,transparent .6px);background-size:4px 4px;
+    box-shadow:0 0 0 1px rgba(0,0,0,.08),0 18px 50px -20px rgba(0,0,0,.4)}
+  .pad{padding:0 30px}
+  a{color:inherit}
+
+  /* ===== 제호(마스트헤드) ===== */
+  .masthead{padding:18px 30px 10px;border-bottom:3px double var(--rule)}
+  .topline{display:flex;justify-content:space-between;align-items:center;font-family:var(--sans);
+    font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--rule);padding-bottom:7px}
+  .nameplate{text-align:center;padding:8px 0 4px}
+  .nameplate h1{font-size:clamp(40px,9vw,82px);font-weight:900;letter-spacing:-.04em;line-height:.92;font-family:var(--serif)}
+  .nameplate .kr{letter-spacing:-.02em}
+  .dateline{display:flex;justify-content:space-between;align-items:center;font-family:var(--sans);
+    font-size:11.5px;font-weight:700;letter-spacing:.04em;color:var(--soft);
+    border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:6px 0;margin-top:6px}
+  .dateline span{flex:1} .dateline .c{text-align:center} .dateline .r{text-align:right}
+
+  /* 태그 */
+  .tag{display:inline-block;background:var(--ink);color:var(--paper);font-family:var(--sans);
+    font-size:11px;font-weight:800;letter-spacing:.12em;padding:3px 9px;text-transform:uppercase}
+  .tag.loss{background:var(--loss)}
+
+  section{padding:30px 0}
+  section+section{border-top:1px solid var(--rule)}
+
+  /* ===== 톱기사(장1 히어로) ===== */
+  .lead h2{font-size:clamp(30px,6.4vw,58px);font-weight:900;letter-spacing:-.035em;line-height:1.04;margin:12px 0 0;text-align:center}
+  .lead h2 em{font-style:italic;color:var(--loss)}
+  .deck{text-align:center;font-size:clamp(16px,2.4vw,20px);color:var(--soft);margin:14px auto 0;max-width:680px;font-style:italic}
+  .byline{text-align:center;font-family:var(--sans);font-size:11.5px;letter-spacing:.04em;color:var(--faint);margin-top:14px;
+    border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:7px 0;display:inline-block;width:100%}
+  .lead-body{columns:2;column-gap:34px;column-rule:1px solid var(--rule);margin-top:22px;text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+  .lead-body p{margin:0 0 12px}
+  .lead-body p.first::first-letter{ -webkit-initial-letter:3 2; initial-letter:3 2; font-weight:900; margin-right:9px; color:var(--loss)}
+  @supports not (initial-letter:3){ .lead-body p.first::first-letter{float:left;font-size:62px;line-height:.72;font-weight:900;margin:6px 9px 0 0;color:var(--loss)} }
+
+  h3.kicker{font-family:var(--sans);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  h3.kicker.loss{color:var(--loss)}
+  .hl{font-size:clamp(24px,4vw,36px);font-weight:900;letter-spacing:-.03em;line-height:1.14;margin-top:8px}
+
+  /* ===== 현장 르포(장2) 멀티컬럼 ===== */
+  .report{columns:3;column-gap:30px;column-rule:1px solid var(--rule);margin-top:18px;text-align:justify;hyphens:auto}
+  .report p{margin:0 0 12px;font-size:15.5px}
+  .report .scene{break-inside:avoid;background:rgba(22,19,13,.045);border-left:3px solid var(--ink);padding:9px 12px;margin:0 0 12px;font-style:italic;font-size:14.5px}
+  .report .scene b{font-style:normal}
+  @media(max-width:860px){.report{columns:2}}
+
+  /* ===== 풀쿼트(장3) ===== */
+  .pull{text-align:center;padding:8px 0}
+  .pull blockquote{font-size:clamp(24px,5vw,42px);font-weight:900;letter-spacing:-.03em;line-height:1.18;font-style:italic;max-width:840px;margin:0 auto;position:relative}
+  .pull blockquote .mark{color:var(--loss)}
+  .pull cite{display:block;font-family:var(--sans);font-style:normal;font-size:12.5px;color:var(--faint);margin-top:14px;letter-spacing:.04em}
+  .statband{display:flex;flex-wrap:wrap;gap:0;border:2px solid var(--rule);margin-top:24px}
+  .statband .s{flex:1;min-width:160px;padding:18px 16px;text-align:center;border-right:1px solid var(--rule)}
+  .statband .s:last-child{border-right:0}
+  .statband .n{font-size:clamp(26px,5vw,40px);font-weight:900;color:var(--loss);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .statband .l{font-family:var(--sans);font-size:12px;color:var(--soft);margin-top:5px;line-height:1.5}
+
+  /* ===== 사설(장4) ===== */
+  .oped{border:2px solid var(--rule);padding:22px 24px;margin-top:6px;background:rgba(31,111,84,.05)}
+  .oped .label{font-family:var(--sans);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .oped h3{font-size:clamp(22px,4vw,32px);font-weight:900;letter-spacing:-.03em;line-height:1.2;margin-top:8px}
+  .oped h3 em{font-style:italic;color:var(--accent)}
+  .oped ul{margin:14px 0 0;padding-left:20px}
+  .oped li{margin:8px 0;font-size:15.5px}
+  .oped li b{color:var(--accent)}
+
+  /* ===== 사례분석(장5) ===== */
+  .cases{margin-top:18px;border-top:2px solid var(--rule)}
+  .case{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--rule)}
+  .case .now,.case .fix{padding:16px 18px}
+  .case .now{border-right:1px solid var(--rule);background:rgba(162,56,22,.04)}
+  .case .t{font-family:var(--sans);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  .case .now .t{color:var(--loss)} .case .fix .t{color:var(--accent)}
+  .case h4{font-size:16px;margin-top:6px;letter-spacing:-.01em} .case p{font-size:13.5px;color:var(--soft);margin-top:6px}
+  .case .eff{font-family:var(--sans);margin-top:8px;font-size:13px;font-weight:800;color:var(--accent)}
+  @media(max-width:680px){.case{grid-template-columns:1fr}.case .now{border-right:0;border-bottom:1px dashed var(--rule)}}
+
+  /* ===== 독자 자가진단 코너(장6) ===== */
+  .coupon{border:3px double var(--rule);padding:24px 24px 26px;margin-top:8px;background:#FBF8F0}
+  .coupon .stamp{font-family:var(--sans);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--loss);text-align:center}
+  .coupon h3{text-align:center;font-size:clamp(22px,4.4vw,32px);font-weight:900;letter-spacing:-.03em;margin-top:6px}
+  .coupon .sub{text-align:center;font-family:var(--sans);font-size:13.5px;color:var(--soft);margin-top:8px}
+  .diaggrid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:22px;align-items:start}
+  @media(max-width:720px){.diaggrid{grid-template-columns:1fr}}
+  .sliders{display:grid;gap:18px}
+  .field label{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--sans);font-size:13.5px;font-weight:800}
+  .field label .val{font-size:16px;font-weight:900;color:var(--loss);font-variant-numeric:tabular-nums}
+  .field input[type=range]{width:100%;margin-top:9px;-webkit-appearance:none;appearance:none;height:5px;background:var(--ink);outline:none}
+  .field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:0;background:#FBF8F0;cursor:pointer;border:3px solid var(--ink)}
+  .field input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:0;background:#FBF8F0;cursor:pointer;border:3px solid var(--ink)}
+  .field .hint{font-family:var(--sans);font-size:11.5px;color:var(--faint);margin-top:6px}
+  .dk button{margin-top:6px;background:transparent;border:1px solid var(--ink);padding:8px 12px;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer}
+  .dk button:hover{background:var(--ink);color:var(--paper)}
+  .ledger{border:2px solid var(--rule);background:#fff}
+  .lrow{display:flex;justify-content:space-between;align-items:baseline;padding:13px 16px;border-bottom:1px solid var(--rule)}
+  .lrow:last-of-type{border-bottom:0}
+  .lrow .k{font-family:var(--sans);font-size:12.5px;color:var(--soft);font-weight:700}
+  .lrow .v{font-size:clamp(19px,4.6vw,26px);font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .v.loss{color:var(--loss)} .v.gain{color:var(--accent)}
+  .sbar{height:10px;background:#E7E1D2;border:1px solid var(--ink);overflow:hidden;margin:0 16px 14px}
+  .sfill{height:100%;background:repeating-linear-gradient(45deg,var(--ink),var(--ink) 3px,#5a5142 3px,#5a5142 6px);transition:width .25s}
+  .formula{font-family:var(--sans);font-size:11px;color:var(--faint);line-height:1.7;padding:0 16px 14px}.formula b{color:var(--soft)}
+
+  /* ===== 인포그래픽(장7) ===== */
+  .bench{margin-top:18px}
+  .bar{display:grid;grid-template-columns:96px 1fr 44px;align-items:center;gap:12px;margin-bottom:10px}
+  .bar .nm{font-family:var(--sans);font-size:13px;font-weight:800}
+  .bar .track{height:26px;border:2px solid var(--ink);background:#fff;overflow:hidden}
+  .bar .fill{height:100%}
+  .bar .sc{font-family:var(--sans);font-size:15px;font-weight:900;text-align:right;font-variant-numeric:tabular-nums}
+  .bar.me .fill{background:var(--accent)} .bar.me .sc{color:var(--accent)}
+  .bar.avg .fill{background:repeating-linear-gradient(45deg,#9b9384,#9b9384 4px,#b6ae9f 4px,#b6ae9f 8px)}
+  .bar.top .fill{background:#3C362B}
+  .verdict{font-family:var(--sans);margin-top:8px;border-left:4px solid var(--accent);padding:12px 16px;font-size:15px;font-weight:700;background:rgba(31,111,84,.06)}
+
+  /* ===== 공고/설치(장8) ===== */
+  .notice{border:3px double var(--rule);padding:28px 26px;margin-top:6px;text-align:center;background:#fff}
+  .notice .label{font-family:var(--sans);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  .notice h3{font-size:clamp(24px,5vw,38px);font-weight:900;letter-spacing:-.03em;line-height:1.16;margin-top:10px}
+  .notice h3 em{font-style:italic;color:var(--accent)}
+  .notice p{color:var(--soft);font-size:15.5px;margin:14px auto 0;max-width:560px}
+  .steps{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:20px 0 4px;font-family:var(--sans)}
+  .step{border:1.5px solid var(--ink);padding:9px 14px;font-size:13px;font-weight:800}
+  .step b{color:var(--accent)}
+  .btn{display:inline-block;font-family:var(--sans);font-weight:900;font-size:16px;text-decoration:none;
+    padding:15px 30px;background:var(--accent);color:#fff;border:2px solid var(--ink);margin-top:10px;letter-spacing:.02em}
+  .btn:hover{background:#185640}
+  .faq{columns:2;column-gap:24px;margin-top:24px;text-align:left}
+  @media(max-width:680px){.faq{columns:1}}
+  .faq .item{break-inside:avoid;border-top:1px solid var(--rule);padding:12px 0}
+  .faq .qq{font-family:var(--sans);font-size:14px;font-weight:900} .faq .aa{font-size:13.5px;color:var(--soft);margin-top:5px}
+  .failsafe{font-family:var(--sans);margin-top:22px;font-size:16px;font-weight:900;color:var(--loss)}
+
+  .colophon{border-top:3px double var(--rule);padding:20px 30px 40px;font-family:var(--sans);font-size:11px;color:var(--faint);line-height:1.85}
+  .colophon b{color:var(--soft)}
+  @media(max-width:560px){.pad{padding:0 18px}.masthead{padding:14px 18px 8px}.lead-body{columns:1}.report{columns:1}}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- ===== 제호 ===== -->
+  <div class="masthead">
+    <div class="topline"><span>치과 경영 탐사 주간</span><span>창간 2026</span><span>비매품 · 원장 회람용</span></div>
+    <div class="nameplate"><h1 class="kr">데일리 리콜</h1></div>
+    <div class="dateline"><span>제1권 제1호</span><span class="c">2026년 6월 30일 월요일</span><span class="r">AutoRecall 특별판</span></div>
+  </div>
+
+  <!-- ===== 톱기사 / 장1 히어로 ===== -->
+  <section class="pad lead">
+    <div style="text-align:center"><span class="tag loss">단독</span> <span class="tag">탐사보도</span></div>
+    <h2>안 오는 환자는 없었다.<br><em>‘안 부른 환자’</em>만 있었다.</h2>
+    <p class="deck">매출이 줄어서가 아니다 — 줄어드는 것이 ‘보이지 않아서’다. 본지가 입수한 한 치과의 차트에는, 6개월째 호명되지 않은 환자 명단이 조용히 잠들어 있었다.</p>
+    <div class="byline">취재·정리 = AutoRecall 편집국 · 자료 = 내부 차트 분석(비식별)</div>
+    <div class="lead-body">
+      <p class="first">평일 저녁 8시, 한 치과의 대기실은 비어 있었다. 원장은 모니터를 응시한 채 말했다. “오늘도 누군가는 우리에게 다시 올 수 있었을 텐데.” 그의 말처럼, 떠난 환자는 ‘오지 않은’ 것이 아니라 ‘부르지 않은’ 것이었다.</p>
+      <p>본지 분석에 따르면, 누적 환자가 쌓인 치과일수록 마지막 내원 6개월이 지난 ‘잠든 환자’의 비율이 높았다. 문제는 그 명단이 어디에도 ‘모여 있지’ 않다는 점이다. 흩어진 차트 속에서, 누구에게 먼저 전화해야 하는지를 아는 사람은 없었다.</p>
+      <p>전문가들은 입을 모은다. “리콜은 안 하는 것이 아니라, <b>못 하는</b> 것이다.” 데스크의 1순위는 늘 눈앞의 환자다. 좋은 콜 대상이 큐에 쌓여도, 발신은 매번 뒤로 밀린다. 그렇게 매출은 — 소리 없이 샌다.</p>
+    </div>
+  </section>
+
+  <!-- ===== 현장 르포 / 장2 ===== -->
+  <section class="pad">
+    <h3 class="kicker loss">현장 르포 · 어느 평일 저녁</h3>
+    <div class="hl">데스크에서 벌어지는 네 장면</div>
+    <div class="report">
+      <p class="scene"><b>장면 ①</b> 스케일링·검진 6개월이 지난 환자 명단이 지금 어디 있는지, 아무도 정확히 알지 못한다. 흩어진 차트 어딘가에 있지만, 한자리에 모아 본 적이 없다.</p>
+      <p class="scene"><b>장면 ②</b> 오늘 누구에게 전화할지는 결국 ‘감’으로 정해진다. 기준이 없으니 사람마다, 날마다 다르다. 좋은 대상이 그렇게 묻힌다.</p>
+      <p class="scene"><b>장면 ③</b> 이미 통화했던 환자에게 또 전화가 간다. ‘전화했다는 말’은 남지만, ‘전화한 기록’은 남지 않기 때문이다.</p>
+      <p class="scene"><b>장면 ④</b> 가장 큰 매출이 가장 조용히 빠진다. 고가 치료 상담만 받고 사라진 임플란트·교정 환자의 이름을, 데스크는 더 이상 기억하지 못한다.</p>
+      <p>네 장면의 공통점은 분명하다. 환자가 ‘떠난’ 것이 아니라, 시스템이 그들을 ‘놓친’ 것이다. 그리고 놓침은, 반복된다.</p>
+    </div>
+  </section>
+
+  <!-- ===== 풀쿼트 / 장3 증폭 ===== -->
+  <section class="pad pull">
+    <h3 class="kicker loss" style="text-align:center">손실의 산수</h3>
+    <blockquote>“좋은 콜 리스트가 있어도, 걸 시간이 없으면 — <span class="mark">0원</span>입니다.”</blockquote>
+    <cite>— 한 치과 실장, 울리는 전화기와 눈앞의 환자 사이에서</cite>
+    <div class="statband">
+      <div class="s"><div class="n">71%</div><div class="l">방치된 환자가 치료계획 후<br>30일 안에 이탈을 결정</div></div>
+      <div class="s"><div class="n">6–12개월</div><div class="l">다시 부르기 좋은<br>‘스위트 스폿’ 창</div></div>
+      <div class="s"><div class="n">1.9 → 1.0</div><div class="l">1인당 연 치과 외래 횟수<br>(생존길 = 기존환자 리콜)</div></div>
+    </div>
+  </section>
+
+  <!-- ===== 사설 / 장4 면죄 ===== -->
+  <section class="pad">
+    <div class="oped">
+      <div class="label">사설 · OPINION</div>
+      <h3>이것은 게으름이 아니다. <em>‘안 보인다’</em>는 것이다.</h3>
+      <ul>
+        <li>데스크의 1순위는 <b>눈앞의 환자 응대</b>다. 큐에 좋은 대상이 쌓여도 발신은 뒤로 밀린다 — 사람의 잘못이 아니라 구조의 문제다.</li>
+        <li>바쁜 날엔 응대하느라 놓치고, <b>한가한 날엔 “전화할 환자가 없는 게” 아니다.</b> 누군지 모를 뿐이다.</li>
+        <li>한 사람이 수천 명을 기억하고 전화까지 돌리기엔, <b>하루는 너무 짧다.</b> 보이게만 해주면, 사람은 충분히 잘 한다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== 사례 분석 / 장5 ===== -->
+  <section class="pad">
+    <h3 class="kicker">사례 분석 · 지금 ↔ AutoRecall</h3>
+    <div class="hl">같은 상황, 두 가지 결말</div>
+    <div class="cases">
+      <div class="case"><div class="now"><div class="t">지금</div><h4>취소·노쇼로 빈 슬롯, 채울 사람을 못 찾는 날</h4><p>비는 시간을 그냥 흘려보낸다.</p></div><div class="fix"><div class="t">AutoRecall</div><h4>🔥 슬롯 필러 추천</h4><p>당일 빈 시간에 맞는 환자를 즉시 추천(타이밍 ×3.0 가중).</p><div class="eff">→ 비는 의자를 매출로</div></div></div>
+      <div class="case"><div class="now"><div class="t">지금</div><h4>고가 치료 상담만 받고 안 온 환자 방치</h4><p>가장 큰 매출이 가장 조용히 사라진다.</p></div><div class="fix"><div class="t">AutoRecall</div><h4>💰 고가치 우선 발굴콜</h4><p>임플란트·교정 미착수 환자를 우선순위 상단에.</p><div class="eff">→ 잠든 큰 건부터 회수</div></div></div>
+      <div class="case"><div class="now"><div class="t">지금</div><h4>전화 결과가 기록에 남지 않음</h4><p>같은 사람에게 또 걸고, 보고는 수기로 쓴다.</p></div><div class="fix"><div class="t">AutoRecall</div><h4>🧾 결과 버튼 1번</h4><p>부재중·거절·예약완료를 한 번 누르면 다음 액션과 데이터가 자동 정리.</p><div class="eff">→ “전화한 말” 대신 “전화한 기록”</div></div></div>
+    </div>
+  </section>
+
+  <!-- ===== 독자 자가진단 코너 / 장6 ⭐ ===== -->
+  <section class="pad" id="diag">
+    <div class="coupon">
+      <div class="stamp">✂ 독자 참여 · 자가진단 코너</div>
+      <h3>우리 치과는 지금, 얼마가 새고 있나</h3>
+      <div class="sub">숫자 3개만 움직이면 — 잠든 환자와 새는 매출이 그 자리에서 집계됩니다.</div>
+      <div class="diaggrid">
+        <div class="sliders">
+          <div class="field"><label>전체 환자 수 <span class="val" id="vP">3,000명</span></label>
+            <input type="range" id="sP" min="500" max="20000" step="100" value="3000"><div class="hint">차트에 등록된 누적 환자 수(대략)</div></div>
+          <div class="field"><label>6개월+ 연락 끊긴 비율 <span class="val" id="vR">35%</span></label>
+            <input type="range" id="sR" min="5" max="70" step="1" value="35"><div class="hint">마지막 내원 6개월이 지나도록 끊긴 비율</div>
+            <div class="dk"><button id="dunno">잘 모르겠어요 → 업계 평균(35%) 적용</button></div></div>
+          <div class="field"><label>재방문 1회 평균 진료비 <span class="val" id="vF">8만원</span></label>
+            <input type="range" id="sF" min="3" max="60" step="1" value="8"><div class="hint">다시 온 환자 1명의 1회 평균(만원)</div></div>
+        </div>
+        <div class="ledger">
+          <div class="lrow"><span class="k">잠든 환자(연락 끊김)</span><span class="v" id="rSleep">1,050명</span></div>
+          <div class="lrow"><span class="k">지금 잃고 있는 매출(연, 추정)</span><span class="v loss" id="rLost">8,400만원</span></div>
+          <div class="lrow"><span class="k">되돌릴 수 있는 매출(보수적)</span><span class="v gain" id="rBack">1,260만원</span></div>
+          <div class="lrow"><span class="k">리콜 관리 점수</span><span class="v" id="rScore">65점</span></div>
+          <div class="sbar"><div class="sfill" id="sfill" style="width:65%"></div></div>
+          <div class="formula"><b>계산식(투명 공개)</b> · 잠든 = 전체 × 끊김율 · 잃은 매출 = 잠든 × 1회 진료비 · 되돌릴 = 잠든 × 0.15 × 진료비 · 점수 = (1 − 끊김율) × 100<br>※ 모든 숫자는 <b>예시·가정값</b>이며 결과를 보장하지 않습니다. 입력값은 <b>저장·전송하지 않고</b> 이 화면 안에서만 계산됩니다.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 인포그래픽 / 장7 ===== -->
+  <section class="pad">
+    <h3 class="kicker">인포그래픽 · 동급 치과 비교</h3>
+    <div class="hl">점수가 낮을수록, 되돌릴 여지가 크다</div>
+    <div class="bench">
+      <div class="bar me"><div class="nm">우리 치과</div><div class="track"><div class="fill" id="benchMe" style="width:65%"></div></div><div class="sc" id="benchMeSc">65</div></div>
+      <div class="bar avg"><div class="nm">동급 평균</div><div class="track"><div class="fill" style="width:60%"></div></div><div class="sc">60</div></div>
+      <div class="bar top"><div class="nm">상위 25%</div><div class="track"><div class="fill" style="width:82%"></div></div><div class="sc">82</div></div>
+    </div>
+    <div class="verdict" id="verdict">상위권까지 17점 — 이 격차가 그대로 새는 매출입니다.</div>
+  </section>
+
+  <!-- ===== 공고/설치 / 장8 ===== -->
+  <section class="pad">
+    <div class="notice">
+      <div class="label">공고 · 무료 설치 안내</div>
+      <h3>이 숫자는 추정이다.<br>진짜 <em>내 차트의 명단</em>으로 보려면.</h3>
+      <p>설치하면 슬라이더가 아니라 <b>우리 치과 실제 환자</b>로, 오늘 누를 명단이 점수순으로 뜬다. 쓰던 차트(덴트웹) 그대로 — 복잡한 설정 없이.</p>
+      <div class="steps"><div class="step"><b>1</b> 설치(2분)</div><div class="step"><b>2</b> 차트 연결</div><div class="step"><b>3</b> 오늘 리콜 큐</div><div class="step"><b>4</b> 전화→결과 버튼</div></div>
+      <div><a class="btn" href="#" onclick="return false">무료 버전 설치하기</a></div>
+      <div class="faq">
+        <div class="item"><div class="qq">직원을 감시하나요?</div><div class="aa">아니요. 데스크를 돕는 도구입니다. 평가·감시용이 아닙니다.</div></div>
+        <div class="item"><div class="qq">통제권은 누구에게?</div><div class="aa">실장에게 있습니다. 누구에게 걸지·말지는 사람이 정합니다.</div></div>
+        <div class="item"><div class="qq">수신 거부 환자는?</div><div class="aa">‘전화하지 마라’ 1번 표시 = 큐에서 영구 제외됩니다.</div></div>
+        <div class="item"><div class="qq">환자 정보가 새나요?</div><div class="aa">전부 원내 로컬에서만 처리. 차트는 읽기만 하고 수정하지 않습니다.</div></div>
+      </div>
+      <div class="failsafe">안 깔면 — 이 누수는 다음 호(號)에도, 그대로 실립니다.</div>
+    </div>
+  </section>
+
+  <div class="colophon">
+    <b>데일리 리콜</b> · 치과 재내원(리콜) 자동화 AutoRecall 특별판 · 발행 2026-06-30 · 탐사보도 브로드시트 랜딩<br>
+    ※ AutoRecall은 전화 우선순위 정리를 돕는 <b>운영 도구</b>이며 치료 효과·결과를 보장하지 않습니다. · 본 지면의 점수·금액·평균·인용은 <b>예시·가정값</b>으로 원장 검수가 필요합니다. · 수신거부·동의 범위는 정보통신망법 등 규정과 각 치과 정책에 맞춰 운영됩니다. · 한글 우선 표기.
+  </div>
+</div>
+
+<script>
+(function(){
+  var P=document.getElementById('sP'),R=document.getElementById('sR'),F=document.getElementById('sF');
+  var vP=document.getElementById('vP'),vR=document.getElementById('vR'),vF=document.getElementById('vF');
+  var rSleep=document.getElementById('rSleep'),rLost=document.getElementById('rLost'),rBack=document.getElementById('rBack'),rScore=document.getElementById('rScore');
+  var sfill=document.getElementById('sfill'),benchMe=document.getElementById('benchMe'),benchMeSc=document.getElementById('benchMeSc'),verdict=document.getElementById('verdict');
+  function won(m){ if(m>=10000){return (m/10000).toFixed(m>=100000?0:1).replace(/\.0$/,'')+'억원';} return Math.round(m).toLocaleString('ko-KR')+'만원';}
+  function calc(){
+    var p=+P.value,r=+R.value/100,f=+F.value;
+    var sleep=Math.round(p*r),lost=sleep*f,back=Math.round(sleep*0.15*f),score=Math.round((1-r)*100);
+    vP.textContent=p.toLocaleString('ko-KR')+'명';vR.textContent=R.value+'%';vF.textContent=F.value+'만원';
+    rSleep.textContent=sleep.toLocaleString('ko-KR')+'명';rLost.textContent=won(lost);rBack.textContent=won(back);rScore.textContent=score+'점';
+    sfill.style.width=score+'%';benchMe.style.width=score+'%';benchMeSc.textContent=score;
+    var v; if(score<60){v='동급 평균(60점)보다 '+(60-score)+'점 아래 — 되돌릴 여지가 가장 큽니다.';}
+    else if(score<82){v='상위 25%(82점)까지 '+(82-score)+'점 — 이 격차가 그대로 새는 매출입니다.';}
+    else{v='상위권입니다. 사람 손으로 이만큼 유지 중 — 이제 시스템으로 굳히세요.';}
+    verdict.textContent=v;
+  }
+  [P,R,F].forEach(function(el){el.addEventListener('input',calc);});
+  document.getElementById('dunno').addEventListener('click',function(){R.value=35;calc();});
+  calc();
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

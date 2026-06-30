@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>AutoRecall — 부를까 넘길까, 스와이프 (카드덱)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="치과 재내원(리콜) 자동화 AutoRecall — 환자 카드를 부를까/넘길까 스와이프로 체험. 안 오는 환자는 없습니다, 안 부른 환자만 있을 뿐. 30초 자가진단으로 새는 매출과 잠든 환자를 확인하세요.">
+<style>
+  :root{
+    --bg:#F4F6FB; --card:#ffffff; --ink:#182233; --ink-soft:#4a566b;
+    --green:#16B47A; --green-soft:#e3f7ef; --coral:#FF5D5D; --coral-soft:#ffe9e9;
+    --pass:#8a93a6; --pass-soft:#eef0f5;
+    --line:#e4e8f1; --shadow:0 18px 40px rgba(24,34,51,.12), 0 4px 12px rgba(24,34,51,.06);
+    --shadow-sm:0 6px 18px rgba(24,34,51,.08);
+    --r:22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.65;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  .tnum{font-variant-numeric:tabular-nums; font-feature-settings:"tnum"}
+  .wrap{max-width:760px; margin:0 auto; padding:0 18px}
+  section{padding:62px 0}
+  h2{font-size:clamp(24px,5.5vw,34px); line-height:1.25; letter-spacing:-.02em; margin-bottom:10px}
+  .lead{color:var(--ink-soft); font-size:clamp(15px,3.6vw,18px); margin-bottom:26px}
+  .kick{display:inline-block; font-size:13px; font-weight:700; color:var(--green);
+    background:var(--green-soft); padding:5px 13px; border-radius:999px; margin-bottom:14px; letter-spacing:.01em}
+  .card-ui{background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+    box-shadow:var(--shadow-sm); padding:20px}
+
+  /* reveal */
+  .reveal{opacity:0; transform:translateY(22px); transition:opacity .6s ease, transform .6s ease}
+  .reveal.in{opacity:1; transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1; transform:none; transition:none}
+    html{scroll-behavior:auto}
+  }
+
+  /* ===== HERO ===== */
+  .hero{padding:30px 0 56px; text-align:center; position:relative}
+  .hero .kick{margin-top:18px}
+  .hero h1{font-size:clamp(26px,6.4vw,40px); line-height:1.22; letter-spacing:-.03em; margin:6px 0 8px}
+  .hero h1 .em{color:var(--green)}
+  .hero .sub{color:var(--ink-soft); font-size:clamp(14.5px,3.5vw,17px); max-width:560px; margin:0 auto 6px}
+  .hero .cap{font-size:12.5px; color:var(--ink-soft); opacity:.85; max-width:540px; margin:10px auto 0}
+  .mini-counter{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:16px 0 6px}
+  .mc{background:#fff; border:1px solid var(--line); border-radius:14px; padding:8px 14px; box-shadow:var(--shadow-sm)}
+  .mc b{display:block; font-size:18px; letter-spacing:-.02em}
+  .mc.coral b{color:var(--coral)}
+  .mc span{font-size:11.5px; color:var(--ink-soft)}
+
+  /* card deck */
+  .deck-stage{position:relative; width:100%; max-width:340px; height:430px; margin:22px auto 8px; touch-action:pan-y}
+  .swcard{position:absolute; inset:0; background:var(--card); border-radius:var(--r);
+    box-shadow:var(--shadow); border:1px solid var(--line); padding:24px 22px;
+    display:flex; flex-direction:column; cursor:grab; user-select:none;
+    transition:transform .42s cubic-bezier(.2,.7,.3,1), opacity .42s ease;
+    will-change:transform; overflow:hidden}
+  .swcard.dragging{transition:none; cursor:grabbing}
+  .swcard .badge{font-size:12px; font-weight:700; color:var(--ink-soft); letter-spacing:.02em}
+  .swcard .emoji{font-size:50px; margin:18px 0 4px}
+  .swcard h3{font-size:20px; line-height:1.3; letter-spacing:-.02em; margin:6px 0 10px}
+  .swcard p{font-size:14px; color:var(--ink-soft); line-height:1.6}
+  .swcard .foot{margin-top:auto; font-size:12px; color:var(--ink-soft); opacity:.75; display:flex; justify-content:space-between; align-items:center}
+  .swcard.last{background:linear-gradient(160deg,#0e2a22,#16B47A)}
+  .swcard.last *{color:#fff !important}
+  .swcard.last .gobtn{margin-top:14px; align-self:flex-start; background:#fff; color:var(--green); border:none;
+    font-weight:800; font-size:14.5px; padding:11px 18px; border-radius:14px; cursor:pointer}
+  .stamp{position:absolute; top:22px; font-size:24px; font-weight:900; letter-spacing:.06em;
+    padding:6px 14px; border-radius:12px; border:3px solid; opacity:0; pointer-events:none; transition:opacity .12s}
+  .stamp.call{right:20px; color:var(--green); border-color:var(--green); background:var(--green-soft); transform:rotate(10deg)}
+  .stamp.pass{left:20px; color:var(--pass); border-color:var(--pass); background:var(--pass-soft); transform:rotate(-10deg)}
+
+  .deck-hint{font-size:13px; color:var(--ink-soft); margin:4px 0 2px}
+  .deck-quest{font-size:12.5px; color:var(--ink-soft); opacity:.85; margin-bottom:14px}
+  .deck-btns{display:flex; gap:12px; justify-content:center; margin:8px 0 18px}
+  .db{border:none; border-radius:16px; padding:13px 20px; font-size:15px; font-weight:800; cursor:pointer;
+    display:flex; align-items:center; gap:7px; box-shadow:var(--shadow-sm); transition:transform .12s}
+  .db:active{transform:scale(.95)}
+  .db.pass{background:var(--pass-soft); color:#5a637a}
+  .db.call{background:var(--green); color:#fff}
+  .dots{display:flex; gap:6px; justify-content:center; margin-bottom:18px}
+  .dot{width:7px; height:7px; border-radius:50%; background:#cdd5e3; transition:all .2s}
+  .dot.on{background:var(--green); width:20px; border-radius:5px}
+
+  .cta-row{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:8px}
+  .btn{display:inline-flex; align-items:center; gap:8px; font-weight:800; font-size:15.5px;
+    padding:14px 26px; border-radius:16px; border:none; cursor:pointer; text-decoration:none; transition:transform .12s, box-shadow .2s}
+  .btn:active{transform:scale(.97)}
+  .btn-primary{background:var(--green); color:#fff; box-shadow:0 10px 24px rgba(22,180,122,.35)}
+  .btn-ghost{background:#fff; color:var(--ink); border:1.5px solid var(--line); box-shadow:var(--shadow-sm)}
+
+  /* pain cards */
+  .pain-grid{display:grid; grid-template-columns:1fr; gap:14px}
+  @media(min-width:560px){.pain-grid{grid-template-columns:1fr 1fr}}
+  .pain{background:#fff; border:1px solid var(--line); border-radius:18px; padding:20px; box-shadow:var(--shadow-sm)}
+  .pain .pe{font-size:30px}
+  .pain b{display:block; font-size:16px; margin:8px 0 6px; line-height:1.4; letter-spacing:-.01em}
+  .pain span{font-size:13.5px; color:var(--ink-soft)}
+
+  /* big quote */
+  .bigq{background:var(--ink); color:#fff; border-radius:24px; padding:34px 26px; text-align:center; box-shadow:var(--shadow)}
+  .bigq .q{font-size:clamp(19px,4.6vw,26px); font-weight:800; line-height:1.4; letter-spacing:-.02em}
+  .bigq .qsub{margin-top:16px; font-size:14.5px; color:#c9d2e2; line-height:1.6}
+  .bigq .qsub b{color:#fff}
+
+  /* absolve list */
+  .alist{display:flex; flex-direction:column; gap:12px}
+  .ai{background:#fff; border-left:4px solid var(--coral); border-radius:0 16px 16px 0;
+    padding:16px 18px; box-shadow:var(--shadow-sm); font-size:14.5px; color:var(--ink-soft)}
+
+  /* solution cards */
+  .sol{display:flex; flex-direction:column; gap:16px}
+  .solc{background:#fff; border:1px solid var(--line); border-radius:20px; overflow:hidden; box-shadow:var(--shadow-sm)}
+  .solc .row{display:grid; grid-template-columns:1fr; }
+  @media(min-width:600px){.solc .row{grid-template-columns:1fr 1fr}}
+  .half{padding:18px 18px}
+  .half.pass{background:var(--pass-soft)}
+  .half.call{background:var(--green-soft)}
+  .half .tag{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:800;
+    padding:4px 10px; border-radius:999px; margin-bottom:8px; letter-spacing:.02em}
+  .half.pass .tag{background:#dfe3ec; color:#5a637a}
+  .half.call .tag{background:#fff; color:var(--green)}
+  .half .title{font-size:14.5px; font-weight:800; margin-bottom:5px; letter-spacing:-.01em}
+  .half .desc{font-size:13.5px; color:var(--ink-soft); line-height:1.55}
+  .half.call .eff{margin-top:9px; font-size:13px; font-weight:800; color:var(--green);
+    background:#fff; display:inline-block; padding:5px 11px; border-radius:999px}
+
+  /* diagnosis */
+  .diag-box{background:#fff; border:1px solid var(--line); border-radius:22px; padding:22px 20px; box-shadow:var(--shadow)}
+  .sl{margin-bottom:22px}
+  .sl .top{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:7px}
+  .sl .lab{font-size:14px; font-weight:700}
+  .sl .val{font-size:20px; font-weight:800; color:var(--green); letter-spacing:-.02em}
+  .sl input[type=range]{width:100%; -webkit-appearance:none; appearance:none; height:8px; border-radius:8px;
+    background:#e4e8f1; outline:none; cursor:pointer}
+  .sl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; appearance:none; width:26px; height:26px;
+    border-radius:50%; background:var(--green); border:4px solid #fff; box-shadow:0 3px 8px rgba(22,180,122,.4); cursor:pointer}
+  .sl input[type=range]::-moz-range-thumb{width:22px; height:22px; border-radius:50%; background:var(--green);
+    border:4px solid #fff; box-shadow:0 3px 8px rgba(22,180,122,.4); cursor:pointer}
+  .sl .hint{font-size:12px; color:var(--ink-soft); margin-top:7px}
+  .sl .extra{margin-top:8px}
+  .minibtn{font-size:12px; font-weight:700; color:var(--green); background:var(--green-soft);
+    border:none; padding:6px 12px; border-radius:999px; cursor:pointer}
+  .res-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px}
+  .res{background:var(--bg); border-radius:16px; padding:15px 16px}
+  .res.alert{background:var(--coral-soft)}
+  .res .rl{font-size:12.5px; color:var(--ink-soft); margin-bottom:4px}
+  .res .rv{font-size:21px; font-weight:800; letter-spacing:-.02em}
+  .res.alert .rv{color:var(--coral)}
+  .res.good .rv{color:var(--green)}
+  .scorebar-wrap{margin-top:14px; background:var(--bg); border-radius:16px; padding:15px 16px}
+  .scorebar-wrap .rl{font-size:12.5px; color:var(--ink-soft); margin-bottom:8px}
+  .scorebar-wrap .sval{font-size:24px; font-weight:800; color:var(--green); letter-spacing:-.02em}
+  .pbar{height:12px; background:#e4e8f1; border-radius:8px; overflow:hidden; margin-top:8px}
+  .pbar > i{display:block; height:100%; background:linear-gradient(90deg,#16B47A,#34d39a); border-radius:8px; transition:width .35s ease}
+  .formula{font-size:11.5px; color:var(--ink-soft); margin-top:16px; line-height:1.7; opacity:.92}
+
+  /* benchmark */
+  .bench{display:flex; flex-direction:column; gap:14px; margin-top:6px}
+  .brow{display:grid; grid-template-columns:96px 1fr 52px; align-items:center; gap:10px}
+  .brow .bn{font-size:13px; font-weight:700}
+  .btrack{height:22px; background:#e9edf5; border-radius:8px; overflow:hidden}
+  .btrack > i{display:block; height:100%; border-radius:8px; transition:width .5s ease}
+  .brow.me .btrack > i{background:var(--green)}
+  .brow.avg .btrack > i{background:#9aa4b8}
+  .brow.top .btrack > i{background:var(--ink)}
+  .brow .bv{font-size:14px; font-weight:800; text-align:right}
+  .verdict{margin-top:18px; background:var(--coral-soft); border-radius:16px; padding:16px 18px;
+    font-size:14.5px; font-weight:700; color:var(--ink); line-height:1.5}
+
+  /* install */
+  .steps{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:8px 0 22px}
+  @media(min-width:600px){.steps{grid-template-columns:repeat(4,1fr)}}
+  .step{background:#fff; border:1px solid var(--line); border-radius:16px; padding:16px 14px; box-shadow:var(--shadow-sm); text-align:center}
+  .step .num{width:32px; height:32px; border-radius:50%; background:var(--green); color:#fff;
+    font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 9px}
+  .step b{font-size:14px; display:block; letter-spacing:-.01em}
+  .faq{display:flex; flex-direction:column; gap:10px; margin:22px 0}
+  .faq details{background:#fff; border:1px solid var(--line); border-radius:14px; padding:0; overflow:hidden; box-shadow:var(--shadow-sm)}
+  .faq summary{padding:15px 18px; font-weight:700; font-size:14.5px; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+"; font-size:20px; color:var(--green); font-weight:400}
+  .faq details[open] summary::after{content:"–"}
+  .faq .ans{padding:0 18px 16px; font-size:14px; color:var(--ink-soft); line-height:1.6}
+  .fail{background:var(--ink); color:#fff; border-radius:18px; padding:22px; text-align:center;
+    font-size:clamp(16px,4vw,20px); font-weight:800; letter-spacing:-.02em; margin-top:8px}
+  .fail b{color:var(--coral)}
+
+  .guard{font-size:11.5px; color:var(--ink-soft); line-height:1.8; margin-top:30px; opacity:.9}
+  footer{text-align:center; font-size:12px; color:var(--ink-soft); padding:30px 18px 50px; opacity:.85}
+  .divider{height:1px; background:var(--line); max-width:760px; margin:0 auto}
+</style>
+</head>
+<body>
+
+<!-- ===== 장1 · 히어로 ===== -->
+<header class="hero wrap">
+  <span class="kick">치과 재내원(리콜) 자동화 · AutoRecall</span>
+  <h1>안 오는 환자는 없습니다.<br><span class="em">안 부른 환자만</span> 있을 뿐.</h1>
+  <p class="sub">오늘 누구에게 전화할지, 우리 치과 차트가 이미 알고 있습니다. 30초 자가진단으로 — 지금 새고 있는 매출과 잠든 환자부터 확인해 보세요.</p>
+
+  <div class="mini-counter">
+    <div class="mc"><b class="tnum">347</b><span>잠든 환자</span></div>
+    <div class="mc coral"><b class="tnum">₩84,000,000</b><span>잃은 매출</span></div>
+  </div>
+
+  <!-- 스와이프 카드덱 -->
+  <div class="deck-stage" id="deck" aria-label="환자 카드 스와이프 덱. 왼쪽으로 넘기면 PASS, 오른쪽으로 넘기면 CALL입니다."></div>
+
+  <p class="deck-hint">← 넘기기 · 부르기 →</p>
+  <p class="deck-quest">이렇게 매일, 감으로 넘기고 있진 않나요?</p>
+
+  <div class="deck-btns">
+    <button class="db pass" id="btnPass" aria-label="이 카드 넘기기 (PASS)">⬅️ 넘기기</button>
+    <button class="db call" id="btnCall" aria-label="이 카드 부르기 (CALL)">부르기 ➡️</button>
+  </div>
+  <div class="dots" id="dots" aria-hidden="true"></div>
+
+  <div class="cta-row">
+    <a class="btn btn-primary" href="#diag">자가진단 →</a>
+    <a class="btn btn-ghost" href="#install">무료 설치</a>
+  </div>
+  <p class="cap">설치형 데스크톱 도구 · 차트(덴트웹)는 읽기만 · 환자정보는 원내 로컬에서만</p>
+</header>
+
+<div class="divider"></div>
+
+<!-- ===== 장2 · 통증 ===== -->
+<section class="wrap reveal">
+  <span class="kick">PAIN · 통증</span>
+  <h2>혹시, 이런 적 없으세요?</h2>
+  <p class="lead">매출이 줄어서가 아닙니다. 줄어드는 게 안 보여서입니다.</p>
+  <div class="pain-grid">
+    <div class="pain"><div class="pe">🗂️</div><b>스케일링·정기검진 6개월 지난 환자 명단이, 지금 어디 있는지 모른다.</b><span>흩어진 차트 어딘가 — 모아 본 적이 없다.</span></div>
+    <div class="pain"><div class="pe">🎯</div><b>오늘 누구한테 전화할지, 결국 '감'으로 찍는다.</b><span>기준이 없으니 매번 사람마다 다르다.</span></div>
+    <div class="pain"><div class="pe">🔁</div><b>전화했던 사람한테 또 전화한다 — 기록이 안 남아서.</b><span>'전화했다는 말'은 남지만 '전화한 기록'은 없다.</span></div>
+    <div class="pain"><div class="pe">💤</div><b>상담만 받고 사라진 임플란트·교정 환자, 누군지 모른다.</b><span>가장 큰 매출이 가장 조용히 빠진다.</span></div>
+  </div>
+</section>
+
+<!-- ===== 장3 · 손실 ===== -->
+<section class="wrap reveal">
+  <div class="bigq">
+    <div class="q">"좋은 콜 리스트가 있어도,<br>걸 시간이 없으면 0원입니다."</div>
+    <div class="qsub">내부 차트 분석(예시): 방치된 환자의 <b>71%</b>가 치료계획 후 <b>30일 안에</b> 떠날지 말지를 정합니다. 그 사이에도, 환자는 조용히 옆 치과로 갑니다.</div>
+  </div>
+</section>
+
+<!-- ===== 장4 · 면죄 ===== -->
+<section class="wrap reveal">
+  <span class="kick">면죄 · 당신 탓이 아닙니다</span>
+  <h2>리콜, 안 하는 게 아니라 못 하는 겁니다.</h2>
+  <p class="lead">문제는 게으름이 아닙니다. '안 보인다'는 것입니다.</p>
+  <div class="alist">
+    <div class="ai">데스크의 1순위는 눈앞의 환자 응대입니다. 큐에 좋은 대상이 쌓여도, 발신은 뒤로 밀립니다.</div>
+    <div class="ai">바쁜 날엔 응대하느라 놓치고, 한가한 날엔 '전화할 환자가 없는 게' 아닙니다 — 누군지 모를 뿐.</div>
+    <div class="ai">한 사람이 수천 명을 기억하고 전화까지 돌리기엔, 하루가 너무 짧습니다.</div>
+  </div>
+</section>
+
+<!-- ===== 장5 · 해결 ===== -->
+<section class="wrap reveal">
+  <span class="kick">SOLUTION · 해결</span>
+  <h2>이 상황을, 이렇게 풉니다</h2>
+  <p class="lead">AutoRecall은 차트를 읽어 '오늘 누구부터'를 점수순으로 띄워 줍니다. 사람이 못 하는 세 가지만 도구가 대신합니다.</p>
+  <div class="sol">
+
+    <div class="solc"><div class="row">
+      <div class="half pass"><span class="tag">⬅️ 지금 (PASS)</span>
+        <div class="title">비는 의자, 그냥 흘려보냄</div>
+        <div class="desc">빈 슬롯이 생겼는데 채울 사람을 못 찾는 날 — 취소·노쇼로 비는 시간, 그냥 흘려보냅니다.</div></div>
+      <div class="half call"><span class="tag">➡️ 해결 (CALL)</span>
+        <div class="title">🔥 슬롯 필러 추천</div>
+        <div class="desc">당일 빈 시간에 맞는 환자를 즉시 추천(타이밍 ×3.0 가중).</div>
+        <div class="eff">→ 비는 의자를 매출로</div></div>
+    </div></div>
+
+    <div class="solc"><div class="row">
+      <div class="half pass"><span class="tag">⬅️ 지금 (PASS)</span>
+        <div class="title">시기 확인은 사람 몫</div>
+        <div class="desc">6개월 도래 환자가 명단 없이 흩어져 있음 — 시기를 사람이 일일이 확인합니다.</div></div>
+      <div class="half call"><span class="tag">➡️ 해결 (CALL)</span>
+        <div class="title">📅 타이밍 기반 자동 큐</div>
+        <div class="desc">마지막 내원 6~12개월(스위트스폿) 환자를 자동으로 줄 세움.</div>
+        <div class="eff">→ 놓치는 정기검진 0</div></div>
+    </div></div>
+
+    <div class="solc"><div class="row">
+      <div class="half pass"><span class="tag">⬅️ 지금 (PASS)</span>
+        <div class="title">큰 건이 조용히 사라짐</div>
+        <div class="desc">고가 치료 상담만 받고 안 온 환자 방치 — 가장 큰 매출이 가장 조용히 사라집니다.</div></div>
+      <div class="half call"><span class="tag">➡️ 해결 (CALL)</span>
+        <div class="title">💰 고가치 우선 발굴콜</div>
+        <div class="desc">임플란트·교정 미착수 환자를 우선순위 상단에.</div>
+        <div class="eff">→ 잠든 큰 건부터 회수</div></div>
+    </div></div>
+
+    <div class="solc"><div class="row">
+      <div class="half pass"><span class="tag">⬅️ 지금 (PASS)</span>
+        <div class="title">'감'으로 정하는 대상</div>
+        <div class="desc">누구한테 전화할지 '감'으로 정함 — 기준이 없어 매번 다르고, 좋은 대상이 묻힙니다.</div></div>
+      <div class="half call"><span class="tag">➡️ 해결 (CALL)</span>
+        <div class="title">🎯 점수제 큐</div>
+        <div class="desc">(관심−부정)×기본가치×타이밍으로 '오늘 누를 몇 명'을 자동 정렬.</div>
+        <div class="eff">→ 천 명의 명단이 오늘 누를 몇 명으로</div></div>
+    </div></div>
+
+    <div class="solc"><div class="row">
+      <div class="half pass"><span class="tag">⬅️ 지금 (PASS)</span>
+        <div class="title">기록 없이 또 전화</div>
+        <div class="desc">전화 결과가 기록에 안 남음 — 같은 사람한테 또 전화하고, 보고서는 수기로 씁니다.</div></div>
+      <div class="half call"><span class="tag">➡️ 해결 (CALL)</span>
+        <div class="title">🧾 결과 버튼 1번</div>
+        <div class="desc">부재중·거절·예약완료를 한 번 누르면 다음 액션과 데이터가 자동 정리.</div>
+        <div class="eff">→ '전화한 말' 대신 '전화한 기록'</div></div>
+    </div></div>
+
+  </div>
+</section>
+
+<!-- ===== 장6 · 자가진단 ===== -->
+<section class="wrap reveal" id="diag">
+  <span class="kick">⭐ 30초 자가진단</span>
+  <h2>그래서, 우리 치과는 지금 어떤 상태일까요?</h2>
+  <p class="lead">숫자 3개만 움직여 보세요. 잠든 환자와 새고 있는 매출이 그 자리에서 나옵니다.</p>
+
+  <div class="diag-box">
+    <div class="sl">
+      <div class="top"><span class="lab">전체 환자 수</span><span class="val tnum" id="vPatients">3,000명</span></div>
+      <input type="range" id="sPatients" min="500" max="20000" step="100" value="3000" aria-label="전체 환자 수">
+      <div class="hint">차트에 등록된 누적 환자 수(대략)</div>
+    </div>
+
+    <div class="sl">
+      <div class="top"><span class="lab">6개월+ 연락 끊긴 비율</span><span class="val tnum" id="vRate">35%</span></div>
+      <input type="range" id="sRate" min="5" max="70" step="1" value="35" aria-label="6개월 이상 연락 끊긴 환자 비율">
+      <div class="hint">마지막 내원 6개월이 지나도록 연락이 끊긴 환자 비율</div>
+      <div class="extra"><button class="minibtn" id="btnAvg">잘 모르겠어요 → 업계 평균(35%) 적용</button></div>
+    </div>
+
+    <div class="sl">
+      <div class="top"><span class="lab">재방문 1회 평균 진료비</span><span class="val tnum" id="vFee">8만원</span></div>
+      <input type="range" id="sFee" min="3" max="60" step="1" value="8" aria-label="재방문 1회 평균 진료비(만원)">
+      <div class="hint">다시 온 환자 1명이 1회 내원에서 쓰는 평균 금액(만원)</div>
+    </div>
+
+    <div class="res-grid">
+      <div class="res alert"><div class="rl">잠든 환자(연락 끊김)</div><div class="rv tnum" id="rSleep">1,050명</div></div>
+      <div class="res alert"><div class="rl">지금 잃고 있는 매출(연,추정)</div><div class="rv tnum" id="rLost">8,400만원</div></div>
+      <div class="res good"><div class="rl">되돌릴 수 있는 매출(보수적)</div><div class="rv tnum" id="rBack">1,260만원</div></div>
+      <div class="res"><div class="rl">리콜 관리 점수</div><div class="rv tnum" id="rScoreSmall">65점</div></div>
+    </div>
+
+    <div class="scorebar-wrap">
+      <div class="rl">리콜 관리 점수 (0~100) — <span class="sval tnum" id="rScore">65</span></div>
+      <div class="pbar"><i id="scoreBar" style="width:65%"></i></div>
+    </div>
+
+    <p class="formula">계산식(투명 공개) · 잠든 환자 = 전체 × 연락끊김율 · 잃은 매출 = 잠든 × 1회 진료비 · 되돌릴 매출 = 잠든 × 0.15 × 1회 진료비 · 관리 점수 = (1 − 연락끊김율) × 100. ※ 모든 숫자는 예시·가정값이며 결과를 보장하지 않습니다. 입력값은 저장·전송하지 않고 이 화면 안에서만 계산됩니다.</p>
+  </div>
+</section>
+
+<!-- ===== 장7 · 벤치마크 ===== -->
+<section class="wrap reveal">
+  <span class="kick">BENCHMARK · 비교</span>
+  <h2>동급 치과와 비교하면?</h2>
+  <p class="lead">리콜 관리 점수 기준입니다. 점수가 낮을수록 — 되돌릴 여지가 가장 큽니다.</p>
+  <div class="card-ui">
+    <div class="bench">
+      <div class="brow me"><span class="bn">우리 치과</span><div class="btrack"><i id="benchMe" style="width:65%"></i></div><span class="bv tnum" id="benchMeV">65</span></div>
+      <div class="brow avg"><span class="bn">동급 평균</span><div class="btrack"><i style="width:60%"></i></div><span class="bv tnum">60</span></div>
+      <div class="brow top"><span class="bn">상위 25%</span><div class="btrack"><i style="width:82%"></i></div><span class="bv tnum">82</span></div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+  </div>
+</section>
+
+<!-- ===== 장8 · 설치 ===== -->
+<section class="wrap reveal" id="install">
+  <span class="kick">INSTALL · 설치</span>
+  <h2>이 숫자는 추정입니다. 진짜 내 차트의 명단으로 보려면.</h2>
+  <p class="lead">설치하면, 위 슬라이더가 아니라 우리 치과 실제 환자로 오늘 누를 명단이 점수순으로 뜹니다. 복잡한 설정 없이, 쓰던 차트(덴트웹) 그대로.</p>
+
+  <div class="steps">
+    <div class="step"><div class="num">1</div><b>설치(2분)</b></div>
+    <div class="step"><div class="num">2</div><b>차트 연결</b></div>
+    <div class="step"><div class="num">3</div><b>오늘 리콜 큐</b></div>
+    <div class="step"><div class="num">4</div><b>전화 → 결과 버튼</b></div>
+  </div>
+
+  <div class="cta-row">
+    <a class="btn btn-primary" href="#" onclick="return false">무료 버전 설치하기</a>
+  </div>
+
+  <div class="faq">
+    <details><summary>직원을 감시하나요?</summary><div class="ans">아니요. 데스크를 돕는 도구입니다. 평가·감시용이 아닙니다.</div></details>
+    <details><summary>통제권은 누구에게?</summary><div class="ans">실장에게 있습니다. 누구에게 걸지·말지는 사람이 정합니다.</div></details>
+    <details><summary>수신 거부 환자는?</summary><div class="ans">'전화하지 마라' 1번 표시 = 큐에서 영구 제외됩니다.</div></details>
+    <details><summary>환자 정보가 새나요?</summary><div class="ans">전부 원내 로컬에서만 처리. 차트는 읽기만 하고 절대 수정하지 않습니다.</div></details>
+  </div>
+
+  <div class="fail">안 깔면 — 이 누수는 다음 달에도, <b>그대로</b>입니다.</div>
+
+  <p class="guard">※ AutoRecall은 전화 우선순위 정리를 돕는 운영 도구이며, 치료 효과·결과를 보장하지 않습니다. · 화면의 점수·금액·평균값은 예시·가정값으로 원장 검수가 필요합니다. · 수신거부·동의 범위는 정보통신망법 등 규정과 각 치과 정책에 맞춰 운영됩니다. · 한글 우선 표기.</p>
+</section>
+
+<footer>AutoRecall · 치과 재내원(리콜) 자동화 · 스와이프 카드덱 · 2026-06-30 · 카피·수치 원장 검수 전 초안</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ===== 히어로 카드덱 ===== */
+  var cards = [
+    {badge:"잠든 환자 #1", emoji:"🗂️", h:"6개월 지난 검진 명단,<br>지금 어디 있나요?", p:"스케일링·정기검진 6개월이 지난 환자들 — 흩어진 차트 어딘가에 있지만, 모아 본 적이 없습니다.", foot:"넘길까요? 부를까요?"},
+    {badge:"잠든 환자 #2", emoji:"🎯", h:"오늘 누구한테 전화하죠?", p:"결국 '감'으로 찍습니다. 기준이 없으니 매번 사람마다 다릅니다.", foot:"넘길까요? 부를까요?"},
+    {badge:"잠든 환자 #3", emoji:"🔁", h:"이 사람, 어제도<br>전화하지 않았나요?", p:"기록이 안 남아 같은 사람에게 또 겁니다. '전화했다는 말'은 남지만 '전화한 기록'은 없습니다.", foot:"넘길까요? 부를까요?"},
+    {badge:"잠든 환자 #4", emoji:"💤", h:"임플란트 상담만 받고<br>사라진 환자.", p:"가장 큰 매출이 가장 조용히 빠집니다. 누군지조차 모릅니다.", foot:"넘길까요? 부를까요?"},
+    {last:true, badge:"매일, 수천 명을…", emoji:"🤯", h:"이걸 사람이<br>매일 하라고요?", p:"한 사람이 수천 명을 기억하고 전화까지 돌리기엔, 하루가 너무 짧습니다.", foot:""}
+  ];
+
+  var deck = document.getElementById('deck');
+  var dotsWrap = document.getElementById('dots');
+  var idx = 0;          // 현재 맨 위 카드 인덱스
+  var els = [];         // DOM 캐시
+  var VISIBLE = 3;      // 동시에 보일 카드 수
+
+  // dots
+  for(var d=0; d<cards.length; d++){
+    var dt = document.createElement('span'); dt.className='dot'; dotsWrap.appendChild(dt);
+  }
+  var dotEls = dotsWrap.querySelectorAll('.dot');
+
+  function buildCard(i){
+    var c = cards[i];
+    var el = document.createElement('div');
+    el.className = 'swcard' + (c.last ? ' last' : '');
+    el.setAttribute('aria-hidden','true');
+    var inner = '';
+    inner += '<span class="badge">'+c.badge+'</span>';
+    inner += '<div class="emoji">'+c.emoji+'</div>';
+    inner += '<h3>'+c.h+'</h3>';
+    inner += '<p>'+c.p+'</p>';
+    if(c.last){
+      inner += '<button class="gobtn" type="button" data-go="1">자가진단 보기 →</button>';
+    }
+    inner += '<div class="foot"><span>'+(c.foot||"")+'</span><span>'+(i+1)+' / '+cards.length+'</span></div>';
+    inner += '<span class="stamp call">CALL</span><span class="stamp pass">PASS</span>';
+    el.innerHTML = inner;
+    return el;
+  }
+
+  function render(){
+    deck.innerHTML = '';
+    els = [];
+    // 뒤에서 앞으로 쌓기 (뒤 카드가 먼저 DOM → z-index 낮게)
+    var end = Math.min(idx + VISIBLE, cards.length);
+    for(var i = end-1; i >= idx; i--){
+      var el = buildCard(i);
+      var depth = i - idx; // 0 = top
+      var scale = 1 - depth*0.05;
+      var ty = depth*14;
+      el.style.transform = 'translateY('+ty+'px) scale('+scale+')';
+      el.style.zIndex = (100 - depth);
+      el.style.opacity = depth >= VISIBLE ? 0 : 1;
+      if(depth === 0){ el.setAttribute('aria-hidden','false'); attachDrag(el, i); }
+      deck.appendChild(el);
+      els.unshift(el);
+    }
+    // dots
+    for(var k=0;k<dotEls.length;k++){ dotEls[k].className = 'dot' + (k===idx?' on':''); }
+    updateButtons();
+    // last card go button
+    var go = deck.querySelector('[data-go]');
+    if(go){ go.addEventListener('click', gotoDiag); }
+  }
+
+  function updateButtons(){
+    var done = idx >= cards.length;
+    document.getElementById('btnPass').disabled = done;
+    document.getElementById('btnCall').disabled = done;
+  }
+
+  function gotoDiag(){
+    var t = document.getElementById('diag');
+    if(t) t.scrollIntoView({behavior: reduce ? 'auto' : 'smooth'});
+  }
+
+  // 카드 넘김 처리
+  function advance(dir){ // dir: -1 pass(left), 1 call(right)
+    if(idx >= cards.length) return;
+    var top = els[0];
+    if(!top){ idx++; render(); return; }
+    var wasLast = cards[idx].last;
+    if(reduce){
+      idx++;
+      if(idx >= cards.length){ idx = cards.length; deck.innerHTML=''; showDone(); }
+      else render();
+      if(wasLast) gotoDiag();
+      return;
+    }
+    top.classList.add('dragging');
+    var fly = dir * (window.innerWidth + 200);
+    top.style.transition = 'transform .42s cubic-bezier(.36,.66,.4,1), opacity .42s ease';
+    top.style.transform = 'translate('+fly+'px,-40px) rotate('+(dir*18)+'deg)';
+    top.style.opacity = 0;
+    window.setTimeout(function(){
+      idx++;
+      if(idx >= cards.length){ deck.innerHTML=''; showDone(); }
+      else render();
+      if(wasLast) gotoDiag();
+    }, 300);
+  }
+
+  function showDone(){
+    var msg = document.createElement('div');
+    msg.className = 'swcard last';
+    msg.style.position='relative';
+    msg.style.boxShadow='none';
+    msg.innerHTML = '<div class="emoji" style="text-align:center">✅</div>'+
+      '<h3 style="text-align:center">전부 넘기셨네요.<br>이제 도구가 대신합니다.</h3>'+
+      '<p style="text-align:center">사람이 매일 감으로 넘기던 일을, 점수순으로.</p>'+
+      '<button class="gobtn" type="button" style="align-self:center" onclick="document.getElementById(\'diag\').scrollIntoView({behavior:\''+(reduce?'auto':'smooth')+'\'})">자가진단 보기 →</button>';
+    deck.appendChild(msg);
+    updateButtons();
+    for(var k=0;k<dotEls.length;k++){ dotEls[k].className='dot'; }
+  }
+
+  // 드래그 / 터치
+  function attachDrag(el, i){
+    var startX=0, startY=0, curX=0, curY=0, dragging=false, pointerId=null;
+    var callStamp = el.querySelector('.stamp.call');
+    var passStamp = el.querySelector('.stamp.pass');
+
+    function down(e){
+      if(reduce) return;
+      dragging = true; el.classList.add('dragging');
+      var p = point(e);
+      startX = p.x; startY = p.y; curX=0; curY=0;
+      pointerId = e.pointerId;
+      if(el.setPointerCapture && e.pointerId!=null){ try{ el.setPointerCapture(e.pointerId);}catch(_){} }
+    }
+    function move(e){
+      if(!dragging) return;
+      var p = point(e);
+      curX = p.x - startX; curY = p.y - startY;
+      var rot = curX * 0.06;
+      el.style.transform = 'translate('+curX+'px,'+curY+'px) rotate('+rot+'deg)';
+      var op = Math.min(Math.abs(curX)/90, 1);
+      if(curX > 12){ callStamp.style.opacity = op; passStamp.style.opacity = 0; }
+      else if(curX < -12){ passStamp.style.opacity = op; callStamp.style.opacity = 0; }
+      else { callStamp.style.opacity = 0; passStamp.style.opacity = 0; }
+      if(e.cancelable) e.preventDefault();
+    }
+    function up(){
+      if(!dragging) return;
+      dragging = false; el.classList.remove('dragging');
+      var threshold = 90;
+      if(curX > threshold){ advance(1); }
+      else if(curX < -threshold){ advance(-1); }
+      else {
+        // 되돌리기
+        el.style.transition = 'transform .3s ease';
+        el.style.transform = 'translateY(0) scale(1)';
+        callStamp.style.opacity = 0; passStamp.style.opacity = 0;
+        window.setTimeout(function(){ el.style.transition=''; }, 300);
+      }
+    }
+    function point(e){
+      if(e.touches && e.touches[0]) return {x:e.touches[0].clientX, y:e.touches[0].clientY};
+      if(e.changedTouches && e.changedTouches[0]) return {x:e.changedTouches[0].clientX, y:e.changedTouches[0].clientY};
+      return {x:e.clientX, y:e.clientY};
+    }
+
+    if(window.PointerEvent){
+      el.addEventListener('pointerdown', down);
+      el.addEventListener('pointermove', move);
+      el.addEventListener('pointerup', up);
+      el.addEventListener('pointercancel', up);
+    } else {
+      el.addEventListener('mousedown', down);
+      window.addEventListener('mousemove', move);
+      window.addEventListener('mouseup', up);
+      el.addEventListener('touchstart', down, {passive:true});
+      el.addEventListener('touchmove', move, {passive:false});
+      el.addEventListener('touchend', up);
+    }
+  }
+
+  document.getElementById('btnPass').addEventListener('click', function(){ advance(-1); });
+  document.getElementById('btnCall').addEventListener('click', function(){ advance(1); });
+  // 키보드
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowLeft'){ advance(-1); }
+    else if(e.key === 'ArrowRight'){ advance(1); }
+  });
+
+  render();
+
+  /* ===== 자가진단 ===== */
+  var sPatients=document.getElementById('sPatients'), sRate=document.getElementById('sRate'), sFee=document.getElementById('sFee');
+  var vPatients=document.getElementById('vPatients'), vRate=document.getElementById('vRate'), vFee=document.getElementById('vFee');
+  var rSleep=document.getElementById('rSleep'), rLost=document.getElementById('rLost'), rBack=document.getElementById('rBack');
+  var rScore=document.getElementById('rScore'), rScoreSmall=document.getElementById('rScoreSmall'), scoreBar=document.getElementById('scoreBar');
+  var benchMe=document.getElementById('benchMe'), benchMeV=document.getElementById('benchMeV'), verdict=document.getElementById('verdict');
+
+  function comma(n){ return n.toLocaleString('ko-KR'); }
+  function wonFmt(manwon){
+    if(manwon >= 10000){
+      var eok = manwon/10000;
+      if(eok >= 10) return Math.round(eok)+'억원';
+      return (Math.round(eok*10)/10)+'억원';
+    }
+    return comma(manwon)+'만원';
+  }
+
+  function calc(){
+    var patients = parseInt(sPatients.value,10);
+    var rate = parseInt(sRate.value,10)/100;
+    var fee = parseInt(sFee.value,10); // 만원
+
+    vPatients.textContent = comma(patients)+'명';
+    vRate.textContent = sRate.value+'%';
+    vFee.textContent = fee+'만원';
+
+    var sleep = Math.round(patients*rate);
+    var lost = sleep*fee;            // 만원
+    var back = Math.round(sleep*0.15*fee); // 만원
+    var score = Math.round((1-rate)*100);
+
+    rSleep.textContent = comma(sleep)+'명';
+    rLost.textContent = wonFmt(lost);
+    rBack.textContent = wonFmt(back);
+    rScore.textContent = score;
+    rScoreSmall.textContent = score+'점';
+    scoreBar.style.width = score+'%';
+
+    // 벤치마크 연동
+    benchMe.style.width = score+'%';
+    benchMeV.textContent = score;
+
+    var v='';
+    if(score < 60){ v = '동급 평균(60점)보다 '+(60-score)+'점 아래 — 되돌릴 여지가 가장 큽니다.'; }
+    else if(score < 82){ v = '상위 25%(82점)까지 '+(82-score)+'점 — 이 격차가 그대로 새는 매출입니다.'; }
+    else { v = '상위권입니다. 사람 손으로 이만큼 유지 중 — 이제 시스템으로 굳히세요.'; }
+    verdict.textContent = v;
+  }
+
+  sPatients.addEventListener('input', calc);
+  sRate.addEventListener('input', calc);
+  sFee.addEventListener('input', calc);
+  document.getElementById('btnAvg').addEventListener('click', function(){ sRate.value=35; calc(); });
+  calc();
+
+  /* ===== reveal ===== */
+  if('IntersectionObserver' in window && !reduce){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, {threshold:0.12});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
