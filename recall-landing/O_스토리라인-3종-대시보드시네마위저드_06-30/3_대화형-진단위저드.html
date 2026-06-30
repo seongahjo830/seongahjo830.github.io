@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>30초 대화형 자가진단 — 한 질문씩</title>
+<meta name="description" content="치과 재내원(리콜) 자동화 AutoRecall. 한 질문씩 답하면 우리 치과의 잠든 환자와 새는 매출을 진단 카드로 보여드립니다.">
+<style>
+  :root{
+    --bg:#F3F6F4; --bg2:#E8F0EB; --card:#fff; --ink:#16201B; --soft:#566159; --faint:#8C968D;
+    --line:#E2E9E4; --green:#1F7A5C; --green-d:#0F4E3A; --green-soft:#E4F2EB;
+    --loss:#C2522F; --loss-soft:#FBEDE6; --gold:#C99A2E;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%}
+  body{background:
+      radial-gradient(900px 600px at 85% -10%, var(--green-soft), transparent 55%),
+      radial-gradient(800px 600px at -5% 110%, #E9F3FB, transparent 55%),
+      var(--bg);
+    color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.62;
+    display:flex;flex-direction:column;min-height:100svh;overflow-x:hidden}
+  a{color:inherit}
+
+  .bar{position:sticky;top:0;z-index:30;padding:16px 22px 0}
+  .barin{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:14px}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;letter-spacing:-.01em}
+  .brand .b{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px var(--green-soft)}
+  .prog{flex:1;height:7px;background:var(--bg2);border-radius:8px;overflow:hidden}
+  .prog i{display:block;height:100%;width:12%;border-radius:8px;background:linear-gradient(90deg,var(--green),#37b489);transition:width .45s cubic-bezier(.2,.7,.2,1)}
+  .stepno{font-size:12.5px;font-weight:800;color:var(--faint);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+  .stage{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 22px 30px}
+  .frame{max-width:680px;width:100%}
+  .step{display:none}
+  .step.on{display:block}
+  .step.on .anim{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+  .step.on .anim:nth-child(2){animation-delay:.06s}
+  .step.on .anim:nth-child(3){animation-delay:.12s}
+  .step.on .anim:nth-child(4){animation-delay:.18s}
+  .step.on .anim:nth-child(5){animation-delay:.24s}
+  @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+  .tag{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;letter-spacing:.04em;
+    color:var(--green);background:var(--green-soft);padding:7px 13px;border-radius:999px}
+  .tag.loss{color:var(--loss);background:var(--loss-soft)}
+  .q{font-size:clamp(26px,5.2vw,42px);font-weight:900;letter-spacing:-.035em;line-height:1.16;margin:18px 0 0}
+  .q .hl{color:var(--green)}.q .hlr{color:var(--loss)}
+  .sub{color:var(--soft);font-size:clamp(15px,2.1vw,17.5px);margin:14px 0 0;max-width:560px}
+
+  .heroIll{font-size:54px;line-height:1;margin-bottom:4px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+  .chip{font-size:12.5px;font-weight:700;color:var(--soft);background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px}
+
+  .opts{display:grid;gap:11px;margin-top:26px}
+  .opt{display:flex;align-items:center;gap:13px;background:#fff;border:1.5px solid var(--line);border-radius:15px;
+    padding:16px 18px;cursor:pointer;transition:.14s;text-align:left;font:inherit;color:inherit}
+  .opt:hover{border-color:var(--green);transform:translateY(-1px);box-shadow:0 10px 26px -16px rgba(31,122,92,.5)}
+  .opt .ic{width:42px;height:42px;border-radius:12px;background:var(--green-soft);display:grid;place-items:center;font-size:21px;flex:none}
+  .opt.bad .ic{background:var(--loss-soft)}
+  .opt .t{font-size:15.5px;font-weight:700}.opt .t small{display:block;color:var(--faint);font-weight:500;font-size:13px;margin-top:3px}
+  .opt .pick{margin-left:auto;font-size:13px;color:var(--faint);font-weight:700}
+
+  .slcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 22px;margin-top:24px;box-shadow:0 18px 44px -28px rgba(20,40,30,.35)}
+  .field label{display:flex;justify-content:space-between;align-items:baseline;font-size:14.5px;font-weight:700}
+  .field label .val{font-size:20px;font-weight:900;color:var(--green)}
+  .field input[type=range]{width:100%;margin-top:14px;-webkit-appearance:none;height:7px;border-radius:7px;background:var(--bg2);outline:none}
+  .field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--green);cursor:pointer;border:4px solid #fff;box-shadow:0 3px 12px rgba(31,122,92,.45)}
+  .field input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--green);cursor:pointer;border:4px solid #fff}
+  .field .hint{font-size:12.5px;color:var(--faint);margin-top:9px}
+  .dk{margin-top:12px}.dk button{background:var(--bg);color:var(--soft);border:1px solid var(--line);border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}
+  .dk button:hover{border-color:var(--green);color:var(--green)}
+
+  .nav{display:flex;gap:10px;align-items:center;margin-top:26px}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:16px;padding:15px 26px;border-radius:14px;
+    cursor:pointer;border:0;font-family:inherit;transition:transform .12s,box-shadow .12s,background .15s}
+  .btn.primary{background:var(--green);color:#fff;box-shadow:0 14px 32px -14px rgba(31,122,92,.65)}
+  .btn.primary:hover{transform:translateY(-2px)}
+  .btn.back{background:transparent;color:var(--faint);padding:15px 10px;font-weight:700}
+  .btn.back:hover{color:var(--ink)}
+  .btn.lg{font-size:17px;padding:17px 30px}
+  .kbd{font-size:12px;color:var(--faint);margin-left:auto}
+  .kbd b{background:#fff;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-weight:700}
+
+  .report{background:linear-gradient(180deg,#11342A,#0C2A22);color:#EAF6F0;border-radius:24px;padding:30px 26px;box-shadow:0 40px 90px -40px rgba(10,40,28,.7)}
+  .report .rt{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#7FE3C0}
+  .report h3{font-size:clamp(22px,4vw,30px);font-weight:900;letter-spacing:-.02em;margin:10px 0 0;line-height:1.2}
+  .rgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+  .rstat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:15px;padding:16px 17px}
+  .rstat .k{font-size:12.5px;opacity:.78}
+  .rstat .v{font-size:clamp(22px,5vw,30px);font-weight:900;letter-spacing:-.02em;margin-top:5px;font-variant-numeric:tabular-nums}
+  .v.loss{color:#FFB48F}.v.gain{color:#8DF0CE}.v.neu{color:#fff}
+  .scoreband{margin-top:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:15px;padding:16px 17px}
+  .scoreband .top{display:flex;justify-content:space-between;align-items:baseline}
+  .scoreband .sc{font-size:30px;font-weight:900;color:#8DF0CE;font-variant-numeric:tabular-nums}
+  .sbar{height:11px;border-radius:8px;background:rgba(255,255,255,.13);overflow:hidden;margin-top:11px;position:relative}
+  .sfill{height:100%;border-radius:8px;background:linear-gradient(90deg,#C2522F,#E0B341,#8DF0CE);transition:width .5s}
+  .mark{position:absolute;top:-4px;width:2px;height:19px;background:#fff;opacity:.55}
+  .marklab{font-size:10.5px;opacity:.6;margin-top:6px;display:flex;justify-content:space-between}
+  .verdict{margin-top:16px;background:rgba(127,227,192,.12);border:1px solid rgba(127,227,192,.3);border-radius:13px;padding:14px 16px;font-size:14.5px;font-weight:700;color:#B9F2DE}
+  .fnote{font-size:11px;opacity:.55;margin-top:16px;line-height:1.7}
+
+  .panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 22px;margin-top:18px}
+  .alist{display:grid;gap:10px;margin-top:16px;list-style:none;padding:0}
+  .alist li{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:13px 15px;font-size:14.5px;color:var(--soft)}
+  .alist li b{color:var(--ink)}
+  .steps{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+  .stp{background:var(--green-soft);border:1px solid #CFE7DC;border-radius:11px;padding:10px 14px;font-size:13px;font-weight:700}
+  .stp b{color:var(--green)}
+  .faq{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .faq .it{background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:13px 15px}
+  .faq .qq{font-size:13.5px;font-weight:800}.faq .aa{font-size:12.5px;color:var(--soft);margin-top:4px}
+  .failsafe{margin-top:18px;font-size:15px;font-weight:800;color:var(--loss);text-align:center}
+  .guard{margin-top:18px;font-size:11px;color:var(--faint);line-height:1.8}
+  .micro{margin-top:14px;font-size:12.5px;color:var(--faint)}
+
+  @media(max-width:560px){
+    .rgrid{grid-template-columns:1fr}
+    .faq{grid-template-columns:1fr}
+    .q{font-size:25px}
+    .kbd{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="barin">
+    <span class="brand"><span class="b"></span>AutoRecall</span>
+    <div class="prog"><i id="prog"></i></div>
+    <span class="stepno" id="stepno">1 / 8</span>
+  </div>
+</div>
+
+<main class="stage">
+  <div class="frame">
+
+    <section class="step on" data-chap="히어로">
+      <div class="heroIll anim">🦷💤</div>
+      <span class="tag anim">치과 재내원(리콜) 자동화 · 30초 자가진단</span>
+      <h1 class="q anim">안 오는 환자는 없습니다.<br><span class="hlr">안 부른 환자</span>만 있을 뿐.</h1>
+      <p class="sub anim">오늘 누구에게 전화할지, 우리 치과 차트는 이미 알고 있습니다.<br>몇 가지만 답하면 — 우리 치과의 잠든 환자와 새는 매출을 진단해 드립니다.</p>
+      <div class="chips anim">
+        <span class="chip">⏱️ 30초</span><span class="chip">🔒 입력값 저장 안 함</span><span class="chip">📄 차트 읽기만</span>
+      </div>
+      <div class="nav anim">
+        <button class="btn primary lg" data-next>진단 시작하기 →</button>
+        <span class="kbd"><b>Enter</b> 로도 진행</span>
+      </div>
+    </section>
+
+    <section class="step" data-chap="공감">
+      <span class="tag anim">질문 1 · 공감</span>
+      <h2 class="q anim">오늘 리콜 전화, <span class="hl">누구부터</span> 거세요?</h2>
+      <p class="sub anim">정답은 없습니다. 가장 비슷한 걸 골라 주세요 — 그게 지금 우리 치과의 상태입니다.</p>
+      <div class="opts anim">
+        <button class="opt bad" data-next><span class="ic">🎯</span><span class="t">결국 “감”으로 찍는다<small>기준이 없어 매번 사람마다 다르다</small></span><span class="pick">›</span></button>
+        <button class="opt bad" data-next><span class="ic">🗂️</span><span class="t">명단부터 못 찾는다<small>6개월 지난 환자가 차트 어딘가 흩어져 있다</small></span><span class="pick">›</span></button>
+        <button class="opt bad" data-next><span class="ic">🔁</span><span class="t">했던 사람한테 또 건다<small>전화한 ‘기록’이 안 남아서</small></span><span class="pick">›</span></button>
+        <button class="opt" data-next><span class="ic">📋</span><span class="t">점수순 명단이 매일 뜬다<small>이미 잘 하고 계시네요 — 그래도 끝까지 보세요</small></span><span class="pick">›</span></button>
+      </div>
+    </section>
+
+    <section class="step" data-chap="손실">
+      <span class="tag loss anim">잠깐 · 알아두실 것</span>
+      <h2 class="q anim">“좋은 콜 리스트가 있어도,<br><span class="hlr">걸 시간이 없으면 0원</span>입니다.”</h2>
+      <p class="sub anim">방치된 환자의 <b style="color:var(--loss)">71%</b>가 치료계획 후 <b>30일 안에</b> 떠날지 말지를 정합니다. 그 사이에도 환자는 조용히 옆 치과로 갑니다.</p>
+      <div class="panel anim" style="border-left:4px solid var(--loss)">
+        <div style="font-size:clamp(40px,11vw,72px);font-weight:900;color:var(--loss);line-height:1;letter-spacing:-.03em"><span id="pct71">0</span>%</div>
+        <div style="font-size:13.5px;color:var(--soft);margin-top:6px">치료계획 후 30일 내 이탈을 결정하는 방치 환자 비율(내부 차트 분석·예시)</div>
+      </div>
+      <div class="nav anim"><button class="btn back" data-back>← 이전</button><button class="btn primary" data-next>그럼 우리 직원 탓일까요? →</button></div>
+    </section>
+
+    <section class="step" data-chap="면죄">
+      <span class="tag anim">막 2 · 면죄</span>
+      <h2 class="q anim">리콜, 안 하는 게 아니라 <span class="hl">못 하는 겁니다.</span></h2>
+      <p class="sub anim">문제는 게으름이 아닙니다. ‘안 보인다’는 것입니다.</p>
+      <ul class="alist anim">
+        <li>데스크의 1순위는 <b>눈앞의 환자 응대</b>. 큐에 좋은 대상이 쌓여도 발신은 뒤로 밀립니다.</li>
+        <li>바쁜 날엔 응대하느라 놓치고, <b>한가한 날엔 “전화할 환자가 없는 게” 아닙니다</b> — 누군지 모를 뿐.</li>
+        <li>한 사람이 수천 명을 기억하고 전화까지 돌리기엔, <b>하루가 너무 짧습니다.</b></li>
+      </ul>
+      <div class="nav anim"><button class="btn back" data-back>← 이전</button><button class="btn primary" data-next>그래서 도구가 대신합니다 →</button></div>
+    </section>
+
+    <section class="step" data-chap="해결">
+      <span class="tag anim">막 2 · 해결</span>
+      <h2 class="q anim">사람이 못 하는 것만,<br><span class="hl">도구가 대신합니다.</span></h2>
+      <p class="sub anim">차트를 읽어 “오늘 누구부터”를 점수순으로. 다섯 가지입니다.</p>
+      <ul class="alist anim">
+        <li>🔥 <b>슬롯 필러</b> — 당일 빈 시간에 맞는 환자 즉시 추천(타이밍 ×3.0)</li>
+        <li>📅 <b>타이밍 자동 큐</b> — 6~12개월 도래 환자 자동 줄세움</li>
+        <li>💰 <b>고가치 발굴콜</b> — 상담만 받은 임플란트·교정 우선 상단</li>
+        <li>🎯 <b>점수제 큐</b> — 천 명의 명단이 ‘오늘 누를 몇 명’으로</li>
+        <li>🧾 <b>결과 버튼 1번</b> — ‘전화한 말’ 대신 ‘전화한 기록’</li>
+      </ul>
+      <div class="nav anim"><button class="btn back" data-back>← 이전</button><button class="btn primary" data-next>이제 우리 치과 숫자 넣어보기 →</button></div>
+    </section>
+
+    <section class="step" data-chap="입력 · 환자 수">
+      <span class="tag anim">질문 2 · 우리 치과</span>
+      <h2 class="q anim">차트에 등록된 <span class="hl">전체 환자</span>는 대략 몇 명인가요?</h2>
+      <div class="slcard anim">
+        <div class="field"><label>전체 환자 수 <span class="val" id="vPatients">3,000명</span></label>
+          <input type="range" id="sPatients" min="500" max="20000" step="100" value="3000">
+          <div class="hint">정확하지 않아도 됩니다 — 대략으로 충분합니다.</div></div>
+      </div>
+      <div class="nav anim"><button class="btn back" data-back>← 이전</button><button class="btn primary" data-next>다음 →</button></div>
+    </section>
+
+    <section class="step" data-chap="입력 · 끊김·진료비">
+      <span class="tag anim">질문 3 · 마지막 입력</span>
+      <h2 class="q anim">연락 끊긴 비율과 <span class="hl">1회 진료비</span>는요?</h2>
+      <div class="slcard anim">
+        <div class="field"><label>6개월+ 연락 끊긴 비율 <span class="val" id="vRate">35%</span></label>
+          <input type="range" id="sRate" min="5" max="70" step="1" value="35">
+          <div class="hint">마지막 내원 6개월이 지나도록 연락이 끊긴 환자 비율</div>
+          <div class="dk"><button id="dunno">잘 모르겠어요 → 업계 평균(35%) 적용</button></div></div>
+      </div>
+      <div class="slcard anim" style="margin-top:13px">
+        <div class="field"><label>재방문 1회 평균 진료비 <span class="val" id="vFee">8만원</span></label>
+          <input type="range" id="sFee" min="3" max="60" step="1" value="8">
+          <div class="hint">다시 온 환자 1명이 1회 내원에서 쓰는 평균 금액(만원)</div></div>
+      </div>
+      <div class="nav anim"><button class="btn back" data-back>← 이전</button><button class="btn primary lg" data-next>📊 진단 결과 보기 →</button></div>
+    </section>
+
+    <section class="step" data-chap="진단 결과">
+      <span class="tag anim">완료 · 진단 카드</span>
+      <h2 class="q anim" style="font-size:clamp(23px,4.6vw,34px)">우리 치과 <span class="hl">리콜 진단서</span></h2>
+      <div class="report anim">
+        <div class="rt">AutoRecall 자가진단 결과</div>
+        <h3>지금, 이만큼이 잠들어 있습니다</h3>
+        <div class="rgrid">
+          <div class="rstat"><div class="k">잠든 환자(연락 끊김)</div><div class="v neu" id="rSleep">1,050명</div></div>
+          <div class="rstat"><div class="k">지금 잃고 있는 매출(연, 추정)</div><div class="v loss" id="rLost">8,400만원</div></div>
+          <div class="rstat"><div class="k">되돌릴 수 있는 매출(보수적)</div><div class="v gain" id="rBack">1,260만원</div></div>
+          <div class="rstat"><div class="k">리콜 관리 점수</div><div class="v neu"><span id="rScore">65</span>점</div></div>
+        </div>
+        <div class="scoreband">
+          <div class="top"><span style="font-size:13px;opacity:.8">동급 치과 대비 위치</span><span class="sc" id="scLabel">65</span></div>
+          <div class="sbar"><div class="sfill" id="sfill" style="width:65%"></div>
+            <div class="mark" style="left:60%"></div><div class="mark" style="left:82%"></div></div>
+          <div class="marklab"><span>평균 60</span><span>상위 25% · 82</span></div>
+        </div>
+        <div class="verdict" id="verdict">상위권까지 17점 — 이 격차가 그대로 새는 매출입니다.</div>
+        <div class="fnote">계산식 · 잠든=전체×끊김율 · 잃은매출=잠든×진료비 · 되돌릴=잠든×0.15×진료비 · 점수=(1−끊김율)×100 · 모든 숫자는 예시·가정값이며 결과를 보장하지 않습니다. 입력값은 저장·전송 없이 이 화면 안에서만 계산됩니다.</div>
+      </div>
+
+      <div class="panel anim">
+        <span class="tag" style="color:var(--green)">막 3 · 다음 한 걸음</span>
+        <h3 style="font-size:clamp(19px,3.6vw,24px);font-weight:900;letter-spacing:-.02em;margin-top:12px;line-height:1.25">이 숫자는 추정입니다.<br>진짜 <span style="color:var(--green)">내 차트의 명단</span>으로 보려면.</h3>
+        <p style="color:var(--soft);font-size:14.5px;margin-top:10px">설치하면 슬라이더가 아니라 <b>우리 치과 실제 환자</b>로 오늘 누를 명단이 점수순으로 뜹니다. 쓰던 차트(덴트웹) 그대로.</p>
+        <div class="steps"><span class="stp"><b>1</b> 설치(2분)</span><span class="stp"><b>2</b> 차트 연결</span><span class="stp"><b>3</b> 오늘 리콜 큐</span><span class="stp"><b>4</b> 전화→결과 버튼</span></div>
+        <div style="margin-top:18px"><button class="btn primary lg" onclick="return false">무료 버전 설치하기 →</button></div>
+        <div class="faq">
+          <div class="it"><div class="qq">직원을 감시하나요?</div><div class="aa">아니요. 데스크를 돕는 도구입니다.</div></div>
+          <div class="it"><div class="qq">통제권은 누구에게?</div><div class="aa">실장에게. 걸지·말지는 사람이 정합니다.</div></div>
+          <div class="it"><div class="qq">수신 거부 환자는?</div><div class="aa">‘전화하지 마라’ 1번 = 큐에서 영구 제외.</div></div>
+          <div class="it"><div class="qq">환자 정보가 새나요?</div><div class="aa">전부 원내 로컬. 차트는 읽기만, 수정 안 함.</div></div>
+        </div>
+        <div class="failsafe">안 깔면 — 이 누수는 다음 달에도, 그대로입니다.</div>
+        <div class="guard">※ AutoRecall은 전화 우선순위 정리를 돕는 운영 도구이며, 치료 효과·결과를 보장하지 않습니다. · 점수·금액·평균값은 예시·가정값으로 원장 검수가 필요합니다. · 수신거부·동의 범위는 정보통신망법 등 규정과 각 치과 정책에 맞춰 운영됩니다. · 한글 우선 표기.</div>
+      </div>
+      <div class="nav anim"><button class="btn back" data-back>← 다시 입력</button><span class="micro">진단 결과 · 카피·수치 원장 검수 전 초안</span></div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+(function(){
+  var steps=[].slice.call(document.querySelectorAll('.step'));
+  var prog=document.getElementById('prog'), stepno=document.getElementById('stepno');
+  var i=0, N=steps.length, pctDone=false;
+  function show(n){
+    n=Math.max(0,Math.min(N-1,n));
+    steps[i].classList.remove('on'); i=n; steps[i].classList.add('on');
+    prog.style.width=Math.round((i+1)/N*100)+'%';
+    stepno.textContent=(i+1)+' / '+N;
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(steps[i].dataset.chap==='손실') firePct();
+    if(i===N-1) calc(true);
+  }
+  document.querySelectorAll('[data-next]').forEach(function(b){b.addEventListener('click',function(){show(i+1);});});
+  document.querySelectorAll('[data-back]').forEach(function(b){b.addEventListener('click',function(){show(i-1);});});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){var on=steps[i];var nx=on.querySelector('[data-next]');if(nx){nx.click();}}
+    else if(e.key==='ArrowRight'){show(i+1);} else if(e.key==='ArrowLeft'){show(i-1);}
+  });
+
+  function firePct(){if(pctDone)return;pctDone=true;var el=document.getElementById('pct71');var to=71,t0=null;
+    function s(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/900,1);el.textContent=Math.round(to*(0.1+0.9*p*(2-p)));
+      if(p<1)requestAnimationFrame(s);else el.textContent=to;}requestAnimationFrame(s);}
+
+  var P=document.getElementById('sPatients'),R=document.getElementById('sRate'),F=document.getElementById('sFee');
+  var vP=document.getElementById('vPatients'),vR=document.getElementById('vRate'),vF=document.getElementById('vFee');
+  var rSleep=document.getElementById('rSleep'),rLost=document.getElementById('rLost'),rBack=document.getElementById('rBack'),rScore=document.getElementById('rScore');
+  var sfill=document.getElementById('sfill'),scLabel=document.getElementById('scLabel'),verdict=document.getElementById('verdict');
+  function won(m){if(m>=10000){return (m/10000).toFixed(m>=100000?0:1).replace(/\.0$/,'')+'억원';}return Math.round(m).toLocaleString('ko-KR')+'만원';}
+  function calc(animate){
+    var patients=+P.value,rate=+R.value/100,fee=+F.value;
+    var sleep=Math.round(patients*rate),lost=sleep*fee,back=Math.round(sleep*0.15*fee),score=Math.round((1-rate)*100);
+    vP.textContent=patients.toLocaleString('ko-KR')+'명';vR.textContent=R.value+'%';vF.textContent=F.value+'만원';
+    rSleep.textContent=sleep.toLocaleString('ko-KR')+'명';rLost.textContent=won(lost);rBack.textContent=won(back);
+    rScore.textContent=score;scLabel.textContent=score;sfill.style.width=score+'%';
+    var v;if(score<60){v='동급 평균(60점)보다 '+(60-score)+'점 아래 — 되돌릴 여지가 가장 큽니다.';}
+    else if(score<82){v='상위 25%(82점)까지 '+(82-score)+'점 — 이 격차가 그대로 새는 매출입니다.';}
+    else{v='상위권입니다. 사람 손으로 이만큼 유지 중 — 이제 시스템으로 굳히세요.';}verdict.textContent=v;
+  }
+  [P,R,F].forEach(function(el){el.addEventListener('input',function(){calc(false);});});
+  document.getElementById('dunno').addEventListener('click',function(){R.value=35;calc(false);});
+  calc(false);
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
