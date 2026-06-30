@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>잠든 환자 347명의 빛 — 스크롤하면 하나씩 꺼집니다 · AutoRecall</title>
+<meta name="description" content="환자 한 명이 빛 하나. 스크롤하면 잊혀지며 꺼지고, 자가진단으로 다시 켜집니다.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  :root{
+    --bg0:#060a10; --bg1:#0a1018; --ink:#e8eef5; --soft:#9fb0c2; --faint:#64758a;
+    --gold:#ffd76a; --warm:#ffb14e; --green:#4fe0a3; --green2:#1f9d6b; --loss:#ff6a52; --line:#1c2a3a;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--font);color:var(--ink);background:var(--bg0);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  #c{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block}
+  .veil{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(120% 80% at 50% 0%,transparent 40%,rgba(6,10,16,.55) 100%)}
+  .content{position:relative;z-index:2}
+  .panel{max-width:680px;margin:0 auto;padding:0 20px}
+  section{min-height:92vh;display:flex;flex-direction:column;justify-content:center;padding:60px 0}
+  .glass{background:rgba(10,16,24,.62);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+    border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:26px 24px;
+    box-shadow:0 24px 60px rgba(0,0,0,.45);
+    opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  .glass.in{opacity:1;transform:none}
+  .kick{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--gold);background:rgba(255,215,106,.12);padding:5px 12px;border-radius:999px}
+  h1{font-size:clamp(30px,7vw,56px);font-weight:900;letter-spacing:-.035em;line-height:1.1;margin-top:16px;
+    text-shadow:0 4px 30px rgba(0,0,0,.5)}
+  h1 .g{color:var(--gold)} h1 .o{color:var(--warm)}
+  h2{font-size:clamp(22px,4.6vw,33px);font-weight:900;letter-spacing:-.03em;line-height:1.22}
+  h2 .r{color:var(--loss)} h2 .gr{color:var(--green)}
+  .lead{color:var(--soft);font-size:clamp(15px,2.4vw,18px);margin-top:14px;line-height:1.7}
+  p{margin-top:12px;color:var(--ink);line-height:1.7;font-size:16px}
+  p.s{color:var(--soft);font-size:15px}
+  .hero{text-align:center;min-height:100vh}
+  .counter{font-size:clamp(54px,16vw,128px);font-weight:900;color:var(--gold);line-height:1;letter-spacing:-.04em;
+    text-shadow:0 0 40px rgba(255,183,78,.4)}
+  .counter small{font-size:.28em;color:var(--soft);font-weight:700;letter-spacing:0}
+  .scrollcue{margin-top:30px;color:var(--faint);font-size:13px;animation:fade 2s infinite}
+  @keyframes fade{50%{opacity:.4}}
+  .cta{display:inline-block;margin-top:18px;background:var(--gold);color:#1a1305;font-weight:900;font-size:16px;
+    text-decoration:none;padding:14px 24px;border-radius:12px;box-shadow:0 8px 30px rgba(255,183,78,.35)}
+  .cta.green{background:linear-gradient(135deg,var(--green),var(--green2));color:#04130d;box-shadow:0 8px 30px rgba(79,224,163,.35)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+  @media(max-width:600px){.grid2{grid-template-columns:1fr}}
+  .pane{border-radius:13px;padding:15px 16px;border:1px solid var(--line)}
+  .pane.bad{background:rgba(255,106,82,.07);border-color:rgba(255,106,82,.25)}
+  .pane.good{background:rgba(79,224,163,.07);border-color:rgba(79,224,163,.25)}
+  .pane .h{font-size:13px;font-weight:800;letter-spacing:.04em;margin-bottom:8px}
+  .pane.bad .h{color:var(--loss)} .pane.good .h{color:var(--green)}
+  .pane ul{margin:0;padding-left:17px} .pane li{margin:6px 0;font-size:14px;color:var(--ink)}
+  .quote{font-size:clamp(19px,3.6vw,26px);font-weight:800;line-height:1.4;letter-spacing:-.02em}
+  .quote small{display:block;color:var(--faint);font-weight:500;font-size:14px;margin-top:10px}
+  .scene{display:flex;gap:12px;align-items:flex-start;margin-top:14px;color:var(--soft);font-size:15px}
+  .scene .ic{flex:0 0 auto;width:30px;height:30px;border-radius:9px;background:rgba(255,177,78,.13);color:var(--warm);
+    display:flex;align-items:center;justify-content:center;font-size:15px;margin-top:1px}
+  .scene b{color:var(--ink)}
+  /* diagnose */
+  .field{margin-top:18px}
+  .field .lab{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--soft)}
+  .field .lab b{color:var(--gold);font-size:17px}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;margin-top:9px;
+    background:linear-gradient(90deg,var(--warm),var(--gold)) no-repeat;background-size:var(--p,40%) 100%;
+    background-color:#1a2636;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+    background:#0a1018;border:3px solid var(--gold);box-shadow:0 0 16px var(--gold);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#0a1018;border:3px solid var(--gold);box-shadow:0 0 16px var(--gold);cursor:pointer}
+  .out{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:20px}
+  @media(max-width:560px){.out{grid-template-columns:1fr}}
+  .stat{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:13px;padding:14px;text-align:center}
+  .stat .k{font-size:12px;color:var(--soft)} .stat .v{font-size:clamp(22px,6vw,30px);font-weight:900;margin-top:4px}
+  .stat .u{font-size:11.5px;color:var(--faint)}
+  .stat.s .v{color:var(--warm)} .stat.l .v{color:var(--loss)} .stat.r .v{color:var(--green)}
+  .score{margin-top:18px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:13px;padding:16px}
+  .score .top{display:flex;justify-content:space-between;align-items:baseline}
+  .score .sc{font-size:34px;font-weight:900;color:var(--gold)}
+  .bm{margin-top:13px}.bm .r{display:grid;grid-template-columns:80px 1fr 42px;align-items:center;gap:9px;font-size:13px;margin:8px 0;color:var(--soft)}
+  .bm .tr{height:11px;border-radius:7px;background:#13202f;overflow:hidden}
+  .bm .f{height:100%;border-radius:7px}
+  .bm .me .f{background:linear-gradient(90deg,var(--warm),var(--gold))} .bm .av .f{background:#3a4d63} .bm .tp .f{background:#2f8f6a}
+  .verdict{margin-top:13px;font-size:15px;color:var(--ink);border-top:1px dashed var(--line);padding-top:13px}
+  .verdict b{color:var(--gold)}
+  .relight{display:block;width:100%;margin-top:16px;background:linear-gradient(135deg,var(--green),var(--green2));color:#04130d;
+    font-weight:900;font-size:15px;border:none;border-radius:12px;padding:14px;cursor:pointer;box-shadow:0 8px 26px rgba(79,224,163,.3)}
+  .relight:active{transform:translateY(1px)}
+  .note{font-size:12px;color:var(--faint);margin-top:13px;line-height:1.6}
+  .faq{margin-top:16px} .faq .q{color:var(--gold);font-size:14px;font-weight:700;margin-top:13px}
+  .faq .a{color:var(--soft);font-size:13.5px;margin-top:4px}
+  footer{position:relative;z-index:2;text-align:center;color:var(--faint);font-size:12px;padding:20px 20px 70px;line-height:1.7}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="veil"></div>
+
+<div class="content">
+  <!-- HERO -->
+  <section class="hero panel">
+    <div style="margin:auto 0">
+      <div class="counter" id="heroCount">347<small> 개의 빛</small></div>
+      <span class="kick" style="margin-top:22px">잠든 환자 = 꺼지지 않은 빛</span>
+      <h1>이 빛 하나가 <span class="g">환자 한 명</span>입니다.<br>스크롤하면, <span class="o">하나씩 꺼집니다.</span></h1>
+      <p class="lead">6개월 넘게 안 온 환자들. 사라진 게 아니라 — <b style="color:#fff">아무도 안 불러서</b> 천천히 잊혀지는 중입니다.<br>끝까지 내려가면, <b style="color:var(--gold)">당신 치과의 빛</b>도 직접 셀 수 있어요.</p>
+      <div class="scrollcue">↓ 스크롤해서 무슨 일이 벌어지는지 보세요</div>
+      <a class="cta" href="#diag" style="margin-top:14px;background:transparent;color:var(--gold);box-shadow:none;border:1px solid rgba(255,215,106,.4);font-size:14px;padding:11px 20px">⚡ 건너뛰고 내 숫자 바로 보기</a>
+    </div>
+  </section>
+
+  <!-- 막1: 통증 공감 -->
+  <section class="panel"><div class="glass" data-dark="0.25">
+    <span class="kick">데스크의 하루</span>
+    <h2>매일 이런 장면이 반복됩니다</h2>
+    <div class="scene"><span class="ic">🗂️</span><div>오늘 <b>누구한테 전화할지</b> 명단이 없습니다. 그냥 감으로 몇 명 찍어서 겁니다.</div></div>
+    <div class="scene"><span class="ic">⏳</span><div>스케일링 6개월 지난 환자가 <b>몇 명인지</b> 아무도 정확히 모릅니다.</div></div>
+    <div class="scene"><span class="ic">📵</span><div>상담만 받고 사라진 환자 — <b>다시 부르질 못합니다.</b></div></div>
+    <div class="scene"><span class="ic">🔁</span><div>"다음에 오세요" 하고 끝. 그 <b>다음</b>이 오지 않습니다.</div></div>
+  </div></section>
+
+  <!-- 막2-1: 통증 증폭 -->
+  <section class="panel"><div class="glass" data-dark="0.55">
+    <span class="kick" style="color:var(--loss);background:rgba(255,106,82,.12)">손실</span>
+    <h2>좋은 콜 리스트가 있어도,<br><span class="r">걸 시간이 없으면 0원</span>입니다.</h2>
+    <p>치료계획을 받은 환자의 <b style="color:var(--warm)">71%</b>가 30일 안에 "할지 말지"를 정합니다. 그 30일에 전화 한 통이 없으면, 그 환자는 조용히 다른 결정을 합니다.</p>
+    <p class="s">꺼진 빛 하나는 환자 한 명이 아니라, <b style="color:var(--loss)">그 환자가 받았을 치료 전부</b>입니다.</p>
+  </div></section>
+
+  <!-- 막2-2: 면죄 -->
+  <section class="panel"><div class="glass" data-dark="0.7">
+    <span class="kick" style="color:var(--green);background:rgba(79,224,163,.12)">면죄</span>
+    <h2>이건 <span class="gr">직원 잘못이 아닙니다.</span></h2>
+    <p>“리콜, 안 하는 게 아니라 못 하는 겁니다.” 데스크의 1순위는 언제나 <b>눈앞의 환자 응대</b>입니다.</p>
+    <p class="s">명단이 안 보이니 못 거는 거지, 게을러서가 아닙니다. 문제는 사람이 아니라 <b style="color:#fff">"안 보인다"</b>는 것 하나입니다.</p>
+  </div></section>
+
+  <!-- 막3-1: 케이스 -->
+  <section class="panel"><div class="glass" data-dark="0.78">
+    <span class="kick">같은 환자, 도구가 있을 때</span>
+    <h2>꺼진 빛을 <span class="gr">다시 켜는</span> 법</h2>
+    <div class="grid2">
+      <div class="pane bad"><div class="h">지금 (도구 없음)</div><ul>
+        <li>잠든 명단이 안 보임</li><li>누구부터 걸지 감으로</li><li>바쁘면 콜은 뒤로</li><li>걸어도 결과가 안 남음</li></ul></div>
+      <div class="pane good"><div class="h">AutoRecall (운영 도구)</div><ul>
+        <li>오늘 걸 환자를 <b>우선순위 큐</b>로</li><li>🔥슬롯필러 🚨임상급 💰고가치 📅표준 🌱재활성</li><li>차트는 <b>읽기만</b></li><li>통화 결과가 데이터로 쌓임</li></ul></div>
+    </div>
+    <div class="quote" style="margin-top:18px">“안 오는 환자는 없습니다. <span class="gr">안 부른 환자만</span> 있을 뿐.”
+      <small>— 책임은 환자가 아니라, 부르는 쪽에 있습니다</small></div>
+  </div></section>
+
+  <!-- 막3-2: 자가진단 ⭐ -->
+  <section class="panel" id="diag"><div class="glass" data-dark="0.82">
+    <span class="kick">30초 자가진단 ⭐</span>
+    <h2>당신 치과의 <span class="g">빛</span>을 직접 세어 보세요</h2>
+    <p class="s">슬라이더를 움직이면 즉시 계산됩니다. 아래 <b>“다시 켜기”</b>를 누르면, 잠든 환자만큼 배경의 빛이 되살아납니다.</p>
+    <div class="field"><div class="lab"><span>활성 환자 수</span><b id="vP">3,000명</b></div>
+      <input type="range" id="rP" min="500" max="20000" step="100" value="3000"></div>
+    <div class="field"><div class="lab"><span>6개월+ 안 온 비율</span><b id="vR">35%</b></div>
+      <input type="range" id="rR" min="10" max="60" step="1" value="35"></div>
+    <div class="field"><div class="lab"><span>1인 평균 진료가치 <span style="color:var(--faint)">(가정)</span></span><b id="vV">25만원</b></div>
+      <input type="range" id="rV" min="5" max="80" step="1" value="25"></div>
+
+    <div class="out">
+      <div class="stat s"><div class="k">잠든 환자</div><div class="v" id="oS">1,050</div><div class="u">명 (추정)</div></div>
+      <div class="stat l"><div class="k">잃은 매출</div><div class="v" id="oL">2.6억</div><div class="u">원 (추정)</div></div>
+      <div class="stat r"><div class="k">회수 가능</div><div class="v" id="oR">3,937</div><div class="u">만원 · 약 15%</div></div>
+    </div>
+
+    <div class="score"><div class="top"><span style="font-size:13px;color:var(--soft)">리콜 건강점수</span>
+      <span class="sc"><span id="oSc">45</span><span style="font-size:16px;color:var(--faint)"> / 100</span></span></div>
+      <div class="bm">
+        <div class="r me"><span style="color:var(--gold);font-weight:700">우리 치과</span><span class="tr"><i class="f" id="bmMe" style="width:45%"></i></span><span id="bmMeN" style="color:var(--gold);font-weight:800">45</span></div>
+        <div class="r av"><span>동네 평균</span><span class="tr"><i class="f" style="width:60%"></i></span><span>60</span></div>
+        <div class="r tp"><span style="color:#4fae86">상위 10%</span><span class="tr"><i class="f" style="width:82%"></i></span><span style="color:#4fae86">82</span></div>
+      </div>
+      <div class="verdict" id="vd">동네 평균보다 <b>아래</b>입니다. 잠든 환자가 매달 더 쌓이는 구간 — 가장 먼저 손대면 효과가 큰 자리입니다.</div>
+    </div>
+    <button class="relight" id="relightBtn">✨ 잠든 <span id="relN">1,050</span>명의 빛 다시 켜기</button>
+    <div class="note">📐 계산식 공개 · 잠든=활성×미내원율 · 잃은매출=잠든×진료가치(가정) · 회수=잃은×15% · 점수=100−미내원율×1.55. 모두 <b>예시·가정값</b>이며 의료 효과를 보장하지 않습니다. 입력값은 화면 안에서만 계산하고 <b>저장·전송하지 않습니다.</b></div>
+  </div></section>
+
+  <!-- 결: CTA -->
+  <section class="panel"><div class="glass" data-dark="0.5" style="text-align:center">
+    <span class="kick" style="color:var(--green);background:rgba(79,224,163,.12)">마지막</span>
+    <h2>방금 켠 빛은 <span style="color:var(--faint)">추정</span>입니다.<br><span class="gr">진짜 명단</span>은 설치해야 켜집니다.</h2>
+    <p class="s">설치하면 위 숫자가 <b style="color:#fff">실제 환자 이름이 박힌 오늘의 콜 큐</b>로 바뀝니다. 차트는 읽기만 하고, 데스크는 "오늘 누구부터" 고민할 필요가 없어집니다. <b style="color:var(--warm)">안 깔면 다음 달 빛도 똑같이 꺼져 있습니다.</b></p>
+    <a class="cta green" href="#" onclick="alert('데모 페이지입니다. 실제 설치/문의 연결은 원장 검수 후 연동됩니다.');return false;">✨ 설치하고 진짜 명단 받기</a>
+    <div class="faq" style="text-align:left">
+      <div class="q">Q. 차트(덴트웹) 데이터가 밖으로 나가나요?</div><div class="a">A. 아니요. 원내 로컬에서 <b>읽기만</b> 합니다. 환자정보는 병원을 떠나지 않습니다.</div>
+      <div class="q">Q. 효과가 보장되나요?</div><div class="a">A. 보장하지 않습니다. 전화 우선순위를 <b>보이게 정리해 주는 운영 도구</b>입니다. 거는 건 사람이 합니다.</div>
+    </div>
+  </div></section>
+</div>
+<footer>AutoRecall 데모 · 2026-06-30 · 모든 수치는 예시/가정값이며 계산식을 화면에 공개합니다. 입력값 저장·전송 없음 · 차트 읽기 전용 · 한글 우선.</footer>
+
+<script>
+(function(){
+  var canvas=document.getElementById('c'), ctx=canvas.getContext('2d');
+  var W,H,DPR;
+  var N=347, dots=[];
+  var ready=false;
+  function resize(){
+    DPR=Math.min(2,window.devicePixelRatio||1);
+    W=canvas.clientWidth||window.innerWidth||document.documentElement.clientWidth;
+    H=canvas.clientHeight||window.innerHeight||document.documentElement.clientHeight;
+    if(!W||!H){ return; } // skip until layout has real dimensions
+    canvas.width=W*DPR; canvas.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0);
+    ready=true; layout();
+  }
+  function layout(){
+    // scatter dots across screen, gentle grid + jitter
+    var cols=Math.ceil(Math.sqrt(N*(W/H)));
+    var rows=Math.ceil(N/cols);
+    var i=0;
+    for(var r=0;r<rows;r++){
+      for(var cc=0;cc<cols;cc++){
+        if(i>=N) break;
+        var d=dots[i]||(dots[i]={});
+        var gx=(cc+0.5)/cols*W, gy=(r+0.5)/rows*H;
+        d.bx=gx + (Math.sin(i*12.9)*0.5+0.0)* (W/cols)*0.6;
+        d.by=gy + (Math.cos(i*7.7)*0.5)* (H/rows)*0.6;
+        d.x=d.bx; d.y=d.by;
+        d.r=1.6+ (i%7===0?1.6:0.7);
+        d.phase=Math.random()*6.28;
+        d.spd=0.4+Math.random()*0.8;
+        d.lit = (d.lit===undefined?1:d.lit);   // current brightness
+        d.target = (d.target===undefined?1:d.target);
+        d.off = (i/N);                          // order in which they go dark
+        i++;
+      }
+    }
+    dots.length=N;
+  }
+  window.addEventListener('resize',resize);
+
+  // scroll progress 0..1 over whole doc
+  var prog=0;
+  function onScroll(){
+    var sc=window.scrollY||document.documentElement.scrollTop;
+    var max=document.documentElement.scrollHeight-window.innerHeight;
+    prog=max>0?Math.min(1,sc/max):0;
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+
+  // section-driven darkness target (data-dark)
+  var glasses=[].slice.call(document.querySelectorAll('.glass'));
+  var darkTarget=0;        // 0..1 fraction of dots forced dark by current section
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in');
+        var d=parseFloat(e.target.getAttribute('data-dark')||'0');
+        if(!isNaN(d)) darkTarget=d;
+      }
+    });
+  },{threshold:.4});
+  glasses.forEach(function(g){io.observe(g);});
+
+  var relit=0;   // number of dots forced re-lit by the button (overrides darkness)
+  var relightPulse=0;
+
+  function frame(t){
+    if(!ready){ resize(); requestAnimationFrame(frame); return; }
+    ctx.clearRect(0,0,W,H);
+    // combine scroll prog + section darkTarget: more darkness as you go
+    var darkFrac=Math.max(prog*0.85, darkTarget);
+    var darkCount=Math.floor(N*darkFrac);
+    for(var i=0;i<N;i++){
+      var d=dots[i];
+      // order: highest .off go dark first (later dots fade as you scroll)
+      var goDark = (i< darkCount);
+      // re-light override: first `relit` dots stay/forced lit
+      if(relit>0 && i<relit) goDark=false;
+      d.target = goDark?0:1;
+      d.lit += (d.target-d.lit)*0.06;
+      // gentle drift; dark dots sink slightly
+      var tt=t*0.001*d.spd + d.phase;
+      var dx=Math.sin(tt)*3.2, dy=Math.cos(tt*0.8)*3.2 + (1-d.lit)*14;
+      var x=d.bx+dx, y=d.by+dy;
+      var a=0.12 + d.lit*0.88;
+      var R=d.r*(0.7+d.lit*0.6);
+      // glow for lit
+      if(d.lit>0.15){
+        var g=ctx.createRadialGradient(x,y,0,x,y,R*5);
+        var pulse=1+ (relightPulse>0? Math.sin(t*0.02)*0.25:0);
+        g.addColorStop(0,'rgba(255,213,106,'+(0.5*d.lit*pulse)+')');
+        g.addColorStop(1,'rgba(255,183,78,0)');
+        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,R*5,0,6.2832); ctx.fill();
+      }
+      ctx.beginPath(); ctx.arc(x,y,R,0,6.2832);
+      ctx.fillStyle = d.lit>0.15
+        ? 'rgba(255,225,150,'+a+')'
+        : 'rgba(90,110,135,'+(0.28)+')';
+      ctx.fill();
+    }
+    if(relightPulse>0) relightPulse-=1;
+    requestAnimationFrame(frame);
+  }
+  resize(); onScroll(); requestAnimationFrame(frame);
+  window.addEventListener('load',resize);
+  setTimeout(resize,300);
+
+  // hero counter subtle
+  // ---------- diagnose ----------
+  var rP=document.getElementById('rP'),rR=document.getElementById('rR'),rV=document.getElementById('rV');
+  var lastSleep=1050;
+  function fmt(n){return Math.round(n).toLocaleString();}
+  function setBg(el){ el.style.setProperty('--p',((el.value-el.min)/(el.max-el.min)*100)+'%'); }
+  function calc(){
+    [rP,rR,rV].forEach(setBg);
+    var P=+rP.value,R=+rR.value,V=+rV.value;
+    document.getElementById('vP').textContent=fmt(P)+'명';
+    document.getElementById('vR').textContent=R+'%';
+    document.getElementById('vV').textContent=V+'만원';
+    var s=Math.round(P*R/100), lost=s*V, rec=Math.round(lost*0.15);
+    lastSleep=s;
+    document.getElementById('oS').textContent=fmt(s);
+    document.getElementById('oL').textContent= lost>=10000?(lost/10000).toFixed(1)+'억':fmt(lost)+'만';
+    document.getElementById('oR').textContent= rec>=10000?(rec/10000).toFixed(1)+'억':fmt(rec);
+    var sc=Math.max(5,Math.min(99,Math.round(100-R*1.55)));
+    document.getElementById('oSc').textContent=sc;
+    document.getElementById('bmMe').style.width=sc+'%';
+    document.getElementById('bmMeN').textContent=sc;
+    document.getElementById('relN').textContent=fmt(Math.min(N,Math.round(s/ (P/N) ))||s);
+    // show capped to N for the "lights" metaphor
+    document.getElementById('relN').textContent=fmt(s);
+    var vd=document.getElementById('vd');
+    if(sc>=82) vd.innerHTML='상위 10% 수준입니다. 남은 <b>'+fmt(s)+'명</b>만 더 줄이면 됩니다.';
+    else if(sc>=60) vd.innerHTML='동네 평균 이상입니다. 다만 잠든 <b>'+fmt(s)+'명</b>은 여전히 매달 매출이 새는 자리입니다.';
+    else vd.innerHTML='동네 평균보다 <b>아래</b>입니다. 잠든 <b>'+fmt(s)+'명</b>이 매달 쌓이는 구간 — 가장 먼저 손대면 효과가 큰 자리입니다.';
+  }
+  [rP,rR,rV].forEach(function(el){el.addEventListener('input',calc);});
+  calc();
+
+  document.getElementById('relightBtn').addEventListener('click',function(){
+    // re-light a fraction of dots proportional to sleeping share, animate pulse
+    var P=+rP.value; var share=Math.min(1, lastSleep/Math.max(P, lastSleep));
+    relit=Math.max(1,Math.round(N*share));
+    relightPulse=120;
+    this.textContent='✨ 다시 켜졌습니다 — 이제 진짜 명단만 남았어요';
+  });
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

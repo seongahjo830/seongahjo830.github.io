@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>제작 리서치 — 스토리라인을 '완전히 다른 3방식'으로 만드는 이상적 방법</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBFAF7; --ink:#1A1712; --soft:#574F45; --faint:#8B8377; --line:#ECE7DD; --card:#fff;
+    --accent:#1F6F54; --accent-soft:#E7F1EC; --loss:#C2522F;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.78;font-size:17px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px}
+  header{padding:56px 0 8px}
+  .kick{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:6px 13px;border-radius:999px}
+  h1{font-size:clamp(27px,4.4vw,38px);font-weight:900;letter-spacing:-.03em;line-height:1.22;margin:16px 0 0}
+  .sub{color:var(--soft);font-size:16.5px;margin-top:12px}
+  .bluf{background:#fff;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:14px;padding:20px 22px;margin:26px 0 0}
+  .bluf b{color:var(--ink)}
+  h2{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:44px 0 0;padding-top:22px;border-top:1px solid var(--line)}
+  h3{font-size:16.5px;font-weight:800;margin:24px 0 0}
+  p{margin:12px 0 0}
+  p.s{color:var(--soft);font-size:15.5px}
+  ul{margin:12px 0 0;padding-left:20px} li{margin:7px 0;color:var(--soft)}
+  li b{color:var(--ink)}
+  .grade{font-size:11.5px;font-weight:800;border-radius:5px;padding:1px 6px}
+  .gA{background:#DCEFE6;color:#1A4F3C} .gB{background:#FBF1D8;color:#7A5B12}
+  table{width:100%;border-collapse:collapse;margin:16px 0 0;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  th,td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#FAF7F1;font-weight:800;font-size:12.5px}
+  td b{color:var(--accent)}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+  @media(max-width:680px){.cards{grid-template-columns:1fr}}
+  .c{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+  .c .n{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.08em}
+  .c h4{font-size:16px;font-weight:900;margin:6px 0 0}
+  .c p{font-size:13.5px;color:var(--soft);margin-top:8px}
+  .callout{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px 18px;margin-top:16px}
+  a.cta{display:inline-block;margin:8px 8px 0 0;background:var(--accent);color:#fff;font-weight:800;text-decoration:none;padding:11px 16px;border-radius:11px;font-size:14px}
+  footer{padding:40px 0 60px;color:var(--faint);font-size:13px}
+  footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <span class="kick">제작 리서치 · How to build it well</span>
+  <h1>같은 스토리라인을 '완전히 다른 3방식'으로<br>만드는 이상적 방법</h1>
+  <p class="sub">기존 <a href="../L_스토리라인-리서치+랜딩_06-30/0_리서치결론-스토리라인설계도.html" style="color:var(--accent)">스토리라인 설계도(3막 8장)</a>는 그대로. 이번 리서치는 "그 서사를 <b>어떤 형식·인터랙션·비주얼 훅</b>으로 풀어야 전환이 오르나"에 대한 표준 조사 결론.</p>
+</div></header>
+
+<div class="wrap">
+  <div class="bluf"><b>한 줄 결론(BLUF).</b> ① <b>인터랙티브 자가진단(슬라이더·퀴즈)</b>은 정적 폼 대비 전환 <b>약 16배</b> — 3방식 전부의 심장으로 유지하되 "내 숫자를 먼저 보여주고" 연락처는 나중. ② 히어로는 <b>5초 패턴 인터럽트 + 짧은 헤드라인 + CTA 1개 + 결과(아웃컴) 중심</b>. ③ <b>모바일 우선·3초 내 로딩·외부 의존성 0</b>. ④ 차별화는 <b>장르(형식) 자체를 바꾸는 것</b> — 그래서 같은 8장을 <b>터미널 콘솔 / 메신저 대화 / 파티클 데이터비주얼</b> 세 장르로 분기.</div>
+
+  <h2>1. 표준 리서치 결론 — '이상적'의 근거</h2>
+  <table>
+    <tr><th>원칙</th><th>근거 수치/출처</th><th>3방식 적용</th></tr>
+    <tr><td><b>인터랙티브 우선</b></td><td>인터랙티브 폼/퀴즈 전환 40~47% vs 정적 2.8% (≈16x) <span class="grade gA">🟢</span></td><td>자가진단 슬라이더를 세 장르 각각의 UI로 내장(터미널 입력·챗봇 질문·파티클 재점등)</td></tr>
+    <tr><td><b>가치 먼저(Value-first)</b></td><td>"결과를 먼저 주고, 연락처는 게이트 뒤로" — 신뢰·데이터 동시 확보 <span class="grade gA">🟢</span></td><td>설치 전에 "내 숫자(잠든 환자·잃은 매출)"부터 화면에서 즉시 계산</td></tr>
+    <tr><td><b>히어로 5초 룰</b></td><td>짧은 헤드라인·CTA 1개·미세 애니메이션·다중 의사결정자(원장+실장) <span class="grade gB">🟡</span></td><td>세 장르 모두 첫 화면에 강한 모션 훅 + "안 부른 환자만" 한 문장</td></tr>
+    <tr><td><b>대화형의 힘</b></td><td>대화형 경험 전환 3~4x·"들어준다"는 감각 <span class="grade gA">🟢</span></td><td>2번 방식(메신저)이 정면으로 활용 — 원장·실장 대화로 통증을 '엿보게'</td></tr>
+    <tr><td><b>테크니컬 모노</b></td><td>모노스페이스·터미널 미감 = 통제·장인·진정성 신호(과장 광고 반대) <span class="grade gB">🟡</span></td><td>1번 방식(콘솔)이 "운영 도구" 포지셔닝과 정확히 일치(효과 보장 X)</td></tr>
+    <tr><td><b>아웃컴 > 기능</b></td><td>"쓰고 나면 뭐가 달라지나"를 보여주기 <span class="grade gB">🟡</span></td><td>케이스 좌(현실)/우(회수)·벤치마크로 변화 가시화</td></tr>
+    <tr><td><b>모바일·속도</b></td><td>B2B 구매자 80%+가 폰으로 조사·3초 내 로딩 <span class="grade gA">🟢</span></td><td>반응형·단일 HTML·외부 의존성 0(폰트 1개 CDN, 폴백 시스템폰트)</td></tr>
+  </table>
+
+  <h2>2. 결정 — '전혀 다른 3방식'은 장르를 바꾼다</h2>
+  <p class="s">색만 바꾸면 '다른 방식'이 아니다. <b>읽는 사람의 행동 양식(인터랙션 메타포) 자체</b>를 바꿔야 진짜 다른 경험. 같은 3막 8장 + 같은 자가진단을 세 장르로:</p>
+  <div class="cards">
+    <div class="c"><div class="n">방식 1 · CONSOLE</div><h4>터미널 진단 콘솔</h4><p>차트를 스캔하는 시스템처럼. 타이핑 부팅 → "347명 발견" 경고 로그 → 명령으로 자가진단. <b>장인·통제·진정성</b> 신호. '운영 도구' 포지셔닝과 일치.</p></div>
+    <div class="c"><div class="n">방식 2 · MESSENGER</div><h4>원장·실장 대화 엿보기</h4><p>메신저 화면처럼. 두 사람의 대화로 통증·면죄가 자연스럽게 드러남 → 진단봇이 끼어들어 '내 숫자' 계산. <b>대화형 3~4x·공감</b>.</p></div>
+    <div class="c"><div class="n">방식 3 · PARTICLE</div><h4>잠든 환자 347개의 빛</h4><p>환자 한 명 = 빛나는 점 하나. 스크롤하면 점들이 꺼져가고(잊혀짐), 자가진단으로 '내 환자'가 다시 켜진다. <b>이중부호화·보유효과</b>로 각인.</p></div>
+  </div>
+
+  <h2>3. 가드레일 (세 방식 공통, 반드시)</h2>
+  <ul>
+    <li><b>의료효과·치료결과 보장 표현 금지</b> — "전화 우선순위 정리를 돕는 운영 도구"로만.</li>
+    <li><b>모든 수치 = 예시·가정값 명시 + 계산식 공개</b>(슬라이더 위/아래에 항상 노출).</li>
+    <li><b>입력값 저장·전송 안 함</b> — 화면 안에서만 계산. 환자정보 원내 로컬·차트 읽기만.</li>
+    <li><b>한글 우선</b>, 영어는 괄호 병기. 반응형·외부 의존성 최소.</li>
+  </ul>
+
+  <div class="callout">
+    <a class="cta" href="1_터미널-진단콘솔.html">→ 방식 1 · 터미널 콘솔</a>
+    <a class="cta" href="2_메신저-대화엿보기.html">→ 방식 2 · 메신저 대화</a>
+    <a class="cta" href="3_파티클-잠든환자347.html">→ 방식 3 · 파티클</a>
+  </div>
+</div>
+
+<footer><div class="wrap">
+  제작 리서치 · 2026-06-30 · 근거등급 🟢직접/실데이터 🟡정립이론<br>
+  출처: <a href="https://www.saasframe.io/blog/10-saas-landing-page-trends-for-2026-with-real-examples">SaaSFrame 2026 트렌드</a> ·
+  <a href="https://outgrow.co/blog/interactive-forms-lead-generation-2025/">Outgrow 인터랙티브 폼 16x</a> ·
+  <a href="https://www.digitalauthority.me/resources/conversational-landing-pages-increase-conversion/">Digital Authority 대화형 랜딩</a> ·
+  <a href="https://medium.com/@phazeline/the-terminal-aesthetic-and-the-return-of-texture-to-the-web-ed37ee8183bd">Terminal Aesthetic</a>
+</div></footer>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

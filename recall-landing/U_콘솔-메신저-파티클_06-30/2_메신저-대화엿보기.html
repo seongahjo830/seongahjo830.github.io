@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>원장님, 잠깐만요 — 데스크의 진짜 대화 · AutoRecall</title>
+<meta name="description" content="원장과 실장의 대화로 드러나는 '안 부른 환자'. 진단봇이 당신의 숫자를 계산해 드립니다.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  :root{
+    --bg:#8aa7c7; --bg2:#7e9cbf; --phone:#b2c7de; --ink:#16202b; --soft:#5a6b7b;
+    --me:#fee500; --me-ink:#191600; --you:#ffffff; --bot:#e8f3ee; --bot-line:#bfe0cf;
+    --accent:#1f9d6b; --accent2:#147a52; --loss:#e0533a;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;
+    background:linear-gradient(160deg,#9fb8d4,#7d9cbf 60%,#6f8fb4);min-height:100vh}
+  .stage{max-width:560px;margin:0 auto;padding:22px 14px 60px}
+  .head{text-align:center;color:#fff;padding:18px 8px 6px}
+  .head .k{font-size:12px;font-weight:800;letter-spacing:.12em;opacity:.92;text-transform:uppercase}
+  .head h1{font-size:clamp(22px,5.6vw,30px);font-weight:900;letter-spacing:-.03em;line-height:1.22;margin-top:8px;
+    text-shadow:0 2px 14px rgba(0,0,0,.18)}
+  .head p{font-size:14px;opacity:.94;margin-top:9px;line-height:1.6}
+  .down{display:inline-block;margin-top:14px;color:#16202b;background:#fff;font-weight:800;font-size:14px;
+    text-decoration:none;padding:11px 18px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+  /* phone */
+  .phone{margin:20px auto 0;background:var(--phone);border-radius:30px;padding:10px;max-width:430px;
+    box-shadow:0 30px 70px rgba(20,40,70,.4),inset 0 0 0 2px rgba(255,255,255,.25)}
+  .screen{background:var(--phone);border-radius:22px;overflow:hidden}
+  .nav{display:flex;align-items:center;gap:9px;padding:13px 15px;background:rgba(255,255,255,.55);backdrop-filter:blur(4px)}
+  .nav .bk{color:#23323f;font-size:18px;font-weight:700}
+  .nav .av{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#2a3a4a,#46627d);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px}
+  .nav .who{font-size:15px;font-weight:800} .nav .st{font-size:11.5px;color:#5a6b7b;margin-top:1px}
+  .thread{padding:16px 13px 20px;display:flex;flex-direction:column;gap:3px}
+  .day{align-self:center;font-size:11px;color:#3a4b5b;background:rgba(255,255,255,.5);padding:3px 11px;border-radius:999px;margin:6px 0 10px}
+  .msg{max-width:80%;padding:10px 13px;border-radius:16px;font-size:14.5px;line-height:1.55;position:relative;
+    opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease;word-break:break-word}
+  .msg.in{opacity:1;transform:none}
+  .row{display:flex;flex-direction:column;margin-top:7px}
+  .row.you{align-items:flex-start} .row.me{align-items:flex-end}
+  .name{font-size:11px;color:#3a4b5b;margin:0 0 3px 6px}
+  .you .msg{background:var(--you);border-top-left-radius:5px;color:#16202b}
+  .me .msg{background:var(--me);border-top-right-radius:5px;color:var(--me-ink);font-weight:600}
+  .time{font-size:10px;color:#3f5060;margin:2px 6px 0;opacity:.7}
+  .me .time{align-self:flex-end}
+  .msg b{font-weight:800}
+  .msg .red{color:var(--loss);font-weight:800} .msg .grn{color:var(--accent2);font-weight:800}
+  .sys{align-self:center;text-align:center;font-size:12.5px;color:#26343f;background:rgba(255,255,255,.6);
+    border-radius:12px;padding:8px 14px;margin:12px 4px;line-height:1.55;max-width:92%}
+  .sys b{color:var(--accent2)}
+  /* bot */
+  .bot-av{background:linear-gradient(135deg,var(--accent),var(--accent2))!important}
+  .bot .msg{background:var(--bot);border:1px solid var(--bot-line);border-top-left-radius:5px;color:#13302a}
+  .card{background:#fff;border-radius:16px;border-top-left-radius:5px;border:1px solid var(--bot-line);
+    padding:15px;max-width:90%;opacity:0;transform:translateY(10px);transition:.45s}
+  .card.in{opacity:1;transform:none}
+  .card h3{font-size:14px;font-weight:900;color:var(--accent2);display:flex;align-items:center;gap:6px}
+  .field{margin-top:14px}
+  .field .lab{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:#2a3a44}
+  .field .lab b{color:var(--accent2);font-size:15px}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;margin-top:8px;
+    background:linear-gradient(90deg,var(--accent),#7fd9b4) no-repeat;background-size:var(--p,40%) 100%;
+    background-color:#dfeae4;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+    background:#fff;border:3px solid var(--accent);box-shadow:0 2px 8px rgba(20,122,82,.4);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--accent);cursor:pointer}
+  .out{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:15px}
+  @media(max-width:430px){.out{grid-template-columns:1fr}}
+  .stat{background:#f4f9f6;border:1px solid var(--bot-line);border-radius:11px;padding:10px;text-align:center}
+  .stat .k{font-size:11px;color:#5a6b7b} .stat .v{font-size:21px;font-weight:900;margin-top:2px}
+  .stat .u{font-size:10.5px;color:#7a8a96}
+  .stat.s .v{color:#c98a16} .stat.l .v{color:var(--loss)} .stat.r .v{color:var(--accent2)}
+  .score{margin-top:14px;background:#f4f9f6;border:1px solid var(--bot-line);border-radius:11px;padding:13px}
+  .score .top{display:flex;justify-content:space-between;align-items:baseline}
+  .score .sc{font-size:26px;font-weight:900;color:var(--accent2)}
+  .bm{margin-top:10px} .bm .r{display:grid;grid-template-columns:66px 1fr 36px;align-items:center;gap:7px;font-size:12px;margin:6px 0;color:#2a3a44}
+  .bm .tr{height:9px;border-radius:6px;background:#e1ebe6;overflow:hidden}
+  .bm .f{height:100%;border-radius:6px}
+  .bm .me .f{background:linear-gradient(90deg,var(--accent),#7fd9b4)} .bm .av .f{background:#a9c3b7} .bm .tp .f{background:#4fae86}
+  .verdict{margin-top:11px;font-size:13px;color:#2a3a44;border-top:1px dashed var(--bot-line);padding-top:10px}
+  .verdict b{color:var(--accent2)}
+  .note{font-size:11px;color:#6b7b86;margin-top:9px;line-height:1.55}
+  .cta-card{background:linear-gradient(135deg,var(--accent2),#0f6243);color:#fff;border-radius:16px;border-top-left-radius:5px;
+    padding:16px;max-width:90%;opacity:0;transform:translateY(10px);transition:.45s}
+  .cta-card.in{opacity:1;transform:none}
+  .cta-card h3{font-size:16px;font-weight:900} .cta-card p{font-size:13px;opacity:.95;margin-top:7px;line-height:1.6}
+  .cta-card a{display:block;text-align:center;margin-top:13px;background:#fff;color:var(--accent2);font-weight:900;
+    text-decoration:none;padding:13px;border-radius:11px;font-size:15px}
+  .typing{display:inline-flex;gap:4px;padding:12px 14px;background:var(--you);border-radius:16px;border-top-left-radius:5px}
+  .typing i{width:7px;height:7px;border-radius:50%;background:#9aa8b4;animation:bob 1.2s infinite}
+  .typing i:nth-child(2){animation-delay:.2s} .typing i:nth-child(3){animation-delay:.4s}
+  @keyframes bob{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+  .hint{text-align:center;color:#fff;font-size:12px;opacity:.85;margin-top:16px}
+  footer{text-align:center;color:#eef4fa;font-size:11.5px;margin-top:22px;line-height:1.7;opacity:.92}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head">
+    <div class="k">A real desk conversation</div>
+    <h1>“원장님, 그 환자들… <br>안 온 게 아니라 우리가 안 불렀어요.”</h1>
+    <p>어느 치과 데스크의 실제 같은 대화. 스크롤로 엿보다 보면,<br>당신 치과의 숫자도 직접 나옵니다. <b>(차트는 읽기만, 저장·전송 안 함)</b></p>
+    <a class="down" href="javascript:void(0)" onclick="window.__skipToDiag&&window.__skipToDiag()">⚡ 대화 건너뛰고 내 숫자 바로 보기</a>
+  </div>
+
+  <div class="phone">
+    <div class="screen">
+      <div class="nav">
+        <span class="bk">‹</span>
+        <span class="av">실</span>
+        <span><div class="who">김실장 · 데스크</div><div class="st">우리 치과 단톡방</div></span>
+      </div>
+      <div class="thread" id="thread"></div>
+    </div>
+  </div>
+  <div class="hint" id="hint">대화가 이어지는 중…</div>
+
+  <footer>AutoRecall 데모 · 2026-06-30 · 모든 수치는 예시/가정값이며 계산식을 공개합니다. 입력값 저장·전송 없음 · 차트 읽기 전용 · 전화 우선순위 정리를 돕는 운영 도구(의료 효과 보장 아님) · 한글 우선.</footer>
+</div>
+
+<script>
+(function(){
+  var thread=document.getElementById('thread');
+  var hint=document.getElementById('hint');
+  // script of the chat. type: you(실장)/me(원장)/sys/bot/typing/card
+  var S=[
+    {t:'day', s:'오늘 오후 3:12'},
+    {t:'you', n:'김실장', m:'원장님, 이번 달 신환은 늘었는데 매출이 거의 그대로예요 😥'},
+    {t:'me', m:'어 그러게. 환자는 많이 본 거 같은데?'},
+    {t:'you', n:'김실장', m:'신환 받느라 정신없는 사이에… <b>예전 환자들이 슬슬 안 와요.</b>'},
+    {t:'you', n:'김실장', m:'스케일링 6개월 지난 분들, 솔직히 <span class="red">몇 명인지 저도 몰라요.</span>'},
+    {t:'me', m:'그분들한테 연락은 돌리고 있지?'},
+    {t:'you', n:'김실장', m:'…그게요. 누구한테 걸어야 할지 <b>명단이 없어서</b> 그냥 감으로 몇 명 했어요.'},
+    {t:'sys', m:'💡 치료계획 받은 환자의 <b>71%</b>가 30일 안에 "할지 말지"를 정합니다. 그 사이 전화 한 통이 없으면, 조용히 다른 결정을 합니다.'},
+    {t:'me', m:'상담만 받고 안 온 사람도 꽤 되지 않나'},
+    {t:'you', n:'김실장', m:'네… 상담 후 잠수 타신 분들요. <span class="red">다시 부르질 못했어요.</span>'},
+    {t:'me', m:'그거 우리 직원들이 일을 안 하는 건가? 🤔'},
+    {t:'you', n:'김실장', m:'원장님, 그건 진짜 아니에요.'},
+    {t:'you', n:'김실장', m:'데스크 1순위는 <b>눈앞 환자 응대</b>잖아요. <span class="grn">안 하는 게 아니라, 명단이 안 보여서 못 하는 거예요.</span>'},
+    {t:'sys', m:'문제는 사람이 아니라 <b>"안 보인다"</b>는 것 하나입니다. 좋은 콜 리스트가 있어도 걸 시간이 없으면 — <b style="color:#e0533a">매출은 0원</b>.'},
+    {t:'me', m:'그럼 그 "안 보이는 명단"을 보이게 하면 되는 거 아냐?'},
+    {t:'you', n:'김실장', m:'맞아요! 그래서 제가 도구 하나 알아봤는데요 👀'},
+    {t:'bot', n:'AutoRecall 진단봇', m:'안녕하세요 🤖 차트를 <b>읽기만</b> 해서, 오늘 걸 환자를 우선순위로 정리해주는 운영 도구예요.'},
+    {t:'bot', n:'AutoRecall 진단봇', m:'설치 전에, 지금 새고 있는 게 얼마나 되는지 <b>슬라이더 3개로 바로 추정</b>해 볼까요?'},
+    {t:'card'},  // interactive diagnose card
+    {t:'bot', n:'AutoRecall 진단봇', m:'방금 본 숫자는 <b>추정치</b>예요. <span class="red">진짜 명단(환자 이름)</span>은 설치해야 보입니다.'},
+    {t:'cta'}
+  ];
+
+  var i=0, fast=false, cardBuilt=false;
+  function appendDay(s){ var d=document.createElement('div'); d.className='day'; d.textContent=s; thread.appendChild(d); return d; }
+  function appendSys(m){ var d=document.createElement('div'); d.className='sys'; d.innerHTML=m; thread.appendChild(d); reveal(d); }
+  function appendMsg(side,name,m,isBot){
+    var row=document.createElement('div'); row.className='row '+side;
+    if(name){ var nm=document.createElement('div'); nm.className='name'; nm.textContent=name; row.appendChild(nm); }
+    var b=document.createElement('div'); b.className='msg'+(isBot?'':''); b.innerHTML=m; row.appendChild(b);
+    if(isBot) row.classList.add('bot');
+    thread.appendChild(row); reveal(b);
+  }
+  function reveal(el){ requestAnimationFrame(function(){ setTimeout(function(){el.classList.add('in');},20); }); }
+
+  function showTyping(side,cb,dur){
+    var row=document.createElement('div'); row.className='row '+side;
+    var t=document.createElement('div'); t.className='typing'; t.innerHTML='<i></i><i></i><i></i>';
+    row.appendChild(t); thread.appendChild(row); scroll();
+    setTimeout(function(){ row.remove(); cb(); }, dur||750);
+  }
+  function scroll(){ /* keep page scroll natural; just ensure visible */ }
+
+  function next(){
+    if(i>=S.length){ hint.style.display='none'; return; }
+    var step=S[i++];
+    if(step.t==='day'){ appendDay(step.s); setTimeout(next,fast?10:200); return; }
+    if(step.t==='sys'){ appendSys(step.m); setTimeout(next,fast?20:760); return; }
+    if(step.t==='card'){ buildCard(); return; }
+    if(step.t==='cta'){ buildCta(); hint.style.display='none'; return; }
+    // me/you/bot with typing indicator
+    var side = step.t==='me'?'me':'you';
+    var isBot = step.t==='bot';
+    if(fast){ appendMsg(side, step.n||null, step.m, isBot); setTimeout(next,20); return; }
+    showTyping(side, function(){
+      appendMsg(side, step.n||null, step.m, isBot);
+      setTimeout(next, 480);
+    }, side==='me'?560:760);
+  }
+
+  // fast-forward to the interactive diagnosis (value-first shortcut)
+  window.__skipToDiag=function(){
+    fast=true;
+    var tryScroll=setInterval(function(){
+      if(cardBuilt){ clearInterval(tryScroll);
+        var card=document.querySelector('.card');
+        if(card) card.scrollIntoView({behavior:'smooth',block:'center'});
+      }
+    },120);
+    setTimeout(function(){clearInterval(tryScroll);},6000);
+  };
+
+  // ---------- interactive diagnose card ----------
+  function buildCard(){
+    var c=document.createElement('div'); c.className='card';
+    c.innerHTML=''
+      +'<h3>🩺 30초 자가진단</h3>'
+      +'<div class="field"><div class="lab"><span>활성 환자 수</span><b id="vP">3,000명</b></div>'
+      +'<input type="range" id="rP" min="500" max="20000" step="100" value="3000"></div>'
+      +'<div class="field"><div class="lab"><span>6개월+ 안 온 비율</span><b id="vR">35%</b></div>'
+      +'<input type="range" id="rR" min="10" max="60" step="1" value="35"></div>'
+      +'<div class="field"><div class="lab"><span>1인 평균 진료가치 <span style="color:#8a98a4">(가정)</span></span><b id="vV">25만원</b></div>'
+      +'<input type="range" id="rV" min="5" max="80" step="1" value="25"></div>'
+      +'<div class="out">'
+      +'<div class="stat s"><div class="k">잠든 환자</div><div class="v" id="oS">1,050</div><div class="u">명(추정)</div></div>'
+      +'<div class="stat l"><div class="k">잃은 매출</div><div class="v" id="oL">2.6억</div><div class="u">원(추정)</div></div>'
+      +'<div class="stat r"><div class="k">회수 가능</div><div class="v" id="oR">3,937</div><div class="u">만원·15%</div></div>'
+      +'</div>'
+      +'<div class="score"><div class="top"><span style="font-size:12px;color:#5a6b7b">리콜 건강점수</span>'
+      +'<span class="sc"><span id="oSc">45</span><span style="font-size:14px;color:#7a8a96"> / 100</span></span></div>'
+      +'<div class="bm">'
+      +'<div class="r me"><span style="color:#147a52;font-weight:700">우리 치과</span><span class="tr"><i class="f" id="bmMe" style="width:45%"></i></span><span id="bmMeN" style="color:#147a52;font-weight:800">45</span></div>'
+      +'<div class="r av"><span>동네 평균</span><span class="tr"><i class="f" style="width:60%"></i></span><span>60</span></div>'
+      +'<div class="r tp"><span style="color:#2a8f6a">상위 10%</span><span class="tr"><i class="f" style="width:82%"></i></span><span style="color:#2a8f6a">82</span></div>'
+      +'</div>'
+      +'<div class="verdict" id="vd">동네 평균보다 <b>아래</b>예요. 잠든 환자가 매달 더 쌓이는 구간이라, 가장 먼저 손대면 효과가 큰 자리예요.</div>'
+      +'</div>'
+      +'<div class="note">📐 계산식 공개 · 잠든=활성×미내원율 · 잃은매출=잠든×진료가치(가정) · 회수=잃은×15% · 점수=100−미내원율×1.55. 모두 <b>예시·가정값</b>이며 의료 효과를 보장하지 않습니다. 입력값은 화면 안에서만 계산, <b>저장·전송 안 함</b>.</div>';
+    thread.appendChild(c); reveal(c); wireCard(); cardBuilt=true;
+    setTimeout(next, fast?20:820);
+  }
+  function fmt(n){return Math.round(n).toLocaleString();}
+  function setBg(el){ el.style.setProperty('--p',((el.value-el.min)/(el.max-el.min)*100)+'%'); }
+  function wireCard(){
+    var rP=document.getElementById('rP'),rR=document.getElementById('rR'),rV=document.getElementById('rV');
+    function calc(){
+      [rP,rR,rV].forEach(setBg);
+      var P=+rP.value,R=+rR.value,V=+rV.value;
+      document.getElementById('vP').textContent=fmt(P)+'명';
+      document.getElementById('vR').textContent=R+'%';
+      document.getElementById('vV').textContent=V+'만원';
+      var s=Math.round(P*R/100), lost=s*V, rec=Math.round(lost*0.15);
+      document.getElementById('oS').textContent=fmt(s);
+      document.getElementById('oL').textContent= lost>=10000?(lost/10000).toFixed(1)+'억':fmt(lost)+'만';
+      document.getElementById('oR').textContent= rec>=10000?(rec/10000).toFixed(1)+'억':fmt(rec);
+      var sc=Math.max(5,Math.min(99,Math.round(100-R*1.55)));
+      document.getElementById('oSc').textContent=sc;
+      document.getElementById('bmMe').style.width=sc+'%';
+      document.getElementById('bmMeN').textContent=sc;
+      var vd=document.getElementById('vd');
+      if(sc>=82) vd.innerHTML='상위 10% 수준이에요! 남은 <b>'+fmt(s)+'명</b>만 더 줄이면 거의 완벽해요.';
+      else if(sc>=60) vd.innerHTML='동네 평균 이상이에요. 그래도 잠든 <b>'+fmt(s)+'명</b>은 매달 매출이 새는 자리예요.';
+      else vd.innerHTML='동네 평균보다 <b>아래</b>예요. 잠든 <b>'+fmt(s)+'명</b>이 매달 쌓이는 구간이라, 먼저 손대면 효과가 큰 자리예요.';
+    }
+    [rP,rR,rV].forEach(function(el){el.addEventListener('input',calc);});
+    calc();
+  }
+
+  function buildCta(){
+    var c=document.createElement('div'); c.className='cta-card';
+    c.innerHTML='<h3>진짜 명단, 받아볼까요?</h3>'
+      +'<p>설치하면 위 추정치가 <b>실제 환자 이름이 박힌 오늘의 콜 큐</b>로 바뀝니다. 차트는 읽기만 하고, 데스크는 "오늘 누구부터" 고민할 필요가 없어져요. 안 깔면 다음 달 명단도 똑같이 안 보입니다.</p>'
+      +'<a href="#" onclick="alert(\'데모 페이지입니다. 실제 설치/문의 연결은 원장 검수 후 연동됩니다.\');return false;">AutoRecall 설치하고 명단 받기 →</a>';
+    var row=document.createElement('div'); row.className='row bot'; row.appendChild(c); thread.appendChild(row); reveal(c);
+  }
+
+  // start when hero is in view-ish; just start shortly after load
+  setTimeout(next, 600);
+
+  // auto-fill background of any range later
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
