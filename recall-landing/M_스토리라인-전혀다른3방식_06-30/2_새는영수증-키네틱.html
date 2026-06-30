@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>안 부른 환자 정산서 — 이번 달 새는 매출 | AutoRecall</title>
+<meta name="description" content="당신 치과가 이번 달 조용히 놓친 매출, 영수증으로 인쇄됩니다. 30초 자가진단으로 합계를 확인하세요.">
+<style>
+  :root{
+    --bg:#EAE7DF; --paper:#FCFBF7; --ink:#1C1A15; --soft:#5A5247; --faint:#8E867A; --line:#E2DCCF;
+    --red:#C5341F; --red-soft:#F7E7E2; --green:#1F7A52; --accent:#1F7A52; --amber:#B5832A;
+    --mono:"SFMono-Regular",ui-monospace,"Cascadia Mono","Consolas","D2Coding","Courier New",monospace;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(circle at 50% 0,rgba(0,0,0,.04),transparent 60%)}
+  .wrap{max-width:560px;margin:0 auto;padding:0 16px}
+  .wide{max-width:880px;margin:0 auto;padding:0 20px}
+  a{color:inherit}
+  .mono{font-family:var(--mono)}
+
+  /* 영수증 종이 공통 */
+  .receipt{background:var(--paper);max-width:480px;margin:0 auto;position:relative;
+    box-shadow:0 24px 50px -22px rgba(40,30,10,.5),0 2px 0 rgba(0,0,0,.04);
+    padding:30px 26px 0;font-family:var(--mono);font-size:14px;color:var(--ink)}
+  /* 톱니 가장자리 */
+  .receipt::before,.receipt::after{content:"";position:absolute;left:0;right:0;height:12px;
+    background:radial-gradient(circle at 6px 0,transparent 0 5px,var(--paper) 5px) repeat-x;
+    background-size:12px 12px}
+  .receipt::before{top:-11px;transform:rotate(180deg)}
+  .receipt::after{bottom:-11px}
+  .r-pad{padding-bottom:30px}
+  .dash{border:0;border-top:1.5px dashed #C9C1B0;margin:14px 0}
+  .r-center{text-align:center}
+  .r-row{display:flex;justify-content:space-between;gap:12px;padding:5px 0;align-items:baseline}
+  .r-row .d{color:var(--soft)} .r-row .a{font-weight:700;white-space:nowrap}
+  .r-row .a.q{color:var(--red)}
+  .r-store{font-family:var(--font);font-weight:900;font-size:21px;letter-spacing:-.02em}
+  .r-meta{font-size:11.5px;color:var(--faint);margin-top:5px;letter-spacing:.04em}
+  .r-title{font-family:var(--font);font-weight:800;font-size:13px;letter-spacing:.22em;color:var(--red);margin-top:12px}
+
+  /* HERO */
+  header.hero{padding:46px 0 8px}
+  .hk{text-align:center;margin-bottom:22px}
+  .hk .badge{display:inline-block;font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.18em;
+    color:var(--red);background:var(--red-soft);border-radius:999px;padding:6px 14px}
+  .hk h1{font-family:var(--font);font-size:clamp(26px,6vw,40px);font-weight:900;letter-spacing:-.04em;line-height:1.14;margin:16px 0 0}
+  .hk h1 .r{color:var(--red)}
+  .hk p{color:var(--soft);font-size:15.5px;margin:12px auto 0;max-width:430px}
+  /* 인쇄 애니메이션 라인 */
+  .pl{opacity:0;transform:translateY(-6px);animation:print .5s ease forwards}
+  @keyframes print{to{opacity:1;transform:none}}
+  .pl:nth-child(1){animation-delay:.1s}.pl:nth-child(2){animation-delay:.25s}.pl:nth-child(3){animation-delay:.4s}
+  .pl:nth-child(4){animation-delay:.55s}.pl:nth-child(5){animation-delay:.7s}.pl:nth-child(6){animation-delay:.85s}
+  .pl:nth-child(7){animation-delay:1s}.pl:nth-child(8){animation-delay:1.15s}.pl:nth-child(9){animation-delay:1.3s}
+  .pl:nth-child(10){animation-delay:1.45s}.pl:nth-child(11){animation-delay:1.6s}.pl:nth-child(12){animation-delay:1.75s}
+  .subtotal{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--font);font-weight:900;
+    font-size:clamp(18px,4vw,24px);color:var(--red);padding:10px 0 4px;font-variant-numeric:tabular-nums}
+  .ticker{font-variant-numeric:tabular-nums}
+  .note-stamp{font-family:var(--mono);font-size:11px;color:var(--soft);border:1.5px dashed #C9C1B0;border-radius:7px;
+    padding:9px 11px;margin-top:10px;line-height:1.6}
+  .cta-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:24px 0 0}
+  .btn{display:inline-flex;align-items:center;gap:7px;font-family:var(--font);font-weight:800;font-size:15px;text-decoration:none;
+    padding:13px 20px;border-radius:11px;transition:transform .12s,box-shadow .12s}
+  .btn.red{background:var(--red);color:#fff;box-shadow:0 9px 22px -9px rgba(197,52,31,.75)}
+  .btn.red:hover{transform:translateY(-2px)}
+  .btn.ghost{background:var(--paper);color:var(--ink);border:1.5px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--red);color:var(--red)}
+  .micro{font-family:var(--mono);text-align:center;font-size:11.5px;color:var(--faint);margin-top:13px}
+
+  /* 섹션 공통 */
+  section{padding:50px 0}
+  .kick{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.16em;
+    color:var(--red);text-transform:uppercase}
+  h2.sec{font-family:var(--font);font-size:clamp(21px,3.6vw,29px);font-weight:900;letter-spacing:-.02em;line-height:1.26;margin:10px 0 0}
+  .lead{color:var(--soft);font-size:15.5px;margin-top:9px}
+
+  /* 증폭 */
+  .amp{background:var(--red);color:#fff;border-radius:18px;padding:30px 24px;text-align:center}
+  .amp .big{font-size:clamp(19px,3.4vw,27px);font-weight:900;line-height:1.32;letter-spacing:-.02em}
+  .amp .m{margin-top:14px;font-family:var(--mono);font-size:13px;background:rgba(0,0,0,.18);border-radius:10px;padding:11px 15px;display:inline-block}
+
+  /* 면죄 — 영수증 하단 안내문 */
+  .absolve-r{background:var(--paper);max-width:480px;margin:0 auto;padding:24px 26px;font-family:var(--mono);
+    box-shadow:0 14px 34px -18px rgba(40,30,10,.4);position:relative}
+  .absolve-r .h{font-family:var(--font);font-weight:900;font-size:clamp(18px,3vw,24px);letter-spacing:-.02em;line-height:1.4;color:var(--ink)}
+  .absolve-r .h em{color:var(--green);font-style:normal}
+  .absolve-r ul{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px;font-size:12.5px;color:var(--soft);line-height:1.6}
+  .absolve-r li::before{content:"※ ";color:var(--green)}
+
+  /* 케이스 — 되돌릴 수 있는 항목 */
+  .refunds{display:grid;gap:10px;margin-top:22px}
+  .refund{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:15px 17px;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+  .refund .l .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--red);text-transform:uppercase}
+  .refund .l h3{font-family:var(--font);font-size:15px;font-weight:800;margin-top:3px}
+  .refund .l p{font-size:13px;color:var(--soft);margin-top:3px}
+  .refund .r-act{font-family:var(--mono);font-size:12.5px;font-weight:800;color:var(--green);text-align:right;white-space:nowrap}
+
+  /* 자가진단 — 영수증 합계가 실시간 */
+  .diag-wrap{display:grid;grid-template-columns:1fr 480px;gap:26px;align-items:start}
+  .sliders{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px;display:grid;gap:18px;
+    box-shadow:0 14px 34px -20px rgba(40,30,10,.35)}
+  .field label{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--font);font-size:13.5px;font-weight:700}
+  .field label .val{font-family:var(--mono);font-size:15px;font-weight:800;color:var(--red)}
+  .field input[type=range]{width:100%;margin-top:10px;-webkit-appearance:none;height:5px;border-radius:5px;background:#DAD3C4;outline:none}
+  .field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:21px;height:21px;border-radius:50%;background:var(--red);cursor:pointer;border:3px solid var(--paper);box-shadow:0 2px 6px rgba(0,0,0,.3)}
+  .field input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;background:var(--red);cursor:pointer;border:3px solid var(--paper)}
+  .field .hint{font-size:11.5px;color:var(--faint);margin-top:5px}
+  .dunno{background:#F2EEE4;color:var(--soft);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)}
+  .dunno:hover{border-color:var(--red);color:var(--red)}
+  .total-row{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--font);font-weight:900;font-size:clamp(20px,5vw,28px);padding:8px 0;font-variant-numeric:tabular-nums}
+  .total-row .loss{color:var(--red)} .total-row .gain{color:var(--green)}
+  .score-bar{height:11px;border-radius:7px;background:#E4DDCD;overflow:hidden;margin-top:10px}
+  .score-fill{height:100%;border-radius:7px;background:linear-gradient(90deg,var(--red),var(--amber),var(--green));transition:width .25s}
+  .formula{margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--faint);line-height:1.65}
+  .formula b{color:var(--soft)}
+
+  /* 벤치마크 영수증 */
+  .bench{display:grid;gap:10px;margin-top:16px}
+  .bar{display:grid;grid-template-columns:96px 1fr 46px;align-items:center;gap:10px}
+  .bar .nm{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--soft)}
+  .bar .track{height:20px;background:#E4DDCD;border-radius:6px;overflow:hidden}
+  .bar .fill{height:100%;border-radius:6px}
+  .bar .sc{font-family:var(--mono);font-size:13px;font-weight:800;text-align:right}
+  .bar.me .nm{color:var(--ink)} .bar.me .fill{background:var(--green)} .bar.me .sc{color:var(--green)}
+  .bar.avg .fill{background:#B8AF9D} .bar.top .fill{background:var(--amber)}
+  .vd{margin-top:14px;background:var(--red-soft);border:1px solid #ECCFC6;border-radius:11px;padding:13px 16px;font-size:14.5px;font-weight:700;color:#8A2718}
+
+  /* CTA — 정산 마감 */
+  .close{background:var(--paper);max-width:480px;margin:0 auto;padding:32px 28px;text-align:center;font-family:var(--mono);
+    box-shadow:0 22px 48px -22px rgba(40,30,10,.5);position:relative}
+  .close .paid{position:absolute;top:18px;right:14px;font-family:var(--mono);font-weight:900;color:var(--green);
+    border:3px solid var(--green);border-radius:8px;padding:4px 11px;transform:rotate(-12deg);font-size:14px;letter-spacing:.08em;opacity:.85}
+  .close h2{font-family:var(--font);font-size:clamp(21px,4vw,29px);font-weight:900;letter-spacing:-.02em;line-height:1.25}
+  .close h2 .g{color:var(--green)}
+  .close p{font-family:var(--font);color:var(--soft);font-size:14.5px;margin:12px auto 0;max-width:360px}
+  .steps{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:18px 0 4px}
+  .step{background:#F2EEE4;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:11.5px;font-weight:700}
+  .step b{color:var(--green)}
+  .faq{margin-top:20px;display:grid;gap:8px;text-align:left;font-family:var(--font)}
+  .faq .item{background:#F2EEE4;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .faq .qq{font-size:13.5px;font-weight:800} .faq .aa{font-size:12.5px;color:var(--soft);margin-top:4px}
+  .reprint{margin-top:18px;font-family:var(--mono);font-size:13.5px;font-weight:800;color:var(--red)}
+  .guard{margin-top:20px;font-family:var(--font);font-size:11.5px;color:var(--faint);line-height:1.75;border-top:1px dashed #C9C1B0;padding-top:14px;text-align:left}
+  footer{padding:28px 0 60px;text-align:center;color:var(--faint);font-family:var(--mono);font-size:12px}
+
+  @media(max-width:760px){
+    body{font-size:16px} section{padding:40px 0}
+    .diag-wrap{grid-template-columns:1fr}
+    .refund{grid-template-columns:1fr} .refund .r-act{text-align:left}
+    .bar{grid-template-columns:70px 1fr 40px;gap:7px}
+  }
+  .bar .nm{word-break:keep-all}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== 막1 장1·2 · 영수증 인쇄(히어로 + 통증) ===== -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hk">
+      <span class="badge">RECEIPT · 안 부른 환자 정산서</span>
+      <h1>이번 달, 당신 치과가<br>조용히 <span class="r">놓친 매출</span>입니다.</h1>
+      <p>“좋은 콜 리스트가 있어도, 걸 시간이 없으면 0원.” 그 0원이 — 지금 인쇄되고 있습니다.</p>
+    </div>
+
+    <div class="receipt r-pad">
+      <div class="r-center pl">
+        <div class="r-store">사계절치과</div>
+        <div class="r-meta">안 부른 환자 정산서 · 2026.06 · NO.347</div>
+        <div class="r-title">UNCALLED PATIENTS — LEAK REPORT</div>
+      </div>
+      <hr class="dash pl">
+      <div class="r-row pl"><span class="d">스케일링·정기검진 6개월+ 미내원</span><span class="a q">미청구</span></div>
+      <div class="r-row pl"><span class="d">상담만 받고 사라진 임플란트</span><span class="a q">미청구</span></div>
+      <div class="r-row pl"><span class="d">치료 중단(30~90일 미완주)</span><span class="a q">미청구</span></div>
+      <div class="r-row pl"><span class="d">“감”으로 찍어 누락된 대상</span><span class="a q">미청구</span></div>
+      <hr class="dash pl">
+      <div class="subtotal pl"><span>이번 달 누수 합계</span><span class="ticker" id="heroTick">₩0</span></div>
+      <div class="note-stamp pl">※ 본 정산서의 금액은 차트가 알고 있으나 <b>아무도 청구하지 않은</b> 매출입니다. 영수증 한 장이 곧 다음 달의 적자입니다.</div>
+      <div class="cta-row pl">
+        <a class="btn red" href="#diag">🧾 내 정산서 뽑기 — 30초</a>
+        <a class="btn ghost" href="#close">정산 마감(설치)</a>
+      </div>
+      <div class="micro pl">설치형 도구 · 차트(덴트웹) 읽기만 · 환자정보 원내 로컬</div>
+      <hr class="dash">
+    </div>
+  </div>
+</header>
+
+<!-- 장3 · 증폭(손실) -->
+<section>
+  <div class="wrap">
+    <div class="amp">
+      <div class="big">영수증은 매달 다시 인쇄됩니다.<br>청구하지 않으면 — 그대로 적자입니다.</div>
+      <div class="m">내부 차트 분석(추정) · 방치 환자의 <b>71%</b>가 30일 안에 떠날지 가닥을 잡음 → 그 전에 못 부르면 회수가 그만큼 어려워집니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 장4 · 면죄 -->
+<section>
+  <div class="wide">
+    <div class="absolve-r">
+      <div class="h">이 적자, <em>데스크 과실 아닙니다.</em></div>
+      <ul>
+        <li>데스크 1순위는 눈앞의 환자 응대 — 발신은 늘 뒤로 밀립니다.</li>
+        <li>한가한 날도 “전화할 환자가 없는 게” 아니라, 누군지 안 보일 뿐입니다.</li>
+        <li>한 사람이 수천 명을 기억하고 걸기엔 하루가 너무 짧습니다.</li>
+        <li>리콜, 안 하는 게 아니라 <b style="color:var(--green)">못 하는 것</b> — 시스템 미설치 항목.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 장5 · 케이스(되돌릴 수 있는 항목) -->
+<section>
+  <div class="wide">
+    <span class="kick">막 2 · 되돌릴 수 있는 항목</span>
+    <h2 class="sec">이 항목들은 — 되돌릴 여지가 있습니다</h2>
+    <p class="lead">AutoRecall이 차트를 읽어 “오늘 누구부터”를 점수순으로. 사람이 못 하는 다섯 가지만 도구가 대신합니다.</p>
+    <div class="refunds">
+      <div class="refund"><div class="l"><div class="t">회수 여지</div><h3>🔥 슬롯 필러</h3><p>취소·노쇼로 빈 의자 → 당일 맞는 환자 즉시 추천(타이밍 ×3.0)</p></div><div class="r-act">→ 비는 의자를 매출로</div></div>
+      <div class="refund"><div class="l"><div class="t">회수 여지</div><h3>📅 타이밍 자동 큐</h3><p>마지막 내원 6~12개월(스위트스폿) 환자를 자동 정렬</p></div><div class="r-act">→ 놓치는 검진 0</div></div>
+      <div class="refund"><div class="l"><div class="t">회수 여지</div><h3>💰 고가치 발굴콜</h3><p>임플란트·교정 미착수 환자를 우선순위 상단에</p></div><div class="r-act">→ 큰 건부터 회수</div></div>
+      <div class="refund"><div class="l"><div class="t">회수 여지</div><h3>🎯 점수제 큐</h3><p>(관심−부정)×기본가치×타이밍으로 자동 정렬</p></div><div class="r-act">→ 천 명이 오늘의 몇 명으로</div></div>
+      <div class="refund"><div class="l"><div class="t">회수 여지</div><h3>🧾 결과 버튼 1번</h3><p>부재중·거절·예약완료를 한 번에 다음 액션·데이터로</p></div><div class="r-act">→ 전화한 기록이 남음</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 장6 · 자가진단(영수증 합계 실시간) -->
+<section id="diag">
+  <div class="wide">
+    <span class="kick" style="color:var(--green)">막 2 · 내 정산서 ⭐</span>
+    <h2 class="sec">숫자 3개만 — 합계가 실시간으로 인쇄됩니다</h2>
+    <p class="lead">슬라이더를 움직이면 오른쪽 영수증 합계가 그 자리에서 다시 계산됩니다.</p>
+    <div class="diag-wrap" style="margin-top:22px">
+      <div class="sliders">
+        <div class="field">
+          <label>전체 환자 수 <span class="val" id="vPatients">3,000명</span></label>
+          <input type="range" id="sPatients" min="500" max="20000" step="100" value="3000">
+          <div class="hint">차트에 등록된 누적 환자 수(대략)</div>
+        </div>
+        <div class="field">
+          <label>6개월+ 연락 끊긴 비율 <span class="val" id="vRate">35%</span></label>
+          <input type="range" id="sRate" min="5" max="70" step="1" value="35">
+          <div class="hint">마지막 내원 6개월 지나도록 연락 끊긴 비율</div>
+          <button class="dunno" id="dunno">잘 모르겠어요 → 평균(35%)</button>
+        </div>
+        <div class="field">
+          <label>재방문 1회 평균 진료비 <span class="val" id="vFee">8만원</span></label>
+          <input type="range" id="sFee" min="3" max="60" step="1" value="8">
+          <div class="hint">다시 온 환자 1명이 1회에 쓰는 평균(만원)</div>
+        </div>
+      </div>
+      <div class="receipt">
+        <div class="r-center"><div class="r-store" style="font-size:17px">내 치과 정산서</div><div class="r-meta">자가진단 결과 · 추정치</div></div>
+        <hr class="dash">
+        <div class="r-row"><span class="d">잠든 환자(연락 끊김)</span><span class="a" id="rSleep">1,050명</span></div>
+        <div class="r-row"><span class="d">지금 잃는 매출(연,추정)</span><span class="a q ticker" id="rLost">8,400만원</span></div>
+        <div class="r-row"><span class="d">되돌릴 매출(보수적)</span><span class="a" style="color:var(--green)" id="rBack">1,260만원</span></div>
+        <hr class="dash">
+        <div class="total-row"><span>리콜 관리 점수</span><span id="rScore">65점</span></div>
+        <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:65%"></div></div>
+        <div class="formula"><b>계산식(공개)</b><br>잠든=전체×끊김율 · 잃은매출=잠든×진료비 · 되돌릴=잠든×0.15×진료비 · 점수=(1−끊김율)×100<br>※ 예시·가정값, 결과 보장 안 함 · 입력값 저장·전송 없이 화면 내 계산</div>
+        <hr class="dash">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 장7 · 벤치마크 -->
+<section>
+  <div class="wide">
+    <span class="kick" style="color:var(--amber)">막 2 · 동급 대조</span>
+    <h2 class="sec">동급 치과 정산서와 나란히 놓으면</h2>
+    <p class="lead">리콜 관리 점수 기준. 점수가 낮을수록 — 회수할 여지가 가장 큽니다.</p>
+    <div class="bench">
+      <div class="bar me"><div class="nm">우리 치과</div><div class="track"><div class="fill" id="benchMe" style="width:65%"></div></div><div class="sc" id="benchMeSc">65</div></div>
+      <div class="bar avg"><div class="nm">동급 평균</div><div class="track"><div class="fill" style="width:60%"></div></div><div class="sc">60</div></div>
+      <div class="bar top"><div class="nm">상위 25%</div><div class="track"><div class="fill" style="width:82%"></div></div><div class="sc">82</div></div>
+    </div>
+    <div class="vd" id="verdict">상위권까지 17점 — 이 격차가 그대로 매달 인쇄되는 적자입니다.</div>
+  </div>
+</section>
+
+<!-- 막3 · 정산 마감(CTA) -->
+<section>
+  <div class="wide">
+    <div class="close" id="close">
+      <div class="paid">CLOSED</div>
+      <h2>이 정산서는 추정입니다.<br>진짜 <span class="g">청구 명단</span>은 — 설치해야 인쇄됩니다.</h2>
+      <p>설치하면 슬라이더가 아니라 우리 치과 실제 환자로 오늘 청구할 명단이 점수순으로. 쓰던 차트(덴트웹) 그대로.</p>
+      <div class="steps"><div class="step"><b>1</b> 설치(2분)</div><div class="step"><b>2</b> 차트 연결</div><div class="step"><b>3</b> 오늘 명단</div><div class="step"><b>4</b> 전화→결과 버튼</div></div>
+      <div class="cta-row" style="margin-top:16px"><a class="btn red" href="#" onclick="return false">🧾 정산 마감 — 무료 설치</a></div>
+      <div class="faq">
+        <div class="item"><div class="qq">직원을 감시하나요?</div><div class="aa">아니요. 데스크를 돕는 도구입니다.</div></div>
+        <div class="item"><div class="qq">통제권은?</div><div class="aa">실장에게. 걸지·말지는 사람이 정합니다.</div></div>
+        <div class="item"><div class="qq">수신 거부 환자는?</div><div class="aa">‘전화하지 마라’ 1번 = 큐에서 영구 제외.</div></div>
+        <div class="item"><div class="qq">정보가 새나요?</div><div class="aa">전부 원내 로컬. 차트는 읽기만, 수정 안 함.</div></div>
+      </div>
+      <div class="reprint">▶ 마감하지 않으면 — 다음 달에도 같은 영수증이 인쇄됩니다.</div>
+      <div class="guard">※ AutoRecall은 전화 우선순위 정리를 돕는 <b>운영 도구</b>이며 치료 효과·결과를 보장하지 않습니다. · 점수·금액·평균값은 <b>예시·가정값</b>으로 원장 검수가 필요합니다. · 수신거부·동의 범위는 정보통신망법 등 규정·각 치과 정책에 맞춰 운영. · 한글 우선 표기.</div>
+    </div>
+  </div>
+</section>
+
+<footer>UNCALLED RECEIPT · AutoRecall 키네틱 영수증 컨셉 · 3막 8장 · 2026-06-30 · 카피·수치 원장 검수 전 초안</footer>
+
+<script>
+(function(){
+  var P=document.getElementById('sPatients'),R=document.getElementById('sRate'),F=document.getElementById('sFee');
+  var vP=document.getElementById('vPatients'),vR=document.getElementById('vRate'),vF=document.getElementById('vFee');
+  var rSleep=document.getElementById('rSleep'),rLost=document.getElementById('rLost'),rBack=document.getElementById('rBack'),rScore=document.getElementById('rScore');
+  var fill=document.getElementById('scoreFill'),benchMe=document.getElementById('benchMe'),benchMeSc=document.getElementById('benchMeSc'),verdict=document.getElementById('verdict');
+  var heroTick=document.getElementById('heroTick');
+  function won(m){ if(m>=10000){return (m/10000).toFixed(m>=100000?0:1).replace(/\.0$/,'')+'억원';} return Math.round(m).toLocaleString('ko-KR')+'만원'; }
+  function calc(){
+    var p=+P.value,rate=+R.value/100,fee=+F.value;
+    var sleep=Math.round(p*rate),lost=sleep*fee,back=Math.round(sleep*0.15*fee),score=Math.round((1-rate)*100);
+    vP.textContent=p.toLocaleString('ko-KR')+'명'; vR.textContent=R.value+'%'; vF.textContent=F.value+'만원';
+    rSleep.textContent=sleep.toLocaleString('ko-KR')+'명'; rLost.textContent=won(lost); rBack.textContent=won(back); rScore.textContent=score+'점';
+    fill.style.width=score+'%'; benchMe.style.width=score+'%'; benchMeSc.textContent=score;
+    var v; if(score<60){v='동급 평균(60점)보다 '+(60-score)+'점 아래 — 회수할 여지가 가장 큽니다.';}
+    else if(score<82){v='상위 25%(82점)까지 '+(82-score)+'점 — 이 격차가 매달 인쇄되는 적자입니다.';}
+    else{v='상위권입니다. 사람 손으로 여기까지 — 이제 시스템으로 굳히세요.';}
+    verdict.textContent=v;
+  }
+  [P,R,F].forEach(function(el){el.addEventListener('input',calc);});
+  document.getElementById('dunno').addEventListener('click',function(){R.value=35;calc();});
+  calc();
+  // 히어로 카운터: 0 → 추정 누수액 틱업
+  var target=Math.round(3000*0.35*8/12); // 이번 달분(만원)
+  var cur=0, started=false;
+  function runTick(){ if(started)return; started=true;
+    var steps=46, i=0;
+    var iv=setInterval(function(){ i++; cur=Math.round(target*(i/steps));
+      heroTick.textContent='₩'+(cur*10000).toLocaleString('ko-KR');
+      if(i>=steps){clearInterval(iv); heroTick.textContent='₩'+(target*10000).toLocaleString('ko-KR')+' ↑';}
+    },34);
+  }
+  setTimeout(runTick,1900);
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

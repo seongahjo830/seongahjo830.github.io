@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>사건 파일 No.347 — 사라진 환자들 | AutoRecall</title>
+<meta name="description" content="당신 치과에서 조용히 사라진 환자들. 이건 실종 사건입니다. 30초 자가진단으로 사건 파일을 여세요.">
+<style>
+  :root{
+    --bg:#0E1116; --bg2:#141A22; --panel:#1A212B; --ink:#EFEAE0; --soft:#A6AAB2; --faint:#838C99;
+    --line:#2A3340; --red:#E0463C; --red-soft:#3a1d1c; --amber:#E6B450; --green:#46C08A;
+    --kraft:#D8C9A8; --kraft-ink:#2A2418;
+    --mono:"SFMono-Regular",ui-monospace,"Cascadia Mono","Consolas","D2Coding",monospace;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.72;font-size:17px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  section{padding:62px 0;border-top:1px solid var(--line)}
+  .tag{display:inline-block;font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.18em;
+    color:var(--red);border:1px solid var(--red);border-radius:4px;padding:4px 9px;text-transform:uppercase}
+  h2.sec{font-size:clamp(22px,3.6vw,31px);font-weight:900;letter-spacing:-.02em;line-height:1.25;margin:14px 0 0}
+  .lead{color:var(--soft);font-size:16px;margin-top:11px;max-width:640px}
+  .stamp{position:absolute;font-family:var(--mono);font-weight:800;letter-spacing:.06em;color:var(--red);
+    border:3px solid var(--red);border-radius:8px;padding:5px 12px;transform:rotate(-11deg);opacity:.92;
+    text-transform:uppercase;font-size:15px;box-shadow:0 0 0 2px rgba(224,70,60,.18)}
+
+  /* ===== HERO — 수사 보드 ===== */
+  .hero{position:relative;overflow:hidden;border-top:0;padding:0;
+    background:radial-gradient(900px 500px at 78% -8%, #1d2733, transparent 60%),var(--bg)}
+  .hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 3px)}
+  .hero-in{position:relative;max-width:1080px;margin:0 auto;padding:56px 22px 64px;z-index:2}
+  .file-no{font-family:var(--mono);font-size:12.5px;letter-spacing:.22em;color:var(--faint)}
+  .file-no b{color:var(--amber)}
+  .hero h1{font-size:clamp(30px,6.6vw,60px);font-weight:900;letter-spacing:-.045em;line-height:1.08;margin:14px 0 0}
+  .hero h1 .miss{color:var(--red)}
+  .hero .sub{color:var(--soft);font-size:clamp(15px,2.2vw,18.5px);margin-top:18px;max-width:580px}
+  .hero .sub b{color:var(--ink)}
+  /* 증거 보드 */
+  .board{position:relative;margin-top:34px;border:1px solid var(--line);border-radius:16px;
+    background:linear-gradient(180deg,#10151c,#0c1014);padding:26px 20px 30px;overflow:hidden}
+  .board .pin-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;position:relative;z-index:2}
+  .ev{position:relative;background:var(--kraft);color:var(--kraft-ink);border-radius:6px;padding:13px 12px 14px;
+    transform:rotate(var(--r,0deg));box-shadow:0 10px 22px -10px rgba(0,0,0,.7);min-height:104px}
+  .ev::before{content:"";position:absolute;top:-7px;left:50%;width:11px;height:11px;border-radius:50%;
+    background:var(--red);transform:translateX(-50%);box-shadow:0 1px 3px rgba(0,0,0,.6)}
+  .ev .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#8a7a52;text-transform:uppercase}
+  .ev .who{height:30px;margin:6px 0 8px;border-radius:4px;background:
+    linear-gradient(100deg,#b3a37e,#cdbf9c);filter:grayscale(.3);position:relative;overflow:hidden}
+  .ev .who::after{content:"?";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:18px;color:#7c6e4d}
+  .ev .nm{font-weight:800;font-size:13px;letter-spacing:-.01em}
+  .ev .mt{font-size:11.5px;color:#6e6043;margin-top:2px}
+  /* 붉은 실 */
+  .string{position:absolute;inset:0;z-index:1;pointer-events:none}
+  .hero .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:15.5px;text-decoration:none;
+    padding:14px 22px;border-radius:11px;transition:transform .12s,box-shadow .12s,background .12s;font-family:inherit}
+  .btn.red{background:var(--red);color:#fff;box-shadow:0 10px 26px -10px rgba(224,70,60,.8)}
+  .btn.red:hover{transform:translateY(-2px)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--red);color:var(--red)}
+  .micro{margin-top:15px;font-family:var(--mono);font-size:12px;color:var(--faint)}
+
+  /* ===== 단서(통증) ===== */
+  .clues{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:24px}
+  .clue{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--red);border-radius:10px;
+    padding:17px 18px;display:flex;gap:13px;align-items:flex-start}
+  .clue .n{font-family:var(--mono);font-size:12px;font-weight:800;color:var(--red);flex:none;
+    border:1px solid var(--red);border-radius:5px;padding:3px 7px;margin-top:2px}
+  .clue p{font-size:15px;font-weight:600;color:var(--ink)}
+  .clue p small{display:block;color:var(--faint);font-weight:500;font-size:12.5px;margin-top:5px}
+
+  /* ===== 단서가 식는다(증폭) ===== */
+  .cold{background:var(--red-soft);border:1px solid #5a2b27;border-radius:18px;padding:32px 26px;text-align:center;position:relative}
+  .cold .big{font-size:clamp(20px,3.4vw,29px);font-weight:900;color:#F2B0A8;line-height:1.32;letter-spacing:-.02em}
+  .cold .meta{margin-top:16px;display:inline-block;font-family:var(--mono);font-size:13px;color:#d8a59c;
+    background:#2a1715;border:1px solid #5a2b27;border-radius:10px;padding:11px 16px}
+  .cold .meta b{color:#F2B0A8}
+
+  /* ===== 범인은 데스크가 아니다(면죄) ===== */
+  .verdict-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center}
+  .verdict-grid .head{font-size:clamp(20px,3vw,28px);font-weight:900;line-height:1.3;letter-spacing:-.02em}
+  .verdict-grid .head em{color:var(--green);font-style:normal}
+  .verdict-grid ul{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px}
+  .verdict-grid li{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:14px 15px;font-size:14.5px;color:var(--soft)}
+  .verdict-grid li b{color:var(--ink)}
+  .nocrime{background:var(--panel);border:1px dashed #3a4a44;border-radius:14px;padding:22px;position:relative}
+  .nocrime .label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--green);text-transform:uppercase}
+  .nocrime .txt{font-size:17px;font-weight:800;margin-top:8px;line-height:1.45}
+  .nocrime .txt s{color:var(--faint);text-decoration-color:var(--red)}
+
+  /* ===== 수사 도구(케이스) ===== */
+  .tools{display:grid;gap:12px;margin-top:24px}
+  .tool{display:grid;grid-template-columns:1fr 1fr;background:var(--panel);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+  .tool .now{padding:17px 19px;background:#10151c;border-right:1px solid var(--line)}
+  .tool .fix{padding:17px 19px}
+  .tool .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
+  .tool .now .t{color:var(--red)} .tool .fix .t{color:var(--green)}
+  .tool h3{font-size:15px;font-weight:800;margin:6px 0 0;letter-spacing:-.01em}
+  .tool p{font-size:13.5px;color:var(--soft);margin:6px 0 0}
+  .tool .eff{margin-top:8px;font-size:12.5px;font-weight:800;color:var(--green)}
+
+  /* ===== 사건 파일 열기(자가진단) ===== */
+  .casefile{background:linear-gradient(180deg,#11161d,#0c1014);border:1px solid var(--line);border-radius:22px;padding:34px 26px;position:relative;overflow:hidden}
+  .casefile .corner{position:absolute;top:0;right:0;width:64px;height:64px;
+    background:linear-gradient(225deg,var(--amber) 0 50%,transparent 50%);opacity:.8}
+  .casefile .tag{position:relative;z-index:1}
+  .diag-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:24px;align-items:start}
+  .sliders{display:grid;gap:20px}
+  .field label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:700;color:var(--ink);font-family:var(--font)}
+  .field label .val{font-family:var(--mono);font-size:16px;font-weight:800;color:var(--amber)}
+  .field input[type=range]{width:100%;margin-top:11px;-webkit-appearance:none;height:5px;border-radius:5px;background:#2a3340;outline:none}
+  .field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--amber);cursor:pointer;border:3px solid #0c1014;box-shadow:0 2px 8px rgba(0,0,0,.6)}
+  .field input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--amber);cursor:pointer;border:3px solid #0c1014}
+  .field .hint{font-size:12px;color:var(--faint);margin-top:6px}
+  .dunno{background:#1a212b;color:var(--soft);border:1px solid var(--line);border-radius:8px;padding:8px 13px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px}
+  .dunno:hover{border-color:var(--amber);color:var(--amber)}
+  .dossier{background:#0c0f14;border:1px solid var(--line);border-radius:16px;padding:22px;position:relative}
+  .dossier .dh{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase;border-bottom:1px dashed #2a3340;padding-bottom:10px}
+  .res-row{display:flex;justify-content:space-between;align-items:baseline;padding:13px 0;border-bottom:1px solid #1b222c}
+  .res-row:last-of-type{border-bottom:0}
+  .res-row .k{font-size:13.5px;color:var(--soft)}
+  .res-row .v{font-family:var(--mono);font-size:clamp(19px,4vw,26px);font-weight:800;letter-spacing:-.01em}
+  .v.loss{color:#F2867A} .v.gain{color:var(--green)} .v.neu{color:var(--ink)}
+  .score-bar{height:11px;border-radius:7px;background:#1b222c;overflow:hidden;margin-top:12px}
+  .score-fill{height:100%;border-radius:7px;background:linear-gradient(90deg,var(--red),var(--amber),var(--green));transition:width .25s}
+  .formula{margin-top:16px;font-size:11.5px;color:var(--faint);line-height:1.7;font-family:var(--mono)}
+  .formula b{color:var(--soft)}
+
+  /* ===== 용의선상 비교(벤치마크) ===== */
+  .bench{display:grid;gap:12px;margin-top:18px}
+  .bar{display:grid;grid-template-columns:120px 1fr 52px;align-items:center;gap:12px}
+  .bar .nm{font-size:13.5px;font-weight:700;color:var(--soft)}
+  .bar .track{height:22px;background:#1b222c;border-radius:6px;overflow:hidden}
+  .bar .fill{height:100%;border-radius:6px}
+  .bar .sc{font-family:var(--mono);font-size:14px;font-weight:800;text-align:right}
+  .bar.me .nm{color:var(--ink)} .bar.me .fill{background:var(--green)} .bar.me .sc{color:var(--green)}
+  .bar.avg .fill{background:#4a5563} .bar.top .fill{background:var(--amber)}
+  .vd{margin-top:16px;background:#10151c;border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:12px;padding:15px 18px;font-size:15px;font-weight:700;color:var(--ink)}
+
+  /* ===== 사건 종결(CTA) ===== */
+  .close{background:linear-gradient(180deg,#141a22,#0c1014);border:1.5px solid #2f3b30;border-radius:22px;padding:40px 28px;text-align:center;position:relative;overflow:hidden}
+  .close h2{font-size:clamp(22px,3.6vw,32px);font-weight:900;letter-spacing:-.02em;line-height:1.25}
+  .close h2 .g{color:var(--green)}
+  .close p{color:var(--soft);margin:13px auto 0;max-width:520px}
+  .steps{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:22px 0 4px}
+  .step{font-family:var(--mono);background:#10151c;border:1px solid var(--line);border-radius:9px;padding:10px 14px;font-size:12.5px;font-weight:700}
+  .step b{color:var(--green)}
+  .faq{margin-top:26px;display:grid;grid-template-columns:repeat(2,1fr);gap:11px;text-align:left}
+  .faq .item{background:#10151c;border:1px solid var(--line);border-radius:12px;padding:15px 16px}
+  .faq .qq{font-size:14px;font-weight:800}
+  .faq .aa{font-size:13px;color:var(--soft);margin-top:6px}
+  .reopen{margin-top:22px;font-family:var(--mono);font-size:14.5px;font-weight:800;color:var(--red)}
+  .guard{margin-top:26px;font-size:12px;color:var(--faint);line-height:1.8;border-top:1px solid var(--line);padding-top:16px;text-align:left}
+  footer{padding:30px 0 64px;text-align:center;color:var(--faint);font-size:12.5px;font-family:var(--mono)}
+
+  @media(max-width:760px){
+    body{font-size:16px} section{padding:46px 0}
+    .board .pin-row{grid-template-columns:repeat(2,1fr)} .string{display:none}
+    .clues{grid-template-columns:1fr}
+    .verdict-grid{grid-template-columns:1fr;gap:18px}
+    .tool{grid-template-columns:1fr} .tool .now{border-right:0;border-bottom:1px solid var(--line)}
+    .diag-grid{grid-template-columns:1fr} .faq{grid-template-columns:1fr}
+    .bar{grid-template-columns:80px 1fr 44px;gap:8px}
+  }
+  .bar .nm{word-break:keep-all}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<!-- ===== 막1 장1 · 사건 개시 ===== -->
+<header class="hero">
+  <div class="hero-in">
+    <div class="file-no">CASE FILE <b>No.347</b> · 미결(未決) · 사계절치과 관할</div>
+    <h1>사라진 건 환자가 아니라<br><span class="miss">당신의 매출</span>입니다.</h1>
+    <p class="sub">수백 명이 조용히 사라졌습니다. 신고도, 흔적도 없이.<br>
+      <b>안 오는 환자는 없습니다. 안 부른 환자만 있을 뿐.</b><br>이건 운영의 문제가 아니라 — 풀리지 않은 <b>실종 사건</b>입니다.</p>
+
+    <div class="board">
+      <svg class="string" viewBox="0 0 1000 220" preserveAspectRatio="none">
+        <line x1="125" y1="40" x2="375" y2="40" stroke="#E0463C" stroke-width="1.5" opacity=".7"/>
+        <line x1="375" y1="40" x2="625" y2="40" stroke="#E0463C" stroke-width="1.5" opacity=".7"/>
+        <line x1="625" y1="40" x2="875" y2="40" stroke="#E0463C" stroke-width="1.5" opacity=".7"/>
+        <line x1="125" y1="40" x2="625" y2="40" stroke="#E0463C" stroke-width="1" opacity=".35"/>
+        <line x1="375" y1="40" x2="875" y2="40" stroke="#E0463C" stroke-width="1" opacity=".35"/>
+      </svg>
+      <div class="pin-row">
+        <div class="ev" style="--r:-2.5deg"><div class="lbl">EVIDENCE 01</div><div class="who"></div><div class="nm">스케일링 6개월+</div><div class="mt">마지막 내원 후 연락 끊김</div></div>
+        <div class="ev" style="--r:1.8deg"><div class="lbl">EVIDENCE 02</div><div class="who"></div><div class="nm">상담만 받고 잠수</div><div class="mt">임플란트 미착수</div></div>
+        <div class="ev" style="--r:-1.4deg"><div class="lbl">EVIDENCE 03</div><div class="who"></div><div class="nm">치료 중단</div><div class="mt">30~90일 미완주</div></div>
+        <div class="ev" style="--r:2.2deg"><div class="lbl">EVIDENCE 04</div><div class="who"></div><div class="nm">정기검진 누락</div><div class="mt">6~12개월 도래</div></div>
+      </div>
+    </div>
+
+    <div class="cta-row">
+      <a class="btn red" href="#diag">🔦 사건 파일 열기 — 30초</a>
+      <a class="btn ghost" href="#close">사건 종결(설치)</a>
+    </div>
+    <div class="micro">설치형 데스크톱 도구 · 차트(덴트웹) 읽기만 · 환자정보 원내 로컬</div>
+  </div>
+</header>
+
+<!-- 장2 · 단서들(통증 공감) -->
+<section>
+  <div class="wrap">
+    <span class="tag">막 1 · 단서</span>
+    <h2 class="sec">현장에 남은 네 개의 단서</h2>
+    <p class="lead">매출이 줄어서가 아닙니다. <b>줄어드는 게 안 보여서</b>입니다. 익숙한 장면일수록 — 단서입니다.</p>
+    <div class="clues">
+      <div class="clue"><div class="n">01</div><p>6개월 지난 정기검진 명단이 지금 어디 있는지 모른다.<small>흩어진 차트 어딘가 — 한 번도 모아 본 적 없다</small></p></div>
+      <div class="clue"><div class="n">02</div><p>오늘 누구한테 전화할지 결국 “감”으로 찍는다.<small>기준이 없으니 사람마다, 날마다 다르다</small></p></div>
+      <div class="clue"><div class="n">03</div><p>전화했던 사람한테 또 전화한다.<small>“전화했다는 말”은 남아도 “전화한 기록”은 없다</small></p></div>
+      <div class="clue"><div class="n">04</div><p>고가 상담만 받고 사라진 환자, 누군지 모른다.<small>가장 큰 매출이 가장 조용히 빠진다</small></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 장3 · 단서가 식는다(증폭) -->
+<section>
+  <div class="wrap">
+    <div class="cold">
+      <div class="big">“좋은 단서가 있어도,<br>쫓을 시간이 없으면 사건은 미결로 끝납니다.”</div>
+      <div class="meta">내부 차트 분석(추정) — 방치된 환자의 <b>71%</b>가 치료계획 후 <b>30일 안</b>에 떠날지 가닥을 잡는 패턴이 보입니다. 그 사이 단서는 식고, 환자는 옆 치과로.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 장4 · 범인은 데스크가 아니다(면죄) -->
+<section>
+  <div class="wrap">
+    <div class="verdict-grid">
+      <div>
+        <span class="tag" style="color:var(--green);border-color:var(--green)">막 2 · 무혐의</span>
+        <div class="head" style="margin-top:14px">범인은 데스크가 <em>아닙니다.</em></div>
+        <p class="lead">리콜, 안 하는 게 아니라 못 하는 겁니다. 문제는 게으름이 아니라 ‘안 보인다’는 것.</p>
+        <div class="nocrime" style="margin-top:16px">
+          <div class="label">사건 평결</div>
+          <div class="txt"><s>직무 태만</s> → 시스템 부재(無)</div>
+        </div>
+      </div>
+      <ul>
+        <li>데스크의 1순위는 <b>눈앞의 환자 응대</b>. 큐에 좋은 대상이 쌓여도 발신은 뒤로 밀린다.</li>
+        <li>바쁜 날은 응대하느라 놓치고, <b>한가한 날은 “전화할 환자가 없는 게” 아니다</b> — 누군지 모를 뿐.</li>
+        <li>한 사람이 수천 명을 기억하고 전화까지 돌리기엔, <b>하루가 너무 짧다.</b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 장5 · 수사 도구(케이스 해결) -->
+<section>
+  <div class="wrap">
+    <span class="tag">막 2 · 수사 도구</span>
+    <h2 class="sec">사람이 못 하는 것만, 도구가 대신합니다</h2>
+    <p class="lead">AutoRecall은 차트를 읽어 “오늘 누구부터”를 점수순으로 띄웁니다. 다섯 가지 미결 패턴에 각각의 수사 도구를.</p>
+    <div class="tools">
+      <div class="tool"><div class="now"><div class="t">미결</div><h3>빈 슬롯이 생겼는데 채울 사람을 못 찾는 날</h3><p>취소·노쇼로 비는 시간을 그냥 흘려보낸다.</p></div><div class="fix"><div class="t">수사 도구</div><h3>🔥 슬롯 필러</h3><p>당일 빈 시간에 맞는 환자를 즉시 추천(타이밍 ×3.0).</p><div class="eff">→ 비는 의자를 매출로</div></div></div>
+      <div class="tool"><div class="now"><div class="t">미결</div><h3>6개월 도래 환자가 명단 없이 흩어짐</h3><p>스케일링·정기검진 시기를 사람이 일일이 확인.</p></div><div class="fix"><div class="t">수사 도구</div><h3>📅 타이밍 자동 큐</h3><p>마지막 내원 6~12개월(스위트스폿) 자동 정렬.</p><div class="eff">→ 놓치는 정기검진 0</div></div></div>
+      <div class="tool"><div class="now"><div class="t">미결</div><h3>고가 상담만 받고 안 온 환자 방치</h3><p>가장 큰 매출이 가장 조용히 사라진다.</p></div><div class="fix"><div class="t">수사 도구</div><h3>💰 고가치 발굴콜</h3><p>임플란트·교정 미착수 환자를 우선순위 상단에.</p><div class="eff">→ 잠든 큰 건부터 회수</div></div></div>
+      <div class="tool"><div class="now"><div class="t">미결</div><h3>누구한테 전화할지 “감”으로 정함</h3><p>기준이 없어 좋은 대상이 묻힌다.</p></div><div class="fix"><div class="t">수사 도구</div><h3>🎯 점수제 큐</h3><p>(관심−부정)×기본가치×타이밍으로 자동 정렬.</p><div class="eff">→ 천 명이 오늘 누를 몇 명으로</div></div></div>
+      <div class="tool"><div class="now"><div class="t">미결</div><h3>전화 결과가 기록에 안 남음</h3><p>같은 사람한테 또 걸고, 보고서는 수기.</p></div><div class="fix"><div class="t">수사 도구</div><h3>🧾 결과 버튼 1번</h3><p>부재중·거절·예약완료 한 번에 다음 액션·데이터 정리.</p><div class="eff">→ “전화한 말” 대신 “전화한 기록”</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 장6 · 사건 파일 열기(자가진단) -->
+<section>
+  <div class="wrap">
+    <div class="casefile" id="diag">
+      <div class="corner"></div>
+      <span class="tag" style="color:var(--amber);border-color:var(--amber)">막 2 · 사건 파일 ⭐</span>
+      <h2 class="sec">당신 치과의 사건 파일을 엽니다</h2>
+      <p class="lead">숫자 3개만 움직이세요. 잠든 환자와 새는 매출이 — 그 자리에서 증거로 찍힙니다.</p>
+      <div class="diag-grid">
+        <div class="sliders">
+          <div class="field">
+            <label>전체 환자 수 <span class="val" id="vPatients">3,000명</span></label>
+            <input type="range" id="sPatients" min="500" max="20000" step="100" value="3000">
+            <div class="hint">차트에 등록된 누적 환자 수(대략)</div>
+          </div>
+          <div class="field">
+            <label>6개월+ 연락 끊긴 비율 <span class="val" id="vRate">35%</span></label>
+            <input type="range" id="sRate" min="5" max="70" step="1" value="35">
+            <div class="hint">마지막 내원 6개월이 지나도록 연락이 끊긴 환자 비율</div>
+            <button class="dunno" id="dunno">잘 모르겠어요 → 업계 평균(35%) 적용</button>
+          </div>
+          <div class="field">
+            <label>재방문 1회 평균 진료비 <span class="val" id="vFee">8만원</span></label>
+            <input type="range" id="sFee" min="3" max="60" step="1" value="8">
+            <div class="hint">다시 온 환자 1명이 1회 내원에서 쓰는 평균(만원)</div>
+          </div>
+        </div>
+        <div class="dossier">
+          <div class="dh">▣ 수사 결과 요약 — DOSSIER</div>
+          <div class="res-row"><span class="k">실종자(연락 끊긴 환자)</span><span class="v neu" id="rSleep">1,050명</span></div>
+          <div class="res-row"><span class="k">증발한 매출(연, 추정)</span><span class="v loss" id="rLost">8,400만원</span></div>
+          <div class="res-row"><span class="k">회수 가능액(보수적)</span><span class="v gain" id="rBack">1,260만원</span></div>
+          <div class="res-row"><span class="k">사건 해결 지수</span><span class="v neu" id="rScore">65점</span></div>
+          <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:65%"></div></div>
+          <div class="formula"><b>계산식(공개)</b><br>실종자 = 전체×끊김율 · 증발매출 = 실종자×1회진료비 · 회수가능 = 실종자×0.15×진료비 · 해결지수 = (1−끊김율)×100<br>※ 모두 예시·가정값, 결과 보장 안 함. 입력값 저장·전송 없이 이 화면에서만 계산.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 장7 · 용의선상 비교(벤치마크) -->
+<section>
+  <div class="wrap">
+    <span class="tag" style="color:var(--amber);border-color:var(--amber)">막 2 · 대조</span>
+    <h2 class="sec">동급 치과 용의선상과 대조하면</h2>
+    <p class="lead">사건 해결 지수 기준. 지수가 낮을수록 — 회수할 여지가 가장 큽니다.</p>
+    <div class="bench">
+      <div class="bar me"><div class="nm">우리 치과</div><div class="track"><div class="fill" id="benchMe" style="width:65%"></div></div><div class="sc" id="benchMeSc">65</div></div>
+      <div class="bar avg"><div class="nm">동급 평균</div><div class="track"><div class="fill" style="width:60%"></div></div><div class="sc">60</div></div>
+      <div class="bar top"><div class="nm">상위 25%</div><div class="track"><div class="fill" style="width:82%"></div></div><div class="sc">82</div></div>
+    </div>
+    <div class="vd" id="verdict">상위권까지 17점 — 이 격차가 그대로 미결로 남은 매출입니다.</div>
+  </div>
+</section>
+
+<!-- 막3 · 사건 종결(CTA) -->
+<section style="border-top:0">
+  <div class="wrap">
+    <div class="close" id="close">
+      <span class="tag" style="color:var(--green);border-color:var(--green)">막 3 · 종결</span>
+      <h2 style="margin-top:14px">이 숫자는 추정입니다.<br>진짜 <span class="g">실종자 명단</span>은 — 설치해야 보입니다.</h2>
+      <p>설치하면 슬라이더가 아니라 <b>우리 치과 실제 환자</b>로 오늘 누를 명단이 점수순으로 뜹니다. 쓰던 차트(덴트웹) 그대로, 복잡한 설정 없이.</p>
+      <div class="steps"><div class="step"><b>1</b> 설치(2분)</div><div class="step"><b>2</b> 차트 연결</div><div class="step"><b>3</b> 오늘의 명단</div><div class="step"><b>4</b> 전화 → 결과 버튼</div></div>
+      <div class="cta-row" style="justify-content:center;margin-top:18px"><a class="btn red" href="#" onclick="return false">🔓 사건 종결 — 무료 설치</a></div>
+      <div class="faq">
+        <div class="item"><div class="qq">직원을 감시하나요?</div><div class="aa">아니요. 데스크를 돕는 도구입니다. 평가·감시용이 아닙니다.</div></div>
+        <div class="item"><div class="qq">통제권은 누구에게?</div><div class="aa">실장에게. 누구에게 걸지·말지는 사람이 정합니다.</div></div>
+        <div class="item"><div class="qq">수신 거부 환자는?</div><div class="aa">‘전화하지 마라’ 1번 = 큐에서 영구 제외.</div></div>
+        <div class="item"><div class="qq">정보가 새나요?</div><div class="aa">전부 원내 로컬 처리. 차트는 읽기만, 수정 안 함.</div></div>
+      </div>
+      <div class="reopen">▶ 종결하지 않으면 — 이 사건은 다음 달에도 미결입니다.</div>
+      <div class="guard">※ AutoRecall은 전화 우선순위 정리를 돕는 <b>운영 도구</b>이며 치료 효과·결과를 보장하지 않습니다. · 화면의 점수·금액·평균값은 <b>예시·가정값</b>으로 원장 검수가 필요합니다. · 수신거부·동의 범위는 정보통신망법 등 규정과 각 치과 정책에 맞춰 운영됩니다. · 한글 우선 표기.</div>
+    </div>
+  </div>
+</section>
+
+<footer>CASE FILE No.347 · AutoRecall 느와르 추리 컨셉 · 3막 8장 · 2026-06-30 · 카피·수치 원장 검수 전 초안</footer>
+
+<script>
+(function(){
+  var P=document.getElementById('sPatients'),R=document.getElementById('sRate'),F=document.getElementById('sFee');
+  var vP=document.getElementById('vPatients'),vR=document.getElementById('vRate'),vF=document.getElementById('vFee');
+  var rSleep=document.getElementById('rSleep'),rLost=document.getElementById('rLost'),rBack=document.getElementById('rBack'),rScore=document.getElementById('rScore');
+  var fill=document.getElementById('scoreFill'),benchMe=document.getElementById('benchMe'),benchMeSc=document.getElementById('benchMeSc'),verdict=document.getElementById('verdict');
+  function won(m){ if(m>=10000){return (m/10000).toFixed(m>=100000?0:1).replace(/\.0$/,'')+'억원';} return Math.round(m).toLocaleString('ko-KR')+'만원'; }
+  function calc(){
+    var p=+P.value,rate=+R.value/100,fee=+F.value;
+    var sleep=Math.round(p*rate),lost=sleep*fee,back=Math.round(sleep*0.15*fee),score=Math.round((1-rate)*100);
+    vP.textContent=p.toLocaleString('ko-KR')+'명'; vR.textContent=R.value+'%'; vF.textContent=F.value+'만원';
+    rSleep.textContent=sleep.toLocaleString('ko-KR')+'명'; rLost.textContent=won(lost); rBack.textContent=won(back); rScore.textContent=score+'점';
+    fill.style.width=score+'%'; benchMe.style.width=score+'%'; benchMeSc.textContent=score;
+    var v; if(score<60){v='동급 평균(60점)보다 '+(60-score)+'점 아래 — 회수할 여지가 가장 큽니다.';}
+    else if(score<82){v='상위 25%(82점)까지 '+(82-score)+'점 — 이 격차가 그대로 미결로 남은 매출입니다.';}
+    else{v='상위권입니다. 사람 손으로 이만큼 — 이제 시스템으로 굳히세요.';}
+    verdict.textContent=v;
+  }
+  [P,R,F].forEach(function(el){el.addEventListener('input',calc);});
+  document.getElementById('dunno').addEventListener('click',function(){R.value=35;calc();});
+  calc();
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
