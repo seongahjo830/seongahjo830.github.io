@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>안 부른 환자 — 8장으로 끝내는 스토리 (탭으로 넘기세요)</title>
+<meta name="description" content="스크롤하지 마세요. 탭으로 넘기는 8장짜리 풀스크린 스토리. 우리 치과에서 잠든 환자와 새는 매출을, 인스타 스토리처럼 넘기며 보고 설치까지.">
+<style>
+  :root{
+    --mint:#7FE3BD; --mint-d:#36BE8C; --loss:#F0875E; --gold:#F3C969; --ink:#0B0F0D;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden}
+  body{font-family:var(--font);background:#000;color:#fff;-webkit-font-smoothing:antialiased;
+     user-select:none;position:fixed;inset:0}
+
+  .stage{position:relative;width:100%;height:100%;height:100dvh;overflow:hidden}
+
+  .bars{position:absolute;top:0;left:0;right:0;z-index:30;display:flex;gap:5px;padding:12px 12px 0;padding-top:max(12px,env(safe-area-inset-top))}
+  .bars .seg{flex:1;height:3.5px;border-radius:4px;background:rgba(255,255,255,.28);overflow:hidden}
+  .bars .seg .fl{display:block;height:100%;width:0;background:#fff;border-radius:4px}
+  .bars .seg.done .fl{width:100%}
+  .bars .seg.cur .fl{width:100%;transition:none}
+
+  .top{position:absolute;top:0;left:0;right:0;z-index:25;display:flex;align-items:center;gap:9px;
+     padding:22px 16px 0;padding-top:max(26px,calc(env(safe-area-inset-top) + 14px));pointer-events:none}
+  .top .lg{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--mint),var(--mint-d));
+     color:#06140E;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center}
+  .top .bn{font-weight:800;font-size:13.5px;letter-spacing:-.01em;opacity:.95}
+  .top .cnt{margin-left:auto;font-size:12px;font-weight:800;opacity:.7}
+
+  .card{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;
+     padding:96px 26px max(110px,calc(env(safe-area-inset-bottom) + 96px));overflow:hidden}
+  .card.show{display:flex;animation:fade .5s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .card .inner{max-width:560px;margin:0 auto;width:100%}
+  .reveal{opacity:0;transform:translateY(26px);animation:up .6s cubic-bezier(.2,.85,.25,1) forwards}
+  .card.show .reveal{animation-play-state:running}
+  @keyframes up{to{opacity:1;transform:translateY(0)}}
+  .d1{animation-delay:.08s}.d2{animation-delay:.2s}.d3{animation-delay:.34s}.d4{animation-delay:.5s}.d5{animation-delay:.66s}
+
+  .act{display:inline-block;font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;
+     padding:6px 12px;border-radius:999px;margin-bottom:18px}
+  .big{font-size:clamp(30px,8.5vw,56px);font-weight:900;letter-spacing:-.04em;line-height:1.08}
+  .big .hl{color:var(--mint)}.big .loss{color:var(--loss)}
+  .med{font-size:clamp(22px,6vw,38px);font-weight:900;letter-spacing:-.03em;line-height:1.18}
+  .sub{font-size:clamp(15px,4vw,18px);line-height:1.6;opacity:.86;margin-top:18px}
+  .sub b{opacity:1;color:#fff}
+  .huge-num{font-size:clamp(54px,17vw,120px);font-weight:900;letter-spacing:-.05em;line-height:.95;font-variant-numeric:tabular-nums}
+  .tag{font-size:13px;font-weight:800;opacity:.7;letter-spacing:.05em}
+
+  .c0{background:radial-gradient(120% 90% at 70% 0%, #133A2A 0%, #08130E 55%, #000 100%)}
+  .c1{background:radial-gradient(110% 90% at 50% 100%, #1A2230 0%, #0A0D12 60%, #000 100%)}
+  .c2{background:radial-gradient(120% 100% at 80% 10%, #3A1C12 0%, #160B07 55%, #000 100%)}
+  .c3{background:radial-gradient(110% 90% at 20% 90%, #122E22 0%, #08130E 55%, #000 100%)}
+  .c4{background:radial-gradient(120% 100% at 50% 0%, #102A3A 0%, #07131A 55%, #000 100%)}
+  .c5{background:radial-gradient(120% 100% at 70% 100%, #14352A 0%, #081410 60%, #000 100%)}
+  .c6{background:radial-gradient(120% 100% at 30% 0%, #2E2A12 0%, #14110A 55%, #000 100%)}
+  .c7{background:radial-gradient(130% 110% at 50% 30%, #1F6F54 0%, #0E3324 50%, #04100B 100%)}
+
+  .a-ki{background:rgba(127,227,189,.16);color:var(--mint)}
+  .a-seung{background:rgba(240,135,94,.16);color:var(--loss)}
+  .a-jeon{background:rgba(243,201,105,.16);color:var(--gold)}
+  .a-gyeol{background:rgba(127,227,189,.2);color:var(--mint)}
+
+  .scenes{margin-top:22px;display:grid;gap:11px}
+  .scene{display:flex;gap:13px;align-items:flex-start;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+     border-radius:14px;padding:14px 15px}
+  .scene .ic{font-size:20px;line-height:1;flex:none}
+  .scene p{font-size:14.5px;line-height:1.45;opacity:.92}
+
+  .vs{margin-top:22px;display:grid;gap:11px}
+  .vrow{display:grid;grid-template-columns:1fr;gap:0;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.12)}
+  .vrow .n{padding:13px 15px;background:rgba(240,135,94,.12)}
+  .vrow .f{padding:13px 15px;background:rgba(127,227,189,.1);border-top:1px solid rgba(255,255,255,.12)}
+  .vrow .lab{font-size:11px;font-weight:900;letter-spacing:.05em;opacity:.75}
+  .vrow .n .lab{color:var(--loss)}.vrow .f .lab{color:var(--mint)}
+  .vrow .tx{font-size:14px;font-weight:700;margin-top:3px}
+
+  .mini{margin-top:24px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:20px 18px}
+  .mini .row{display:flex;justify-content:space-between;align-items:baseline}
+  .mini label{font-size:13.5px;font-weight:800;opacity:.85}
+  .mini .val{font-size:16px;font-weight:900;color:var(--mint)}
+  .mini input[type=range]{width:100%;margin-top:10px;-webkit-appearance:none;height:6px;border-radius:6px;background:rgba(255,255,255,.18);outline:none}
+  .mini input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--mint);border:3px solid #06140E;cursor:pointer}
+  .mini input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--mint);border:3px solid #06140E}
+  .mini .out{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mini .out .b{background:rgba(0,0,0,.3);border-radius:12px;padding:12px 13px}
+  .mini .out .l{font-size:11.5px;opacity:.7;font-weight:700}
+  .mini .out .v{font-size:clamp(18px,5vw,24px);font-weight:900;margin-top:3px;font-variant-numeric:tabular-nums}
+  .mini .out .v.loss{color:var(--loss)}.mini .out .v.gain{color:var(--mint)}
+
+  .bench{margin-top:24px;display:grid;gap:13px}
+  .bar{display:grid;grid-template-columns:74px 1fr 38px;align-items:center;gap:10px}
+  .bar .nm{font-size:13px;font-weight:800;opacity:.8}
+  .bar .track{height:22px;background:rgba(255,255,255,.14);border-radius:7px;overflow:hidden}
+  .bar .fill{height:100%;border-radius:7px;width:0;transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+  .bar.me .fill{background:var(--mint)}.bar.avg .fill{background:rgba(255,255,255,.45)}.bar.top .fill{background:var(--gold)}
+  .bar .sc{font-size:14px;font-weight:900;text-align:right}
+
+  .cta-btn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:#0E3324;font-weight:900;
+     font-size:18px;text-decoration:none;padding:18px 30px;border-radius:15px;margin-top:26px;
+     box-shadow:0 18px 44px -16px rgba(0,0,0,.6)}
+  .cta-btn:active{transform:scale(.97)}
+  .steps{display:flex;gap:7px;flex-wrap:wrap;margin-top:20px}
+  .steps .s{background:rgba(255,255,255,.12);border-radius:9px;padding:8px 12px;font-size:12.5px;font-weight:800}
+  .steps .s b{color:var(--mint)}
+  .micro{font-size:12px;opacity:.7;margin-top:16px;font-weight:600}
+  .fail{margin-top:18px;font-size:15px;font-weight:900;color:var(--loss)}
+
+  .nav{position:absolute;inset:0;z-index:20;display:flex}
+  .nav .l{width:32%}.nav .r{flex:1}
+  .hint{position:absolute;right:20px;bottom:max(26px,calc(env(safe-area-inset-bottom) + 18px));z-index:24;
+     font-size:13px;font-weight:800;opacity:.55;display:flex;align-items:center;gap:7px;pointer-events:none}
+  .hint .pk{animation:bob 1.3s infinite}
+  @keyframes bob{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+  .prevcue{position:absolute;left:14px;top:50%;transform:translateY(-50%);z-index:24;font-size:24px;opacity:.25;pointer-events:none}
+
+  .guard{position:absolute;left:0;right:0;bottom:0;z-index:26;padding:10px 18px max(12px,env(safe-area-inset-bottom));
+     font-size:10.5px;line-height:1.5;opacity:.55;text-align:center;background:linear-gradient(180deg,transparent,rgba(0,0,0,.6));display:none}
+  .guard.on{display:block}
+  .replay{position:absolute;left:16px;bottom:max(20px,calc(env(safe-area-inset-bottom) + 12px));z-index:28;
+     background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-weight:800;font-size:12.5px;
+     border-radius:999px;padding:9px 15px;cursor:pointer;font-family:inherit;display:none}
+  .replay.on{display:inline-block}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <div class="bars" id="bars"></div>
+  <div class="top"><span class="lg">A</span><span class="bn">AutoRecall</span><span class="cnt" id="cnt">1 / 8</span></div>
+
+  <section class="card c0 show" data-i="0"><div class="inner">
+    <span class="act a-ki reveal d1">기 · 5초 안에, 내 얘기</span>
+    <div class="big reveal d2">안 오는 환자는<br>없습니다.</div>
+    <div class="big reveal d3" style="margin-top:6px"><span class="hl">안 부른 환자</span>만<br>있을 뿐.</div>
+    <p class="sub reveal d4">스크롤하지 마세요. <b>탭으로 넘기는 8장</b>이면 끝납니다.<br>우리 치과에서 지금 새고 있는 돈 — 30초면 보입니다.</p>
+  </div></section>
+
+  <section class="card c1" data-i="1"><div class="inner">
+    <span class="act a-ki reveal d1">기 · 공감</span>
+    <div class="med reveal d2">혹시, 이런 적<br>없으세요?</div>
+    <div class="scenes">
+      <div class="scene reveal d2"><span class="ic">🗂️</span><p>6개월 지난 환자 명단이, 지금 <b>어디 있는지 모른다.</b></p></div>
+      <div class="scene reveal d3"><span class="ic">🎯</span><p>오늘 누구한테 전화할지, 결국 <b>“감”으로 찍는다.</b></p></div>
+      <div class="scene reveal d4"><span class="ic">🔁</span><p>전화했던 사람한테 <b>또 전화한다</b> — 기록이 안 남아서.</p></div>
+      <div class="scene reveal d5"><span class="ic">💤</span><p>상담만 받고 사라진 임플란트 환자, <b>누군지 모른다.</b></p></div>
+    </div>
+  </div></section>
+
+  <section class="card c2" data-i="2"><div class="inner">
+    <span class="act a-seung reveal d1">승 · 손실</span>
+    <div class="med reveal d2">“좋은 콜 리스트가 있어도,<br><span class="loss">걸 시간이 없으면 0원</span>입니다.”</div>
+    <p class="sub reveal d3">내부 차트 분석 — 방치된 환자의</p>
+    <div class="huge-num loss reveal d4" style="margin-top:6px">71%</div>
+    <p class="sub reveal d5" style="margin-top:8px">가 치료계획 후 <b>30일 안에</b> 떠날지 말지를 정합니다.<br>그 사이에도, 환자는 조용히 옆 치과로 갑니다.</p>
+  </div></section>
+
+  <section class="card c3" data-i="3"><div class="inner">
+    <span class="act a-seung reveal d1">승 · 면죄</span>
+    <div class="big reveal d2">리콜, 안 하는 게<br>아니라 <span class="hl">못 하는</span> 겁니다.</div>
+    <p class="sub reveal d3">문제는 게으름이 아닙니다. <b>‘안 보인다’는 것</b>입니다.<br><br>
+       데스크의 1순위는 눈앞의 환자 응대. 큐에 좋은 대상이 쌓여도 발신은 뒤로 밀립니다.
+       한가한 날에도 “전화할 환자가 없는 게” 아니라 — <b>누군지 모를 뿐.</b></p>
+  </div></section>
+
+  <section class="card c4" data-i="4"><div class="inner">
+    <span class="act a-jeon reveal d1">전 · 해결</span>
+    <div class="med reveal d2">사람이 못 하는 셋만,<br>도구가 대신합니다.</div>
+    <div class="vs">
+      <div class="vrow reveal d2"><div class="n"><div class="lab">지금</div><div class="tx">빈 슬롯이 생겨도 채울 사람을 못 찾음</div></div><div class="f"><div class="lab">🔥 슬롯 필러</div><div class="tx">당일 빈 시간에 맞는 환자 즉시 추천</div></div></div>
+      <div class="vrow reveal d3"><div class="n"><div class="lab">지금</div><div class="tx">누구한테 걸지 “감”으로 정함</div></div><div class="f"><div class="lab">🎯 점수제 큐</div><div class="tx">(관심−부정)×가치×타이밍으로 자동 정렬</div></div></div>
+      <div class="vrow reveal d4"><div class="n"><div class="lab">지금</div><div class="tx">전화 결과가 기록에 안 남음</div></div><div class="f"><div class="lab">🧾 결과 버튼 1번</div><div class="tx">부재중·예약완료 누르면 다음 액션 자동 정리</div></div></div>
+    </div>
+  </div></section>
+
+  <section class="card c5" data-i="5"><div class="inner">
+    <span class="act a-jeon reveal d1">전 · 자가진단 ⭐</span>
+    <div class="med reveal d2">우리 치과는<br>지금 어떤 상태일까?</div>
+    <div class="mini reveal d3">
+      <div class="row"><label>전체 환자 수</label><span class="val" id="vP">3,000명</span></div>
+      <input type="range" id="sP" min="500" max="20000" step="100" value="3000">
+      <div class="row" style="margin-top:14px"><label>6개월+ 연락 끊김</label><span class="val" id="vR">35%</span></div>
+      <input type="range" id="sR" min="5" max="70" step="1" value="35">
+      <div class="out">
+        <div class="b"><div class="l">잠든 환자</div><div class="v" id="oSleep">1,050명</div></div>
+        <div class="b"><div class="l">잃는 매출 / 연(추정·8만원 가정)</div><div class="v loss" id="oLost">8,400만원</div></div>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="card c6" data-i="6"><div class="inner">
+    <span class="act a-jeon reveal d1">전 · 비교</span>
+    <div class="med reveal d2">동급 치과와<br>비교하면?</div>
+    <div class="bench">
+      <div class="bar me reveal d3"><div class="nm">우리</div><div class="track"><div class="fill" id="bMe"></div></div><div class="sc" id="bMeS">65</div></div>
+      <div class="bar avg reveal d3"><div class="nm">평균</div><div class="track"><div class="fill" data-w="60"></div></div><div class="sc">60</div></div>
+      <div class="bar top reveal d4"><div class="nm">상위 25%</div><div class="track"><div class="fill" data-w="82"></div></div><div class="sc">82</div></div>
+    </div>
+    <p class="sub reveal d5" id="benchMsg">점수가 낮을수록 — <b>되돌릴 여지가 가장 큽니다.</b></p>
+  </div></section>
+
+  <section class="card c7" data-i="7"><div class="inner">
+    <span class="act a-gyeol reveal d1">결 · 설치</span>
+    <div class="med reveal d2">이 숫자는 추정입니다.<br>진짜 <span class="hl">내 차트의 명단</span>은<br>설치해야 보입니다.</div>
+    <div class="steps reveal d3">
+      <span class="s"><b>1</b> 설치(2분)</span><span class="s"><b>2</b> 차트 연결</span>
+      <span class="s"><b>3</b> 오늘 큐</span><span class="s"><b>4</b> 전화→결과 버튼</span>
+    </div>
+    <a class="cta-btn reveal d3" href="#" onclick="return false">⬇ 무료로 설치하기</a>
+    <div class="micro reveal d4">쓰던 차트(덴트웹) 그대로 · 읽기 전용 · 환자정보 원내 로컬 · 카드 등록 없음</div>
+    <div class="fail reveal d4">안 깔면 — 이 누수는 다음 달에도, 그대로입니다.</div>
+  </div></section>
+
+  <div class="nav"><div class="l" id="navL"></div><div class="r" id="navR"></div></div>
+  <div class="prevcue" id="prevcue" style="display:none">‹</div>
+  <div class="hint" id="hint"><span>탭하면 다음</span><span class="pk">›</span></div>
+  <button class="replay" id="replay">↻ 처음부터</button>
+  <div class="guard" id="guard">※ 모든 수치는 가정값·예시이며 결과를 보장하지 않습니다 · AutoRecall은 전화 우선순위 정리를 돕는 운영 도구 · 입력값은 저장·전송 없이 화면 내 계산 · 한글 우선</div>
+</div>
+
+<script>
+(function(){
+  var cards=[].slice.call(document.querySelectorAll('.card'));
+  var N=cards.length, cur=0;
+  var barsEl=document.getElementById('bars'), cntEl=document.getElementById('cnt');
+  var hint=document.getElementById('hint'), prevcue=document.getElementById('prevcue'),
+      guard=document.getElementById('guard'), replay=document.getElementById('replay');
+
+  for(var i=0;i<N;i++){ var s=document.createElement('div'); s.className='seg'; s.innerHTML='<span class="fl"></span>'; barsEl.appendChild(s); }
+  var segs=[].slice.call(barsEl.children);
+
+  function go(n){
+    if(n<0) n=0; if(n>=N) n=N-1;
+    cards[cur].classList.remove('show');
+    cur=n;
+    var c=cards[cur]; c.classList.add('show');
+    [].forEach.call(c.querySelectorAll('.reveal'),function(el){ el.style.animation='none'; el.offsetHeight; el.style.animation=''; });
+    segs.forEach(function(s,idx){ s.classList.toggle('done',idx<cur); s.classList.toggle('cur',idx===cur); });
+    cntEl.textContent=(cur+1)+' / '+N;
+    prevcue.style.display=cur>0?'block':'none';
+    hint.style.display=cur<N-1?'flex':'none';
+    guard.classList.toggle('on',cur===N-1);
+    replay.classList.toggle('on',cur===N-1);
+    if(cur===6) animateBench();
+  }
+
+  function animateBench(){
+    [].forEach.call(document.querySelectorAll('#stage .c6 .fill'),function(f){
+      var w=f.id==='bMe'? (document.getElementById('bMeS').textContent) : f.dataset.w;
+      setTimeout(function(){ f.style.width=w+'%'; },80);
+    });
+  }
+
+  document.getElementById('navR').addEventListener('click',function(){ go(cur+1); });
+  document.getElementById('navL').addEventListener('click',function(){ go(cur-1); });
+  replay.addEventListener('click',function(e){ e.stopPropagation(); go(0); });
+
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' ') { e.preventDefault(); go(cur+1); }
+    if(e.key==='ArrowLeft') go(cur-1);
+  });
+  var x0=null;
+  document.getElementById('stage').addEventListener('touchstart',function(e){ x0=e.touches[0].clientX; },{passive:true});
+  document.getElementById('stage').addEventListener('touchend',function(e){
+    if(x0==null) return; var dx=e.changedTouches[0].clientX-x0;
+    if(Math.abs(dx)>45){ go(cur + (dx<0?1:-1)); } x0=null;
+  },{passive:true});
+
+  var mini=document.querySelector('.mini');
+  ['click','touchstart','touchend','mousedown'].forEach(function(ev){ mini.addEventListener(ev,function(e){ e.stopPropagation(); }); });
+
+  function won(m){ if(m>=10000) return (m/10000).toFixed(m>=100000?0:1).replace(/\.0$/,'')+'억원'; return Math.round(m).toLocaleString('ko-KR')+'만원'; }
+  var sP=document.getElementById('sP'), sR=document.getElementById('sR');
+  function calc(){
+    var p=+sP.value, r=+sR.value/100, fee=8;
+    var sleep=Math.round(p*r), lost=sleep*fee, score=Math.round((1-r)*100);
+    document.getElementById('vP').textContent=p.toLocaleString('ko-KR')+'명';
+    document.getElementById('vR').textContent=sR.value+'%';
+    document.getElementById('oSleep').textContent=sleep.toLocaleString('ko-KR')+'명';
+    document.getElementById('oLost').textContent=won(lost);
+    document.getElementById('bMeS').textContent=score;
+    var f=document.getElementById('bMe'); if(cur===6) f.style.width=score+'%';
+    var m;
+    if(score<60) m='평균(60)보다 '+(60-score)+'점 아래 — <b>되돌릴 여지가 가장 큽니다.</b>';
+    else if(score<82) m='상위 25%(82)까지 '+(82-score)+'점 — <b>이 격차가 새는 매출입니다.</b>';
+    else m='상위권 — 이제 <b>시스템으로 굳힐 때</b>입니다.';
+    document.getElementById('benchMsg').innerHTML=m;
+  }
+  sP.addEventListener('input',calc); sR.addEventListener('input',calc); calc();
+
+  go(0);
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

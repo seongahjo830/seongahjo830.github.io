@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>만져보는 AutoRecall — 오늘 전화할 환자가 이미 줄 서 있습니다</title>
+<meta name="description" content="가입도 설치도 없이, 지금 이 화면에서 AutoRecall을 직접 눌러보세요. 환자를 고르고 결과 버튼을 누르면 큐가 살아 움직입니다. 데모 데이터로 먼저 체험하고, 내 차트로 설치하세요.">
+<style>
+  :root{
+    --bg:#EEF0F2; --panel:#FFFFFF; --ink:#15181C; --soft:#5A626B; --faint:#969CA4;
+    --line:#E5E8EB; --accent:#1F6F54; --accent-soft:#E7F1EC; --accent-ink:#16513D;
+    --loss:#C2522F; --warn:#B8821A; --hi:#2563EB;
+    --fire:#E0612C; --gold:#B8821A; --sprout:#3E8E5E; --calm:#3C6E8F;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+
+  .hook{position:relative;overflow:hidden;background:
+     radial-gradient(900px 360px at 85% -20%, var(--accent-soft), transparent 65%),
+     radial-gradient(700px 300px at 0% 120%, #FCEFE7, transparent 60%), var(--bg);
+     padding:34px 0 8px}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+  .live-pill{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:var(--accent-ink);
+     background:#fff;border:1px solid #CBE3D7;border-radius:999px;padding:7px 14px;letter-spacing:.01em}
+  .dot{width:8px;height:8px;border-radius:50%;background:#27AE60;box-shadow:0 0 0 0 rgba(39,174,96,.6);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(39,174,96,.55)}70%{box-shadow:0 0 0 9px rgba(39,174,96,0)}100%{box-shadow:0 0 0 0 rgba(39,174,96,0)}}
+  h1.hook-h{font-size:clamp(26px,5vw,46px);font-weight:900;letter-spacing:-.035em;line-height:1.12;margin:16px 0 0}
+  h1.hook-h .hl{color:var(--accent)}
+  .hook-sub{font-size:clamp(15px,2.2vw,18px);color:var(--soft);margin:14px 0 0;max-width:640px}
+  .hook-sub b{color:var(--ink)}
+  .try-arrow{display:inline-flex;align-items:center;gap:9px;margin:20px 0 26px;font-weight:800;font-size:15px;color:var(--accent-ink);
+     background:var(--accent-soft);border:1px dashed #8FC3AC;border-radius:12px;padding:11px 16px}
+  .try-arrow .b{animation:bob 1.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
+
+  .app{max-width:1160px;margin:0 auto 30px;background:var(--panel);border:1px solid var(--line);
+     border-radius:18px;box-shadow:0 30px 70px -38px rgba(20,24,30,.5),0 2px 0 #fff inset;overflow:hidden}
+  .titlebar{display:flex;align-items:center;gap:12px;padding:13px 18px;background:#F7F8F9;border-bottom:1px solid var(--line)}
+  .lights{display:flex;gap:7px}.lights i{width:12px;height:12px;border-radius:50%;display:block}
+  .lights .r{background:#F0625A}.lights .y{background:#F5BE4F}.lights .g{background:#5FC466}
+  .titlebar .name{font-weight:800;font-size:13.5px;letter-spacing:-.01em}
+  .titlebar .name span{color:var(--faint);font-weight:600}
+  .titlebar .right{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--faint);font-weight:700}
+  .demobadge{background:#FFF4E9;color:#A65A1E;border:1px solid #F2D8BC;border-radius:7px;padding:3px 9px;font-size:11.5px;font-weight:800}
+
+  .appbody{display:grid;grid-template-columns:1fr 1.05fr;min-height:530px}
+  .queue{border-right:1px solid var(--line);background:#FBFCFC;display:flex;flex-direction:column}
+  .qhead{padding:16px 18px 12px;border-bottom:1px solid var(--line)}
+  .qhead .t{font-weight:900;font-size:16px;letter-spacing:-.02em}
+  .qhead .s{font-size:12.5px;color:var(--soft);margin-top:3px}
+  .qhead .s b{color:var(--accent)}
+  .filters{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+  .chip{font-size:11.5px;font-weight:800;border-radius:999px;padding:5px 10px;border:1px solid var(--line);background:#fff;color:var(--soft);cursor:pointer;user-select:none}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .qlist{overflow-y:auto;flex:1;padding:8px 10px 12px}
+  .row{display:flex;align-items:center;gap:12px;padding:12px 12px;border-radius:13px;cursor:pointer;border:1px solid transparent;transition:.12s}
+  .row:hover{background:#fff;border-color:var(--line)}
+  .row.sel{background:#fff;border-color:#BFD9CC;box-shadow:0 6px 18px -12px rgba(31,111,84,.5)}
+  .rank{width:26px;text-align:center;font-weight:900;font-size:13px;color:var(--faint);flex:none}
+  .who{flex:1;min-width:0}
+  .who .nm{font-weight:800;font-size:14.5px;letter-spacing:-.01em}
+  .who .meta{font-size:12px;color:var(--soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tagdot{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;border-radius:6px;padding:2px 7px;margin-top:5px}
+  .t-fire{background:#FCEAE0;color:var(--fire)} .t-gold{background:#FAF0D9;color:var(--gold)}
+  .t-calm{background:#E6EFF5;color:var(--calm)} .t-sprout{background:#E7F2EC;color:var(--sprout)}
+  .scoreball{flex:none;width:46px;height:46px;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+     font-weight:900;background:var(--accent);color:#fff;line-height:1}
+  .scoreball small{font-size:9px;font-weight:700;opacity:.85;margin-top:1px}
+  .row.done{opacity:.45}
+  .row.done .scoreball{background:#AEB6BD}
+
+  .detail{padding:20px 22px;display:flex;flex-direction:column}
+  .d-empty{margin:auto;text-align:center;color:var(--faint);max-width:280px}
+  .d-empty .big{font-size:40px}
+  .d-empty p{margin-top:10px;font-size:14px;font-weight:600;color:var(--soft)}
+  .d-top{display:flex;align-items:flex-start;gap:14px}
+  .d-top .nm{font-size:21px;font-weight:900;letter-spacing:-.02em}
+  .d-top .sub{font-size:13px;color:var(--soft);margin-top:3px}
+  .d-score{margin-left:auto;text-align:center;background:var(--accent-soft);border:1px solid #CBE3D7;border-radius:14px;padding:9px 13px;flex:none}
+  .d-score .n{font-size:24px;font-weight:900;color:var(--accent);line-height:1}
+  .d-score .l{font-size:10.5px;font-weight:800;color:var(--accent-ink);letter-spacing:.04em;margin-top:2px}
+  .why{margin-top:16px;background:#FBFCFC;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .why .h{font-size:12px;font-weight:900;color:var(--accent-ink);letter-spacing:.03em;text-transform:uppercase}
+  .why ul{list-style:none;margin:9px 0 0;padding:0;display:grid;gap:7px}
+  .why li{font-size:13.5px;color:var(--ink);display:flex;gap:8px;align-items:flex-start}
+  .why li .k{flex:none;color:var(--accent);font-weight:900}
+  .why .val{margin-top:11px;font-size:12.5px;color:var(--soft)}
+  .why .val b{color:var(--loss)}
+  .scriptline{margin-top:14px;font-size:13px;color:var(--soft);background:#fff;border:1px dashed var(--line);border-radius:12px;padding:12px 14px}
+  .scriptline b{color:var(--ink)}
+  .actions{margin-top:auto;padding-top:16px}
+  .actions .lab{font-size:11.5px;font-weight:800;color:var(--faint);letter-spacing:.04em}
+  .btns{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:9px}
+  .rbtn{font-weight:800;font-size:13.5px;border-radius:11px;padding:13px 10px;border:1px solid var(--line);background:#fff;cursor:pointer;
+     transition:.12s;font-family:inherit;color:var(--ink)}
+  .rbtn:hover{transform:translateY(-1px)}
+  .rbtn.book{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .rbtn.miss{color:var(--warn);border-color:#EBD9B4}
+  .rbtn.no{color:var(--soft)}
+  .rbtn.dnc{color:var(--loss);border-color:#EAC7BB}
+
+  .statusbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:14px 20px;background:#F7F8F9;border-top:1px solid var(--line)}
+  .stat{display:flex;flex-direction:column}
+  .stat .n{font-size:18px;font-weight:900;letter-spacing:-.02em}
+  .stat .n.green{color:var(--accent)}
+  .stat .l{font-size:11px;color:var(--soft);font-weight:700;margin-top:1px}
+  .statusbar .spacer{flex:1}
+  .undo{font-size:12px;font-weight:800;color:var(--hi);background:none;border:0;cursor:pointer;font-family:inherit}
+  .undo[disabled]{color:var(--faint);cursor:default}
+
+  .convert{max-width:1160px;margin:0 auto 16px;background:linear-gradient(100deg,#15321F,#1F6F54);
+     border-radius:18px;padding:26px 26px;display:flex;align-items:center;gap:22px;flex-wrap:wrap;color:#fff;
+     box-shadow:0 24px 50px -30px rgba(31,111,84,.7)}
+  .convert .txt{flex:1;min-width:260px}
+  .convert .e{font-size:12.5px;font-weight:800;letter-spacing:.06em;color:#A7E6CC;text-transform:uppercase}
+  .convert h2{font-size:clamp(20px,3vw,27px);font-weight:900;letter-spacing:-.02em;margin:7px 0 0;line-height:1.25}
+  .convert p{color:#CFE9DC;font-size:14px;margin:9px 0 0;max-width:560px}
+  .convert .cta{display:inline-flex;align-items:center;gap:9px;background:#fff;color:var(--accent-ink);font-weight:900;font-size:16px;
+     text-decoration:none;padding:15px 24px;border-radius:13px;white-space:nowrap;box-shadow:0 10px 24px -12px rgba(0,0,0,.5)}
+  .convert .cta:hover{transform:translateY(-2px)}
+  .convert .micro{display:block;font-size:11.5px;color:#A7E6CC;margin-top:9px;font-weight:600}
+
+  .closer{max-width:1160px;margin:0 auto 8px;padding:6px 20px 0}
+  .failsafe{font-size:clamp(15px,2.4vw,18px);font-weight:900;color:var(--loss);text-align:center;margin:6px 0 18px}
+  .faq{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .faq .it{background:#fff;border:1px solid var(--line);border-radius:13px;padding:14px 15px}
+  .faq .qq{font-size:13.5px;font-weight:800}
+  .faq .aa{font-size:12.5px;color:var(--soft);margin-top:5px;line-height:1.5}
+  .guard{max-width:1160px;margin:18px auto 0;padding:14px 20px 0;border-top:1px solid var(--line);
+     font-size:12px;color:var(--faint);line-height:1.75}
+  .guard b{color:var(--soft)}
+  footer{max-width:1160px;margin:0 auto;padding:22px 20px 64px;color:var(--faint);font-size:12.5px;text-align:center}
+
+  @media(max-width:860px){
+    .appbody{grid-template-columns:1fr}
+    .queue{border-right:0;border-bottom:1px solid var(--line);max-height:none}
+    .qlist{max-height:340px}
+    .detail{min-height:auto}
+    .faq{grid-template-columns:1fr 1fr}
+    .convert{padding:22px 20px}
+  }
+  @media(max-width:520px){.faq{grid-template-columns:1fr}.btns{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div class="hook">
+  <div class="wrap">
+    <span class="live-pill"><span class="dot"></span>지금 화면 = 실제로 작동하는 데모 · 가입·설치 0</span>
+    <h1 class="hook-h">안 오는 환자는 없습니다.<br><span class="hl">안 부른 환자</span>만 있을 뿐.</h1>
+    <p class="hook-sub">설명은 그만 읽으셔도 됩니다. <b>아래는 진짜로 눌리는 AutoRecall 화면</b>입니다.<br>
+       환자를 골라 결과 버튼을 눌러 보세요 — 큐가 살아 움직이고, 회수 추정액이 올라갑니다.</p>
+    <div class="try-arrow">👇 <span class="b">왼쪽 명단에서 환자를 한 명 눌러보세요</span></div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="titlebar">
+    <div class="lights"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+    <div class="name">AutoRecall <span>— 오늘 리콜 큐 · 서울사계절치과(데모)</span></div>
+    <div class="right"><span class="demobadge">DEMO DATA</span><span>2026-06-30 (월)</span></div>
+  </div>
+
+  <div class="appbody">
+    <div class="queue">
+      <div class="qhead">
+        <div class="t">오늘 전화할 환자</div>
+        <div class="s">차트가 자동 정렬했습니다 · 남은 <b id="remain">12</b>명 · 점수순</div>
+        <div class="filters" id="filters">
+          <span class="chip on" data-f="all">전체</span>
+          <span class="chip" data-f="fire">🔥 슬롯필러</span>
+          <span class="chip" data-f="gold">💰 고가치</span>
+          <span class="chip" data-f="calm">📅 정기검진</span>
+          <span class="chip" data-f="sprout">🌱 재활성화</span>
+        </div>
+      </div>
+      <div class="qlist" id="qlist"></div>
+    </div>
+
+    <div class="detail" id="detail">
+      <div class="d-empty" id="empty">
+        <div class="big">👈</div>
+        <p>환자를 누르면 “왜 오늘 이 환자인지”와 전화 멘트, 결과 버튼이 여기 나옵니다.</p>
+      </div>
+      <div id="card" style="display:none;flex-direction:column;flex:1"></div>
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <div class="stat"><div class="n green" id="bookedN">0건</div><div class="l">오늘 예약 잡음</div></div>
+    <div class="stat"><div class="n green" id="recoverN">0만원</div><div class="l">회수 추정액(가정값)</div></div>
+    <div class="stat"><div class="n" id="handledN">0명</div><div class="l">처리한 큐</div></div>
+    <div class="spacer"></div>
+    <button class="undo" id="undo" disabled>↩ 방금 처리 취소</button>
+  </div>
+</div>
+
+<div class="convert">
+  <div class="txt">
+    <div class="e">방금 만진 건 가짜 데이터입니다</div>
+    <h2>이 화면을, 우리 치과 <u>진짜 환자</u>로 채우려면.</h2>
+    <p>설치하면 위 명단이 데모가 아니라 <b style="color:#fff">덴트웹 실제 차트</b>로 바뀝니다. 쓰던 차트 그대로, 읽기만 합니다. 환자정보는 원내 PC 밖으로 나가지 않습니다.</p>
+  </div>
+  <div>
+    <a class="cta" href="#" onclick="return false">⬇ 무료로 설치하고 내 명단 보기</a>
+    <span class="micro">2분 설치 · 차트 읽기 전용 · 카드 등록 없음</span>
+  </div>
+</div>
+
+<div class="closer">
+  <div class="failsafe">안 깔면 — 이 12명은 다음 달에도, 그대로 잠들어 있습니다.</div>
+  <div class="faq">
+    <div class="it"><div class="qq">직원을 감시하나요?</div><div class="aa">아니요. 데스크를 돕는 도구입니다. 누구에게 걸지·말지는 사람이 정합니다.</div></div>
+    <div class="it"><div class="qq">차트가 바뀌나요?</div><div class="aa">읽기만 합니다. 원본 차트는 절대 수정하지 않습니다.</div></div>
+    <div class="it"><div class="qq">수신 거부 환자는?</div><div class="aa">‘전화 금지’ 한 번이면 큐에서 영구 제외됩니다.</div></div>
+    <div class="it"><div class="qq">정보가 새나요?</div><div class="aa">전부 원내 로컬에서만 처리. 외부 전송 없음.</div></div>
+  </div>
+  <div class="guard">
+    ※ 화면의 환자·점수·금액은 모두 <b>데모용 가상 데이터·가정값</b>이며 실제 결과를 보장하지 않습니다. · 회수 추정액 = 처리 건 × 가정 단가로, <b>원장 검수가 필요한 예시 계산</b>입니다. · AutoRecall은 전화 우선순위 정리를 돕는 <b>운영 도구</b>로 치료 효과·결과를 보장하지 않습니다. · 수신거부·동의 범위는 정보통신망법 등 규정과 각 치과 정책을 따릅니다. · 한글 우선 표기.
+  </div>
+</div>
+
+<footer>AutoRecall · 만져보는 라이브 데모 (제품 체험형 랜딩) · 2026-06-30 · 카피·수치 원장 검수 전 초안</footer>
+
+<script>
+(function(){
+  var DATA=[
+    {id:1, nm:"김O현", age:"52세", tag:"gold", tagL:"💰 고가치", score:94, value:120, last:"상담만 · 8개월 전", why:["임플란트 2개 상담 후 미착수","마지막 접점 8개월 — 결정 시한 임박","문자 1회 외 후속 연락 기록 없음"], note:"가장 큰 매출이 가장 조용히 빠지는 전형"},
+    {id:2, nm:"이O아", age:"34세", tag:"fire", tagL:"🔥 슬롯필러", score:91, value:8, last:"정기검진 7개월", why:["오늘 14:00 취소 슬롯과 동선·시간대 일치","당일 픽업 확률 높은 연령·이력","스케일링 도래 + 빈자리 매칭(타이밍 ×3.0)"], note:"비는 의자를 오늘 안에 매출로"},
+    {id:3, nm:"박O석", age:"61세", tag:"gold", tagL:"💰 고가치", score:88, value:90, last:"보철 상담 · 5개월 전", why:["크라운 3본 견적 후 보류","연령·치료범위상 이탈 시 회수 난이도 큼","최근 검색·예약 시도 흔적 없음"], note:"큰 건일수록 먼저 거는 게 회수율을 높임"},
+    {id:4, nm:"최O진", age:"28세", tag:"calm", tagL:"📅 정기검진", score:79, value:6, last:"스케일링 6개월", why:["보험 스케일링 도래(6개월 경과)","과거 예약률 양호 — 응답 가능성 높음","정기 리듬 유지 시 장기 잔존 환자"], note:"놓치면 그대로 옆 치과 정기검진으로"},
+    {id:5, nm:"정O은", age:"45세", tag:"sprout", tagL:"🌱 재활성화", score:74, value:30, last:"치료 중단 · 11개월", why:["근관치료 중 미완주(2회 남음)","미완주 30~90일 구간서 이탈 결정 다수","연락 가능 번호 유효"], note:"중단 환자 = 이미 신뢰가 쌓인 회수 1순위"},
+    {id:6, nm:"한O우", age:"39세", tag:"calm", tagL:"📅 정기검진", score:70, value:7, last:"정기검진 8개월", why:["검진 주기 도래 + 가족 단위 등록","주말 선호 — 주말 슬롯 추천 동봉","이전 노쇼 0회"], note:"꾸준한 환자일수록 리듬만 살려주면 됨"},
+    {id:7, nm:"오O림", age:"57세", tag:"gold", tagL:"💰 고가치", score:67, value:75, last:"교정 상담 · 9개월 전", why:["성인 교정 상담 후 무응답","고관여 결정 — 재접촉 타이밍 민감","비용 안내만 받고 보류 상태"], note:"오래 식을수록 멘트가 더 중요해짐"},
+    {id:8, nm:"신O별", age:"31세", tag:"fire", tagL:"🔥 슬롯필러", score:63, value:9, last:"정기검진 6개월", why:["오늘 늦은 오후 빈 슬롯과 직장 동선 적합","과거 당일 예약 수락 이력","스케일링 도래"], note:"오늘 비는 시간대에 딱 맞는 후보"},
+    {id:9, nm:"문O서", age:"48세", tag:"sprout", tagL:"🌱 재활성화", score:58, value:25, last:"치료 중단 · 14개월", why:["보철 진행 중 내원 중단","장기 미내원이나 치료 미완 상태","재연락 시도 기록 없음"], note:"식었지만 미완 치료라 명분이 분명"},
+    {id:10, nm:"배O진", age:"26세", tag:"calm", tagL:"📅 정기검진", score:54, value:6, last:"스케일링 9개월", why:["보험 스케일링 주기 초과","연령대 픽업률 보통","문자 수신 동의 상태"], note:"가볍게 한 통, 응답하면 정기 전환"},
+    {id:11, nm:"황O연", age:"63세", tag:"sprout", tagL:"🌱 재활성화", score:49, value:40, last:"치료 중단 · 16개월", why:["부분틀니 제작 중 중단","장기 휴면 — 우선순위 하단","유선 연락 권장(문자 응답률 낮은 연령)"], note:"하단이지만 미완 보철이라 가치 큼"},
+    {id:12, nm:"서O빈", age:"37세", tag:"calm", tagL:"📅 정기검진", score:44, value:6, last:"정기검진 10개월", why:["검진 주기 초과 + 응답 이력 보통","오늘 슬롯 매칭 없음 — 표준 큐","수신 동의 유효"], note:"표준 리콜 — 시간 날 때 한 통"}
+  ];
+
+  var qlist=document.getElementById('qlist'), detail=document.getElementById('detail'),
+      empty=document.getElementById('empty'), card=document.getElementById('card'),
+      remainEl=document.getElementById('remain'), undoBtn=document.getElementById('undo');
+  var bookedEl=document.getElementById('bookedN'), recoverEl=document.getElementById('recoverN'), handledEl=document.getElementById('handledN');
+  var filter='all', selId=null, lastAction=null;
+  var booked=0, recover=0, handled=0;
+  var state={}; DATA.forEach(function(d){state[d.id]='open';});
+
+  function won(m){ if(m>=10000) return (m/10000).toFixed(m>=100000?0:1).replace(/\.0$/,'')+'억원'; return Math.round(m).toLocaleString('ko-KR')+'만원'; }
+
+  function renderList(){
+    var rows='', openCount=0;
+    DATA.forEach(function(d,i){
+      if(state[d.id]==='open') openCount++;
+      if(filter!=='all' && d.tag!==filter) return;
+      var done=state[d.id]==='done';
+      rows+='<div class="row'+(selId===d.id?' sel':'')+(done?' done':'')+'" data-id="'+d.id+'">'+
+        '<div class="rank">'+(i+1)+'</div>'+
+        '<div class="who"><div class="nm">'+d.nm+'</div>'+
+        '<div class="meta">'+d.age+' · '+d.last+'</div>'+
+        '<span class="tagdot t-'+d.tag+'">'+d.tagL+'</span></div>'+
+        '<div class="scoreball">'+d.score+'<small>점</small></div></div>';
+    });
+    qlist.innerHTML=rows || '<div style="padding:30px 12px;text-align:center;color:var(--faint);font-size:13px">이 분류엔 남은 환자가 없습니다 🎉</div>';
+    remainEl.textContent=openCount;
+  }
+
+  function renderCard(d){
+    empty.style.display='none'; card.style.display='flex';
+    var lis=d.why.map(function(w){return '<li><span class="k">›</span><span>'+w+'</span></li>';}).join('');
+    card.innerHTML=
+      '<div class="d-top"><div><div class="nm">'+d.nm+' <span style="font-size:13px;color:var(--faint);font-weight:700">'+d.age+'</span></div>'+
+        '<div class="sub">'+d.tagL+' · '+d.last+'</div></div>'+
+        '<div class="d-score"><div class="n">'+d.score+'</div><div class="l">콜 우선도</div></div></div>'+
+      '<div class="why"><div class="h">왜 오늘 이 환자인가</div><ul>'+lis+'</ul>'+
+        '<div class="val">추정 회수 가치 <b>'+won(d.value)+'</b> / 1회 · ※ 가정값</div></div>'+
+      '<div class="scriptline">📞 <b>추천 첫 마디</b> — “안녕하세요 '+d.nm+'님, 서울사계절치과입니다. '+scriptFor(d)+'”</div>'+
+      '<div class="actions"><div class="lab">통화 결과를 한 번만 누르면 — 큐와 데이터가 자동 정리됩니다</div>'+
+        '<div class="btns">'+
+          '<button class="rbtn book" data-act="book">✅ 예약 잡음</button>'+
+          '<button class="rbtn miss" data-act="miss">📵 부재중</button>'+
+          '<button class="rbtn no" data-act="no">🙅 다음에</button>'+
+          '<button class="rbtn dnc" data-act="dnc">🚫 전화 금지</button>'+
+        '</div></div>';
+  }
+  function scriptFor(d){
+    if(d.tag==='fire') return '오늘 마침 자리가 하나 비어서, 미뤄둔 스케일링 겸 봐드리려 연락드렸어요.';
+    if(d.tag==='gold') return '지난번 상담하셨던 부분, 결정에 도움 되시게 한 번 더 정리해 안내드리려구요.';
+    if(d.tag==='sprout') return '받으시던 치료가 마무리 전이라, 편하신 때 마저 봐드리려 연락드렸습니다.';
+    return '정기검진 시기가 되셔서, 편하신 날로 예약 도와드리려 연락드렸어요.';
+  }
+
+  function select(id){ selId=id; renderList(); renderCard(DATA.find(function(d){return d.id===id;})); }
+
+  function act(a){
+    if(selId==null) return;
+    var d=DATA.find(function(x){return x.id===selId;});
+    if(state[d.id]==='done') return;
+    var addRec=0, addBook=0;
+    if(a==='book'){ addBook=1; addRec=Math.round(d.value*0.6); }
+    state[d.id]='done'; handled++;
+    booked+=addBook; recover+=addRec;
+    lastAction={id:d.id, addBook:addBook, addRec:addRec};
+    undoBtn.disabled=false;
+    updateStats();
+    var nxt=DATA.find(function(x){return state[x.id]==='open';});
+    if(nxt){ select(nxt.id); } else { selId=null; renderList(); card.style.display='none'; empty.style.display='block';
+      empty.innerHTML='<div class="big">🎉</div><p>오늘 큐를 다 돌았습니다. 데모에선 12명이 전부지만 — <b style="color:var(--accent)">실제 차트엔 수백 명이 줄 서 있습니다.</b></p>'; }
+  }
+  function updateStats(){
+    bookedEl.textContent=booked+'건';
+    recoverEl.textContent=won(recover);
+    handledEl.textContent=handled+'명';
+  }
+
+  qlist.addEventListener('click',function(e){ var r=e.target.closest('.row'); if(r) select(+r.dataset.id); });
+  detail.addEventListener('click',function(e){ var b=e.target.closest('.rbtn'); if(b) act(b.dataset.act); });
+  document.getElementById('filters').addEventListener('click',function(e){
+    var c=e.target.closest('.chip'); if(!c) return;
+    filter=c.dataset.f;
+    [].forEach.call(this.children,function(x){x.classList.toggle('on',x===c);});
+    renderList();
+  });
+  undoBtn.addEventListener('click',function(){
+    if(!lastAction) return;
+    state[lastAction.id]='open'; handled--; booked-=lastAction.addBook; recover-=lastAction.addRec;
+    updateStats(); undoBtn.disabled=true;
+    select(lastAction.id); lastAction=null;
+  });
+
+  renderList(); updateStats();
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
