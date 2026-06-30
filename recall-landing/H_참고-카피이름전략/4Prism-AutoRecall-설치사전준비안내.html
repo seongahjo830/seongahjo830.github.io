@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4Prism AutoRecall · 설치 사전 준비 안내</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBFAF7; --ink:#23211C; --ink-soft:#55514a; --line:#E7E3DB;
+    --accent:#1D4ED8; --accent-soft:#EAF0FE;
+    --warn:#B45309; --warn-bg:#FBF3E6; --danger:#B91C1C; --danger-bg:#FBEBEA;
+    --ok:#15803D; --ok-bg:#EAF4EC; --note:#475569; --note-bg:#EEF1F4;
+    --measure:720px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Pretendard",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    font-size:18px;line-height:1.85;letter-spacing:-.01em;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--measure);margin:0 auto;padding:56px 24px 120px}
+  .kicker{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--accent);text-transform:uppercase;margin:0 0 10px}
+  h1{font-size:34px;line-height:1.25;font-weight:800;letter-spacing:-.025em;margin:0 0 14px}
+  .lede{font-size:19px;color:var(--ink-soft);margin:0 0 8px}
+  .meta{font-size:14px;color:var(--ink-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0;margin:26px 0 40px;display:flex;flex-wrap:wrap;gap:6px 20px}
+  .meta b{color:var(--ink);font-weight:700}
+  h2{font-size:25px;font-weight:800;letter-spacing:-.02em;margin:54px 0 6px;padding-top:18px;border-top:1px solid var(--line)}
+  h2 .num{color:var(--accent);font-variant-numeric:tabular-nums;margin-right:10px}
+  h3{font-size:19px;font-weight:700;margin:32px 0 4px}
+  p{margin:14px 0}
+  ul,ol{margin:14px 0;padding-left:24px}
+  li{margin:7px 0}
+  b,strong{font-weight:700}
+  mark{background:linear-gradient(transparent 58%,#FDE68A 58%);padding:0 1px;border-radius:1px}
+  u{text-decoration:none;border-bottom:2px solid var(--accent);padding-bottom:1px}
+  .c-blue{color:var(--accent);font-weight:600}
+  a{color:var(--accent)}
+  /* callouts */
+  .cal{margin:22px 0;padding:14px 18px 14px 20px;border-radius:6px;position:relative;font-size:16.5px;line-height:1.7}
+  .cal::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+  .cal .t{font-weight:700;font-size:14px;letter-spacing:.02em;margin:0 0 6px;display:flex;align-items:center;gap:7px}
+  .cal p{margin:6px 0}
+  .cal.danger{background:linear-gradient(90deg,var(--danger-bg),transparent 92%)}.cal.danger::before{background:var(--danger)}.cal.danger .t{color:var(--danger)}
+  .cal.warn{background:linear-gradient(90deg,var(--warn-bg),transparent 92%)}.cal.warn::before{background:var(--warn)}.cal.warn .t{color:var(--warn)}
+  .cal.ok{background:linear-gradient(90deg,var(--ok-bg),transparent 92%)}.cal.ok::before{background:var(--ok)}.cal.ok .t{color:var(--ok)}
+  .cal.info{background:linear-gradient(90deg,var(--accent-soft),transparent 92%)}.cal.info::before{background:var(--accent)}.cal.info .t{color:var(--accent)}
+  .cal.note{background:linear-gradient(90deg,var(--note-bg),transparent 92%)}.cal.note::before{background:var(--note)}.cal.note .t{color:var(--note)}
+  /* checklist */
+  .chk{list-style:none;padding:0;margin:18px 0}
+  .chk li{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px dashed var(--line)}
+  .chk li:last-child{border-bottom:none}
+  .box{flex:0 0 22px;height:22px;border:2px solid var(--accent);border-radius:5px;margin-top:4px}
+  .chk .body{flex:1}
+  .chk .h{font-weight:700}
+  .chk .d{font-size:15px;color:var(--ink-soft);margin-top:2px}
+  .pill{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px;margin-left:6px;vertical-align:1px}
+  .pill.must{background:var(--danger-bg);color:var(--danger)}
+  .pill.opt{background:var(--note-bg);color:var(--note)}
+  /* table */
+  table{width:100%;border-collapse:collapse;margin:20px 0;font-size:15.5px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:13px;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;border-bottom:2px solid var(--line)}
+  tr td:first-child{font-weight:600;white-space:nowrap}
+  /* form template */
+  .form{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 22px;margin:22px 0}
+  .form .row{display:flex;gap:14px;padding:11px 0;border-bottom:1px dashed var(--line);align-items:baseline}
+  .form .row:last-child{border-bottom:none}
+  .form .lab{flex:0 0 150px;font-weight:700;font-size:15px}
+  .form .val{flex:1;color:var(--ink-soft);font-size:15px;border-bottom:1px solid #d8d4cc;min-height:1.4em}
+  details{margin:20px 0;border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden}
+  details>summary{cursor:pointer;padding:13px 18px;font-weight:700;font-size:16px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  details>summary::-webkit-details-marker{display:none}
+  details>summary::after{content:"펼치기 ▾";font-size:13px;color:var(--accent);font-weight:600}
+  details[open]>summary::after{content:"접기 ▴"}
+  details .inner{padding:2px 20px 16px;border-top:1px solid var(--line)}
+  .step{counter-reset:s;list-style:none;padding:0;margin:18px 0}
+  .step li{position:relative;padding:0 0 18px 46px;margin:0}
+  .step li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:-2px;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center}
+  .step li:not(:last-child)::after{content:"";position:absolute;left:14px;top:30px;bottom:0;width:2px;background:var(--line)}
+  .step .h{font-weight:700}
+  .foot{margin-top:70px;padding-top:20px;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink-soft)}
+  hr{border:none;border-top:1px solid var(--line);margin:40px 0}
+  @media(max-width:560px){body{font-size:17px}h1{font-size:28px}.wrap{padding:36px 18px 90px}.form .lab{flex-basis:110px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="kicker">4Prism · AutoRecall 도입</p>
+  <h1>설치 사전 준비 안내</h1>
+  <p class="lede">병원에 미리 전달하는 "설치 전 준비물" 한 장. 이대로 준비되어 있으면 설치 당일 원격 접속만으로 끝납니다.</p>
+
+  <div class="meta">
+    <span><b>대상</b> 도입 치과 담당자(실장·접수)</span>
+    <span><b>버전</b> v1.0 · 2026-06-17</span>
+    <span><b>소요</b> 병원 준비 10분 · 설치 30~60분</span>
+  </div>
+
+  <!-- L0 요약 -->
+  <div class="cal info">
+    <p class="t">📌 가장 중요한 3가지 (이것만 지키면 90% 해결)</p>
+    <p><b>1. 서버 PC를 끄지 마세요.</b> 설치 예정일 전날 밤부터 켜둔 상태로 두셔야 원격 접속이 됩니다.</p>
+    <p><b>2. 팀뷰어(TeamViewer) ID·비밀번호를 정확히</b> 알려주세요. (서버 끄면 ID가 바뀌어 접속 불가)</p>
+    <p><b>3. 인터넷 전화 정보</b>(통신사·번호) 또는 <b>전화 단말기 모델명</b>을 알려주세요.</p>
+  </div>
+
+  <p>최근 도입 과정에서 <mark>"서버를 끄고 퇴근해 원격 접속이 막혀 설치가 하루 밀린"</mark> 일이 있었습니다. 이 안내문은 그런 일이 다시 없도록 <b>병원이 설치 전에 준비할 것</b>만 모았습니다. 어려운 기술 용어는 접힌 박스 안에 따로 넣어 두었으니, 윗부분 체크리스트만 보셔도 됩니다.</p>
+
+  <!-- 1 -->
+  <h2><span class="num">1</span>설치 전 체크리스트</h2>
+  <p>설치 약속일 <b>하루 전까지</b> 아래 항목을 준비해 주세요. <span class="pill must">필수</span> 표시는 없으면 설치가 진행되지 않습니다.</p>
+
+  <ul class="chk">
+    <li><span class="box"></span><div class="body">
+      <div class="h">서버 PC 항상 켜두기 <span class="pill must">필수</span></div>
+      <div class="d">덴트웹(dentweb) 데이터가 있는 메인 PC를 설치 전날 밤부터 설치 완료까지 <u>절전·종료하지 않기</u>. 절전모드도 해제해 주세요.</div>
+    </div></li>
+    <li><span class="box"></span><div class="body">
+      <div class="h">TeamViewer 설치 + 정확한 접속정보 <span class="pill must">필수</span></div>
+      <div class="d">원격 설치용. <b>ID와 비밀번호</b>를 신청서에 기재. PC를 껐다 켜면 정보가 바뀌니, 알려주신 뒤에는 재부팅하지 말아 주세요.</div>
+    </div></li>
+    <li><span class="box"></span><div class="body">
+      <div class="h">덴트웹 DB 접속 정보 <span class="pill must">필수</span></div>
+      <div class="d">설치 시 입력 창에 넣을 DB 정보(서버 주소·계정). 모르시면 덴트웹 담당자에게 미리 문의 부탁드립니다. 설치 마법사가 안내합니다.</div>
+    </div></li>
+    <li><span class="box"></span><div class="body">
+      <div class="h">인터넷 전화 정보 또는 전화기 모델명 <span class="pill must">필수</span></div>
+      <div class="d">콜 자동기록용. ① 통신사·전화번호·OpenAPI 계정, <b>또는</b> ② 사용 중인 전화 단말기 모델명(예: IP520G). 둘 중 하나면 됩니다. (아래 4번 참고)</div>
+    </div></li>
+    <li><span class="box"></span><div class="body">
+      <div class="h">접수 데스크 PC 위치 확인 <span class="pill opt">권장</span></div>
+      <div class="d">리콜 대상 환자가 실제로 뜨는 화면이라, 어느 데스크 PC에 설치할지 미리 정해 주세요. (좌측/우측 등)</div>
+    </div></li>
+    <li><span class="box"></span><div class="body">
+      <div class="h">원격 작업 가능 시간대 공유 <span class="pill opt">권장</span></div>
+      <div class="d">진료시간 외 작업이 편하면 가능한 요일·시간을 알려주세요. (예: 진료 마감 후)</div>
+    </div></li>
+  </ul>
+
+  <!-- 2 -->
+  <h2><span class="num">2</span>도입 신청서 양식</h2>
+  <p>아래 항목을 채워 회신해 주시면 됩니다. (실제 비밀번호 등은 보안 메신저로 따로 받습니다.)</p>
+
+  <div class="form">
+    <div class="row"><div class="lab">치과명</div><div class="val"></div></div>
+    <div class="row"><div class="lab">사업자번호</div><div class="val"></div></div>
+    <div class="row"><div class="lab">원장명</div><div class="val"></div></div>
+    <div class="row"><div class="lab">담당자 연락처</div><div class="val"></div></div>
+    <div class="row"><div class="lab">담당자 이메일</div><div class="val"></div></div>
+    <div class="row"><div class="lab">치과 주소</div><div class="val"></div></div>
+    <div class="row"><div class="lab">사용 EMR</div><div class="val">dentweb</div></div>
+    <div class="row"><div class="lab">TeamViewer ID</div><div class="val"></div></div>
+    <div class="row"><div class="lab">접속 기기 메모</div><div class="val">예) 접수데스크 좌측 PC</div></div>
+    <div class="row"><div class="lab">전화번호 / 통신사</div><div class="val"></div></div>
+    <div class="row"><div class="lab">전화 단말기 모델</div><div class="val">예) IP520G (모를 경우 비워두기)</div></div>
+    <div class="row"><div class="lab">원격 가능 시간</div><div class="val"></div></div>
+  </div>
+
+  <div class="cal warn">
+    <p class="t">⚠️ 비밀번호는 신청서에 적지 마세요</p>
+    <p>TeamViewer 비밀번호·전화 OpenAPI 비밀번호는 <b>공유 문서에 남기지 말고</b> 담당자에게 1:1로 전달해 주세요. 설치 후에는 비밀번호 변경을 권장합니다.</p>
+  </div>
+
+  <!-- 3 -->
+  <h2><span class="num">3</span>설치 당일 진행 순서</h2>
+  <p>아래는 담당자(4Prism)가 원격으로 진행하는 순서입니다. 병원은 <b>PC를 켜둔 채 자리만 지켜</b> 주시면 됩니다.</p>
+
+  <ol class="step">
+    <li><div class="h">원격 접속 (TeamViewer)</div><div class="d">알려주신 ID·비밀번호로 접속합니다.</div></li>
+    <li><div class="h">설치 프로그램 실행</div><div class="d">AutoRecall 설치 마법사를 실행합니다. (안내 문구가 단계별로 표시됩니다)</div></li>
+    <li><div class="h">덴트웹 DB 정보 입력</div><div class="d">초기 설치 창에 DB 접속 정보를 입력합니다.</div></li>
+    <li><div class="h">전화 연동 설정</div><div class="d">통신사 API 또는 전화 단말 신호 방식으로 콜 기록을 연결합니다. (4번 참고)</div></li>
+    <li><div class="h">리콜 대상 화면 확인</div><div class="d">접수 데스크에 어떤 환자가 리콜 대상으로 뜨는지 함께 확인합니다.</div></li>
+    <li><div class="h">개선 참여 동의 확인</div><div class="d">설정 페이지의 "프로그램 개선 참여" 체크 여부를 확인합니다. (6번 참고)</div></li>
+  </ol>
+
+  <!-- 4 -->
+  <h2><span class="num">4</span>전화 연동 방식 (둘 중 하나)</h2>
+  <p>콜(전화) 기록을 자동으로 가져오는 방법은 병원 환경에 따라 두 가지입니다. 병원은 <b>현재 쓰는 통신사·전화기만 알려</b> 주시면, 어느 방식이 맞는지 저희가 판단합니다.</p>
+
+  <table>
+    <thead><tr><th>방식</th><th>필요한 것</th><th>장점 / 한계</th></tr></thead>
+    <tbody>
+      <tr><td>① 통신사 API</td><td>통신사·번호·OpenAPI 계정</td><td>장치 추가 없음 · 통신사 지원 필요</td></tr>
+      <tr><td>② 전화 신호 수집</td><td>전화 단말기 + 소형 네트워크 장치</td><td>통신사 무관·범용 · 장치 설치 필요</td></tr>
+    </tbody>
+  </table>
+
+  <details>
+    <summary>🔧 (기술 참고) 전화 신호 수집 방식 상세 — 담당자용</summary>
+    <div class="inner">
+      <p>인터넷 전화는 보통 두 계층으로 동작합니다.</p>
+      <ul>
+        <li><b>SIP (시그널)</b> — 누가 누구에게 거는가, 응답·종료 시각. (포트 5060/5061)</li>
+        <li><b>RTP/SRTP (음성)</b> — 실제 통화 음성. (동적 포트)</li>
+      </ul>
+      <p>콜 <b>발/수신 시각·번호</b>만 필요하므로 <mark>SIP 시그널만 수집</mark>하면 됩니다. 음성(RTP)은 가져오지 않습니다 → 통화 도청 우려 없음.</p>
+      <p>전화 단말 자체에는 기록이 저장되지 않고 스위치에서 신호를 당겨오는 구조라, 보통 <b>공유기(예: 192.168.219.1) ↔ 전화 단말 사이에 미러링 장치(예: TL-SG105E)</b>를 끼워 SIP 신호만 복사해 수집합니다.</p>
+      <div class="cal note">
+        <p class="t">검토 중</p>
+        <p>SIP 시그널을 암호화 이슈 없이 가져올 수 있는지 테스트 진행 중(사계절치과 IP520G 단말 기준). 범용성 확보를 위해 <b>전화기 포함 패키지 판매</b>도 옵션으로 검토.</p>
+      </div>
+    </div>
+  </details>
+
+  <!-- 5 -->
+  <h2><span class="num">5</span>자주 생긴 문제와 예방</h2>
+  <p>실제 도입 과정에서 나온 문제들입니다. 미리 알면 대부분 피할 수 있습니다.</p>
+
+  <table>
+    <thead><tr><th>증상</th><th>원인</th><th>예방</th></tr></thead>
+    <tbody>
+      <tr><td>원격 접속 불가</td><td>서버를 끄고 퇴근 → 팀뷰어 ID 변경</td><td>설치 전날부터 PC 켜두기·절전 해제</td></tr>
+      <tr><td>설치 중 DB 연결 실패</td><td>덴트웹 DB 정보 미확보</td><td>사전에 덴트웹 담당자에게 정보 확인</td></tr>
+      <tr><td>콜 기록이 안 들어옴</td><td>통신사 API 미지원·전화기 정보 미상</td><td>전화기 모델명을 사전에 공유</td></tr>
+      <tr><td>화면이 외부로 넘어감</td><td>리콜 페이지에서 병원 홈페이지로 이동</td><td>외부 링크 차단된 전용 화면으로 제공(적용됨)</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 6 -->
+  <h2><span class="num">6</span>로그 수집 · 개선 참여 동의</h2>
+  <p>프로그램을 더 좋게 개선하기 위해, 사용 중 발생하는 <b>화면 이동·버튼 클릭 같은 사용 기록</b>을 수집합니다.</p>
+  <ul>
+    <li>설정 페이지의 <b>"프로그램 개선 참여"</b> 체크박스로 켜고 끌 수 있습니다. (기본 켜짐)</li>
+    <li>수집 항목: 어떤 화면을 봤는지, 어떤 버튼을 눌렀는지, 오류 발생 여부.</li>
+    <li><b>환자 진료정보·통화 음성은 수집하지 않습니다.</b></li>
+  </ul>
+  <div class="cal ok">
+    <p class="t">✅ 동의는 병원이 직접 선택</p>
+    <p>심도 있는 로그 수집은 <b>개선 프로그램 참여 동의</b>를 받은 경우에만 진행합니다. 설치 시 동의 여부를 함께 확인합니다.</p>
+  </div>
+
+  <hr>
+
+  <div class="cal danger">
+    <p class="t">🔴 다시 한 번 — 설치 전날 PC를 끄지 마세요</p>
+    <p>지금까지 설치가 밀린 가장 큰 이유는 단 하나, <b>서버 PC 종료</b>였습니다. 이것만 지켜 주시면 나머지는 원격으로 처리됩니다.</p>
+  </div>
+
+  <div class="foot">
+    4Prism AutoRecall · 설치 사전 준비 안내 v1.0 (2026-06-17) · 문의는 도입 담당자에게.<br>
+    ※ 양식 내 예시는 참고용이며, 실제 인증정보는 보안 채널로 별도 전달합니다.
+  </div>
+
+</div>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

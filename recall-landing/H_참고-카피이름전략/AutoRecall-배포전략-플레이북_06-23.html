@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoRecall 배포 전략 플레이북 — 어떻게 ‘깔게’ 만들 것인가</title>
+<style>
+  :root{
+    --bg:#FBFAF8;--bg2:#F3F1EC;--card:#fff;--ink:#1A2421;--dim:#5B6661;--line:#E4E0D7;
+    --ac:#0E7A6E;--ac2:#0A5A51;--tint:#E6F1EF;--amber:#B45309;--amber-t:#FBF1E4;--red:#B23A3A;--red-t:#F7E9E9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.7;
+    font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+    letter-spacing:-.011em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px}
+  h1{font-size:clamp(28px,4.4vw,42px);font-weight:850;letter-spacing:-.03em;line-height:1.15;margin:0 0 10px}
+  h2{font-size:clamp(21px,2.6vw,27px);font-weight:800;letter-spacing:-.02em;margin:0 0 8px}
+  h3{font-size:17px;font-weight:750;margin:0}
+  p{margin:0 0 14px;font-size:16.5px}
+  .dim{color:var(--dim)}
+  .ac{color:var(--ac2)}
+  header{padding:64px 0 40px;border-bottom:1px solid var(--line)}
+  .kick{font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--ac);text-transform:uppercase}
+  section{padding:52px 0;border-bottom:1px solid var(--line)}
+  .eyebrow{font-size:13px;font-weight:800;color:var(--ac);letter-spacing:.04em;margin-bottom:10px}
+  mark{background:linear-gradient(180deg,transparent 58%,#CDEBE5 58%);padding:0 2px}
+
+  .bluf{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--ac);border-radius:14px;padding:26px 28px;box-shadow:0 6px 24px rgba(20,30,28,.05)}
+  .bluf p{font-size:17px;margin:0}
+  .bluf b{color:var(--ac2)}
+
+  /* pyramid layers */
+  .layer{display:grid;grid-template-columns:96px 1fr;gap:18px;margin-bottom:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .layer .lab{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px 8px;color:#fff;font-weight:800}
+  .layer .lab small{font-size:11px;font-weight:700;opacity:.9;letter-spacing:.04em;margin-top:3px}
+  .l0 .lab{background:#0A5A51} .l1 .lab{background:#0E7A6E} .l2 .lab{background:#3A9C8E} .l3 .lab{background:#7BC0B5}
+  .layer .body{padding:18px 20px}
+  .layer h3{margin-bottom:8px;font-size:15.5px;color:var(--dim)}
+  .layer ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+  .layer li{padding-left:26px;position:relative;font-size:15.5px}
+  .layer li::before{content:attr(data-n);position:absolute;left:0;top:0;width:19px;height:19px;border-radius:6px;background:var(--tint);color:var(--ac2);font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .layer li b{font-weight:750}
+  .layer li span{color:var(--dim);font-size:14px}
+
+  table{width:100%;border-collapse:collapse;margin-top:18px;font-size:14.5px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  thead th{background:var(--bg2);font-size:12.5px;font-weight:750;color:var(--dim)}
+  td.r{font-weight:800;color:var(--ac2);text-align:center;width:34px}
+  tr:last-child td{border-bottom:0}
+  td b{font-weight:750}
+
+  .jjambbong{background:linear-gradient(160deg,var(--ac2),var(--ac));color:#fff;border-radius:16px;padding:30px 30px;box-shadow:0 10px 30px rgba(14,122,110,.2)}
+  .jjambbong .eyebrow{color:#9FE5D9}
+  .jjambbong p{font-size:18px;line-height:1.8;margin:0}
+  .jjambbong b{color:#fff;border-bottom:2px solid rgba(255,255,255,.5)}
+
+  .phases{display:grid;gap:14px;margin-top:8px}
+  .phase{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;border-left:4px solid var(--ac)}
+  .phase .t{font-weight:800;font-size:16px}
+  .phase .when{font-size:12.5px;font-weight:700;color:var(--ac);background:var(--tint);padding:3px 9px;border-radius:99px;margin-left:8px}
+  .phase ul{margin:10px 0 0;padding-left:18px;font-size:15px;color:var(--dim)}
+  .phase li{margin-bottom:5px}
+  .phase li b{color:var(--ink)}
+
+  .warn{background:var(--red-t);border:1px solid #E6C9C9;border-radius:14px;padding:22px 24px}
+  .warn h3{color:var(--red);margin-bottom:8px}
+  .warn p{font-size:15px;margin:0;color:#6e3b3b}
+
+  .src{font-size:12.5px;color:var(--dim);line-height:1.9}
+  .src b{color:var(--ink)}
+  footer{padding:34px 0 70px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;color:var(--ac2);background:var(--tint);border:1px solid #CFE7E2;padding:3px 9px;border-radius:6px;margin:0 4px 4px 0}
+  @media(max-width:640px){.layer{grid-template-columns:1fr}.layer .lab{flex-direction:row;gap:8px;padding:10px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="kick">리콜 프로그램 · 배포(Go-to-Market) 전략</span>
+    <h1>어떻게 ‘깔게’ 만들 것인가</h1>
+    <p class="dim">세계 최고 PLG·바이럴 기업 + 미국 치과 SW + 한국 시장 사례를 조사해, 무료 미내원 회수 도구 <b>AutoRecall</b>의 배포를 위계·순위·짬뽕으로 정리한 플레이북. (페이지 한 장이 아니라 전반 배포 설계)</p>
+  </div>
+</header>
+
+<!-- BLUF -->
+<section>
+  <div class="wrap">
+    <div class="bluf">
+      <div class="eyebrow">🎯 BLUF — 한 줄 결론</div>
+      <p><b>덴트웹식 무료·무마찰</b>로 깔고 → 깔자마자 <b>‘당신 치과가 놓친 회수 매출’ 리포트</b>로 아하 → 첫 50~100곳은 <b>직접 깔아주며</b> 교두보를 완전 지배 → 그 원장들이 <b>성과를 동료에게 보여주는 게 곧 추천</b>이 되게 점화 → 모어덴·세미나·딜러로 규모화. 단 <b>똑닥 함정</b>(무료로 깔고 직접 과금 → 규제·배신)은 피해 “무료는 영원히 무료 + 인접 수익화”로.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 위계 피라미드 -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">① 위계 — 4층 (아래층 없으면 위층 무의미)</div>
+    <h2>토대 → 점화 → 증폭 → 규모</h2>
+    <p class="dim">조사한 톱 전술을 “무엇이 먼저 깔려야 하는가” 의존 순서로 쌓았습니다. L0를 건너뛰고 L2(추천)부터 하면 추천할 ‘성과’가 없어 무너집니다.</p>
+
+    <div class="layer l0">
+      <div class="lab">L0<small>토대</small></div>
+      <div class="body">
+        <h3>없으면 나머지 전부 무의미</h3>
+        <ul>
+          <li data-n="1"><b>무료·무마찰 진입</b> — 가입·설치·데이터변환 0원, “더블클릭 한 번”. <span>덴트웹 신규개원 67% 공식 · Zoom/Canva 무마찰</span></li>
+          <li data-n="2"><b>설치 즉시 ‘놓친 회수 매출’ 리포트 자동 표시</b> — 빈 화면 금지, 0클릭 첫 가치. <span>Dental Intelligence Practice Snapshot · Canva 빈화면제거 · Slack 아하</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="layer l1">
+      <div class="lab">L1<small>점화</small></div>
+      <div class="body">
+        <h3>초기 50~100 치과에서 ‘완벽한 결과’</h3>
+        <ul>
+          <li data-n="3"><b>화이트글러브 — 직접 깔아주고 첫 명단까지</b>. <span>Superhuman(활성화 2배) · Paul Graham “노트북 주세요”(Stripe)</span></li>
+          <li data-n="4"><b>교두보 한 문장에 집중</b> — “한국 1~3인 개원 일반치과 미내원 회수” 완전 지배 후 인접. <span>Geoffrey Moore 캐즘·볼링핀 · Doximity go-deep</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="layer l2">
+      <div class="lab">L2<small>증폭</small></div>
+      <div class="body">
+        <h3>입소문(q)을 의도적으로 점화 — 1순위 채널</h3>
+        <ul>
+          <li data-n="5"><b>동료 원장 추천(원장→원장)</b> — 한국 채택의 30%, 영업의 4배. <span>CLG · Forrester 동료 3배 신뢰(90% vs 29%)</span></li>
+          <li data-n="6"><b>양면 보상을 ‘성과 리포트 본 직후’ 화면에</b> — 비현금(우선지원·기능). <span>Airbnb($25, 첫 성공 시 지급) · Dropbox 양면 · 토스 초대코드</span></li>
+          <li data-n="7"><b>관찰가능성 = 리포트가 곧 시연</b> — 원장이 성과를 보여주는 행위 자체가 추천. <span>Calendly · Rogers 5속성</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="layer l3">
+      <div class="lab">L3<small>규모</small></div>
+      <div class="body">
+        <h3>채널로 84% 다수에 건너가기</h3>
+        <ul>
+          <li data-n="8"><b>인증 커뮤니티 올라타기</b> — 모어덴·덴트포토(추천→투표→공동구매 결제 직결). <span>치대생 50% 모어덴 가입</span></li>
+          <li data-n="9"><b>세미나·SIDEX·협회 채널</b> — 정보채널 1위(37%)·국내최대 B2B장(1.5만명). <span>Weave ADA 독점 · 오스템 “교육=영업”</span></li>
+          <li data-n="10"><b>차트 연동 인증 + 딜러·MSO 채널</b>. <span>NexHealth Dentrix Connected · 덴트웹 신흥 유통 · Weave×Patterson 번들 · 김병훈 MSO</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 순위표 -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">② 순위 — 임팩트 톱 10 (우리 액션)</div>
+    <h2>무엇부터, 무엇을 하나</h2>
+    <table>
+      <thead><tr><th>#</th><th>전술</th><th>출처 모델</th><th>AutoRecall 액션</th></tr></thead>
+      <tbody>
+        <tr><td class="r">1</td><td><b>무료·무마찰 설치</b></td><td>덴트웹 67% · Zoom · Canva</td><td>더블클릭 1번, 가입·변환 0원, 첫 실행 즉시 작동</td></tr>
+        <tr><td class="r">2</td><td><b>설치 즉시 ‘놓친 회수매출’ 리포트</b></td><td>Dental Intelligence Snapshot</td><td>차트 읽어 “오늘 회수할 환자 N명 · 놓친 매출”을 0클릭 표시</td></tr>
+        <tr><td class="r">3</td><td><b>화이트글러브 직접 설치</b></td><td>Superhuman · PG/Stripe</td><td>첫 50~100곳 방문/화상으로 깔아주고 첫 명단까지 + 버그·요청 수집</td></tr>
+        <tr><td class="r">4</td><td><b>동료 원장 추천(CLG)</b></td><td>Forrester · 한국 동료 30%</td><td>김원장·김병훈 = 1차 KOL, “자랑→자동추천” 도구 제공</td></tr>
+        <tr><td class="r">5</td><td><b>교두보 한 문장 지배</b></td><td>Moore 캐즘</td><td>1~3인 일반치과 회수 먼저 장악 후 인접(임플·소아)</td></tr>
+        <tr><td class="r">6</td><td><b>양면 추천 ‘성과 직후’</b></td><td>Airbnb · 토스 · Dropbox</td><td>회수 성과 리포트 화면 하단에 비현금 양면 보상 버튼</td></tr>
+        <tr><td class="r">7</td><td><b>관찰가능성 = 리포트 공유</b></td><td>Calendly · Rogers</td><td>원장→원장 성과 리포트가 곧 시연이 되게 카톡 1탭 공유</td></tr>
+        <tr><td class="r">8</td><td><b>인증 커뮤니티 평판</b></td><td>모어덴·덴트포토</td><td>덴트포토 초이스·공동구매 동선, 모어덴 평판 씨딩</td></tr>
+        <tr><td class="r">9</td><td><b>세미나·SIDEX 시연</b></td><td>SIDEX · 오스템 교육</td><td>“리콜 회수 실측” 케이스 강의(광고 아닌 사례), 부스 시연</td></tr>
+        <tr><td class="r">10</td><td><b>딜러·협회·차트연동 채널</b></td><td>Weave×Patterson · NexHealth</td><td>덴트웹 공식연동 인증 + 치과의사회/딜러 번들</td></tr>
+      </tbody>
+    </table>
+    <p class="dim" style="margin-top:14px;font-size:14px">위계로 보면 1·2(L0)는 <b>반드시 먼저</b>, 3·5(L1) 그 다음, 4·6·7(L2) 점화, 8·9·10(L3)은 규모화기. 순위는 임팩트, 위계는 의존 순서 — 둘이 다릅니다.</p>
+  </div>
+</section>
+
+<!-- 짬뽕 -->
+<section>
+  <div class="wrap">
+    <div class="jjambbong">
+      <div class="eyebrow">③ 짬뽕 — 한 문장 플레이북</div>
+      <p>“<b>무마찰로 깔고</b> → <b>깔자마자 ‘놓친 매출’ 리포트로 아하</b> → <b>첫 100곳 직접 깔아주며 교두보 지배</b> → <b>그 성과를 동료에게 보여주는 게 곧 추천이 되게 양면 보상으로 점화</b> → <b>모어덴·세미나·딜러로 규모화</b>. 똑닥 함정은 피해 ‘무료는 영원히 무료 + 인접 수익화’.”</p>
+    </div>
+  </div>
+</section>
+
+<!-- 단계별 실행 -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">④ 단계별 실행 (vault 씨드→프리미엄→커뮤니티와 정합)</div>
+    <h2>3단계 순차 롤아웃</h2>
+    <div class="phases">
+      <div class="phase">
+        <div class="t">Phase 1 · 씨드<span class="when">0–3개월</span></div>
+        <ul>
+          <li><b>L0 완성</b>: 무마찰 설치 + 설치 즉시 ‘놓친 회수매출’ 리포트(아하 모먼트) 구현</li>
+          <li><b>교두보 한 문장 확정</b> + 첫 10~20곳 <b>화이트글러브</b> 설치(직접)</li>
+          <li>아하 모먼트를 데이터로 정의(“첫 7일 내 회수콜 N건” 등 유지 견인 행동)</li>
+          <li>‘완벽에 가까운 결과’ 케이스 5~10개 확보 → 신뢰 자산</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="t">Phase 2 · 점화<span class="when">3–6개월</span></div>
+        <ul>
+          <li><b>양면 추천 보상</b>(성과 리포트 직후) + 카톡 1탭 공유 동선</li>
+          <li><b>김원장·김병훈 KOL</b>이 “자랑→자동추천” (월간 자랑 카드·1장 케이스)</li>
+          <li>모어덴·덴트포토 평판 씨딩 + 무료 제한 티어(프리미엄) 도입</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="t">Phase 3 · 규모<span class="when">6–12개월</span></div>
+        <ul>
+          <li><b>세미나/SIDEX 케이스 강의</b> + 협회·딜러·MSO 채널 enablement</li>
+          <li>차트 연동 공식 인증 + 인접 교두보(임플·소아·교정)로 볼링핀 전복</li>
+          <li>인접 수익화(맥미니·고급 분석·탐지)로 무료 락인 없이 매출</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 함정 -->
+<section>
+  <div class="wrap">
+    <div class="warn">
+      <h3>🚨 절대 피할 함정 — 똑닥 교훈 (검증 A)</h3>
+      <p>똑닥은 무료로 양면시장을 깐 뒤 <b>직접 과금(월 1,000원)</b>으로 전환하자 “반강제 구독”·의료법 진료거부 소지로 <b>국감·행정지도·별점테러</b>를 맞았습니다. AutoRecall은 ① <b>“무료는 영원히 무료”</b> 포지셔닝 ② 수익은 <b>인접</b>(맥미니·고급기능·탐지)에서 ③ 환자/병원의 <b>대체 경로를 막는 강제 락인 금지</b>. 또 치과 커뮤니티 WOM은 칼날이라 <b>품질 검증 전 전면 저가 뿌리기 금지</b>(나쁜 소문 = 전국 확산).</p>
+    </div>
+  </div>
+</section>
+
+<!-- 출처 -->
+<footer>
+  <div class="wrap">
+    <div class="eyebrow">근거 (출처 등급 A=1차/연구 · B=전문가 · C=2차)</div>
+    <p class="src">
+      <b>글로벌 PLG/확산</b> ·
+      Slack 아하(2,000메시지/93%, First Round, A) ·
+      Superhuman 화이트글러브(활성화 2배, First Round, B) ·
+      Airbnb 추천($25·첫여행완료시지급·+300%/일, 자사 엔지니어링, A) ·
+      Dropbox 양면 추천(창업자 강연, A-attr) ·
+      Calendly 바이럴(OpenView, B) ·
+      Geoffrey Moore 캐즘·교두보(B) ·
+      Rogers 확산 5속성(채택분산 49~87% 설명, A) ·
+      Paul Graham “Do things that don’t scale”(A).<br>
+      <b>치과/버티컬 SaaS</b> ·
+      Dental Intelligence Practice Snapshot(무료 손실리포트 미끼, A) ·
+      Weave ADA 독점추천 2026.3(A) ·
+      RevenueWell/Solutionreach=Patterson 유통(A) ·
+      NexHealth 차트연동=GTM(B) ·
+      Align/Invisalign KOL 의사-교육자(A) ·
+      Forrester 동료 3배 신뢰 90% vs 29%(A).<br>
+      <b>한국</b> ·
+      토스 5,000원 추천(이틀 1,000만, A) ·
+      배민/당근 지역 발품 침투(A/B) ·
+      카톡 공유 95%(A) ·
+      덴트웹 신규개원 67%·치과의사 개발·진입비 0원(A) ·
+      똑닥 직접과금→규제·국감(A) ·
+      한국 치과 정보채널: 세미나 37%+동료 30%, 영업 7% / 편리성 42%(모어덴 1,160명, A) ·
+      모어덴(치대생 50%)·덴트포토 초이스(A/B) · SIDEX 1.5만명(A).
+    </p>
+    <p class="dim" style="margin-top:18px;font-size:13px">리콜 프로그램 · 배포전략 플레이북 · 2026-06-23 · 기존 [[리콜-프로그램-GTM-시장진입전략]]·[[영업전략-의사가의사에게]]와 정합</p>
+  </div>
+</footer>
+
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

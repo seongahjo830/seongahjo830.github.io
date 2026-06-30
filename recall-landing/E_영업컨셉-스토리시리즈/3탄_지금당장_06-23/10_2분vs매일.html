@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>설치는 2분, 안 깔면 매일 — 리콜 프로그램</title>
+<style>
+  :root{--bg:#0a0e16;--bg2:#111722;--ink:#e9eef6;--dim:#7d8aa0;--line:#1e2735;--ac:#f5a524;--red:#ff6b6b}
+  *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;line-height:1.7;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:0 24px}
+  section{padding:80px 0;border-bottom:1px solid var(--line)}
+  .tag{font-size:13px;letter-spacing:.16em;color:var(--ac);font-weight:800;text-transform:uppercase}
+  h1{font-size:clamp(42px,8.5vw,76px);line-height:1.04;font-weight:900;margin:18px 0 22px;letter-spacing:-.03em}
+  h2{font-size:clamp(26px,4.4vw,40px);font-weight:850;line-height:1.18;margin-bottom:18px;letter-spacing:-.02em}
+  p{color:var(--dim);font-size:18px;margin-bottom:16px}p b{color:var(--ink);font-weight:700}
+  .ac{color:var(--ac)}
+  .hero{min-height:88vh;display:flex;flex-direction:column;justify-content:center}
+  .hero .lead{font-size:20px;max-width:30em}
+  .cta{display:inline-flex;align-items:center;gap:9px;margin-top:26px;background:var(--ac);color:#1c1402;font-weight:850;font-size:19px;padding:18px 34px;border-radius:14px;text-decoration:none;transition:.18s;width:fit-content}
+  .cta:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(245,165,36,.3)}
+  .finep{font-size:13.5px;color:var(--dim);margin-top:14px}
+  .scale{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:30px 0 8px}
+  .pan{border-radius:18px;padding:28px 24px;border:1px solid var(--line)}
+  .pan.now{background:rgba(245,165,36,.07);border-color:rgba(245,165,36,.35)}
+  .pan.later{background:rgba(255,107,107,.06);border-color:rgba(255,107,107,.28)}
+  .pan .h{font-weight:850;font-size:18px;margin-bottom:6px}.pan.now .h{color:var(--ac)}.pan.later .h{color:var(--red)}
+  .pan .big{font-size:clamp(30px,7vw,44px);font-weight:900;letter-spacing:-.02em;margin:6px 0 4px;color:var(--ink)}
+  .pan .small{font-size:14.5px;color:var(--dim)}
+  .steps{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin:26px 0 6px}
+  .step{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:13px 18px;font-size:15.5px;font-weight:650}
+  .step b{width:23px;height:23px;border-radius:50%;background:var(--ac);color:#1c1402;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex:0 0 auto}
+  .arrow{color:var(--dim);font-weight:800}
+  .final{text-align:center}
+  .fill{display:inline-block;border:1.5px dashed #6b5a30;background:rgba(245,165,36,.08);color:var(--ac);border-radius:9px;padding:3px 11px;font-size:14px;font-weight:650}
+  .nav{text-align:center;padding:30px 0 70px;font-size:14px}.nav a{color:var(--dim)}
+  @media(max-width:560px){.scale{grid-template-columns:1fr}.arrow{display:none}.steps{flex-direction:column}.step{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <span class="tag">계산이 안 맞잖아요</span>
+    <h1>설치는 2분.<br>안 깔면, 매일.</h1>
+    <p class="lead">고민할 건 <b>‘쓸지 말지’</b>지 ‘깔지 말지’가 아니에요. 깔아두는 건 2분 한 번이고, 안 깔아두는 건 <b class="ac">매일 환자가 새는 비용</b>입니다. 저울이 이렇게 기우는데, 왜 미루죠?</p>
+    <a class="cta" href="#get">2분만 투자하기 (무료) →</a>
+    <p class="finep">카드 등록 없음 · 안 맞으면 삭제 1초</p>
+  </section>
+
+  <section>
+    <span class="tag">저울에 올려보면</span>
+    <h2>한쪽은 한 번,<br>한쪽은 끝없이.</h2>
+    <div class="scale">
+      <div class="pan now">
+        <div class="h">⚖️ 지금 깔아두면</div>
+        <div class="big">한 번 · 2분</div>
+        <div class="small">무료. 내일 아침부터 ‘오늘 전화할 사람’ 명단이 떠 있음. 그걸로 끝.</div>
+      </div>
+      <div class="pan later">
+        <div class="h">😴 ‘나중에’ 하면</div>
+        <div class="big">매일 · 영원히</div>
+        <div class="small">오늘도 감으로, 내일도 감으로. 잠든 환자는 그사이 다른 치과로.</div>
+      </div>
+    </div>
+    <p style="margin-top:18px">2분이 아까워서 미루는 사이, 훨씬 비싼 ‘매일’을 계속 지불하고 있는 거예요.</p>
+  </section>
+
+  <section class="final" id="get">
+    <span class="tag">지금, 2분</span>
+    <h2>고민은 깔고 나서.</h2>
+    <div class="steps">
+      <div class="step"><b>1</b> 설치파일 다운로드</div><div class="arrow">→</div>
+      <div class="step"><b>2</b> 실행해서 설치</div><div class="arrow">→</div>
+      <div class="step"><b>3</b> 덴트웹에 연결</div>
+    </div>
+    <a class="cta" href="#" style="margin-top:22px">⬇ 2분 투자하기 (무료)</a>
+    <p class="finep">안 맞으면 삭제 1초 · 데이터는 치과 안에 · 카드 없음</p>
+    <div style="margin-top:10px"><span class="fill">실제 설치파일 다운로드 링크를 위 버튼에 연결하세요</span></div>
+  </section>
+</div>
+<div class="nav"><a href="index.html">← 4개 컨셉 비교로</a></div>
+<!--recall-fab-->
+<a href="../../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

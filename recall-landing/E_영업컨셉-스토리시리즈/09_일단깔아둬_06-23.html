@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>지금 일단, 깔아만 두세요 — 리콜 프로그램</title>
+<meta name="description" content="사는 게 아닙니다. 무료로 깔아두는 겁니다. 고민은 나중에, 설치만 지금.">
+<style>
+  :root{
+    --bg:#0a0e16; --bg2:#111722; --ink:#e9eef6; --dim:#7d8aa0; --line:#1e2735;
+    --go:#34d399; --go-soft:#6ee7b7; --amber:#f5b94d; --red:#ff6b6b;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+    line-height:1.7;-webkit-font-smoothing:antialiased;letter-spacing:-.01em;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 24px}
+  section{padding:84px 0;border-bottom:1px solid var(--line)}
+  .tag{font-size:13px;letter-spacing:.16em;color:var(--go);font-weight:800;text-transform:uppercase}
+  .tag.amber{color:var(--amber)}
+  h1{font-size:clamp(40px,8vw,74px);line-height:1.04;font-weight:900;margin:18px 0 22px;letter-spacing:-.03em}
+  h2{font-size:clamp(26px,4.4vw,40px);font-weight:850;line-height:1.18;margin-bottom:18px;letter-spacing:-.02em}
+  p{color:var(--dim);font-size:18px;margin-bottom:16px}
+  p b{color:var(--ink);font-weight:700}
+  .go{color:var(--go)}
+  .amber{color:var(--amber)}
+
+  .hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+  .hero .kicker{display:inline-block;background:rgba(52,211,153,.12);color:var(--go);font-weight:800;font-size:14px;padding:7px 15px;border-radius:99px;margin-bottom:8px;width:fit-content}
+  .hero .lead{font-size:20px;max-width:30em}
+  .cta{display:inline-flex;align-items:center;gap:9px;margin-top:26px;background:var(--go);color:#04140d;font-weight:850;font-size:19px;padding:18px 34px;border-radius:14px;text-decoration:none;transition:.18s;width:fit-content}
+  .cta:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(52,211,153,.32)}
+  .cta.amber{background:var(--amber);color:#1c1402}
+  .cta.amber:hover{box-shadow:0 14px 34px rgba(245,185,77,.3)}
+  .finep{font-size:13.5px;color:var(--dim);margin-top:14px}
+
+  /* asymmetry scale */
+  .scale{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:30px 0 8px}
+  .pan{border-radius:18px;padding:26px 24px;border:1px solid var(--line)}
+  .pan.now{background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.35)}
+  .pan.later{background:rgba(255,107,107,.06);border-color:rgba(255,107,107,.28)}
+  .pan .h{font-weight:850;font-size:18px;margin-bottom:6px}
+  .pan.now .h{color:var(--go)} .pan.later .h{color:var(--red)}
+  .pan .big{font-size:clamp(28px,6vw,40px);font-weight:900;letter-spacing:-.02em;margin:6px 0 4px;color:var(--ink)}
+  .pan .small{font-size:14.5px;color:var(--dim)}
+  @media(max-width:560px){.scale{grid-template-columns:1fr}}
+
+  .reveal{background:var(--bg2)}
+  ul.plain{list-style:none;margin:22px 0}
+  ul.plain li{padding:15px 0;border-bottom:1px dashed var(--line);font-size:17px;display:flex;gap:12px;align-items:flex-start}
+  ul.plain li:last-child{border-bottom:0}
+  ul.plain li .ic{color:var(--go);font-weight:900;flex:0 0 auto}
+
+  /* "나중에" interactive trap */
+  .later-box{margin-top:8px}
+  #laterBtn{background:transparent;border:1.5px dashed var(--line);color:var(--dim);font-size:16px;font-weight:700;
+    padding:14px 22px;border-radius:12px;cursor:pointer;font-family:inherit;transition:.18s}
+  #laterBtn:hover{border-color:var(--dim);color:var(--ink)}
+  .later-msg{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s ease,opacity .5s ease,margin .5s ease;margin-top:0}
+  .later-msg.show{max-height:520px;opacity:1;margin-top:24px}
+  .later-msg .card{background:rgba(255,107,107,.06);border:1px solid rgba(255,107,107,.28);border-radius:16px;padding:26px}
+
+  /* install steps */
+  .steps{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin:26px 0 6px}
+  .step{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:13px 18px;font-size:15.5px;font-weight:650}
+  .step b{width:23px;height:23px;border-radius:50%;background:var(--go);color:#04140d;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex:0 0 auto}
+  .arrow{color:var(--dim);font-weight:800}
+  @media(max-width:560px){.arrow{display:none}.steps{flex-direction:column}.step{width:100%}}
+
+  .final{text-align:center}
+  .final h2{margin-bottom:8px}
+  .fill{display:inline-block;border:1.5px dashed #5a6b50;background:rgba(245,185,77,.08);color:var(--amber);
+    border-radius:9px;padding:3px 11px;font-size:14px;font-weight:650}
+  .deadline{margin-top:30px;background:rgba(245,185,77,.07);border:1px solid rgba(245,185,77,.3);border-radius:14px;padding:18px 22px;font-size:14.5px;color:var(--dim);text-align:left}
+  .deadline b{color:var(--amber)}
+  .foot{padding:40px 0 70px;text-align:center;color:var(--dim);font-size:13.5px}
+
+  /* sticky bottom bar */
+  .sticky{position:fixed;left:0;right:0;bottom:0;z-index:50;background:#070a11;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;gap:18px;padding:12px 18px;flex-wrap:wrap;
+    transform:translateY(120%);transition:transform .35s ease;box-shadow:0 -8px 30px rgba(0,0,0,.4)}
+  .sticky.show{transform:translateY(0)}
+  .sticky .t{font-size:14.5px;color:var(--ink)}
+  .sticky .t b{color:var(--go)}
+  .sticky a{background:var(--go);color:#04140d;font-weight:850;font-size:15px;padding:11px 20px;border-radius:11px;text-decoration:none;white-space:nowrap}
+  @media(max-width:560px){.sticky .t{display:none}.sticky{padding:10px 14px}.sticky a{flex:1;text-align:center}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="kicker">사는 게 아닙니다 · 무료로 깔아두는 겁니다</span>
+    <h1>지금 일단,<br>깔아만 두세요.</h1>
+    <p class="lead">
+      “좋은 거 같긴 한데 나중에…” 하고 이 탭을 닫는 순간, 또 잊혀집니다.
+      내일도 데스크는 감으로 전화하고, 잠든 환자는 계속 샙니다.
+      이 고리를 끊는 건 결심이 아니라 — <b class="go">지금 깔아두는 것 하나</b>예요.
+    </p>
+    <a class="cta" href="#get">일단 깔아두기 (무료) →</a>
+    <p class="finep">2분이면 끝 · 카드 등록 없음 · 안 맞으면 삭제 1초</p>
+  </section>
+
+  <!-- ASYMMETRY -->
+  <section>
+    <span class="tag amber">계산이 안 맞잖아요</span>
+    <h2>‘설치’는 한 번, 2분.<br>‘안 깔아둠’은 매일, 계속.</h2>
+    <p>고민할 게 있다면 <b>쓸지 말지</b>지, <b>깔지 말지</b>가 아니에요. 깔아두는 건 공짜고, 안 깔아두는 건 매일 비쌉니다.</p>
+    <div class="scale">
+      <div class="pan now">
+        <div class="h">⚡ 지금 깔아두면</div>
+        <div class="big">한 번 · 2분</div>
+        <div class="small">무료. 내일 아침부터 ‘오늘 전화할 사람’ 명단이 떠 있음. 안 맞으면 지우면 끝.</div>
+      </div>
+      <div class="pan later">
+        <div class="h">😴 ‘나중에’ 하면</div>
+        <div class="big">매일 · 영원히</div>
+        <div class="small">오늘도 명단 없이 감으로. 내일도 똑같이. 잠든 환자는 그사이 다른 치과로.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PASSIVE ACCRUAL -->
+  <section class="reveal">
+    <span class="tag">깔아만 둬도</span>
+    <h2>당신이 고민하는 동안에도,<br>도구는 알아서 일합니다.</h2>
+    <p>설치만 해두면 차트를 읽어서 <b>매일 아침 ‘오늘 전화할 사람’</b>을 자동으로 줄 세웁니다. 당신은 결정을 미뤄도 돼요 — 그동안 명단은 알아서 쌓이니까.</p>
+    <ul class="plain">
+      <li><span class="ic">→</span><span>🔥 오늘 빈 슬롯 채울 사람 · 🚨 임상 급한 사람 · 💰 고가치 환자를 순서대로</span></li>
+      <li><span class="ic">→</span><span>전화하면 안 되는(전화금지로 기록된) 환자는 알아서 빼고</span></li>
+      <li><span class="ic">→</span><span>통화 결과는 버튼 하나로 — 데스크는 위에서부터 누르기만</span></li>
+    </ul>
+    <p><b>안 깔면?</b> 이 일이 그냥 안 일어날 뿐입니다. 명단은 안 쌓이고, 환자는 계속 새고요.</p>
+  </section>
+
+  <!-- THE "나중에" TRAP (interactive) -->
+  <section>
+    <span class="tag amber">솔직히 말하면</span>
+    <h2>진짜 손해는 ‘못 써보는 것’이<br>아니라, <span class="amber">안 깔아서</span> 영영 안 써보는 것.</h2>
+    <p>무료라서 잃을 게 없어요. 진짜로 잃는 건, 페이지 닫고 잊어버려서 <b>아무것도 안 바뀌는 내일</b>입니다.</p>
+
+    <div class="later-box">
+      <button id="laterBtn">🤔 음… 나중에 할게요</button>
+      <div class="later-msg" id="laterMsg">
+        <div class="card">
+          <p>그 ‘나중에’가, 지금까지 매달 환자를 흘려보낸 <b>바로 그 말</b>이에요.
+          내일도 데스크는 감으로 전화하고, 잠든 환자는 또 쌓입니다.</p>
+          <p style="color:var(--ink);font-weight:700;margin-bottom:18px">…그래서, <b class="go">고민은 나중에 하더라도 깔아두는 것만</b> 지금 하자는 거예요. ↓</p>
+          <a class="cta amber" href="#get">알겠어요, 일단 깔아둘게요 →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL / GET -->
+  <section class="final" id="get">
+    <span class="tag">지금 이 화면에서</span>
+    <h2>2분이면 됩니다.<br>고민은 깔고 나서 하세요.</h2>
+
+    <div class="steps">
+      <div class="step"><b>1</b> 설치파일 다운로드</div>
+      <div class="arrow">→</div>
+      <div class="step"><b>2</b> 실행해서 설치</div>
+      <div class="arrow">→</div>
+      <div class="step"><b>3</b> 덴트웹에 연결</div>
+    </div>
+
+    <a class="cta" href="#" style="margin-top:22px">⬇ 일단 깔아두기 (무료)</a>
+    <p class="finep">안 맞으면 삭제 1초 · 데이터는 치과 안에 · 카드 등록 없음</p>
+    <div style="margin-top:10px"><span class="fill">실제 설치파일 다운로드 링크를 위 버튼에 연결하세요</span></div>
+
+    <div class="deadline">
+      <b>⏳ 지금 까는 치과만 (선택해서 켜기).</b>
+      <span class="fill">창립 멤버 혜택: ○월 ○일까지 설치한 치과에 [향후 유료 전환 시 고정가·우선 지원] — 실제 날짜·혜택 채우기</span>
+      <div style="margin-top:6px;font-size:13px;opacity:.8">※ 방문 카운트다운 같은 가짜 타이머 아님. 달력에 박힌 진짜 마감만, 지킬 수 있을 때 켜세요.</div>
+    </div>
+  </section>
+
+  <div class="foot">
+    리콜 프로그램 · 영업 컨셉 09 「지금 일단 깔아만 둬」 · 결정 분리 + 즉시행동 · 2026<br>
+    이 설치판은 무료입니다. 후기·수치는 검증된 실제 데이터가 쌓이면 게재합니다.
+  </div>
+
+</div>
+
+<!-- sticky bottom bar -->
+<div class="sticky" id="sticky">
+  <span class="t"><b>깔아두는 건 공짜.</b> 미루는 하루만큼 환자가 샙니다.</span>
+  <a href="#get">지금 일단 깔아두기 →</a>
+</div>
+
+<script>
+(function(){
+  // "나중에" trap reveal
+  var btn=document.getElementById('laterBtn'), msg=document.getElementById('laterMsg');
+  btn.addEventListener('click',function(){
+    msg.classList.add('show');
+    btn.style.display='none';
+  });
+
+  // sticky bar: show after hero, hide at #get
+  var bar=document.getElementById('sticky'), get=document.getElementById('get');
+  function onScroll(){
+    var past=window.scrollY>520;
+    var atEnd=get.getBoundingClientRect().top < window.innerHeight*0.9;
+    if(past&&!atEnd){bar.classList.add('show');}else{bar.classList.remove('show');}
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',onScroll);
+  onScroll();
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

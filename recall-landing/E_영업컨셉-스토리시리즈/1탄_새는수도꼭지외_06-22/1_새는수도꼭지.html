@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>새는 수도꼭지 — 리콜 프로그램</title>
+<style>
+  :root{
+    --bg:#0a0e16; --bg2:#111722; --ink:#e8edf5; --dim:#7d8aa0;
+    --red:#ff4d4d; --red-soft:#ff7a7a; --line:#1e2735; --blue:#5b8cff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,system-ui,sans-serif;
+    line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 24px}
+  section{padding:88px 0;border-bottom:1px solid var(--line)}
+  .tag{font-size:13px;letter-spacing:.18em;color:var(--red);font-weight:700;text-transform:uppercase}
+  h1{font-size:clamp(38px,7vw,68px);line-height:1.08;font-weight:800;margin:18px 0 24px;letter-spacing:-.02em}
+  h2{font-size:clamp(26px,4vw,38px);font-weight:800;line-height:1.2;margin-bottom:20px;letter-spacing:-.01em}
+  p{color:var(--dim);font-size:18px;margin-bottom:16px}
+  p b{color:var(--ink);font-weight:700}
+  .hero{min-height:90vh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+  .drip{position:absolute;top:0;left:50%;width:2px;height:100%;background:linear-gradient(var(--blue),transparent);opacity:.25}
+  .counter-box{margin:40px 0;padding:32px;background:var(--bg2);border:1px solid var(--line);border-radius:18px;text-align:center}
+  .counter-label{font-size:14px;color:var(--dim);margin-bottom:8px}
+  .counter{font-size:clamp(48px,10vw,90px);font-weight:900;color:var(--red);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .counter small{font-size:.4em;color:var(--red-soft);font-weight:700}
+  .sub{font-size:14px;color:var(--dim);margin-top:10px}
+  .leak-list{list-style:none;margin:24px 0}
+  .leak-list li{padding:18px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;align-items:center;font-size:17px}
+  .leak-list .amt{color:var(--red);font-weight:800;font-variant-numeric:tabular-nums}
+  .reveal{background:var(--bg2)}
+  .pill{display:inline-block;background:rgba(91,140,255,.12);color:var(--blue);padding:6px 14px;border-radius:99px;font-size:13px;font-weight:700;margin-bottom:20px}
+  .cta{display:inline-block;margin-top:24px;background:var(--red);color:#fff;font-weight:800;font-size:18px;padding:18px 38px;border-radius:14px;text-decoration:none;transition:.2s}
+  .cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,77,77,.35)}
+  .fine{font-size:13px;color:var(--dim);margin-top:14px}
+  .big{color:var(--ink);font-weight:800}
+</style>
+</head>
+<body>
+<div class="drip"></div>
+<div class="wrap">
+
+  <section class="hero">
+    <span class="tag">매달 · 조용히 · 새는 중</span>
+    <h1>지금 이 순간에도<br>수도꼭지가<br>새고 있습니다.</h1>
+    <p>광고비는 아까워하면서, <b>이미 우리 환자였던 사람</b>이 소리 없이 빠져나가는 건 아무도 안 봅니다. 떨어지는 물방울은 작지만, 한 달이면 양동이가 찹니다.</p>
+    <div class="counter-box">
+      <div class="counter-label">우리 치과에서 한 달에 새는 추정 매출</div>
+      <div class="counter"><small>₩</small><span id="num">0</span></div>
+      <div class="sub">리콜 시점이 지난 환자 × 평균 진료단가로 추정 (보수적 가정)</div>
+    </div>
+  </section>
+
+  <section>
+    <span class="tag">물방울의 정체</span>
+    <h2>한 방울 한 방울은<br>이렇게 떨어집니다.</h2>
+    <p>큰 구멍이 아니라 <b>수십 개의 작은 틈</b>이라 눈에 안 띕니다.</p>
+    <ul class="leak-list">
+      <li><span>6개월 스케일링 지난 환자, 연락 안 함</span><span class="amt">─ 샘</span></li>
+      <li><span>임플란트 상담만 받고 사라진 환자</span><span class="amt">─ 샘</span></li>
+      <li><span>"다음에 하죠" 하고 안 돌아온 환자</span><span class="amt">─ 샘</span></li>
+      <li><span>크라운 깨졌는데 방치 중인 환자</span><span class="amt">─ 샘</span></li>
+    </ul>
+    <p>실장님 잘못이 아닙니다. <b>누가, 언제, 왜 불러야 하는지</b>를 사람이 엑셀로 다 기억할 수 없을 뿐입니다.</p>
+  </section>
+
+  <section class="reveal">
+    <span class="pill">잠금장치</span>
+    <h2>그래서 만들었습니다.<br>틈을 자동으로 막는 화면 하나.</h2>
+    <p>차트 데이터를 읽어서 <b>오늘 전화할 사람 순서</b>를 알아서 띄웁니다. 실장님은 고민 없이 위에서부터 누르면 됩니다.</p>
+    <p>🔥 빈 슬롯 채울 사람 · 🚨 임상 급한 사람 · 💰 고가치 환자 — <b>새던 물이 다시 진료실로</b> 흘러 들어옵니다.</p>
+    <a class="cta" href="#">물 새는 거 막아보기 →</a>
+    <p class="fine">설치 부담 0 · 안 맞으면 그냥 끄세요. 잃을 게 없습니다.</p>
+  </section>
+
+</div>
+<script>
+  // 충격 숫자 카운트업 (보수적 데모 값)
+  const target = 3_240_000;
+  const el = document.getElementById('num');
+  let cur = 0;
+  const step = target / 60;
+  const t = setInterval(()=>{
+    cur += step;
+    if(cur >= target){cur = target; clearInterval(t);}
+    el.textContent = Math.floor(cur).toLocaleString('ko-KR');
+  }, 24);
+</script>
+<!--recall-fab-->
+<a href="../../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

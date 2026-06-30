@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리콜 설치페이지 — 하수·중수·고수·초고수 비교·검증</title>
+<style>
+  :root{--bg:#0B0E14;--card:#161b24;--ink:#EEF2F8;--dim:#8A96A8;--line:#232b37;
+    --low:#FF4D4D;--mid:#7A8699;--hi:#0FB8A6;--ultra:#E8C56A;--go:#34d399}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:54px 20px 90px}
+  header{text-align:center;margin-bottom:38px}
+  header .kick{font-size:13px;letter-spacing:.16em;color:var(--dim);font-weight:700;text-transform:uppercase}
+  header h1{font-size:clamp(27px,5vw,42px);font-weight:900;line-height:1.14;margin:14px 0 12px;letter-spacing:-.025em}
+  header p{color:var(--dim);font-size:16px;max-width:640px;margin:0 auto}
+  header p b{color:var(--ink)}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+  @media(max-width:760px){.grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:440px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;text-decoration:none;color:inherit;transition:.18s;position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-4px);border-color:var(--ac)}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--ac)}
+  .card .lv{font-size:12px;font-weight:800;color:var(--ac);letter-spacing:.06em}
+  .card h2{font-size:19px;font-weight:850;margin:6px 0 6px}
+  .card .d{font-size:13px;color:var(--dim);margin-bottom:14px;min-height:54px}
+  .card .sc{font-size:13px;font-weight:800;margin-bottom:10px}
+  .card .open{margin-top:auto;font-size:13.5px;font-weight:700;color:var(--ac)}
+  .lo{--ac:var(--low)}.md{--ac:var(--mid)}.hi{--ac:var(--hi)}.ul{--ac:var(--ultra)}
+  .pickbadge{position:absolute;top:14px;right:14px;font-size:10.5px;font-weight:800;background:#FEE500;color:#191600;padding:3px 9px;border-radius:99px}
+  /* scorecard */
+  .sched{margin-top:40px}
+  .sched h2{font-size:22px;font-weight:850;margin-bottom:6px}
+  .sched .sub{color:var(--dim);font-size:14px;margin-bottom:16px}
+  table{width:100%;border-collapse:collapse;font-size:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  th,td{padding:12px 12px;text-align:center;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{background:#1b2230;font-size:12.5px;color:var(--dim);font-weight:750}
+  td.dim{color:var(--ink);font-weight:700;text-align:left}
+  tr:last-child td{border-bottom:0}
+  .tot td{background:#1b2230;font-weight:900;font-size:15px}
+  .s5{color:var(--go)}.s4{color:#7FE3D6}.s3{color:#FFC23C}.s2{color:#FF9F6B}.s1{color:var(--low)}
+  /* verdict */
+  .verdict{margin-top:34px;background:linear-gradient(160deg,#13202a,#101820);border:1px solid #1c3a40;border-radius:18px;padding:28px}
+  .verdict .e{font-size:13px;font-weight:800;color:var(--hi);letter-spacing:.05em;margin-bottom:12px}
+  .verdict h2{font-size:clamp(20px,3vw,26px);font-weight:850;letter-spacing:-.02em;line-height:1.3}
+  .verdict h2 .g{color:var(--go)}.verdict h2 .u{color:var(--ultra)}
+  .verdict ul{list-style:none;margin-top:16px}
+  .verdict li{padding:10px 0 10px 26px;position:relative;font-size:15px;border-top:1px solid var(--line)}
+  .verdict li:first-child{border-top:0}
+  .verdict li::before{content:"→";position:absolute;left:2px;color:var(--hi);font-weight:800}
+  .verdict li b{color:var(--ink)}
+  .reasons{margin-top:30px}
+  .reasons h3{font-size:17px;font-weight:800;margin-bottom:12px}
+  .rgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:640px){.rgrid{grid-template-columns:1fr}}
+  .r{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .r .h{font-weight:800;font-size:14.5px;margin-bottom:5px}
+  .r p{font-size:13px;color:var(--dim)}
+  .note{margin-top:28px;font-size:12.5px;color:var(--dim);line-height:1.8;border-top:1px solid var(--line);padding-top:18px}
+  .note b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="kick">리콜 설명+설치 공유페이지 · 4단계 비교·검증</span>
+    <h1>같은 프로그램, 네 가지 솜씨</h1>
+    <p>한 링크를 단톡방에 공유 → 실장·직원에게 퍼지고 → 다른 대표원장이 깔게. 그 목표로 <b>하수·중수·고수·초고수</b>를 다 만들었습니다. 카드를 눌러 직접 보고, 아래 점수표로 검증하세요. (모두 무료 설치 · 제품 사실 충실)</p>
+  </header>
+
+  <div class="grid">
+    <a class="card lo" href="1_하수.html">
+      <span class="lv">🚨 하수</span>
+      <h2>가짜 긴급</h2>
+      <div class="d">가짜 타이머·“47명 보는 중”·공유 강제·“업계 1위!!”. 처음엔 눈길 끌지만 간파+거부+위법.</div>
+      <div class="sc s1">총점 6 / 25</div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+    <a class="card md" href="2_중수.html">
+      <span class="lv">🥉 중수</span>
+      <h2>정직하지만 밋밋</h2>
+      <div class="d">깔끔·정직·진짜 무료. 단 ‘공유할 이유’가 없어 안 퍼지고, 원장만 보게 됨.</div>
+      <div class="sc s3">총점 16 / 25</div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+    <a class="card hi" href="3_고수.html">
+      <span class="pickbadge">⭐ 실전 추천</span>
+      <span class="lv">🥈 고수</span>
+      <h2>진짜 마감+자가진단</h2>
+      <div class="d">reason-why 마감 · 1분 자가체크(자랑거리) · 원장/실장/직원 3탭 · 동료 한 줄. 가짜 0.</div>
+      <div class="sc s5">총점 23 / 25</div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+    <a class="card ul" href="4_초고수.html">
+      <span class="lv">🥇 초고수</span>
+      <h2>창립 멤버+추천 순번</h2>
+      <div class="d">‘무료’를 지위로 · 추천하면 순번↑(원장=모집책) · 자랑카드 · 구조적 바이럴. 천장 최고.</div>
+      <div class="sc s5">총점 24 / 25</div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+  </div>
+
+  <div class="sched">
+    <h2>📊 검증 점수표 (각 5점)</h2>
+    <div class="sub">기준은 ‘이 링크 하나가 단톡방→실장/직원→다른 원장으로 퍼지는가’ + 합법·지속성. 연구 근거에 기반한 평가.</div>
+    <table>
+      <thead><tr><th>평가 항목</th><th>🚨 하수</th><th>🥉 중수</th><th>🥈 고수</th><th>🥇 초고수</th></tr></thead>
+      <tbody>
+        <tr><td class="dim">① 설치 전환력</td><td class="s2">2</td><td class="s3">3</td><td class="s4">4</td><td class="s5">5</td></tr>
+        <tr><td class="dim">② 공유 유발(단톡방 바이럴)</td><td class="s1">1</td><td class="s2">2</td><td class="s4">4</td><td class="s5">5</td></tr>
+        <tr><td class="dim">③ 3대상 적합(원장·실장·직원)</td><td class="s1">1</td><td class="s2">2</td><td class="s5">5</td><td class="s4">4</td></tr>
+        <tr><td class="dim">④ 신뢰·합법(가짜 없음)</td><td class="s1">1</td><td class="s5">5</td><td class="s5">5</td><td class="s4">4</td></tr>
+        <tr><td class="dim">⑤ 지속가능성(반복해도 신뢰)</td><td class="s1">1</td><td class="s4">4</td><td class="s5">5</td><td class="s5">5</td></tr>
+        <tr class="tot"><td class="dim">총점</td><td class="s1">6</td><td class="s3">16</td><td class="s5">23</td><td class="s5">24</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="verdict">
+    <div class="e">🏆 검증 결론</div>
+    <h2>점수는 <span class="u">초고수(24)</span> ≈ <span class="g">고수(23)</span> &gt; 중수(16) ≫ 하수(6, 위법).<br>하지만 <span class="g">‘지금 당장’의 정답은 고수</span>입니다.</h2>
+    <ul>
+      <li><b>🥈 고수 = 실전 스위트 스폿.</b> 지금 바로 진짜로 지킬 수 있고(reason-why 마감), 한 링크가 원장·실장·직원 3대상에 다 닿고, 자가진단이 자랑거리를 만들어 퍼집니다. 리스크·운영부담 낮음. <b>→ 먼저 이걸로 시작.</b></li>
+      <li><b>🥇 초고수 = 천장이 가장 높지만 조건부.</b> ‘창립 멤버·기수 마감·추천 순번’이 <b>실제로 진짜여야</b> 합니다. 운영(웨이트리스트·코호트·추천 추적) 부담이 있고, 혜택·마감이 거짓이면 순식간에 하수로 추락. 여력·운영체계가 생기면 고수 위에 얹으세요.</li>
+      <li><b>🥉 중수 = 안전하지만 안 퍼짐.</b> 정직하나 ‘공유할 이유’가 없어 단톡방을 못 탑니다. 고수의 자가진단·3탭·talk trigger만 얹으면 바로 고수로 승급.</li>
+      <li><b>🚨 하수 = 절대 금지.</b> 가짜 타이머·“N명 보는 중”·공유 강제는 한국 전자상거래법(2025.2 시행) <b>다크패턴 과태료</b> 대상이고, 회의적인 원장·실장에게 즉시 거부당해 확산이 거꾸로 죽습니다.</li>
+    </ul>
+  </div>
+
+  <div class="reasons">
+    <h3>왜 이렇게 평가했나 (연구 근거)</h3>
+    <div class="rgrid">
+      <div class="r"><div class="h">3대상에서 고수가 만점인 이유</div><p>도입 결정은 원장이 해도 <b>실장 한마디면 사장</b>됩니다. 고수의 원장/실장/직원 3탭은 한 링크가 세 독자를 다 안심시켜요. 초고수는 원장 자랑 중심이라 실장 직접 설득은 한 칸 약함.</p></div>
+      <div class="r"><div class="h">공유에서 고수·초고수가 높은 이유</div><p>공유는 ‘버튼’이 아니라 <b>자랑·유용</b>이 만듭니다(사회적 화폐·실용가치). 자가진단(낮으면 고치고싶고 높으면 자랑)·자랑카드·추천 순번이 그걸 직접 자극.</p></div>
+      <div class="r"><div class="h">합법에서 하수가 0점인 이유</div><p>가짜 긴급·가짜 접속자수는 NY주 $2.6M 벌금, EU 37% 적발, <b>한국 2025.2 과태료</b> 대상. 무료 SW는 ‘가짜 재고’ 근거가 0이라 더 쉽게 들통.</p></div>
+      <div class="r"><div class="h">지속성에서 진짜 마감이 이기는 이유</div><p>닫았다 슬그머니 다시 열면 다음번 신뢰 0(Dan Kennedy). 고수·초고수는 <b>진짜 reason-why 마감</b>이라 반복해도 신뢰 유지.</p></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>판정 성격:</b> 점수는 검증된 연구(공유 심리 STEPPS·사회적 화폐·made-to-share, 희소성 사다리, 다크패턴 규제)에 기반한 <b>구조적 평가</b>이며, 실제 전환율은 A/B 테스트로 확인해야 하는 <b>가설</b>입니다(자기보고 ≠ 증거). · 모든 페이지: 제품 사실 충실(슬롯필러·DNC제외·CALLING고정·결정론엔진·덴트웹직연동, 안하는것=AI예후·음성차팅) · 가짜 수치 0 · 노란 점선 칸(다운로드 링크·마감일·혜택)만 채우면 배포 준비 완료. · 리콜 프로그램 · 2026-06-24
+  </div>
+</div>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

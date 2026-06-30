@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>안 온 환자, 오늘 누가 챙기나 — 리콜 프로그램 (무료)</title>
+<meta property="og:title" content="안 온 환자, 데스크가 자동으로 챙깁니다 — 무료로 시작">
+<meta property="og:description" content="미내원 환자를 매분 자동으로 줄 세워 1번부터 전화. 출시 기념 기간 한정 무료.">
+<style>
+  :root{--bg:#FBFAF8;--card:#fff;--ink:#1A2421;--dim:#5B6661;--line:#E4E0D7;--ac:#0E7A6E;--ac2:#0A5A51;--tint:#E6F1EF;--amber:#B45309;--amber-t:#FBF1E4}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',system-ui,sans-serif;line-height:1.7;letter-spacing:-.012em}
+  .tierbadge{position:fixed;top:10px;left:10px;background:var(--ac);color:#fff;font-weight:800;font-size:12px;padding:5px 11px;border-radius:7px;z-index:99;box-shadow:0 4px 12px rgba(14,122,110,.3)}
+  .wrap{max-width:640px;margin:0 auto;padding:0 22px}
+  section{padding:46px 0;border-bottom:1px solid var(--line)}
+  .eyebrow{display:inline-block;font-size:12.5px;font-weight:800;color:var(--ac);background:var(--tint);padding:5px 12px;border-radius:99px;margin-bottom:14px}
+  h1{font-size:clamp(28px,5.6vw,42px);font-weight:850;line-height:1.12;letter-spacing:-.03em}
+  h2{font-size:clamp(21px,3.4vw,28px);font-weight:800;letter-spacing:-.02em}
+  p{font-size:16.5px;color:var(--dim)}
+  .hero{padding:64px 0 30px}
+  .hero h1 mark{background:linear-gradient(180deg,transparent 58%,#CDEBE5 58%)}
+  .hero .sub{margin-top:16px;max-width:28em}
+  /* reason-why deadline */
+  .deadline{display:flex;gap:12px;align-items:flex-start;background:var(--amber-t);border:1px solid #EFD9BC;border-radius:12px;padding:16px 18px;margin-top:22px}
+  .deadline .ic{font-size:22px}
+  .deadline .t{font-size:14.5px;color:#7A5E1C}
+  .deadline .t b{color:#5E4814}
+  .cta{display:inline-block;background:var(--ac);color:#fff;font-weight:800;font-size:17px;padding:15px 28px;border-radius:12px;text-decoration:none;margin-top:20px}
+  .cta:hover{background:var(--ac2)}
+  .finep{font-size:13px;color:var(--dim);margin-top:12px}
+  /* audience tabs (one link, three readers) */
+  .tabs{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .tabs button{flex:1;min-width:90px;background:var(--card);border:1.5px solid var(--line);color:var(--dim);font-family:inherit;font-weight:750;font-size:14.5px;padding:11px;border-radius:10px;cursor:pointer}
+  .tabs button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+  .pane{display:none;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;margin-top:14px}
+  .pane.on{display:block}
+  .pane h3{font-size:17px;font-weight:800;margin-bottom:8px}
+  .pane ul{list-style:none;margin-top:8px}
+  .pane li{padding:7px 0 7px 24px;position:relative;font-size:15px}
+  .pane li::before{content:"✓";position:absolute;left:0;color:var(--ac);font-weight:800}
+  /* made to share self-check */
+  .check{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .check label{display:flex;gap:10px;align-items:center;padding:9px 0;font-size:15px;cursor:pointer;border-top:1px solid var(--line)}
+  .check label:first-of-type{border-top:0}
+  .check input{width:18px;height:18px;accent-color:var(--ac)}
+  .check .out{margin-top:12px;font-weight:750;color:var(--ac2);min-height:1.5em}
+  /* talk trigger */
+  .talk{background:linear-gradient(135deg,var(--ac2),var(--ac));color:#fff;border-radius:14px;padding:24px;text-align:center}
+  .talk .q{font-size:clamp(17px,3vw,22px);font-weight:800;line-height:1.5}
+  .talk .q b{border-bottom:2px solid rgba(255,255,255,.5)}
+  .share{display:block;width:100%;background:#FEE500;color:#191600;font-weight:850;font-size:16px;padding:14px;border-radius:11px;border:0;cursor:pointer;font-family:inherit;margin-top:16px}
+  .steps{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .steps .s{flex:1;min-width:110px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;font-size:13.5px;font-weight:650}
+  .fill{display:inline-block;border:1.5px dashed #C9A86A;background:#FCF6EA;color:#8A6A1F;border-radius:7px;padding:2px 9px;font-size:13px;font-weight:650}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:10px;font-size:13.5px;font-weight:700;opacity:0;transition:.3s;z-index:90;max-width:90vw}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="tierbadge">🥈 고수</div>
+<div class="wrap">
+  <section class="hero">
+    <span class="eyebrow">🦷 미내원 환자 회수 · 무료로 시작</span>
+    <h1>안 온 환자,<br>오늘 <mark>누가 챙기고</mark> 있나요?</h1>
+    <p class="sub">차트에서 ‘오늘 전화할 사람’을 매분 자동으로 줄 세워, 데스크가 1번부터 누르게 합니다. 통화 결과는 1클릭 → 덴트웹에 자동 기록.</p>
+    <div class="deadline">
+      <span class="ic">⏳</span>
+      <div class="t"><b>출시 기념 기간 한정 무료</b> — <span class="fill">○월 ○일</span>까지 설치하는 치과는 무료 온보딩까지 직접 지원합니다. (왜 한정? 직접 도와드릴 수 있는 곳 수가 한정이라서요.)</div>
+    </div>
+    <a class="cta" href="#get">무료로 다운로드 →</a>
+    <p class="finep">카드 등록 없음 · 안 맞으면 삭제 · 가짜 타이머 아님(진짜 마감)</p>
+  </section>
+
+  <!-- one link, three readers -->
+  <section>
+    <span class="eyebrow">👥 한 링크로 — 원장·실장·직원 각자에게</span>
+    <h2>누가 보냐에 따라 다르게 읽혀요</h2>
+    <div class="tabs">
+      <button class="on" data-i="0">👨‍⚕️ 원장</button>
+      <button data-i="1">🧑‍💼 실장</button>
+      <button data-i="2">💁 데스크</button>
+    </div>
+    <div class="pane on" data-p="0">
+      <h3>원장님께 — 빈 체어가 매출로</h3>
+      <ul>
+        <li>슬롯필러: 당일 빈 체어에 맞는 환자 자동 매칭</li>
+        <li>임상긴급·고가치 환자 우선 — 감이 아니라 자동</li>
+        <li>데스크 짬 시간이 예약 전화로 전환</li>
+      </ul>
+    </div>
+    <div class="pane" data-p="1">
+      <h3>실장님께 — 일이 늘지 않습니다</h3>
+      <ul>
+        <li>명단 뽑고 추리던 시간이 사라짐 (도구가 정렬)</li>
+        <li>통화 중인 환자는 큐에서 고정 — 화면이 안 흔들림</li>
+        <li>결과 1클릭이 기존 메모를 대신함 (순증 아님)</li>
+      </ul>
+    </div>
+    <div class="pane" data-p="2">
+      <h3>데스크께 — 1번부터 누르면 끝</h3>
+      <ul>
+        <li>분석할 필요 없음 — 위에서부터 전화</li>
+        <li>전화금지 환자는 큐에 안 올라옴 (사고 방지)</li>
+        <li>결과 버튼 하나 → 다음 사람 자동 노출</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- made to share -->
+  <section>
+    <span class="eyebrow">🩺 1분 자가체크 (공유하고 싶어지는 부분)</span>
+    <h2>우리 치과는 몇 개나 해당될까?</h2>
+    <div class="check" style="margin-top:14px">
+      <label><input type="checkbox" class="ck"> 안 온 환자 명단을 매일 보는 사람이 없다</label>
+      <label><input type="checkbox" class="ck"> 누구부터 전화할지 ‘감’으로 정한다</label>
+      <label><input type="checkbox" class="ck"> 오후 빈 체어가 생겨도 못 메운다</label>
+      <label><input type="checkbox" class="ck"> 통화 결과를 따로 또 적는다</label>
+      <div class="out" id="out">보통 2~3개 체크돼요. 친구 원장은 몇 개 나올지 궁금하지 않아요?</div>
+    </div>
+  </section>
+
+  <!-- talk trigger + share -->
+  <section>
+    <span class="eyebrow">📣 동료에게 던지기 좋은 한 줄</span>
+    <div class="talk">
+      <div class="q">“안 온 환자 챙기는 거, 이제 <b>데스크가 자동으로</b> 해.<br>무료라 일단 깔아봤는데 괜찮더라.”</div>
+    </div>
+    <button class="share" id="share">🟡 이대로 카톡으로 공유하기</button>
+  </section>
+
+  <!-- install -->
+  <section id="get" style="border-bottom:0">
+    <span class="eyebrow">⚡ 설치 2분</span>
+    <h2>지금 무료로 받기</h2>
+    <div class="steps" style="margin-top:14px">
+      <div class="s">1. 설치파일 다운로드</div>
+      <div class="s">2. 실행·설치</div>
+      <div class="s">3. 덴트웹 연결</div>
+    </div>
+    <a class="cta" href="#" style="margin-top:18px">⬇ 무료 설치파일 다운로드</a>
+    <p class="finep"><span class="fill">실제 다운로드 링크·연락처 채우기</span></p>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var tabs=document.querySelectorAll('.tabs button'),panes=document.querySelectorAll('.pane');
+  tabs.forEach(b=>b.addEventListener('click',function(){
+    tabs.forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    panes.forEach(p=>p.classList.toggle('on',p.dataset.p===b.dataset.i));
+  }));
+  var cks=document.querySelectorAll('.ck'),out=document.getElementById('out');
+  cks.forEach(c=>c.addEventListener('change',function(){
+    var n=[].filter.call(cks,x=>x.checked).length;
+    out.textContent=n===0?'보통 2~3개 체크돼요. 친구 원장은 몇 개 나올지 궁금하지 않아요?':(n<=2?'✅ '+n+'개 — 슬롯필러·자동 큐로 바로 메울 수 있어요.':'🔴 '+n+'개 — 새는 매출이 꽤 됩니다. 자동화가 답이에요.');
+  }));
+  function toast(t){var e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2800);}
+  document.getElementById('share').addEventListener('click',()=>toast('📲 (실제라면) 카톡 공유! ‘추천’ 아닌 ‘자랑+유용’이라 잘 퍼져요.'));
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

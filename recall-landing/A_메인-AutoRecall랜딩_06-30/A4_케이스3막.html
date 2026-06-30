@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoRecall — 안 온 환자, 누구한테 먼저 전화할까?</title>
+<meta name="description" content="치과 데스크가 '오늘 누구한테 전화할지'를 감으로 정하지 않게. 안 온 환자를 매일 자동으로 줄 세워 1클릭 전화·결과 기록까지. 무료 버전부터 시작하세요.">
+<style>
+  :root{
+    /* reading-mode 팔레트 — off-white 종이 + 단일 액센트 */
+    --paper:#FBFAF7;
+    --paper-2:#F4F1EA;
+    --ink:#1c1b18;
+    --ink-soft:#4b4a44;
+    --ink-mute:#86847c;
+    --line:#e7e3d8;
+    --accent:#1D4ED8;
+    --accent-soft:#eef2ff;
+    --accent-ink:#1e3aa8;
+    /* 막1(공감) 다크 밴드 */
+    --night:#15171c;
+    --night-2:#1d2026;
+    --night-ink:#f4f3ef;
+    --night-mute:#9b9d9f;
+    /* 케이스 신호색 (저채도) */
+    --hot:#c2410c;      --hot-bg:#fff4ed;
+    --urgent:#b91c1c;   --urgent-bg:#fef4f3;
+    --value:#a16207;    --value-bg:#fefbed;
+    --routine:#1d4ed8;  --routine-bg:#eef3ff;
+    --revive:#15803d;   --revive-bg:#eefaf0;
+    --radius:16px;
+    --maxw:1080px;
+    --measure:720px;
+    --font:'Pretendard','Pretendard Variable',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  }
+  @font-face{font-family:'Pretendard Variable';font-weight:45 920;font-style:normal;font-display:swap;src:local('Pretendard Variable');}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--font);
+    color:var(--ink);
+    background:var(--paper);
+    font-size:18px;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+    word-break:keep-all;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+  .narrow{max-width:var(--measure);margin-left:auto;margin-right:auto;}
+  h1,h2,h3{line-height:1.28;letter-spacing:-.02em;font-weight:800;}
+
+  /* ---- 헤더 ---- */
+  header.bar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(251,250,247,.86);
+    backdrop-filter:saturate(160%) blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .bar .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;}
+  .logo{font-weight:800;letter-spacing:-.02em;font-size:1.15rem;display:flex;align-items:center;gap:8px;}
+  .logo .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    font-weight:700;font-size:1rem;line-height:1;
+    padding:14px 22px;border-radius:999px;border:0;cursor:pointer;
+    background:var(--accent);color:#fff;transition:transform .12s ease, filter .12s ease;
+    min-height:48px;
+  }
+  .btn:hover{filter:brightness(1.07);transform:translateY(-1px);}
+  .btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent);}
+  .btn.sm{padding:11px 18px;font-size:.95rem;min-height:44px;}
+  .btn.lg{padding:18px 30px;font-size:1.1rem;}
+  .bar .btn{padding:11px 18px;min-height:44px;}
+
+  /* ---- 막1: 공감 (다크 밴드) ---- */
+  .hero{background:var(--night);color:var(--night-ink);padding:84px 0 76px;}
+  .eyebrow{
+    display:inline-block;font-size:.8rem;font-weight:800;letter-spacing:.13em;
+    padding:7px 15px;border-radius:999px;margin-bottom:22px;
+    background:rgba(255,255,255,.08);color:#cdd6ff;
+  }
+  .hero h1{font-size:clamp(2rem,6.4vw,3.5rem);color:#fff;margin-bottom:24px;}
+  .hero h1 .hl{color:#9db4ff;}
+  .hero .lead{font-size:clamp(1.05rem,2.6vw,1.32rem);color:#d7d8da;max-width:600px;line-height:1.7;}
+  .hero .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:36px;}
+  .hero .note{margin-top:18px;font-size:.92rem;color:var(--night-mute);}
+
+  /* 페인포인트 카드들 */
+  .pains{background:var(--night-2);color:var(--night-ink);padding:18px 0 78px;}
+  .pains h2{font-size:clamp(1.4rem,4vw,2rem);color:#fff;text-align:center;margin:48px 0 8px;}
+  .pains .sub{text-align:center;color:var(--night-mute);margin-bottom:40px;}
+  .pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .pain{
+    background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+    border-radius:var(--radius);padding:26px 24px;
+  }
+  .pain .q{font-size:1.6rem;margin-bottom:12px;}
+  .pain h3{font-size:1.12rem;color:#fff;margin-bottom:10px;}
+  .pain p{color:#c3c5c8;font-size:.98rem;line-height:1.7;}
+  .pain .who{display:inline-block;margin-top:14px;font-size:.78rem;font-weight:700;letter-spacing:.04em;color:#9db4ff;}
+  .bridge{text-align:center;padding:64px 0 8px;}
+  .bridge p{font-size:clamp(1.25rem,3.6vw,1.7rem);font-weight:800;letter-spacing:-.02em;line-height:1.5;}
+  .bridge .dim{color:var(--ink-mute);font-weight:500;font-size:1.05rem;margin-top:16px;letter-spacing:0;}
+
+  /* ---- 막2: 케이스별 솔루션 ---- */
+  .cases{padding:40px 0 30px;}
+  .sec-head{text-align:center;max-width:640px;margin:0 auto 14px;}
+  .sec-head .eyebrow{background:var(--accent-soft);color:var(--accent-ink);}
+  .sec-head h2{font-size:clamp(1.7rem,4.6vw,2.5rem);margin-bottom:14px;}
+  .sec-head p{color:var(--ink-soft);font-size:1.05rem;}
+
+  .case{
+    border:1px solid var(--line);border-radius:20px;background:#fff;
+    margin:30px auto 0;max-width:880px;overflow:hidden;
+    box-shadow:0 1px 0 rgba(0,0,0,.02);
+  }
+  .case-top{display:flex;align-items:center;gap:14px;padding:24px 30px;border-bottom:1px solid var(--line);}
+  .badge{
+    flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;
+    font-weight:800;font-size:.86rem;letter-spacing:.01em;
+    padding:8px 14px;border-radius:999px;
+  }
+  .b-hot{background:var(--hot-bg);color:var(--hot);}
+  .b-urgent{background:var(--urgent-bg);color:var(--urgent);}
+  .b-value{background:var(--value-bg);color:var(--value);}
+  .b-routine{background:var(--routine-bg);color:var(--routine);}
+  .b-revive{background:var(--revive-bg);color:var(--revive);}
+  .case-top .ttl{font-size:1.22rem;font-weight:800;letter-spacing:-.01em;}
+  .case-top .num{margin-left:auto;font-size:1.6rem;font-weight:800;color:var(--line);}
+
+  .case-body{padding:8px 30px 30px;}
+  .step{padding:20px 0;border-bottom:1px dashed var(--line);}
+  .step:last-child{border-bottom:0;}
+  .step .lbl{display:inline-block;font-size:.76rem;font-weight:800;letter-spacing:.06em;padding:4px 10px;border-radius:6px;margin-bottom:10px;}
+  .lbl-sit{background:var(--paper-2);color:var(--ink-soft);}
+  .lbl-pain{background:var(--urgent-bg);color:var(--urgent);}
+  .lbl-do{background:var(--accent-soft);color:var(--accent-ink);}
+  .lbl-win{background:var(--revive-bg);color:var(--revive);}
+  .step p{font-size:1.04rem;line-height:1.78;color:var(--ink);}
+  .step p .soft{color:var(--ink-soft);}
+  .step.do p strong{color:var(--accent-ink);}
+
+  /* 원장/실장 듀얼 후킹 */
+  .dual{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px;}
+  .dual .who-card{border-radius:12px;padding:16px 18px;font-size:.97rem;line-height:1.65;}
+  .who-card .tag{display:block;font-size:.78rem;font-weight:800;letter-spacing:.04em;margin-bottom:7px;}
+  .who-doc{background:#f7f5ef;}
+  .who-doc .tag{color:var(--value);}
+  .who-staff{background:var(--accent-soft);}
+  .who-staff .tag{color:var(--accent-ink);}
+
+  .assume{
+    display:inline-flex;align-items:center;gap:6px;margin-top:6px;
+    font-size:.78rem;color:var(--ink-mute);font-weight:600;
+  }
+  .assume::before{content:"⚠";}
+
+  /* 공식 설명 (직관각인) */
+  .formula{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:62px 0;margin-top:48px;}
+  .formula .eq{
+    text-align:center;font-size:clamp(1.05rem,3vw,1.5rem);font-weight:800;letter-spacing:-.01em;
+    line-height:1.9;margin:8px 0 30px;
+  }
+  .formula .eq .t1{color:var(--revive);} .formula .eq .t2{color:var(--accent);} .formula .eq .t3{color:var(--hot);}
+  .f-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .f-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 22px;}
+  .f-card h4{font-size:1.05rem;margin-bottom:8px;}
+  .f-card p{font-size:.95rem;color:var(--ink-soft);line-height:1.7;}
+  .f-card .pt{font-size:.8rem;font-weight:700;letter-spacing:.04em;}
+
+  /* ---- 막3: 사용 가이드 ---- */
+  .guide{padding:74px 0 30px;}
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:42px;counter-reset:step;}
+  .gstep{position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;padding:30px 24px 26px;}
+  .gstep::before{
+    counter-increment:step;content:counter(step);
+    position:absolute;top:-16px;left:24px;
+    width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;
+  }
+  .gstep .ico{font-size:1.7rem;margin-bottom:12px;}
+  .gstep h4{font-size:1.08rem;margin-bottom:8px;}
+  .gstep p{font-size:.95rem;color:var(--ink-soft);line-height:1.7;}
+  .ease{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:34px;}
+  .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:10px 18px;font-size:.92rem;font-weight:600;color:var(--ink-soft);}
+  .chip b{color:var(--ink);}
+
+  /* 최종 CTA */
+  .final{background:var(--night);color:#fff;border-radius:24px;padding:64px 36px;text-align:center;margin:64px auto 0;max-width:920px;}
+  .final h2{font-size:clamp(1.6rem,4.6vw,2.4rem);margin-bottom:18px;color:#fff;}
+  .final p{color:#cfd0d3;max-width:540px;margin:0 auto 30px;font-size:1.05rem;}
+  .final .cta-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;}
+  .final .fine{margin-top:22px;font-size:.86rem;color:var(--night-mute);}
+
+  footer{padding:48px 0 64px;text-align:center;color:var(--ink-mute);font-size:.88rem;line-height:1.8;}
+  footer .disc{max-width:620px;margin:14px auto 0;font-size:.82rem;}
+
+  /* ============ 반응형 ============ */
+  /* 패드 (≤1024px): 다열은 유지하되 2열 위주로 */
+  @media (max-width:1024px){
+    body{font-size:17px;}
+    .pain-grid{grid-template-columns:repeat(2,1fr);gap:16px;}
+    .flow{grid-template-columns:repeat(2,1fr);gap:22px 16px;}
+    .f-grid{grid-template-columns:repeat(3,1fr);gap:14px;}
+    .case{max-width:100%;}
+  }
+  /* 좁은 패드·큰 폰 (≤640px): 공식 3카드도 1열로 */
+  @media (max-width:640px){
+    .f-grid{grid-template-columns:1fr;}
+  }
+  /* 모바일 (≤480px) */
+  @media (max-width:480px){
+    body{font-size:16px;line-height:1.8;}
+    .wrap{padding:0 18px;}
+    .hero{padding:60px 0 56px;}
+    .bar .wrap{height:56px;}
+    .logo{font-size:1.05rem;}
+    .bar .btn{padding:9px 14px;font-size:.88rem;min-height:42px;}
+    .hero .cta-row .btn{flex:1 1 100%;}
+    .pains{padding:8px 0 56px;}
+    .pain-grid{grid-template-columns:1fr;}
+    .pain{padding:22px 20px;}
+    .case-top{flex-wrap:wrap;padding:20px 20px;gap:10px;}
+    .case-top .num{display:none;}
+    .case-top .ttl{font-size:1.1rem;width:100%;}
+    .case-body{padding:4px 20px 24px;}
+    .dual{grid-template-columns:1fr;gap:10px;}
+    .flow{grid-template-columns:1fr;gap:22px;}
+    .formula{padding:46px 0;}
+    .final{padding:48px 22px;border-radius:18px;margin-left:0;margin-right:0;}
+    .final .cta-row .btn{flex:1 1 100%;}
+    .btn.lg{width:100%;}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.btn{transition:none;}}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="logo"><span class="dot"></span>AutoRecall</div>
+    <a href="#install" class="btn sm">무료 버전 받기</a>
+  </div>
+</header>
+
+<!-- ===================== 막1 · 공감 ===================== -->
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">치과 리콜(recall) 도구</span>
+    <h1>안 온 환자,<br><span class="hl">오늘 누구한테 먼저</span><br>전화하실 건가요?</h1>
+    <p class="lead">스케일링 6개월 지난 사람, 임플란트 상담만 받고 사라진 사람, 정기검진 놓친 사람… 다 어딘가에 있는데, 그 명단이 어디 있는지부터 막막하셨다면 — 이 페이지는 딱 그 이야기입니다.</p>
+    <div class="cta-row">
+      <a href="#cases" class="btn lg">우리 얘기인지 먼저 볼게요 ↓</a>
+      <a href="#install" class="btn ghost lg">바로 무료로 깔아보기</a>
+    </div>
+    <p class="note">설치형 PC 도구 · 기존 차트(덴트웹) 그대로 사용 · 인터넷 없이도 작동</p>
+  </div>
+</section>
+
+<section class="pains">
+  <div class="wrap">
+    <h2>혹시, 이런 적 없으세요?</h2>
+    <p class="sub">치과 한 곳에서 매일 벌어지는 일들입니다.</p>
+    <div class="pain-grid">
+      <div class="pain">
+        <div class="q">🗂️</div>
+        <h3>"그 환자, 명단이 어디 있더라?"</h3>
+        <p>스케일링·정기검진 6개월이 지난 환자가 분명 쌓여 있는데, 한 명씩 차트를 뒤지지 않으면 누가 대상인지 알 수가 없습니다.</p>
+        <span class="who">데스크가 매일 겪는 일</span>
+      </div>
+      <div class="pain">
+        <div class="q">📞</div>
+        <h3>"오늘은 누구한테 전화하지?"</h3>
+        <p>결국 기억나는 사람, 눈에 띄는 사람한테 감으로 전화합니다. 정작 지금 꼭 와야 할 환자는 그냥 지나갑니다.</p>
+        <span class="who">데스크가 매일 겪는 일</span>
+      </div>
+      <div class="pain">
+        <div class="q">💸</div>
+        <h3>"상담만 받고 안 온 그 임플란트…"</h3>
+        <p>고가 치료를 상담까지 받고 사라진 환자. 누가 챙기지 않으면 그대로 다른 치과로 갑니다. 매출이 조용히 빠져나갑니다.</p>
+        <span class="who">원장이 신경 쓰는 일</span>
+      </div>
+      <div class="pain">
+        <div class="q">🔁</div>
+        <h3>"이 사람, 저번에도 전화했었나?"</h3>
+        <p>통화 결과가 기록에 안 남아, 같은 사람한테 또 전화하고 안 받은 사람은 영영 놓칩니다. 노력이 쌓이질 않습니다.</p>
+        <span class="who">데스크 · 원장 모두</span>
+      </div>
+      <div class="pain">
+        <div class="q">🪑</div>
+        <h3>"예약 취소로 자리가 비었는데…"</h3>
+        <p>갑자기 생긴 빈 진료 자리. 지금 당장 채울 사람을 어디서 찾나요? 비어 있는 그 시간은 그대로 비용입니다.</p>
+        <span class="who">원장 · 데스크 모두</span>
+      </div>
+      <div class="pain">
+        <div class="q">🕳️</div>
+        <h3>"우리 치과엔 얼마가 잠들어 있지?"</h3>
+        <p>안 온 환자 한 명 한 명이 곧 잠재 매출인데, 그게 몇 명인지·얼마인지조차 한눈에 보이지 않습니다.</p>
+        <span class="who">원장이 신경 쓰는 일</span>
+      </div>
+    </div>
+  </div>
+  <div class="wrap bridge">
+    <p>이 막막함은 "더 열심히 전화하자"로 풀리지 않습니다.<br>"<u>오늘, 누구한테, 왜</u>"가 자동으로 정리되어야 풀립니다.</p>
+    <p class="dim">AutoRecall이 정확히 그 일을 합니다. 케이스별로 보여드릴게요.</p>
+  </div>
+</section>
+
+<!-- ===================== 막2 · 케이스별 솔루션 ===================== -->
+<section class="cases" id="cases">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">실제 운영 케이스</span>
+      <h2>이런 상황마다,<br>AutoRecall은 이렇게 합니다</h2>
+      <p>아래는 치과에서 매일 생기는 상황입니다. 각 케이스를 <b>상황 → 지금의 고통 → AutoRecall이 하는 일 → 그래서 생기는 효과</b> 순으로 보세요.</p>
+    </div>
+
+    <!-- CASE 1 -->
+    <article class="case">
+      <div class="case-top">
+        <span class="badge b-hot">🔥 슬롯필러</span>
+        <span class="ttl">예약 취소로 빈 자리가 생긴 날</span>
+        <span class="num">01</span>
+      </div>
+      <div class="case-body">
+        <div class="step"><span class="lbl lbl-sit">상황</span><p>오후 3시 예약 환자가 갑자기 취소했습니다. 진료 의자 하나, 한 시간이 통째로 비었습니다.</p></div>
+        <div class="step"><span class="lbl lbl-pain">지금의 고통</span><p class="soft">지금 당장 그 자리를 채울 수 있는 환자를 어디서 찾나요? 차트를 뒤질 시간도 없고, 결국 빈 채로 한 시간이 지나갑니다.</p></div>
+        <div class="step do"><span class="lbl lbl-do">AutoRecall이 하는 일</span><p>빈 자리가 생긴 그 순간, <strong>오늘·근처 시간대에 올 수 있고 와야 할 환자 상위 3명</strong>을 자동으로 띄웁니다. "이 환자는 마침 근처 살고, 정기검진도 지났어요" 같은 이유까지 함께요.</p></div>
+        <div class="step"><span class="lbl lbl-win">그래서 생기는 효과</span>
+          <div class="dual">
+            <div class="who-card who-doc"><span class="tag">👔 원장에게</span>비어 있던 의자 시간이 매출로 바뀝니다. 노는 시간이 곧 비용이라는 걸 가장 잘 아시잖아요.</div>
+            <div class="who-card who-staff"><span class="tag">🧑‍💼 실장에게</span>"누구한테 전화하지?"를 고민할 필요 없이, 띄워준 3명에게 바로 전화하면 됩니다.</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- CASE 2 -->
+    <article class="case">
+      <div class="case-top">
+        <span class="badge b-routine">📅 표준 리콜</span>
+        <span class="ttl">스케일링·정기검진 6개월 도래 환자</span>
+        <span class="num">02</span>
+      </div>
+      <div class="case-body">
+        <div class="step"><span class="lbl lbl-sit">상황</span><p>스케일링·정기검진 시기가 된 환자가 매달 수십 명씩 생깁니다. 하지만 명단으로 정리된 적은 없습니다.</p></div>
+        <div class="step"><span class="lbl lbl-pain">지금의 고통</span><p class="soft">한 명씩 차트를 열어 "마지막 내원이 언제였더라" 확인하지 않으면 대상자를 알 수 없습니다. 결국 대부분 그냥 잊힙니다.</p></div>
+        <div class="step do"><span class="lbl lbl-do">AutoRecall이 하는 일</span><p>마지막 내원일을 기준으로 <strong>"지금이 연락하기 딱 좋은 시기"인 환자를 매일 아침 자동으로 줄 세웁니다.</strong> 너무 이르지도, 너무 늦지도 않은 6~12개월 구간을 우선으로요.</p></div>
+        <div class="step"><span class="lbl lbl-win">그래서 생기는 효과</span>
+          <div class="dual">
+            <div class="who-card who-doc"><span class="tag">👔 원장에게</span>정기검진 기반의 꾸준한 내원이 회복됩니다. 구강 관리 연속성이 곧 치과의 기본 체력입니다.</div>
+            <div class="who-card who-staff"><span class="tag">🧑‍💼 실장에게</span>명단을 만드는 노동이 사라집니다. 아침에 켜면 오늘 전화할 사람이 이미 정리돼 있습니다.</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- CASE 3 -->
+    <article class="case">
+      <div class="case-top">
+        <span class="badge b-value">💰 고가치 발굴</span>
+        <span class="ttl">상담만 받고 안 온 고가 치료 환자</span>
+        <span class="num">03</span>
+      </div>
+      <div class="case-body">
+        <div class="step"><span class="lbl lbl-sit">상황</span><p>임플란트·교정 상담까지 받았지만 결정을 미루고 발길이 끊긴 환자가 있습니다.</p></div>
+        <div class="step"><span class="lbl lbl-pain">지금의 고통</span><p class="soft">먼저 챙기지 않으면 그대로 잊히거나 다른 치과로 갑니다. 가장 큰 매출이 가장 조용히 빠져나갑니다.</p></div>
+        <div class="step do"><span class="lbl lbl-do">AutoRecall이 하는 일</span><p><strong>미완결 상담·보류된 고가 치료 환자를 별도로 모아 "고가치 발굴" 줄에 올립니다.</strong> 왜 지금 연락할 명분이 있는지(상담 후 경과 시점 등)도 함께 보여줍니다.</p></div>
+        <div class="step"><span class="lbl lbl-win">그래서 생기는 효과</span>
+          <div class="dual">
+            <div class="who-card who-doc"><span class="tag">👔 원장에게</span>가장 아까운 큰 케이스를 다시 테이블 위로 올립니다. 한 명만 돌아와도 의미가 큽니다.</div>
+            <div class="who-card who-staff"><span class="tag">🧑‍💼 실장에게</span>"그냥 영업 전화"가 아니라 명분이 있는 연락이라, 말 꺼내기가 훨씬 편합니다.</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- CASE 4 -->
+    <article class="case">
+      <div class="case-top">
+        <span class="badge b-urgent">🚨 임상 우선</span>
+        <span class="ttl">누구부터 전화할지 감으로 정하던 순서</span>
+        <span class="num">04</span>
+      </div>
+      <div class="case-body">
+        <div class="step"><span class="lbl lbl-sit">상황</span><p>전화할 후보는 많은데, 시간은 한정돼 있습니다. 그래서 결국 순서를 감으로 정합니다.</p></div>
+        <div class="step"><span class="lbl lbl-pain">지금의 고통</span><p class="soft">눈에 띄는 사람부터 전화하다 보면, 사후관리가 필요한 환자나 치료가 중간에 끊긴 환자처럼 정작 먼저 챙겨야 할 사람이 뒤로 밀립니다.</p></div>
+        <div class="step do"><span class="lbl lbl-do">AutoRecall이 하는 일</span><p>감 대신 일관된 기준으로 줄을 세웁니다 — <strong>이 환자가 적절한 대상인가(화이트−블랙) × 오늘 연락할 명분(기본가치) × 지금이 좋은 타이밍인가(타이밍배수).</strong> 사후관리·중단된 치료처럼 임상적으로 급한 환자가 위로 올라옵니다.</p></div>
+        <div class="step"><span class="lbl lbl-win">그래서 생기는 효과</span>
+          <div class="dual">
+            <div class="who-card who-doc"><span class="tag">👔 원장에게</span>치료 연속성이 끊긴 환자를 놓치지 않습니다. 누가·왜 위에 있는지 근거가 보이니 신뢰가 갑니다.</div>
+            <div class="who-card who-staff"><span class="tag">🧑‍💼 실장에게</span>"왜 이 환자가 1번인지" 이유가 한 줄로 보여서, 그냥 시키는 게 아니라 납득하고 전화합니다.</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- CASE 5 -->
+    <article class="case">
+      <div class="case-top">
+        <span class="badge b-routine">📝 결과 기록</span>
+        <span class="ttl">전화한 결과가 어디에도 안 남는 문제</span>
+        <span class="num">05</span>
+      </div>
+      <div class="case-body">
+        <div class="step"><span class="lbl lbl-sit">상황</span><p>전화는 했는데, 받았는지·예약했는지·콜백을 원했는지가 기록에 남지 않습니다.</p></div>
+        <div class="step"><span class="lbl lbl-pain">지금의 고통</span><p class="soft">다음에 또 같은 사람한테 전화하고, 안 받은 사람은 영영 놓칩니다. 어제의 노력이 오늘로 이어지지 않습니다.</p></div>
+        <div class="step do"><span class="lbl lbl-do">AutoRecall이 하는 일</span><p>통화 후 <strong>결과 버튼 한 번</strong>(예약완료 · 부재중 · 콜백요청 · 거절 · 통화함)이면 됩니다. 그 한 번이 다음 행동을 정하고, 차트에도 자동으로 기록됩니다.</p></div>
+        <div class="step"><span class="lbl lbl-win">그래서 생기는 효과</span>
+          <div class="dual">
+            <div class="who-card who-doc"><span class="tag">👔 원장에게</span>"몇 명에게 전화했고 몇 명이 예약됐는지"가 투명하게 남습니다. 누가 했다·안 했다 다툼이 사라집니다.</div>
+            <div class="who-card who-staff"><span class="tag">🧑‍💼 실장에게</span>적어둘 필요 없이 버튼 하나. 부재중인 사람은 알아서 다시 큐에 떠서, 놓치는 게 줄어듭니다.</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- CASE 6 -->
+    <article class="case">
+      <div class="case-top">
+        <span class="badge b-revive">🌱 재활성화</span>
+        <span class="ttl">오래 안 온 환자, 한가한 시간에 깨우기</span>
+        <span class="num">06</span>
+      </div>
+      <div class="case-body">
+        <div class="step"><span class="lbl lbl-sit">상황</span><p>2년 넘게 발길이 끊긴 환자들. 명단에서도, 기억에서도 사실상 사라진 사람들입니다.</p></div>
+        <div class="step"><span class="lbl lbl-pain">지금의 고통</span><p class="soft">바쁠 땐 챙길 여유가 없고, 한가할 땐 누구부터 깨워야 할지 막막합니다. 그냥 방치됩니다.</p></div>
+        <div class="step do"><span class="lbl lbl-do">AutoRecall이 하는 일</span><p>연락 가능한 정보가 살아 있는 장기 미내원 환자를 <strong>"재활성화" 줄로 따로 모읍니다.</strong> 데스크가 한가한 시간에 부담 없이 돌릴 수 있는, 별도의 가벼운 후보군입니다.</p></div>
+        <div class="step"><span class="lbl lbl-win">그래서 생기는 효과</span>
+          <div class="dual">
+            <div class="who-card who-doc"><span class="tag">👔 원장에게</span>잊고 있던 환자층이 다시 매출 후보가 됩니다. 가만히 두면 0이던 자리입니다.</div>
+            <div class="who-card who-staff"><span class="tag">🧑‍💼 실장에게</span>한가한 시간을 "멍 때리는 시간"이 아니라 가볍게 채울 일거리로 바꿔줍니다.</div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- 공식 설명 (직관각인 톤) -->
+<section class="formula">
+  <div class="wrap narrow">
+    <div class="sec-head">
+      <span class="eyebrow">"감"이 아니라 기준입니다</span>
+      <h2 style="font-size:clamp(1.5rem,4vw,2.1rem)">왜 이 환자가 1번인가요?</h2>
+      <p>AutoRecall이 줄을 세우는 방식은 비밀이 아닙니다. 세 가지를 곱해서 정합니다.</p>
+    </div>
+    <p class="eq"><span class="t1">(화이트 − 블랙)</span> × <span class="t2">기본가치</span> × <span class="t3">타이밍배수</span></p>
+  </div>
+  <div class="wrap">
+    <div class="f-grid">
+      <div class="f-card">
+        <p class="pt" style="color:var(--revive)">화이트 − 블랙</p>
+        <h4>이 환자, 전화해도 될까?</h4>
+        <p>연락이 적절한 환자인지(긍정 신호)와 피해야 할 환자인지(연락 거부·정보 없음 등)를 먼저 거릅니다. 부적절한 대상은 아예 큐에 오르지 않습니다.</p>
+      </div>
+      <div class="f-card">
+        <p class="pt" style="color:var(--accent)">기본가치</p>
+        <h4>오늘 연락할 명분이 있나?</h4>
+        <p>임상적 필요(검진·사후관리 시기), 치료 가치, 그리고 시기까지 — "왜 지금 전화하는가"의 명분을 점수로 봅니다.</p>
+      </div>
+      <div class="f-card">
+        <p class="pt" style="color:var(--hot)">타이밍배수</p>
+        <h4>지금이 연결될 타이밍인가?</h4>
+        <p>받을 가능성이 높은 시간대인지, 그리고 마침 오늘 빈 자리와 맞는지를 곱합니다. <b>당일 빈 슬롯과 맞으면 크게 가산</b>됩니다.</p>
+      </div>
+    </div>
+    <p class="narrow assume" style="justify-content:center;margin-top:26px">점수 가중치·구간 수치는 현재 기본값이며, 우리 치과 상황에 맞게 조정·검수가 필요합니다.</p>
+  </div>
+</section>
+
+<!-- ===================== 막3 · 사용 가이드 ===================== -->
+<section class="guide" id="install">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">생각보다 쉽습니다</span>
+      <h2>설치부터 첫 전화까지,<br>이게 전부입니다</h2>
+      <p>복잡한 설정도, 새 차트도 없습니다. 쓰던 덴트웹(Dentweb) 그대로 연결합니다.</p>
+    </div>
+    <div class="flow">
+      <div class="gstep">
+        <div class="ico">💾</div>
+        <h4>설치</h4>
+        <p>받은 설치 파일 하나를 데스크 PC에서 실행합니다. 별도 서버·인터넷 설정 없이 끝납니다.</p>
+      </div>
+      <div class="gstep">
+        <div class="ico">🔌</div>
+        <h4>차트 연결</h4>
+        <p>쓰던 차트(덴트웹)를 그대로 연결합니다. 데이터를 옮기거나 새로 입력할 필요가 없습니다.</p>
+      </div>
+      <div class="gstep">
+        <div class="ico">📋</div>
+        <h4>오늘의 큐 확인</h4>
+        <p>아침에 켜면 "오늘 전화할 사람"이 이유와 함께 줄 세워져 있습니다. 감으로 고를 일이 없습니다.</p>
+      </div>
+      <div class="gstep">
+        <div class="ico">📞</div>
+        <h4>전화 → 결과 버튼</h4>
+        <p>위에서부터 전화하고, 끝나면 결과 버튼 한 번. 기록은 자동, 다음 행동도 자동으로 정해집니다.</p>
+      </div>
+    </div>
+    <div class="ease">
+      <span class="chip"><b>인터넷 없이</b>도 작동</span>
+      <span class="chip"><b>매달 요금</b> 부담 없는 무료 버전</span>
+      <span class="chip">쓰던 <b>덴트웹</b> 그대로</span>
+      <span class="chip">데스크 <b>PC 한 대</b>면 충분</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="final">
+      <h2>무료 버전으로,<br>지금 효과부터 느껴보세요</h2>
+      <p>거창한 도입 결정 없이, 오늘 안 온 환자 한 명에게 전화하는 것부터. 와닿는 케이스가 하나라도 있었다면 그걸로 충분합니다.</p>
+      <div class="cta-row">
+        <a href="#" class="btn lg">무료 버전 받기</a>
+        <a href="#cases" class="btn ghost lg" style="border-color:rgba(255,255,255,.4);color:#fff">케이스 다시 보기</a>
+      </div>
+      <p class="fine">설치형 도구 · 기존 차트 그대로 · 데이터는 우리 치과 PC 안에만 남습니다</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap narrow">
+    <strong>AutoRecall</strong> — 치과 미내원 환자 리콜(recall) 도구
+    <p class="disc">※ 이 페이지의 효과 설명과 점수 기준은 제품의 작동 방식을 소개하기 위한 것으로, 구체적 매출·전환 수치는 가정값이며 원장 검수가 필요합니다. AutoRecall은 환자 명단을 정리·정렬하고 전화 결과를 기록하는 운영 도구이며, 진료·진단을 대신하지 않습니다.</p>
+  </div>
+</footer>
+
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우리 치과 리콜 누수 점수 — 1분 자가진단</title>
+<meta property="og:title" content="우리 치과, 리콜로 매달 얼마 새고 있을까? (1분 자가진단)">
+<meta property="og:description" content="슬라이더 3개로 우리 치과 '리콜 누수 점수'를 확인하세요. 무료.">
+<style>
+  :root{--bg:#0E1116;--card:#191f29;--ink:#EDF1F7;--dim:#8C97A8;--line:#262e3a;--ac:#FF4D6D;--ac2:#FFC23C;--go:#34d399}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;line-height:1.6;letter-spacing:-.015em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:680px;margin:0 auto;padding:0 22px}
+  section{padding:60px 0}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.05em;color:var(--ac);background:rgba(255,77,109,.12);padding:6px 13px;border-radius:99px;margin-bottom:16px}
+  h1{font-size:clamp(32px,7vw,52px);font-weight:900;line-height:1.06;letter-spacing:-.035em}
+  h1 em{font-style:normal;color:var(--ac)}
+  p{font-size:17px;color:var(--dim)}
+  .hero{padding:64px 0 30px;text-align:center}
+  .hero p{max-width:26em;margin:18px auto 0}
+  .hint{margin-top:22px;font-size:14px;color:var(--dim)}
+  .hint b{color:var(--ac2)}
+  /* calc */
+  .calc{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px;margin-top:8px}
+  .ctrl{margin-bottom:20px}
+  .ctrl label{display:flex;justify-content:space-between;font-size:15px;font-weight:650;margin-bottom:9px}
+  .ctrl label b{color:var(--ac2);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;-webkit-appearance:none;height:8px;border-radius:99px;background:#2a323e;outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--ac);cursor:pointer;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+  input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--ac);cursor:pointer;border:3px solid #fff}
+  /* result card (made to screenshot/share) */
+  .rcard{margin-top:24px;border-radius:20px;padding:30px 26px;text-align:center;background:linear-gradient(160deg,#23120f,#2a1015);border:1px solid #4a2730}
+  .rcard .lab{font-size:13px;color:#E7A9B4;font-weight:700}
+  .gauge{font-size:clamp(58px,14vw,86px);font-weight:900;line-height:1;letter-spacing:-.04em;margin:8px 0 2px;font-variant-numeric:tabular-nums}
+  .grade{font-size:18px;font-weight:850;margin-bottom:14px}
+  .rmoney{font-size:14.5px;color:var(--ink)}
+  .rmoney b{color:var(--ac2);font-size:19px;font-variant-numeric:tabular-nums}
+  .rcomment{font-size:14.5px;color:#E7A9B4;margin-top:12px;min-height:2.6em}
+  .note{font-size:12px;color:var(--dim);margin-top:12px}
+  .share{margin-top:20px;display:inline-flex;align-items:center;gap:9px;background:#FEE500;color:#191600;font-weight:850;font-size:17px;padding:15px 26px;border-radius:13px;border:0;cursor:pointer;font-family:inherit;transition:transform .12s;width:100%;justify-content:center}
+  .share:hover{transform:translateY(-2px)}
+  .sub-cta{margin-top:10px;text-align:center;font-size:13.5px;color:var(--dim)}
+  /* solution */
+  .sol{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;margin-top:14px}
+  .sol h3{font-size:20px;font-weight:850;margin-bottom:6px}
+  .sol ul{list-style:none;margin:14px 0 0}
+  .sol li{padding:10px 0 10px 28px;position:relative;font-size:15.5px;border-top:1px solid var(--line)}
+  .sol li:first-child{border-top:0}
+  .sol li::before{content:"→";position:absolute;left:2px;color:var(--go);font-weight:800}
+  .cta{display:block;text-align:center;margin-top:18px;background:var(--go);color:#04140d;font-weight:850;font-size:18px;padding:16px;border-radius:13px;text-decoration:none}
+  .fill{display:inline-block;border:1.5px dashed #4d5666;background:rgba(255,194,60,.08);color:var(--ac2);border-radius:8px;padding:2px 9px;font-size:13px;font-weight:650}
+  .nav{text-align:center;padding:24px 0 60px;font-size:14px}.nav a{color:var(--dim)}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#000;color:#fff;padding:13px 22px;border-radius:12px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:90}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <span class="eyebrow">🩺 1분 자가진단 · 무료</span>
+    <h1>우리 치과,<br>리콜로 매달 <em>얼마</em> 새고 있을까?</h1>
+    <p>슬라이더 3개만 움직이면 ‘리콜 누수 점수’가 나옵니다. 결과 보고 놀라면 — 동료 원장한테도 던져보세요. 😏</p>
+    <div class="hint">👇 숫자는 <b>재미로 보는 가정값</b>이에요 (실측 아님)</div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="calc">
+      <div class="ctrl">
+        <label>6개월 넘게 안 온 환자 (명) <b id="v1">600</b></label>
+        <input type="range" id="r1" min="100" max="2500" step="50" value="600">
+      </div>
+      <div class="ctrl">
+        <label>전화하면 돌아올 비율 (%) <b id="v2">10</b></label>
+        <input type="range" id="r2" min="3" max="35" step="1" value="10">
+      </div>
+      <div class="ctrl">
+        <label>환자 1명 평균 진료비 (만원) <b id="v3">25</b></label>
+        <input type="range" id="r3" min="5" max="150" step="5" value="25">
+      </div>
+
+      <div class="rcard">
+        <div class="lab">😱 우리 치과 리콜 누수 점수</div>
+        <div class="gauge" id="gauge">53</div>
+        <div class="grade" id="grade">🟠 줄줄 새는 중</div>
+        <div class="rmoney">지금 그냥 흘려보내는 (예시) 회수 매출 ≈ <b id="money">₩15,000,000</b></div>
+        <div class="rcomment" id="comment">이 정도면 데스크 짬 시간이 통째로 매출 기회예요.</div>
+        <div class="note">※ 입력값 기반 가정 계산 · AutoRecall의 실제 성과 주장 아님</div>
+        <button class="share" id="shareBtn">🟡 내 점수 카톡으로 공유하기</button>
+        <div class="sub-cta">친구 원장은 몇 점 나오는지 궁금하지 않아요?</div>
+      </div>
+    </div>
+
+    <div class="sol">
+      <h3>그래서, 이 누수를 어떻게 막나</h3>
+      <p style="font-size:15px">AutoRecall은 차트에서 ‘오늘 전화할 사람’을 매분 자동으로 줄 세워, 데스크가 1번부터 누르게 합니다.</p>
+      <ul>
+        <li>🔥 당일 빈 체어에 맞는 환자 자동 매칭(슬롯필러)</li>
+        <li>🚨 임상 급한 환자 · 💰 미완료 고가치 환자 우선</li>
+        <li>📞 통화 결과 1클릭 → 덴트웹 차트에 자동 기록</li>
+        <li>🛡️ 전화금지로 기록된 환자는 큐에서 자동 제외</li>
+      </ul>
+      <a class="cta" href="#">무료로 우리 치과 점수 실제로 보기 →</a>
+      <div style="text-align:center;margin-top:10px"><span class="fill">실제 다운로드/신청 링크를 버튼에 연결하세요</span></div>
+    </div>
+  </section>
+</div>
+<div class="nav"><a href="index.html">← 공유 페이지 4종으로</a></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var r1=document.getElementById('r1'),r2=document.getElementById('r2'),r3=document.getElementById('r3');
+  var v1=document.getElementById('v1'),v2=document.getElementById('v2'),v3=document.getElementById('v3');
+  var gauge=document.getElementById('gauge'),grade=document.getElementById('grade'),money=document.getElementById('money'),comment=document.getElementById('comment');
+  function won(n){return '₩'+Math.round(n).toLocaleString('ko-KR');}
+  function calc(){
+    var p=+r1.value, rate=+r2.value/100, fee=+r3.value*10000;
+    v1.textContent=p; v2.textContent=r2.value; v3.textContent=r3.value;
+    money.textContent=won(p*rate*fee);
+    var s=Math.min(99, Math.round(p/2500*50 + (+r3.value)/150*30 + (+r2.value)/35*19));
+    gauge.textContent=s;
+    var g,c;
+    if(s<35){g='🟢 비교적 촘촘';c='그래도 빈 슬롯 자동 매칭이면 더 채울 수 있어요.';gauge.style.color='#34d399';}
+    else if(s<65){g='🟠 줄줄 새는 중';c='이 정도면 데스크 짬 시간이 통째로 매출 기회예요.';gauge.style.color='#FFC23C';}
+    else{g='🔴 콸콸 새는 중';c='솔직히… 이 점수면 지금 당장 막아야 합니다. 😰';gauge.style.color='#FF4D6D';}
+    grade.textContent=g; comment.textContent=c;
+  }
+  [r1,r2,r3].forEach(function(r){r.addEventListener('input',calc)});calc();
+  var toast=document.getElementById('toast');
+  document.getElementById('shareBtn').addEventListener('click',function(){
+    toast.textContent='📲 (실제라면) 점수 카드가 카톡으로! 친구 원장도 자기 점수가 궁금해집니다 😏';
+    toast.classList.add('show');setTimeout(function(){toast.classList.remove('show')},3000);
+  });
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

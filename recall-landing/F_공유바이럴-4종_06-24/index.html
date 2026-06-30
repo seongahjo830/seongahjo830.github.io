@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리콜 프로그램 — 공유하고 싶은 페이지 4종</title>
+<style>
+  :root{--bg:#0B0E14;--card:#161b24;--ink:#EEF2F8;--dim:#8A96A8;--line:#232b37;
+    --c1:#FF4D6D;--c2:#22D3EE;--c3:#2563EB;--c4:#A06CFF;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1020px;margin:0 auto;padding:56px 22px 90px}
+  header{text-align:center;margin-bottom:42px}
+  header .kick{font-size:13px;letter-spacing:.18em;color:var(--dim);font-weight:700;text-transform:uppercase}
+  header h1{font-size:clamp(28px,5vw,44px);font-weight:900;line-height:1.14;margin:14px 0 12px;letter-spacing:-.025em}
+  header p{color:var(--dim);font-size:16.5px;max-width:620px;margin:0 auto}
+  header p b{color:var(--ink)}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  @media(max-width:720px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px;text-decoration:none;color:inherit;transition:.2s;position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-4px);border-color:var(--ac)}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--ac)}
+  .card .no{font-size:12.5px;font-weight:800;color:var(--ac);letter-spacing:.08em}
+  .card h2{font-size:22px;font-weight:850;margin:8px 0 6px;letter-spacing:-.01em}
+  .card .story{font-size:14.5px;color:var(--dim);margin-bottom:16px;min-height:42px}
+  .meta{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+  .meta span{font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:99px;background:rgba(255,255,255,.06)}
+  .open{margin-top:auto;font-size:14.5px;font-weight:700;color:var(--ac)}
+  .c1{--ac:var(--c1)}.c2{--ac:var(--c2)}.c3{--ac:var(--c3)}.c4{--ac:var(--c4)}
+  .recommend{position:absolute;top:16px;right:16px;font-size:11px;font-weight:800;background:#FEE500;color:#191600;padding:4px 10px;border-radius:99px}
+  table{width:100%;border-collapse:collapse;margin-top:50px;font-size:14px}
+  caption{text-align:left;font-size:17px;font-weight:800;margin-bottom:14px}
+  th,td{padding:12px 13px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);font-weight:700;font-size:12.5px}td b{color:var(--ink)}
+  .pick{color:#FEE500;font-weight:800}
+  .note{margin-top:34px;background:var(--card);border:1px solid var(--line);border-left:4px solid #FEE500;border-radius:14px;padding:20px 24px;color:var(--dim);font-size:14.5px}
+  .note b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="kick">리콜 프로그램 · 공유 특화 페이지</span>
+    <h1>퍼뜨리고 싶게 만든 4가지</h1>
+    <p>리콜 프로그램을 <b>원장이 동료에게 공유하고 싶게</b> — 공유 심리의 서로 다른 버튼을 각각 눌렀습니다. 카드를 누르면 완성 페이지가 열려요. (모두 무료로 시작 · 가짜 수치 0)</p>
+  </header>
+
+  <div class="grid">
+    <a class="card c1" href="1_리콜누수점수.html">
+      <span class="recommend">⭐ 추천</span>
+      <span class="no">SHARE 01</span>
+      <h2>🩺 리콜 누수 점수</h2>
+      <div class="story">슬라이더로 ‘우리 치과 누수 점수’ 자가진단 → 결과를 자랑/공유. 낮으면 고치고 싶고 높으면 자랑.</div>
+      <div class="meta"><span>🧮 made-to-share</span><span>사회적 화폐</span><span>HubSpot Grader식</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+
+    <a class="card c2" href="2_무료콜센터.html">
+      <span class="no">SHARE 02</span>
+      <h2>😲 대기업 콜센터를 무료로</h2>
+      <div class="story">“대형병원만 콜센터 있는 줄 알았는데 무료로 깔더라.” 놀람(경외)과 입소문 한마디.</div>
+      <div class="meta"><span>🤯 고각성 감정</span><span>talk trigger</span><span>democratization</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+
+    <a class="card c3" href="3_데이터카드.html">
+      <span class="no">SHARE 03</span>
+      <h2>📋 한 장 데이터 카드</h2>
+      <div class="story">캡처해서 단톡방에 툭 던지기 좋은 한 장. ‘아는 사람’으로 보이는 근거 카드 + 자가체크.</div>
+      <div class="meta"><span>📊 실용가치</span><span>전문가 평판</span><span>스크린샷 공유</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+
+    <a class="card c4" href="4_자랑카드.html">
+      <span class="no">SHARE 04</span>
+      <h2>🤝 자랑 카드 + 같이 쓰기</h2>
+      <div class="story">톤만 고르면 ‘추천 아닌 자랑’ 카톡 한 장 완성. 같이 쓰면 둘 다 혜택(양면).</div>
+      <div class="meta"><span>😎 자기개시</span><span>양면 추천</span><span>완료 트리거</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+  </div>
+
+  <table>
+    <caption>한눈 비교표 — 어떤 ‘공유 버튼’을 누르나</caption>
+    <thead>
+      <tr><th>페이지</th><th>핵심 심리</th><th>퍼지는 이유</th><th>잘 먹히는 상황</th></tr>
+    </thead>
+    <tbody>
+      <tr class="pick"><td><b>🩺 누수 점수 ⭐</b></td><td>사회적 화폐+실용가치</td><td>“내 점수 봐” / “너도 해봐”</td><td>가장 강함 · 자가진단으로 직접 체감</td></tr>
+      <tr><td><b>😲 무료 콜센터</b></td><td>경외·놀람(고각성)</td><td>“이게 무료라고?”</td><td>1초 어그로 · 카톡 첫 인상</td></tr>
+      <tr><td><b>📋 데이터 카드</b></td><td>실용가치·전문가 평판</td><td>“아는 사람으로 보임”</td><td>의사 단톡방 캡처 공유</td></tr>
+      <tr><td><b>🤝 자랑 카드</b></td><td>자기개시·호혜</td><td>“추천 부담 0, 자랑은 즐거움”</td><td>친한 동료 1:1 카톡</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <b>⭐ 왜 01 ‘누수 점수’를 추천?</b> — 공유 심리 5개(자랑·평판·유용·감정·신뢰) 중 가장 많은 버튼을 동시에 누르거든요. <b>직접 만져서 결과를 보면</b> 자랑하고 싶고(사회적 화폐), 친구 점수가 궁금하고(호기심), 무료라 마찰 0. HubSpot Grader가 이걸로 400만 사이트를 채점시켰어요. 다만 대상·채널에 따라 <b>1곳에 1개만</b> 쓰세요 — 4개 한꺼번에 들이대면 흩어집니다. 노란 점선 칸(다운로드 링크·추천 혜택)만 채우면 배포 준비 끝.
+  </div>
+</div>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

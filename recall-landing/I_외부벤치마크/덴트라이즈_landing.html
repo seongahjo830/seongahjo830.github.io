@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>덴트라이즈 · 매달 600만원이 새고 있습니다</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+  :root {
+    --bg: #0B1410;
+    --bg-2: #111E18;
+    --bg-3: #182A22;
+    --paper: #F5EFE0;
+    --paper-soft: rgba(245, 239, 224, 0.7);
+    --paper-mute: rgba(245, 239, 224, 0.5);
+    --gold: #D4A845;
+    --gold-bright: #F0C868;
+    --gold-deep: #8A6310;
+    --emerald: #4FBF8F;
+    --crimson: #E55A4A;
+    --rule: rgba(245, 239, 224, 0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--paper);
+    line-height: 1.65;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  @media (max-width: 720px) {
+    .container { padding: 0 20px; }
+  }
+
+  /* ====== NAV ====== */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    padding: 18px 32px;
+    backdrop-filter: blur(20px);
+    background: rgba(11, 20, 16, 0.7);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .nav-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+
+  .logo span { color: var(--gold); font-style: italic; font-weight: 400; }
+
+  .nav-cta {
+    background: var(--gold);
+    color: var(--bg);
+    padding: 10px 20px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+
+  .nav-cta:hover { background: var(--gold-bright); transform: translateY(-1px); }
+
+  /* ====== HERO ====== */
+  .hero {
+    padding: 160px 0 100px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 1200px; height: 800px;
+    background: radial-gradient(ellipse at center, rgba(212, 168, 69, 0.15) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(212, 168, 69, 0.1);
+    border: 1px solid rgba(212, 168, 69, 0.3);
+    color: var(--gold);
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s ease;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 12px var(--gold);
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: clamp(40px, 7vw, 88px);
+    line-height: 1.0;
+    letter-spacing: -0.035em;
+    margin-bottom: 28px;
+    animation: fadeUp 1s ease 0.1s backwards;
+  }
+
+  .hero h1 .strike {
+    position: relative;
+    display: inline-block;
+    color: var(--paper-soft);
+  }
+
+  .hero h1 .strike::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 52%;
+    height: 3px;
+    background: var(--crimson);
+    transform: rotate(-3deg);
+  }
+
+  .hero h1 .gold {
+    color: var(--gold);
+    font-style: italic;
+    font-weight: 600;
+  }
+
+  .hero-num {
+    display: inline-block;
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold) 50%, var(--gold-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+  }
+
+  .hero-sub {
+    font-size: 22px;
+    color: var(--paper-soft);
+    max-width: 640px;
+    margin-bottom: 48px;
+    line-height: 1.5;
+    animation: fadeUp 1s ease 0.2s backwards;
+  }
+
+  @media (max-width: 720px) {
+    .hero-sub { font-size: 17px; }
+  }
+
+  .hero-sub strong {
+    color: var(--paper);
+    font-weight: 600;
+  }
+
+  .hero-cta-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+    animation: fadeUp 1s ease 0.3s backwards;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--bg);
+    padding: 18px 36px;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+    box-shadow: 0 8px 32px rgba(212, 168, 69, 0.3);
+  }
+
+  .btn-primary:hover {
+    background: var(--gold-bright);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(212, 168, 69, 0.4);
+  }
+
+  .btn-primary::after {
+    content: '→';
+    transition: transform 0.2s;
+  }
+
+  .btn-primary:hover::after { transform: translateX(4px); }
+
+  .btn-ghost {
+    color: var(--paper);
+    padding: 18px 24px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  .btn-ghost:hover { opacity: 1; }
+
+  .hero-trust {
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--paper-mute);
+    letter-spacing: 0.05em;
+    animation: fadeUp 1s ease 0.4s backwards;
+  }
+
+  .hero-trust span::before {
+    content: '✓ ';
+    color: var(--emerald);
+    font-weight: 700;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ====== PAIN SECTION ====== */
+  .pain {
+    padding: 120px 0;
+    background: var(--bg-2);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 16px;
+    max-width: 800px;
+  }
+
+  .section-title em {
+    color: var(--gold);
+    font-style: italic;
+    font-weight: 600;
+  }
+
+  .section-desc {
+    font-size: 18px;
+    color: var(--paper-soft);
+    max-width: 640px;
+    margin-bottom: 64px;
+  }
+
+  .pain-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+
+  @media (max-width: 720px) {
+    .pain-grid { grid-template-columns: 1fr; }
+  }
+
+  .pain-item {
+    background: var(--bg-2);
+    padding: 36px 32px;
+    transition: background 0.3s;
+  }
+
+  .pain-item:hover { background: var(--bg-3); }
+
+  .pain-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--crimson);
+    margin-bottom: 12px;
+    letter-spacing: 0.1em;
+  }
+
+  .pain-item h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .pain-item p {
+    color: var(--paper-soft);
+    font-size: 15px;
+  }
+
+  /* ====== FEATURES ====== */
+  .features {
+    padding: 120px 0;
+  }
+
+  .feature-row {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 80px;
+    align-items: center;
+    margin-bottom: 140px;
+  }
+
+  .feature-row.reverse {
+    grid-template-columns: 1.1fr 1fr;
+  }
+
+  .feature-row.reverse .feature-text { order: 2; }
+  .feature-row.reverse .feature-visual { order: 1; }
+
+  @media (max-width: 900px) {
+    .feature-row, .feature-row.reverse {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .feature-row.reverse .feature-text { order: 1; }
+    .feature-row.reverse .feature-visual { order: 2; }
+  }
+
+  .feature-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(212, 168, 69, 0.1);
+    color: var(--gold);
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+  }
+
+  .feature-text h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    margin-bottom: 20px;
+  }
+
+  .feature-text > p {
+    font-size: 18px;
+    color: var(--paper-soft);
+    margin-bottom: 28px;
+    line-height: 1.55;
+  }
+
+  .feature-impact {
+    background: rgba(212, 168, 69, 0.08);
+    border-left: 3px solid var(--gold);
+    padding: 20px 24px;
+    margin-top: 28px;
+  }
+
+  .feature-impact-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+
+  .feature-impact strong {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--gold-bright);
+    display: block;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+
+  .feature-impact span {
+    color: var(--paper-soft);
+    font-size: 14px;
+  }
+
+  /* ====== VISUAL MOCKS ====== */
+  .mock {
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4), 0 0 1px rgba(212, 168, 69, 0.2);
+  }
+
+  .mock-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 20px;
+  }
+
+  .mock-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--rule);
+  }
+
+  .mock-title {
+    margin-left: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-mute);
+  }
+
+  /* DASHBOARD MOCK */
+  .dash-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .dash-kpi {
+    background: var(--bg-3);
+    padding: 16px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--rule);
+  }
+
+  .dash-kpi-label {
+    font-size: 10px;
+    color: var(--paper-mute);
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .dash-kpi-value {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .dash-kpi-delta {
+    font-size: 11px;
+    color: var(--emerald);
+    font-weight: 600;
+  }
+
+  .dash-kpi-delta.down { color: var(--crimson); }
+
+  .chart-mock {
+    height: 140px;
+    background: var(--bg-3);
+    border-radius: 8px;
+    border: 1px solid var(--rule);
+    position: relative;
+    overflow: hidden;
+    padding: 16px;
+  }
+
+  /* CHAT MOCK (for AI charting) */
+  .chat-mock {
+    background: var(--bg-3);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 8px;
+  }
+
+  .chat-bubble {
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    max-width: 85%;
+  }
+
+  .chat-doctor {
+    background: var(--bg);
+    color: var(--paper-soft);
+    border: 1px solid var(--rule);
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+  }
+
+  .chat-ai {
+    background: rgba(212, 168, 69, 0.1);
+    border: 1px solid rgba(212, 168, 69, 0.2);
+    color: var(--paper);
+    border-bottom-left-radius: 4px;
+  }
+
+  .chat-ai .chat-meta {
+    color: var(--gold);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  /* PATIENT LIST MOCK */
+  .patient-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .patient-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    background: var(--bg-3);
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--rule);
+    transition: border 0.2s;
+  }
+
+  .patient-row:hover { border-color: rgba(212, 168, 69, 0.3); }
+
+  .patient-name {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .patient-treatment {
+    font-size: 11px;
+    color: var(--paper-mute);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .patient-amount {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    color: var(--gold);
+    font-size: 15px;
+  }
+
+  .patient-status {
+    background: rgba(229, 90, 74, 0.15);
+    color: var(--crimson);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* FUNNEL MOCK */
+  .funnel-mock {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .funnel-stage {
+    background: var(--bg-3);
+    padding: 14px 18px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 3px solid var(--gold);
+    position: relative;
+  }
+
+  .funnel-stage:nth-child(2) { width: 90%; opacity: 0.95; }
+  .funnel-stage:nth-child(3) { width: 70%; opacity: 0.85; }
+  .funnel-stage:nth-child(4) { width: 55%; opacity: 0.75; border-left-color: var(--crimson); }
+  .funnel-stage:nth-child(5) { width: 35%; opacity: 0.65; border-left-color: var(--crimson); }
+
+  .funnel-label {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .funnel-value {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    color: var(--gold);
+    font-size: 16px;
+  }
+
+  /* ====== ROI CALCULATOR ====== */
+  .roi {
+    padding: 120px 0;
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 50%, var(--bg) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .roi::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(212, 168, 69, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .roi-table {
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 48px;
+  }
+
+  .roi-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 200px;
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--rule);
+    align-items: center;
+  }
+
+  @media (max-width: 720px) {
+    .roi-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+
+  .roi-row:last-child { border-bottom: none; }
+
+  .roi-row.head {
+    background: var(--bg-3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .roi-row.total {
+    background: rgba(212, 168, 69, 0.1);
+    border-top: 2px solid var(--gold);
+  }
+
+  .roi-cat {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .roi-detail {
+    font-size: 13px;
+    color: var(--paper-mute);
+  }
+
+  .roi-amount {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 20px;
+    text-align: right;
+    color: var(--emerald);
+  }
+
+  .roi-row.cost .roi-amount { color: var(--crimson); }
+  .roi-row.total .roi-cat { font-family: 'Fraunces', serif; font-weight: 700; font-size: 20px; }
+  .roi-row.total .roi-amount { font-size: 28px; color: var(--gold-bright); }
+
+  .roi-conclusion {
+    text-align: center;
+    margin-top: 64px;
+  }
+
+  .roi-conclusion .big {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: clamp(48px, 8vw, 96px);
+    line-height: 1;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+    letter-spacing: -0.03em;
+  }
+
+  .roi-conclusion .label {
+    font-size: 18px;
+    color: var(--paper-soft);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+  }
+
+  /* ====== PRICING ====== */
+  .pricing {
+    padding: 120px 0;
+    background: var(--bg-2);
+    border-top: 1px solid var(--rule);
+  }
+
+  .price-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 48px;
+  }
+
+  @media (max-width: 900px) {
+    .price-grid { grid-template-columns: 1fr; }
+  }
+
+  .price-card {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    padding: 36px 32px;
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .price-card:hover {
+    border-color: rgba(212, 168, 69, 0.3);
+    transform: translateY(-4px);
+  }
+
+  .price-card.featured {
+    border: 1px solid var(--gold);
+    background: linear-gradient(180deg, rgba(212, 168, 69, 0.08) 0%, var(--bg) 100%);
+    transform: scale(1.04);
+  }
+
+  .price-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--bg);
+    padding: 4px 16px;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+
+  .price-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .price-target {
+    font-size: 13px;
+    color: var(--paper-mute);
+    margin-bottom: 24px;
+  }
+
+  .price-amount {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .price-amount small {
+    font-size: 16px;
+    color: var(--paper-mute);
+    font-weight: 400;
+  }
+
+  .price-features {
+    list-style: none;
+    margin: 28px 0;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .price-features li {
+    padding: 8px 0;
+    font-size: 14px;
+    color: var(--paper-soft);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .price-features li::before {
+    content: '✓';
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .price-cta {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.2s;
+  }
+
+  .price-card:not(.featured) .price-cta {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--paper);
+  }
+
+  .price-card:not(.featured) .price-cta:hover {
+    background: var(--bg-3);
+    border-color: var(--gold);
+  }
+
+  .price-card.featured .price-cta {
+    background: var(--gold);
+    color: var(--bg);
+  }
+
+  .price-card.featured .price-cta:hover {
+    background: var(--gold-bright);
+  }
+
+  /* ====== TESTIMONIAL ====== */
+  .quote-section {
+    padding: 100px 0;
+    text-align: center;
+  }
+
+  .big-quote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.4;
+    max-width: 900px;
+    margin: 0 auto 32px;
+    letter-spacing: -0.015em;
+  }
+
+  .big-quote::before { content: '"'; color: var(--gold); margin-right: 4px; }
+  .big-quote::after { content: '"'; color: var(--gold); margin-left: 4px; }
+
+  .quote-source {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+  }
+
+  /* ====== FINAL CTA ====== */
+  .final {
+    padding: 140px 0;
+    text-align: center;
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-3) 100%);
+    border-top: 1px solid var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(212, 168, 69, 0.2) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .final-content { position: relative; z-index: 2; }
+
+  .final h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: clamp(40px, 7vw, 80px);
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 28px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .final h2 em {
+    color: var(--gold);
+    font-weight: 600;
+    font-style: italic;
+  }
+
+  .final p {
+    font-size: 20px;
+    color: var(--paper-soft);
+    max-width: 600px;
+    margin: 0 auto 48px;
+  }
+
+  .final-promo {
+    display: inline-block;
+    background: rgba(212, 168, 69, 0.12);
+    border: 1px solid rgba(212, 168, 69, 0.4);
+    padding: 10px 22px;
+    border-radius: 100px;
+    color: var(--gold);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    margin-top: 32px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ====== FOOTER ====== */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 40px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--paper-mute);
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  /* SVG chart styling */
+  .chart-bar {
+    transition: opacity 0.3s;
+  }
+
+  /* Reveal on scroll-ish animation */
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Number counter style */
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    color: var(--gold-bright);
+    font-size: 56px;
+    line-height: 1;
+  }
+
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">덴트<span>라이즈</span></div>
+    <a href="#cta" class="nav-cta">1개월 무료 체험</a>
+  </div>
+</nav>
+
+<!-- ============== HERO ============== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">한국 최초 · 치과 BI · 자동화 SaaS</div>
+
+    <h1>
+      원장님 모르는 사이에<br>
+      <span class="strike">덴트웹은 청구해 드리지만</span><br>
+      매달 <span class="hero-num">600만원</span>이<br>
+      <span class="gold">새고 있습니다.</span>
+    </h1>
+
+    <p class="hero-sub">
+      덴트웹은 보험청구만 합니다. <strong>미동의 임플란트 환자, 노쇼 환자, 차팅에 빼앗긴 진료 시간</strong> — 이게 매달 사라지고 있어요.<br>
+      덴트라이즈가 그 돈을 다시 가져옵니다.
+    </p>
+
+    <div class="hero-cta-group">
+      <a href="#cta" class="btn-primary">1개월 무료로 우리 치과 손실액 확인하기</a>
+      <a href="#features" class="btn-ghost">기능 먼저 보기</a>
+    </div>
+
+    <div class="hero-trust">
+      <span>덴트웹 그대로 쓰면서 추가 설치</span>
+      <span>AWS 한국 리전 보안</span>
+      <span>5분 설치 · 평생 락인 없음</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PAIN ============== -->
+<section class="pain">
+  <div class="container">
+    <div class="section-label">이런 적, 한 번도 없으셨나요?</div>
+    <h2 class="section-title">"분명히 잘 되고 있는데<br>왜 통장은 그대로지?"</h2>
+    <p class="section-desc">덴트웹은 청구·차팅엔 완벽합니다. 그런데 <strong>돈이 어디서 새는지는 절대 안 보여줍니다.</strong></p>
+
+    <div class="pain-grid">
+      <div class="pain-item">
+        <div class="pain-num">PAIN 01</div>
+        <h3>상담만 받고 안 시작한 임플란트 환자, 누군지 모르세요</h3>
+        <p>지난달 임플란트 상담 12명 중 시작 안 한 5명. 누구한테 다시 연락해야 하는지 직원도 원장님도 모름. 그냥 사라짐.</p>
+      </div>
+      <div class="pain-item">
+        <div class="pain-num">PAIN 02</div>
+        <h3>차팅하느라 환자보다 모니터를 더 봅니다</h3>
+        <p>매일 1~2시간을 차트 입력에 빼앗기죠. 그 시간이면 환자 5명을 더 볼 수 있는데, 모니터에 앉아 있습니다.</p>
+      </div>
+      <div class="pain-item">
+        <div class="pain-num">PAIN 03</div>
+        <h3>외출 중에 우리 치과 매출이 궁금합니다</h3>
+        <p>학회 갔는데 오늘 매출이 어떤지 알고 싶어요. 직원한테 전화해서 물어보거나, 집에 가서 PC 앞에 앉아야 합니다.</p>
+      </div>
+      <div class="pain-item">
+        <div class="pain-num">PAIN 04</div>
+        <h3>어느 직원이 잘하는지 객관적으로 모릅니다</h3>
+        <p>"김 실장이 상담 잘해요" — 느낌일 뿐. 동의율 데이터로 누가 잘하는지 보여드리면 다음 회식 분위기가 달라집니다.</p>
+      </div>
+      <div class="pain-item">
+        <div class="pain-num">PAIN 05</div>
+        <h3>광고비 2천만원, 어디로 갔는지 모릅니다</h3>
+        <p>네이버 광고 효과 있나? 인스타? 지인 추천? 신환이 어디서 오는지 모르니, 끊을 수도 늘릴 수도 없습니다.</p>
+      </div>
+      <div class="pain-item">
+        <div class="pain-num">PAIN 06</div>
+        <h3>6개월 리콜, 직원 손으로 일일이 확인합니다</h3>
+        <p>이번 달 리콜 와야 하는 환자 명단 — 엑셀로 직원이 손으로 정리하다가 빼먹습니다. 환자는 옆 동네 치과로 갑니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FEATURES ============== -->
+<section class="features" id="features">
+  <div class="container">
+
+    <!-- FEATURE 1: AI CHARTING -->
+    <div class="feature-row">
+      <div class="feature-text">
+        <div class="feature-tag">★ FLAGSHIP · AI</div>
+        <h2>진료실 대화만 하세요.<br>차트는 AI가 씁니다.</h2>
+        <p>
+          진료실에 마이크 하나만 두면 됩니다. 원장님이 환자에게 평소처럼 설명하고, 직원에게 평소처럼 지시하시면 — AI가 듣고 차트에 들어갈 내용을 정리합니다. 검증만 한 번 누르면 끝.
+        </p>
+        <div class="feature-impact">
+          <div class="feature-impact-label">실제 효과</div>
+          <strong>매일 1시간 30분 회수</strong>
+          <span>= 매월 환자 33명 추가 진료 = 매월 매출 +400만원</span>
+        </div>
+      </div>
+      <div class="feature-visual">
+        <div class="mock">
+          <div class="mock-header">
+            <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+            <div class="mock-title">진료실 #2 · LIVE 녹음 중</div>
+          </div>
+          <div class="chat-mock">
+            <div class="chat-bubble chat-doctor">
+              "16번 mod 우식 있고요, 인접면까지 간 거 같아서 onlay 권할게요. 신경 살아있어 보입니다."
+            </div>
+            <div class="chat-bubble chat-ai">
+              <div class="chat-meta">▸ AI 차팅 자동 생성</div>
+              #16 MOD caries (interproximal involvement)<br>
+              Tx plan: Onlay<br>
+              Pulp: vital (clinical)<br>
+              <span style="color:var(--gold);">→ 검증 후 덴트웹 자동 입력</span>
+            </div>
+            <div class="chat-bubble chat-doctor">
+              "환자분 음식 드신 후 양치 잘 하시고요, 다음 주 화요일 같은 시간 어떠세요?"
+            </div>
+            <div class="chat-bubble chat-ai">
+              <div class="chat-meta">▸ 예약 · 주의사항 자동 처리</div>
+              ✓ 다음 예약 5/14 (화) 동일 시간<br>
+              ✓ 주의사항: 양치 강조 안내문자 발송 예약
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 2: REVENUE RECOVERY -->
+    <div class="feature-row reverse">
+      <div class="feature-text">
+        <div class="feature-tag">★ TOP ROI</div>
+        <h2>지난달 잃어버린<br>임플란트 5케이스, 다시 가져옵니다.</h2>
+        <p>
+          상담만 받고 시작 안 한 환자, 노쇼 환자, 미동의 치료가 남은 환자 — AI가 매일 자동으로 분류해서 우선순위 리스트로 줍니다. 직원은 위에서부터 순서대로 카톡만 보내면 끝.
+        </p>
+        <div class="feature-impact">
+          <div class="feature-impact-label">계산이 끝난 ROI</div>
+          <strong>임플란트 1케이스 = 200만원</strong>
+          <span>월 구독료 6.7개월치를 한 번에 회수합니다</span>
+        </div>
+      </div>
+      <div class="feature-visual">
+        <div class="mock">
+          <div class="mock-header">
+            <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+            <div class="mock-title">놓친 매출 회수 · 오늘 연락 우선순위</div>
+          </div>
+          <div class="patient-list">
+            <div class="patient-row">
+              <div>
+                <div class="patient-name">김○○ (45세, 여)</div>
+                <div class="patient-treatment">상담 21일 전 · 임플란트 #36 · 미동의</div>
+              </div>
+              <div class="patient-amount">2,500,000</div>
+              <div class="patient-status">3주 경과</div>
+            </div>
+            <div class="patient-row">
+              <div>
+                <div class="patient-name">박○○ (52세, 남)</div>
+                <div class="patient-treatment">상담 14일 전 · 임플란트 2개 · 보류</div>
+              </div>
+              <div class="patient-amount">4,800,000</div>
+              <div class="patient-status">2주 경과</div>
+            </div>
+            <div class="patient-row">
+              <div>
+                <div class="patient-name">이○○ (38세, 여)</div>
+                <div class="patient-treatment">크라운 시작 · 마지막 단계 미내원</div>
+              </div>
+              <div class="patient-amount">700,000</div>
+              <div class="patient-status">노쇼 1회</div>
+            </div>
+            <div class="patient-row">
+              <div>
+                <div class="patient-name">정○○ (61세, 남)</div>
+                <div class="patient-treatment">교정 상담 · 미예약</div>
+              </div>
+              <div class="patient-amount">3,500,000</div>
+              <div class="patient-status">10일 경과</div>
+            </div>
+            <div class="patient-row">
+              <div>
+                <div class="patient-name">최○○ (29세, 여)</div>
+                <div class="patient-treatment">스케일링 6개월 도래</div>
+              </div>
+              <div class="patient-amount">80,000</div>
+              <div class="patient-status">정기 리콜</div>
+            </div>
+          </div>
+          <div style="margin-top:14px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);">
+            합계 회수 가능액 · ₩11,580,000
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 3: MOBILE DASHBOARD -->
+    <div class="feature-row">
+      <div class="feature-text">
+        <div class="feature-tag">★ DAILY ESSENTIAL</div>
+        <h2>치과 매출,<br>이제 폰으로 봅니다.</h2>
+        <p>
+          학회 가셔도, 휴가 가셔도, 골프 치셔도 — 폰으로 우리 치과 오늘 매출 실시간 확인. 의사별·시술별·신환/구환별로 분해되어 있고, 작년 동월 대비 자동 비교.
+        </p>
+        <div class="feature-impact">
+          <div class="feature-impact-label">왜 강력한가</div>
+          <strong>"원장님이 매일 본다" = 절대 안 끊는 락인</strong>
+          <span>한 번 도입하면 폰 첫 화면에 깔립니다</span>
+        </div>
+      </div>
+      <div class="feature-visual">
+        <div class="mock">
+          <div class="mock-header">
+            <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+            <div class="mock-title">대시보드 · 2026.04.27 (일) 17:42</div>
+          </div>
+          <div class="dash-grid">
+            <div class="dash-kpi">
+              <div class="dash-kpi-label">오늘 매출</div>
+              <div class="dash-kpi-value">₩4.2M</div>
+              <div class="dash-kpi-delta">▲ 18% vs 지난주</div>
+            </div>
+            <div class="dash-kpi">
+              <div class="dash-kpi-label">이번달 누적</div>
+              <div class="dash-kpi-value">₩87M</div>
+              <div class="dash-kpi-delta">▲ 7% vs 작년</div>
+            </div>
+            <div class="dash-kpi">
+              <div class="dash-kpi-label">신환</div>
+              <div class="dash-kpi-value">23명</div>
+              <div class="dash-kpi-delta down">▼ 4명 vs 지난달</div>
+            </div>
+          </div>
+          <div class="chart-mock">
+            <svg viewBox="0 0 400 110" style="width:100%;height:100%;">
+              <defs>
+                <linearGradient id="grad1" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#D4A845" stop-opacity="0.6"/>
+                  <stop offset="100%" stop-color="#D4A845" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,80 L40,70 L80,75 L120,55 L160,60 L200,40 L240,45 L280,30 L320,35 L360,20 L400,25 L400,110 L0,110 Z" fill="url(#grad1)"/>
+              <path d="M0,80 L40,70 L80,75 L120,55 L160,60 L200,40 L240,45 L280,30 L320,35 L360,20 L400,25" stroke="#D4A845" stroke-width="2" fill="none"/>
+              <circle cx="360" cy="20" r="4" fill="#F0C868"/>
+            </svg>
+          </div>
+          <div style="margin-top:12px;display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--paper-mute);">
+            <span>1주</span><span>2주</span><span>3주</span><span>4주</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 4: FUNNEL -->
+    <div class="feature-row reverse">
+      <div class="feature-text">
+        <div class="feature-tag">★ HIDDEN GEM</div>
+        <h2>매출이 어디서 새는지<br>정확히 보여드립니다.</h2>
+        <p>
+          상담 → 동의 → 시작 → 완료 — 어느 단계에서 환자가 떨어지는지 한눈에. 동의율을 5%만 올려도 월 매출 +500만원입니다. 직원·시술별로 비교까지.
+        </p>
+        <div class="feature-impact">
+          <div class="feature-impact-label">현실 데이터</div>
+          <strong>동의율 5%p ↑ = 월 +500만원</strong>
+          <span>임플란트 1케이스만 더 살리면 1년 구독료 회수</span>
+        </div>
+      </div>
+      <div class="feature-visual">
+        <div class="mock">
+          <div class="mock-header">
+            <div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div>
+            <div class="mock-title">상담 → 완료 Funnel · 2026년 4월</div>
+          </div>
+          <div class="funnel-mock">
+            <div class="funnel-stage">
+              <span class="funnel-label">신환 내원</span>
+              <span class="funnel-value">142명</span>
+            </div>
+            <div class="funnel-stage">
+              <span class="funnel-label">상담 진행</span>
+              <span class="funnel-value">128명 · 90%</span>
+            </div>
+            <div class="funnel-stage">
+              <span class="funnel-label">치료 동의</span>
+              <span class="funnel-value">96명 · 75%</span>
+            </div>
+            <div class="funnel-stage">
+              <span class="funnel-label">치료 시작</span>
+              <span class="funnel-value">73명 · 76%</span>
+            </div>
+            <div class="funnel-stage">
+              <span class="funnel-label">치료 완료</span>
+              <span class="funnel-value">51명 · 70%</span>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding:14px;background:rgba(229,90,74,0.1);border-left:3px solid var(--crimson);border-radius:6px;font-size:13px;">
+            <strong style="color:var(--crimson);">⚠ 동의율이 평균보다 낮습니다</strong><br>
+            <span style="color:var(--paper-soft);">동네 평균 82% · 우리 치과 75% · <strong style="color:var(--gold);">월 약 480만원 손실</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============== ROI ============== -->
+<section class="roi">
+  <div class="container">
+    <div class="section-label">손해를 보고 있는지, 계산해드립니다</div>
+    <h2 class="section-title">월 30만원 쓰고<br><em>월 720만원</em>을 회수합니다.</h2>
+    <p class="section-desc">치과 1곳 평균 데이터 기준 — 보수적으로 잡아도 ROI 24배.</p>
+
+    <div class="roi-table">
+      <div class="roi-row head">
+        <div>회수 항목</div>
+        <div>계산 근거</div>
+        <div style="text-align:right;">월 회수액</div>
+      </div>
+      <div class="roi-row">
+        <div class="roi-cat">차팅 시간 회수</div>
+        <div class="roi-detail">매일 1.5시간 × 환자 약 5명 추가</div>
+        <div class="roi-amount">+₩4,000,000</div>
+      </div>
+      <div class="roi-row">
+        <div class="roi-cat">미동의 임플란트 회수</div>
+        <div class="roi-detail">상담만 한 환자 follow-up · 월 1케이스</div>
+        <div class="roi-amount">+₩2,000,000</div>
+      </div>
+      <div class="roi-row">
+        <div class="roi-cat">이탈 환자 리콜</div>
+        <div class="roi-detail">3개월 미방문 환자 자동 알림</div>
+        <div class="roi-amount">+₩1,500,000</div>
+      </div>
+      <div class="roi-row">
+        <div class="roi-cat">광고 ROI 최적화</div>
+        <div class="roi-detail">효과 없는 채널 발견 · 비용 절감</div>
+        <div class="roi-amount">+₩300,000</div>
+      </div>
+      <div class="roi-row cost">
+        <div class="roi-cat">덴트라이즈 Pro 구독</div>
+        <div class="roi-detail">월 구독료 (Pro 플랜)</div>
+        <div class="roi-amount">−₩299,000</div>
+      </div>
+      <div class="roi-row total">
+        <div class="roi-cat">월 순수익 증가</div>
+        <div class="roi-detail" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:0.1em;">ROI · 24.4×</div>
+        <div class="roi-amount">+₩7,501,000</div>
+      </div>
+    </div>
+
+    <div class="roi-conclusion">
+      <div class="big">9,000만원</div>
+      <div class="label">덴트라이즈가 1년에 만들어 드리는 추가 매출</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== QUOTE ============== -->
+<section class="quote-section">
+  <div class="container">
+    <p class="big-quote">
+      월 30만원 내고 임플란트 미동의 환자 1명만 살리면 본전,<br>2명 살리면 +200만원.
+    </p>
+    <p class="quote-source">미국 Dental Intelligence가 100만 사용자에게 검증한 셀링 공식</p>
+  </div>
+</section>
+
+<!-- ============== PRICING ============== -->
+<section class="pricing">
+  <div class="container">
+    <div class="section-label">단순한 가격 · 락인 없음</div>
+    <h2 class="section-title">우리 치과에 맞는 플랜.</h2>
+    <p class="section-desc">언제든 1개월 단위로 해지 가능. 1년 약정 같은 거 없습니다.</p>
+
+    <div class="price-grid">
+
+      <div class="price-card">
+        <div class="price-name">Lite</div>
+        <div class="price-target">1인 치과 · 매출 대시보드만 빠르게</div>
+        <div class="price-amount">9.9<small>만원/월</small></div>
+        <ul class="price-features">
+          <li>클라우드 매출 대시보드</li>
+          <li>모바일 앱 (iOS/Android)</li>
+          <li>의사·시술별 매출 분해</li>
+          <li>전월/전년 자동 비교</li>
+          <li>덴트웹 자동 연동</li>
+        </ul>
+        <a href="#cta" class="price-cta">시작하기</a>
+      </div>
+
+      <div class="price-card featured">
+        <div class="price-name">Pro</div>
+        <div class="price-target">직원 5인+ 치과 · 가장 인기 있는 플랜</div>
+        <div class="price-amount">29.9<small>만원/월</small></div>
+        <ul class="price-features">
+          <li>Lite 모든 기능</li>
+          <li>★ 자동 차팅 AI</li>
+          <li>★ 미동의 환자 자동 follow-up</li>
+          <li>★ 상담 funnel 분석</li>
+          <li>리콜 자동화 + 카톡 발송</li>
+          <li>모닝 허들 리포트</li>
+          <li>마케팅 채널 ROI 분석</li>
+          <li>직원 KPI 대시보드</li>
+        </ul>
+        <a href="#cta" class="price-cta">1개월 무료 체험</a>
+      </div>
+
+      <div class="price-card">
+        <div class="price-name">Network</div>
+        <div class="price-target">2지점 이상 운영하는 네트워크 치과</div>
+        <div class="price-amount">99<small>만원/지점</small></div>
+        <ul class="price-features">
+          <li>Pro 모든 기능</li>
+          <li>본부 통합 대시보드</li>
+          <li>지점별 비교·랭킹</li>
+          <li>벤치마킹 (지점 간 / 동네 평균)</li>
+          <li>전담 매니저</li>
+          <li>전용 분석 리포트 월간 발송</li>
+        </ul>
+        <a href="#cta" class="price-cta">상담 문의</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============== FINAL CTA ============== -->
+<section class="final" id="cta">
+  <div class="container">
+    <div class="final-content">
+      <h2>1개월 동안 직접 보세요.<br><em>우리 치과에 얼마가 새고 있는지.</em></h2>
+      <p>
+        설치는 5분. 1개월 무료 체험 후 결정하세요. 만족 못 하시면 한 푼도 안 받습니다.
+      </p>
+
+      <a href="#" class="btn-primary" style="font-size:18px;padding:22px 44px;">지금 1개월 무료 체험 신청 →</a>
+
+      <div class="final-promo">
+        ★ 베타 1기 모집 중 · 평생 30% 할인 락인 (선착순 50곳)
+      </div>
+
+      <div style="margin-top:48px;display:flex;gap:32px;justify-content:center;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--paper-mute);letter-spacing:0.05em;">
+        <span style="color:var(--emerald);">✓ 신용카드 등록 불필요</span>
+        <span style="color:var(--emerald);">✓ 약정 없음</span>
+        <span style="color:var(--emerald);">✓ 5분 설치</span>
+        <span style="color:var(--emerald);">✓ 데이터 한국 리전 보안</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <span>덴트라이즈 · DENTRISE © 2026</span>
+      <span>한국 1호 치과 BI · 자동화 SaaS</span>
+    </div>
+  </div>
+</footer>
+
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

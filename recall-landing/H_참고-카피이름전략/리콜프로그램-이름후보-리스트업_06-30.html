@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리콜 프로그램 이름 후보 — 통합 결정 보드</title>
+<style>
+:root{
+  --bg:#FBFAF7; --bg-soft:#F4F1EA; --fg:#1F1F1F; --fg-soft:#3A3A3A;
+  --muted:#6E6E6E; --rule:#E8E3D6; --accent:#1D4ED8; --warm:#B8451F;
+  --info-bg:#E6EEF7; --info-bar:#4F7FB0; --info-tt:#1F4F84;
+  --ok-bg:#E8F1E8; --ok-bar:#5E8C5E; --ok-tt:#2F6B2F;
+  --warn-bg:#F7EDDA; --warn-bar:#C0913F; --warn-tt:#7A5418;
+  --quote-bg:#F0EBE0; --quote-bar:#A8966A; --quote-tt:#5C4F2F;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#1A1816; --bg-soft:#252220; --fg:#E8E4DC; --fg-soft:#C7C2B8;
+    --muted:#9A968D; --rule:#36322C; --accent:#7AB0FF; --warm:#E89464;
+    --info-bg:#1E2A38; --info-bar:#3E6390; --info-tt:#9CC4EF;
+    --ok-bg:#1E2A1E; --ok-bar:#4E7A4E; --ok-tt:#9CCB9C;
+    --warn-bg:#2E2716; --warn-bar:#8A6A2E; --warn-tt:#E0BE78;
+    --quote-bg:#26221A; --quote-bar:#7A6E50; --quote-tt:#CFC09A;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:18px; line-height:1.85; letter-spacing:-0.011em;
+}
+.wrap{max-width:680px; margin:0 auto; padding:48px 22px 96px}
+h1{font-size:1.85em; line-height:1.25; letter-spacing:-0.028em; margin:0 0 .1em; font-weight:800}
+.sub{color:var(--muted); font-size:.92em; margin:0 0 1.6em}
+h2{font-size:1.15em; letter-spacing:-0.02em; margin:0; font-weight:700}
+.meta-row{color:var(--muted); font-size:.82em; margin:.2em 0 2.2em; border-bottom:1px solid var(--rule); padding-bottom:1.4em}
+p{margin:.7em 0}
+a{color:var(--accent); text-decoration:none}
+mark{background:#FFF1A8; color:#4a3d05; padding:1px 5px; border-radius:4px; font-weight:600}
+@media (prefers-color-scheme:dark){mark{background:#5a4d1a; color:#FBF3C8}}
+u{text-decoration:none; background:linear-gradient(180deg,transparent 62%,rgba(29,78,216,.22) 62%); padding:0 2px}
+b{color:var(--warm); font-weight:700}
+.key{color:var(--accent); font-weight:700}
+.star{color:#D9A400}
+.cal{border-left:3px solid var(--info-bar); background:linear-gradient(90deg,var(--info-bg),transparent 75%); padding:14px 18px; border-radius:0 6px 6px 0; margin:1.4em 0}
+.cal h3{margin:0 0 .3em; font-size:.96em; color:var(--info-tt); font-weight:700}
+.cal.ok{border-color:var(--ok-bar); background:linear-gradient(90deg,var(--ok-bg),transparent 75%)} .cal.ok h3{color:var(--ok-tt)}
+.cal.warn{border-color:var(--warn-bar); background:linear-gradient(90deg,var(--warn-bg),transparent 75%)} .cal.warn h3{color:var(--warn-tt)}
+.cal.quote{border-color:var(--quote-bar); background:linear-gradient(90deg,var(--quote-bg),transparent 75%); font-family:Georgia,serif; font-style:italic} .cal.quote h3{color:var(--quote-tt)}
+.cal p{margin:.3em 0; font-size:.95em}
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin:1.6em 0 2.4em}
+.chip{padding:6px 13px; background:var(--bg-soft); border:1px solid var(--rule); border-radius:999px; font-size:.8em; font-weight:600; color:var(--fg-soft)}
+.sec{border-top:1px solid var(--rule); margin-top:2.2em; padding-top:.6em}
+.sec>summary{font-size:1.15em; font-weight:700; letter-spacing:-0.02em; cursor:pointer; list-style:none; padding:.5em 0; display:flex; align-items:center; gap:.5em}
+.sec>summary::-webkit-details-marker{display:none}
+.sec>summary::before{content:"▸"; color:var(--muted); font-size:.8em; transition:transform .15s}
+.sec[open]>summary::before{transform:rotate(90deg)}
+.sec .cnt{margin-left:auto; font-size:.62em; color:var(--muted); font-weight:500}
+.note{font-size:.9em; color:var(--muted); margin:.2em 0 1em}
+.tbl-scroll{overflow-x:auto; margin:1em 0}
+table{border-collapse:collapse; width:100%; font-size:.86em; line-height:1.55}
+th,td{text-align:left; padding:9px 11px; border-bottom:1px solid var(--rule); vertical-align:top}
+th{color:var(--muted); font-weight:600; font-size:.92em; white-space:nowrap}
+td:first-child{white-space:nowrap; font-weight:700}
+.rt{color:var(--muted); font-size:.95em}
+.eng{color:var(--muted); font-weight:400; font-size:.86em}
+footer{margin-top:3em; padding-top:1.4em; border-top:1px solid var(--rule); color:var(--muted); font-size:.8em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>리콜 프로그램 이름 후보 — 통합 결정 보드</h1>
+<p class="sub">"오토리콜" 개명 검토 · 세 차례 작명 세션 + 안부 계열을 개념별로 통합</p>
+<div class="meta-row">2026-06-30 · 후보 약 70개 · 개념 10묶음 · 각 줄 = 이름 / 후킹 / 🔴 레드팀</div>
+
+<div class="cal ok">
+<h3>⚡ 30초 요약 — 어느 정체성을 고르느냐가 먼저</h3>
+<p>이름 고르기 전에 <u>이 프로그램이 무엇이라고 말하고 싶은지</u>부터 정해야 합니다. 정체성에 따라 결승 후보가 갈립니다.</p>
+<p>· <b>만족 → 단골 → 소개</b> 정체성 → <mark>안부</mark> · 또봄 · 곁</p>
+<p>· <b>빈 체어 채워 매출</b> 정체성 → <mark>체어필</mark> · 리캐치 · 오늘콜</p>
+<p>· <b>4Prism 빛 브랜드 우주</b> → <mark>스펙트럼</mark> · 분광</p>
+<p>· <b>제때 부르는 타이밍 엔진</b> → <mark>제철</mark> · 골든콜 · Cadence</p>
+</div>
+
+<div class="chips">
+<span class="chip">🔁 다시·귀환</span>
+<span class="chip">🪑 빈자리·채움</span>
+<span class="chip">📞 콜큐·우선순위</span>
+<span class="chip">💰 돈·매출·회수</span>
+<span class="chip">⏱️ 타이밍·리듬</span>
+<span class="chip">🧲 관계·단골</span>
+<span class="chip">🌈 빛·프리즘</span>
+<span class="chip">🔦 신호·길잡이</span>
+<span class="chip">🦷 치과·엔진</span>
+<span class="chip">⛏️ 캐내다·맥</span>
+</div>
+
+<details class="sec" open>
+<summary>🔁 다시 부르다 · 귀환 <span class="cnt">17개</span></summary>
+<p class="note">제품 본질("빠진 환자를 다시 돌아오게"). '봄' 이중의미(season·seeing)가 이 묶음의 보석.</p>
+<div class="tbl-scroll"><table>
+<tr><th>이름</th><th>뜻·후킹</th><th>🔴 레드팀</th></tr>
+<tr><td>다시봄 <span class="star">⭐</span></td><td>다시 본다 + 다시 방문 + 봄(사계절치과). <u>삼중의미·따뜻·환자친화</u></td><td class="rt">"다시보다(영상)" 앱 연상, 발음만으론 한 뜻만 전달</td></tr>
+<tr><td>또봄 <span class="star">⭐</span></td><td>또 봄 = 다시 봄(season)·다시 봄(seeing) 이중의미 + 사계절 결</td><td class="rt">다시봄과 거의 동일 컨셉(둘 중 택1), 구어체</td></tr>
+<tr><td>부름</td><td>환자를 '부른다'의 명사. 짧고 한글, 상표성 좋음</td><td class="rt">종교·소명 뉘앙스, 검색 노이즈</td></tr>
+<tr><td>다시콜 <span class="eng">DasiCall</span></td><td>"다시 전화" 직관 100%, 데스크가 바로 이해</td><td class="rt">'콜' 접미사 흔함, 브랜드 격 약함</td></tr>
+<tr><td>다시 <span class="eng">Dashi</span></td><td>again. 단순·따뜻</td><td class="rt">식별력 0, 일본어 '다시(국물)' 동음</td></tr>
+<tr><td>리콜리 <span class="eng">Recally</span></td><td>recall + ~ly. Calendly 톤</td><td class="rt">경쟁사가 점유한 'recall' 우물, 영어</td></tr>
+<tr><td>리콜플로우 <span class="eng">RecallFlow</span></td><td>리콜이 멈춤 없이 흐른다. 무난한 정공법</td><td class="rt">서술적·평범, recall 충돌</td></tr>
+<tr><td>Orbit <span class="eng">오빗</span> <span class="star">⭐</span></td><td>환자가 궤도 따라 정기적으로 돌아온다. 짧고 각인</td><td class="rt">영어, 동명 제품 다수(브라우저 등)</td></tr>
+<tr><td>Boomerang <span class="eng">부메랑</span></td><td>던지면 돌아온다. 가장 직관적인 컴백</td><td class="rt">Gmail 부메랑 등 동명, 다소 장난스러움</td></tr>
+<tr><td>Encore <span class="eng">앙코르</span></td><td>다시 무대로. 긍정·재방문</td><td class="rt">공연 연상 강함, 의료 거리감</td></tr>
+<tr><td>Tide <span class="eng">타이드</span></td><td>썰물처럼 빠진 환자가 밀물처럼</td><td class="rt">세제 브랜드(P&G) 정면 충돌</td></tr>
+<tr><td>Homing <span class="eng">호밍</span></td><td>귀소본능, 돌아오는 신호</td><td class="rt">미사일 '호밍' 연상, 생소</td></tr>
+<tr><td>Revisit <span class="eng">리비짓</span></td><td>재방문 그대로, 동사로도 읽힘</td><td class="rt">서술적, 상표 식별력 약함</td></tr>
+<tr><td>Returnly <span class="eng">리턴리</span></td><td>return + ly</td><td class="rt">'리턴=반품' 환불 연상, 동명 커머스 SaaS 존재</td></tr>
+<tr><td>Recura <span class="eng">리큐라</span></td><td>recall + cure 느낌, 부드러움</td><td class="rt">의미 불투명, 약품명 같음</td></tr>
+<tr><td>리콜프리즘 / 프리즘콜</td><td>차트 백색광 → 프리즘 → 부를 환자 1명</td><td class="rt">4음절로 길고 영어, 모브랜드 종속</td></tr>
+</table></div>
+</details>
+
+<details class="sec" open>
+<summary>🪑 빈자리 · 채움 <span class="cnt">5개</span></summary>
+<p class="note">빈 체어·미완료 치료를 채운다 = 매출의 본질. 당일 빈 슬롯 필러(점수 ×3.0)를 직격.</p>
+<div class="tbl-scroll"><table>
+<tr><th>이름</th><th>뜻·후킹</th><th>🔴 레드팀</th></tr>
+<tr><td>체어필 <span class="eng">ChairFill</span> <span class="star">⭐</span></td><td>빈 체어를 채운다 = <u>매출 본질 그대로</u></td><td class="rt">영어 2개, 가구('체어') 첫인상</td></tr>
+<tr><td>채움 <span class="eng">Chaeum</span></td><td>빈 슬롯·미완료 치료를 채움. 순한글·긍정</td><td class="rt">일반어라 단독 상표 식별력 약함</td></tr>
+<tr><td>풀체어 <span class="eng">FullChair</span></td><td>진료의자가 꽉 찬 상태 = 결과 약속형</td><td class="rt">영어, 발음 시 'full' 전달 약함</td></tr>
+<tr><td>빈슬롯 <span class="eng">BinSlot</span></td><td>당일 빈 슬롯 필러 직격</td><td class="rt">'빈(empty)'이 부정 단어로 먼저 읽힘</td></tr>
+<tr><td>메움 <span class="eng">Meum</span></td><td>구멍(공백)을 메운다. 짧고 강함</td><td class="rt">충치 '메우다' 연상, 어감 투박</td></tr>
+</table></div>
+</details>
+
+<details class="sec" open>
+<summary>📞 콜 큐 · 우선순위 <span class="cnt">6개</span></summary>
+<p class="note">"오늘 누구한테 전화?" 1클릭 = 제품 한 줄 요약. 그라데이션 스코어링의 얼굴.</p>
+<div class="tbl-scroll"><table>
+<tr><th>이름</th><th>뜻·후킹</th><th>🔴 레드팀</th></tr>
+<tr><td>오늘콜 <span class="eng">OneulCall</span> <span class="star">⭐</span></td><td>"오늘 전화할 사람" = <u>제품 한 줄 요약</u></td><td class="rt">'콜' 흔함, 영문 표기 OneulCall 난독</td></tr>
+<tr><td>콜픽 <span class="eng">CallPick</span></td><td>시스템이 콜을 골라준다(점수 픽)</td><td class="rt">영어 2개, '픽' 흔함</td></tr>
+<tr><td>콜큐 <span class="eng">CallQ</span></td><td>콜 큐 그 자체. 개발·실무 직관</td><td class="rt">Q 발음·철자 혼동(cue/queue)</td></tr>
+<tr><td>넥스트콜 <span class="eng">NextCall</span></td><td>"다음 전화는 이 사람" 흐름형</td><td class="rt">길고 평범, 영어</td></tr>
+<tr><td>콜순 <span class="eng">CallSun</span></td><td>콜 순서. 짧은 한글, 데스크 친화</td><td class="rt">'순' 의미 약함, 영문 Sun 오독</td></tr>
+<tr><td>스코어콜 <span class="eng">ScoreCall</span></td><td>점수로 줄 세운 콜 = 차별화 포인트</td><td class="rt">환자 '점수질' 등급화 거부감 자극</td></tr>
+</table></div>
+</details>
+
+<details class="sec" open>
+<summary>💰 돈 · 매출 · 회수 <span class="cnt">7개</span></summary>
+<p class="note">미완료 치료 회수 = 즉각 매출 직격. 단 환자 앞 노출엔 '돈 냄새' 주의.</p>
+<div class="tbl-scroll"><table>
+<tr><th>이름</th><th>뜻·후킹</th><th>🔴 레드팀</th></tr>
+<tr><td>리캐치 <span class="eng">Recatch</span> <span class="star">⭐</span></td><td>놓친(미완료·이탈) 환자를 <u>다시 잡는다</u></td><td class="rt">영어, 'catch'가 낚는 어감</td></tr>
+<tr><td>Recurra <span class="eng">리커라</span> <span class="star">⭐</span></td><td>recurring revenue(반복 매출) 연상. 투자자·MSO용 강함</td><td class="rt">철자 한 번 더 설명 필요, 환자엔 무의미</td></tr>
+<tr><td>회수콜 <span class="eng">HoesuCall</span></td><td>미완료 치료 회수 = 즉각 매출</td><td class="rt">'회수=빚 받아내기' 강한 부정 뉘앙스</td></tr>
+<tr><td>리클레임 <span class="eng">Reclaim</span></td><td>떠난 매출을 되찾다</td><td class="rt">영어, 동명 생산성 앱 존재</td></tr>
+<tr><td>버는콜 <span class="eng">BeoneunCall</span></td><td>돈 버는 콜. 가장 솔직한 영업 카피</td><td class="rt">노골적 돈 냄새, 환자·원장 거부 위험</td></tr>
+<tr><td>리벤 <span class="eng">Reven</span></td><td>revenue 줄임. 추상·브랜더블</td><td class="rt">의미 0 전달, 인명 'Reven' 혼동</td></tr>
+</table></div>
+</details>
+
+<details class="sec" open>
+<summary>⏱️ 타이밍 · 골든모멘트 · 리듬 <span class="cnt">14개</span></summary>
+<p class="note">같은 환자도 '언제 거느냐'가 전부 = 점수=시각의 함수라는 엔진 철학. 한국어 은유가 강한 묶음.</p>
+<div class="tbl-scroll"><table>
+<tr><th>이름</th><th>뜻·후킹</th><th>🔴 레드팀</th></tr>
+<tr><td>제철 <span class="star">⭐</span></td><td>제철 과일처럼 <u>이 환자의 제철(부를 적기)</u>을 알려줌. 0.1초 전달</td><td class="rt">식품·농수산 연상, 의료 톤 보강 필요</td></tr>
+<tr><td>골든콜 <span class="eng">GoldenCall</span> <span class="star">⭐</span></td><td>부재중 골든 5분 = 점수 최고점 순간을 잡음</td><td class="rt">'골든' 흔한 수식어, 영어</td></tr>
+<tr><td>Cadence <span class="eng">케이던스</span> <span class="star">⭐</span></td><td>리콜의 박자. 고급 B2B SaaS 톤</td><td class="rt">영어 추상, 영업툴 'Salesloft Cadence' 동명</td></tr>
+<tr><td>물때</td><td>어부의 최적 조업 타이밍 — 지금이 부를 물때</td><td class="rt">바다·낚시 첫인상, 의료감 약함</td></tr>
+<tr><td>제때 <span class="eng">Jettae</span></td><td>제때 부른다 — 타이밍의 핵심</td><td class="rt">식별력 약함, 단독 상표 어려움</td></tr>
+<tr><td>적시 <span class="eng">Jeoksi</span></td><td>딱 맞는 때. 점수=시각 함수 철학</td><td class="rt">한자 추상, '적시(즉시)' 혼동</td></tr>
+<tr><td>때깔</td><td>때(타이밍)+깔(색) + "때깔 좋다" 삼중 중의</td><td class="rt">발음 거칠고 속어 느낌</td></tr>
+<tr><td>타이밍콜 <span class="eng">TimingCall</span></td><td>언제 거느냐가 전부</td><td class="rt">서술적, 상표 식별력 약함</td></tr>
+<tr><td>모멘텀 <span class="eng">Momentum</span></td><td>리콜이 굴러가는 운동량</td><td class="rt">동명 앱·습관앱 다수, 추상</td></tr>
+<tr><td>윈도우 <span class="eng">Window</span></td><td>열렸다 닫히는 기회창(마감창)</td><td class="rt">MS Windows 정면 충돌</td></tr>
+<tr><td>Cue <span class="eng">큐</span></td><td>전화 걸 정확한 신호. 초단어</td><td class="rt">너무 짧아 검색 불가, queue 혼동</td></tr>
+<tr><td>Tempo <span class="eng">템포</span></td><td>환자 주기의 박자</td><td class="rt">동명 결제·앱 다수</td></tr>
+<tr><td>Cycle <span class="eng">사이클</span></td><td>6~12개월 회귀 주기</td><td class="rt">자전거·생리주기 앱 연상, 흔함</td></tr>
+<tr><td>Seasons <span class="eng">시즌스</span></td><td>사계절치과와 결 맞음</td><td class="rt">추상적, 무슨 앱인지 0</td></tr>
+</table></div>
+</details>
+
+<details class="sec" open>
+<summary>🧲 관계 · 단골 · 끌어당김 <span class="cnt">11개</span></summary>
+<p class="note">매출 아닌 <b>만족 → 단골 → 소개</b> 정체성. 영업 전화가 아니라 안부 전화로 재정의.</p>
+<div class="tbl-scroll"><table>
+<tr><th>이름</th><th>뜻·후킹</th><th>🔴 레드팀</th></tr>
+<tr><td>안부 <span class="eng">安否</span> <span class="star">⭐</span></td><td>"파는 전화가 아니라 <u>안부 묻는 전화</u>" — 만족·단골·소개를 한 단어에. 돈 냄새 0</td><td class="rt">도구·속도감 약함, 알림문자앱 오해 → 서브카피 보강 필요</td></tr>
+<tr><td>곁</td><td>곁에 있다 = 단골·신뢰. 한 음절, 따뜻</td><td class="rt">너무 추상·짧음, 무슨 앱인지 0 전달</td></tr>
+<tr><td>단골 <span class="eng">Dangol</span></td><td>단골 환자 만들기 — 의미 그대로</td><td class="rt">'알아서 오는 사람'이라 리콜과 의미 반대 결</td></tr>
+<tr><td>단골이음</td><td>단골을 잇는다</td><td class="rt">4음절·합성 어색, 발음 약함</td></tr>
+<tr><td>손길</td><td>챙기는 손길</td><td class="rt">마사지·뷰티 연상, 기능성 약함</td></tr>
+<tr><td>Anchor <span class="eng">앵커</span></td><td>단골로 정박시킴</td><td class="rt">팟캐스트 Anchor(Spotify) 동명</td></tr>
+<tr><td>Magnet <span class="eng">마그넷</span></td><td>환자를 끌어당김</td><td class="rt">흔한 마케팅어(lead magnet), 식별력 약함</td></tr>
+<tr><td>Gravity <span class="eng">그래비티</span></td><td>중력처럼 다시 오게</td><td class="rt">동명 SaaS·결제 다수, 추상</td></tr>
+<tr><td>Loop <span class="eng">루프</span></td><td>관계의 고리</td><td class="rt">초흔함, 동명 무수</td></tr>
+<tr><td>Pull <span class="eng">풀</span></td><td>끌어옴, 1음절</td><td class="rt">의미 모호, git 'pull' 연상</td></tr>
+<tr><td>CareLoop <span class="eng">케어루프</span></td><td>케어의 순환</td><td class="rt">영어 2개, 의료SW에 'care' 포화</td></tr>
+</table></div>
+</details>
+
+<details class="sec" open>
+<summary>🌈 빛 · 프리즘 — 4Prism DNA <span class="cnt">4개</span></summary>
+<p class="note">모(母)브랜드 4Prism이 "빛을 분해하는 프리즘"이라면, 리콜은 그 빛을 쏘는 첫 출구. 그라데이션 점수 = 스펙트럼 그 자체.</p>
+<div class="tbl-scroll"><table>
+<tr><th>이름</th><th>뜻·후킹</th><th>🔴 레드팀</th></tr>
+<tr><td>스펙트럼 <span class="eng">Spectrum</span> <span class="star">⭐</span></td><td>차트를 분광해 환자를 무지개 우선순위로 펼침. <u>4Prism + 그라데이션 동시</u></td><td class="rt">동명 SaaS·통신사 많음(상표 보강), 영어</td></tr>
+<tr><td>분광 <span class="eng">分光</span> <span class="star">⭐</span></td><td>"빛을 나눈다" — 4Prism의 한국어 화신. 격(格)</td><td class="rt">한자라 첫 청취 어려움, 광학용어 생소</td></tr>
+<tr><td>결 <span class="eng">Gyeol</span></td><td>빛의 결·환자마다 다른 결을 읽는다. 한국적 깊이</td><td class="rt">추상·짧아 검색 불가, 기능 0 전달</td></tr>
+<tr><td>빛때</td><td>빛(분광) + 때(타이밍). 두 정체성 한 조어</td><td class="rt">조어라 의미 설명 필요, 발음 호불호</td></tr>
+</table></div>
+</details>
+
+<details class="sec">
+<summary>🔦 신호 · 길잡이 <span class="cnt">5개</span></summary>
+<p class="note">"누구를 언제 콜할지" 길잡이. 내부 '북극성' 트리거와 연결되는 묶음.</p>
+<div class="tbl-scroll"><table>
+<tr><th>이름</th><th>뜻·후킹</th><th>🔴 레드팀</th></tr>
+<tr><td>Beacon <span class="eng">비콘</span></td><td>돌아올 신호 (경쟁사 Lighthouse 회피 대체)</td><td class="rt">동명 다수(분석·교육 SW)</td></tr>
+<tr><td>Northstar <span class="eng">노스스타</span></td><td>내부 '북극성' 트리거와 연결</td><td class="rt">스타트업 용어로 포화, 영어</td></tr>
+<tr><td>Compass <span class="eng">컴퍼스</span></td><td>누구를 언제 콜할지 길잡이</td><td class="rt">동명 부동산·HR SW 다수</td></tr>
+<tr><td>Signal <span class="eng">시그널</span></td><td>콜 신호</td><td class="rt">메신저 Signal 정면 충돌</td></tr>
+<tr><td>Ping <span class="eng">핑</span></td><td>가볍게 신호 보내 돌아오게</td><td class="rt">초흔함, 네트워크 용어</td></tr>
+</table></div>
+</details>
+
+<details class="sec">
+<summary>🦷 점수 · 엔진 · 치과 결합 (B2B) <span class="cnt">5개</span></summary>
+<p class="note">DentRise 등 4Prism 제품군으로 팔 때의 카테고리형 네이밍. 업계 즉시 인지 ↔ 차별화 약함 트레이드오프.</p>
+<div class="tbl-scroll"><table>
+<tr><th>이름</th><th>뜻·후킹</th><th>🔴 레드팀</th></tr>
+<tr><td>덴트콜 <span class="eng">DentCall</span></td><td>dental + call, 업계 즉시 인지</td><td class="rt">'덴트' 접두 포화(덴트웹 등), 평범</td></tr>
+<tr><td>리텐토 <span class="eng">Retento</span></td><td>retention(환자 유지) 라틴풍. 글로벌 SaaS</td><td class="rt">의미 불투명, 발음 호불호</td></tr>
+<tr><td>콜파일럿 <span class="eng">CallPilot</span></td><td>콜의 자동조종(Copilot 톤). AI 느낌</td><td class="rt">Copilot 아류 인상, Nortel 'CallPilot' 동명</td></tr>
+<tr><td>덴트리콜 <span class="eng">DentRecall</span></td><td>dental recall 정직한 카테고리 네이밍</td><td class="rt">recall 충돌 + 서술적, 식별력 최약</td></tr>
+</table></div>
+</details>
+
+<details class="sec">
+<summary>⛏️ 캐내다 · 맥 <span class="cnt">2개</span></summary>
+<p class="note">북극성(차트 연구 → 돈) 직설. 단 환자를 '돈'으로 보는 어감 노출 위험이 커서 후순위.</p>
+<div class="tbl-scroll"><table>
+<tr><th>이름</th><th>뜻·후킹</th><th>🔴 레드팀</th></tr>
+<tr><td>노다지</td><td>차트 속 잠든 환자 = 숨은 금맥을 캔다</td><td class="rt">환자를 '돈'으로 보는 어감 노출(원장 거부)</td></tr>
+<tr><td>광맥 / 맥 <span class="eng">脈</span></td><td>끊긴 환자의 '맥'을 다시 잇는다(혈맥·광맥 중의)</td><td class="rt">추상적, 한의원 연상</td></tr>
+</table></div>
+</details>
+
+<details class="sec" open>
+<summary>🏁 결승 — 정체성별 추천</summary>
+<div class="cal warn">
+<h3>⚠️ 이름 고르기 전 단 하나의 질문</h3>
+<p><u>이 프로그램은 '돈 버는 도구'인가, '환자 챙기는 관계'인가?</u> 같은 엔진이라도 어느 쪽을 간판으로 거느냐에 따라 직원·환자·투자자가 받는 인상이 정반대가 됩니다.</p>
+</div>
+<div class="tbl-scroll"><table>
+<tr><th>정체성</th><th>1픽</th><th>대안</th><th>한 줄 근거</th></tr>
+<tr><td>만족·단골·소개</td><td><mark>안부</mark></td><td>또봄 · 곁</td><td class="rt">돈 냄새 0, 관계가 곧 입소문. 환자 앞에서도 떳떳</td></tr>
+<tr><td>빈 체어→매출</td><td><mark>체어필</mark></td><td>리캐치 · 오늘콜</td><td class="rt">매출 본질 직격, 원장·투자자에 명료</td></tr>
+<tr><td>4Prism 브랜드</td><td><mark>스펙트럼</mark></td><td>분광</td><td class="rt">제품군과 한 우주, 그라데이션 점수=이름</td></tr>
+<tr><td>타이밍 엔진</td><td><mark>제철</mark></td><td>골든콜 · Cadence</td><td class="rt">"언제"가 핵심임을 0.1초에 전달</td></tr>
+</table></div>
+<div class="cal ok">
+<h3>✅ 가장 안전한 합의안</h3>
+<p>한국 치과 현장(직원이 부르고 환자가 듣는 이름)이라 <b>한글 메인 + 영문 병기</b> 2단 구조가 실전에 강합니다. 예: <mark>안부 (Anbu)</mark> · <mark>또봄 Orbit</mark> · <mark>제철 (Spectrum)</mark>. 내부 호칭은 한글, B2B 판매·투자자료엔 영문.</p>
+</div>
+<div class="cal">
+<h3>다음 액션</h3>
+<p>① 결승 2~3개로 좁혀 <b>키프리스 상표 + .com 도메인</b> 가용성 확인 → ② 직원 5명 블라인드 테스트("무슨 앱일 것 같냐") → ③ 고른 이름으로 로고·태그라인. <u>상표출원·도메인 구매는 비가역이니 그 전에 확인부터.</u></p>
+</div>
+</details>
+
+<details class="sec">
+<summary>📎 작명 원칙 + 경쟁사 충돌 (참고)</summary>
+<div class="cal quote">
+<h3>잘 지은 이름의 공통 원칙</h3>
+<p>· 전화 테스트 — 한 번 들으면 철자·발음이 떠오르나 (Slack, Monday)</p>
+<p>· 가치+기능 합성 — Freshbooks = fresh + books (Mailchimp)</p>
+<p>· 경쟁사와 구별 — 흔한 접미사 회피</p>
+<p>· 확장성 — 특정 기능에 갇히지 않게 (Slack: 채팅→플랫폼)</p>
+<p>· 메타포 — 자연·움직임·궤도 같은 직관 이미지 (Lighthouse)</p>
+</div>
+<p class="note"><b>피해야 할 충돌(이미 쓰는 리콜 SW):</b> RecallMax · ReachAll · Solutionreach · Lighthouse · Legwork · Dental Intelligence · Denticon · Doctible · Adit · Emitrr · PracticeMojo. → <mark>recall·reach 접두는 레드오션</mark>이라 회피가 유리.</p>
+<p class="note">현 이름 '오토리콜' 진단: 뜻은 바로 통하지만 recall은 경쟁사와 한 우물, Auto는 SaaS 최다 접두사라 각인·차별화가 약함 — 개명 명분 충분.</p>
+</details>
+
+<footer>
+리콜 프로그램 이름 통합 결정 보드 · 2026-06-30 생성 · 외부 의존성 0 (인터넷 없이 열림)<br>
+⭐ = 각 묶음의 세션 추천 · 🔴 레드팀 = "틀렸다/약하다"를 적극적으로 찾은 약점
+</footer>
+
+</div>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

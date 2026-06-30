@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>확정된 페이지 흐름 (메인 랜딩 최종)</title>
+<style>
+  :root{ --bg:#FBFAF7; --ink:#23211e; --sub:#6b665e; --line:#e9e6df;
+    --accent:#1D4ED8; --accent-soft:#eef2ff; --card:#fff;
+    --shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05);}
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+    line-height:1.8; font-size:17px; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:760px; margin:0 auto; padding:52px 22px 90px}
+  .back{display:inline-flex; align-items:center; gap:7px; text-decoration:none; color:var(--accent);
+    font-weight:700; font-size:14px; margin-bottom:24px; background:var(--accent-soft); padding:8px 14px; border-radius:10px}
+  .back:hover{filter:brightness(.96)}
+  .kicker{display:inline-block; font-size:12.5px; font-weight:700; letter-spacing:.04em;
+    color:var(--accent); background:var(--accent-soft); padding:5px 12px; border-radius:999px; margin-bottom:14px}
+  h2{font-size:23px; margin:6px 0 14px; letter-spacing:-.01em}
+  .box{background:var(--card); border:1px solid var(--line); border-radius:13px; padding:20px 22px; box-shadow:var(--shadow)}
+  .box .arrowline{font-size:16px; line-height:2; color:var(--accent); font-weight:700; margin:2px 0}
+  .box .note{color:var(--sub); font-size:14px; margin-top:10px}
+  .priv{margin-top:18px; font-size:13px; color:var(--sub)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← 모음 인덱스로 돌아가기</a>
+  <span class="kicker">🧭 원장님 전용 메모 (공유본에는 미포함)</span>
+  <h2>확정된 페이지 흐름 (메인 랜딩 최종)</h2>
+  <div class="box">
+    <p class="arrowline">히어로 → 공감("어 내 얘기네") → 잠든 환자 추정 계산기 → 자가진단 → 문제인식 → 제품 핵심 5기능 → 데스크 스토리 → 브릿지("멍 때리는 10분") → ROI 각성(숫자) → 차별점 비교표 → 1기 모집 혜택 → FAQ 5문항 → 긴급성("왜 지금") → 문의 폼 → 푸터</p>
+    <p class="note">곳곳에 영업컨셉 1·2탄 8편 아코디언 삽입.</p>
+  </div>
+  <p class="priv">※ 이 페이지는 원장님 혼자 보는 용입니다. 공유용 zip에는 들어가지 않습니다.</p>
+</div>
+<!--recall-fab-->
+<a href="index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

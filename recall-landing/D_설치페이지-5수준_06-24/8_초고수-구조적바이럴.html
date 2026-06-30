@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공유 안 해도 알아서 퍼집니다 — 리콜 (구조적 바이럴)</title>
+<style>
+  :root{--bg:#06121a;--card:#0e1f2a;--ink:#E6F3F8;--dim:#7fa0b0;--line:#163240;--ac:#22D3EE;--ac2:#119CB5;--gold:#E8C56A;--go:#34d399}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',system-ui,sans-serif;line-height:1.7;letter-spacing:-.013em;-webkit-font-smoothing:antialiased}
+  .tierbadge{position:fixed;top:10px;left:10px;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#04222a;font-weight:900;font-size:12px;padding:5px 12px;border-radius:7px;z-index:99}
+  .wrap{max-width:640px;margin:0 auto;padding:0 22px}
+  section{padding:46px 0;border-bottom:1px solid var(--line)}
+  .eyebrow{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.06em;color:var(--ac);border:1px solid var(--ac2);padding:5px 13px;border-radius:99px;margin-bottom:16px}
+  h1{font-size:clamp(30px,6.2vw,50px);font-weight:900;line-height:1.1;letter-spacing:-.035em}
+  h1 em{font-style:normal;color:var(--ac)}
+  h2{font-size:clamp(21px,3.4vw,28px);font-weight:850;letter-spacing:-.02em}
+  p{font-size:16.5px;color:var(--dim)}p b{color:var(--ink)}
+  .hero{padding:62px 0 30px}.hero .sub{max-width:28em;margin:18px 0 0}
+  /* loop diagram */
+  .loop{display:grid;gap:10px;margin-top:22px}
+  .loop .node{background:linear-gradient(160deg,#0d1f29,#112935);border:1px solid var(--ac2);border-radius:14px;padding:16px 18px;display:flex;gap:13px;align-items:center}
+  .loop .e{font-size:24px}
+  .loop .t b{font-size:15px}.loop .t p{font-size:13px;color:var(--dim);margin-top:1px}
+  .loop .arr{text-align:center;color:var(--ac);font-size:18px;font-weight:800}
+  .cta{display:inline-block;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#04222a;font-weight:900;font-size:17px;padding:16px 30px;border-radius:13px;text-decoration:none;margin-top:20px}
+  .finep{font-size:13px;color:var(--dim);margin-top:12px}
+  .why{background:rgba(52,211,153,.06);border:1px solid #1d4a3c;border-radius:14px;padding:18px 20px;font-size:14px;color:var(--dim);margin-top:16px}
+  .why b{color:var(--go)}
+  .stamp{background:#fff;color:#222;border-radius:12px;padding:14px 16px;margin-top:16px;font-size:13.5px;display:flex;gap:10px;align-items:center}
+  .stamp .badge{flex:0 0 auto;background:var(--ac2);color:#fff;font-weight:800;font-size:11px;padding:4px 9px;border-radius:6px}
+  .steps{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .steps .s{flex:1;min-width:110px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;font-size:13.5px;font-weight:650}
+  .fill{display:inline-block;border:1.5px dashed #2e5563;background:rgba(34,211,238,.08);color:var(--ac);border-radius:7px;padding:2px 9px;font-size:12.5px;font-weight:650}
+  .final{text-align:center}
+</style>
+</head>
+<body>
+<div class="tierbadge">🥇 초고수 ⑧ 구조적 바이럴</div>
+<div class="wrap">
+  <section class="hero">
+    <span class="eyebrow">🔁 던지지 않아도 퍼지는</span>
+    <h1>공유 ‘안 해도’<br><em>알아서 퍼집니다.</em></h1>
+    <p class="sub">자랑·추천에 의존하지 않아요. <b>쓰는 것 자체가 노출</b>이 되게 설계합니다(핫메일·캘린들리식). 원장이 일하면, 그 흔적이 환자·직원·동료에게 자동으로 닿습니다.</p>
+
+    <div class="loop">
+      <div class="node"><span class="e">🦷</span><div class="t"><b>원장이 환자 안내 페이지를 보냄</b><p>하단에 “AutoRecall로 제작” 한 줄 자동 삽입</p></div></div>
+      <div class="arr">↓</div>
+      <div class="node"><span class="e">👀</span><div class="t"><b>환자·직원·다른 원장이 그걸 봄</b><p>“이거 뭐로 만든 거야?” → 자연 노출</p></div></div>
+      <div class="arr">↓</div>
+      <div class="node"><span class="e">⬇️</span><div class="t"><b>본 사람 일부가 깖</b><p>그 사람이 또 환자에게 보냄 → 루프 반복</p></div></div>
+    </div>
+    <a class="cta" href="#get">무료로 시작 →</a>
+    <p class="finep">의도적 공유 0 · 쓰면 저절로</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">🧠 왜 이게 가장 안 꺼지나</span>
+    <h2>의지가 아니라 ‘구조’</h2>
+    <p style="margin-top:10px">사람의 ‘공유하고 싶은 마음’에 기대면 들쭉날쭉해요. <b>제품을 쓰는 동선 안에 노출이 박혀 있으면</b> 공유는 의지와 무관하게 일어납니다. 핫메일이 메일 하단 한 줄로 1,200만, 캘린들리는 예약 링크 자체가 시연이 됐죠.</p>
+    <div class="stamp"><span class="badge">자동 삽입</span><div>환자에게 가는 모든 페이지 하단: <b>“이 안내는 AutoRecall로 제작 · 원장님도 무료로”</b></div></div>
+    <div class="why">🧠 <b>심리 근거:</b> 구조적 바이럴(쓰는 것=노출, Andrew Chen) + 계절/분기 ‘기수’ 리추얼(PSL식)로 매 분기 다시 화제. 가짜 0 — 그냥 일하는 동선에 노출이 얹힘.</div>
+  </section>
+
+  <section class="final" id="get" style="border-bottom:0">
+    <span class="eyebrow">⚡ 설치 2분</span>
+    <h2>깔면, 나머진 알아서</h2>
+    <div class="steps" style="margin-top:14px">
+      <div class="s">1. 다운로드</div>
+      <div class="s">2. 실행·설치</div>
+      <div class="s">3. 덴트웹 연결</div>
+    </div>
+    <a class="cta" href="#" style="margin-top:18px">⬇ 무료로 시작</a>
+    <p class="finep"><span class="fill">실제 다운로드 링크 연결</span> · 환자 페이지 자동 브랜딩 ON</p>
+  </section>
+</div>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

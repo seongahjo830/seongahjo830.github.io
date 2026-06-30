@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AutoRecall — 환자가 환자를 데려오는 치과</title>
+<meta name="description" content="치과 리콜(재내원) 자동화. 때 맞춰 건네는 안부 전화가 '챙김받는 느낌'을 만들고, 단골이 소개를 데려옵니다. 광고가 아니라 관계로 크는 병원.">
+<style>
+  :root{
+    --paper:#FBF7F2;
+    --paper-2:#F4ECE2;
+    --ink:#231C18;
+    --ink-soft:#5C5048;
+    --ink-faint:#92867D;
+    --line:#EBE0D4;
+    --line-strong:#DCCEBE;
+
+    --accent:#D9613F;        /* 따뜻한 코랄 = 온기/관계 */
+    --accent-deep:#A8431F;
+    --accent-tint:#FBEAE2;
+    --rose:#C9446B;
+    --sage:#5E8C6A;          /* 단골/신뢰 */
+    --sage-tint:#E6F1E8;
+    --gold:#C08A2E;
+
+    --t-slot:#E5484D;
+    --t-clin:#E8590C;
+    --t-value:#C08A2E;
+    --t-std:#3F7BC0;
+    --t-revive:#5E8C6A;
+
+    --r:20px;
+    --r-sm:13px;
+    --shadow:0 1px 2px rgba(35,28,24,.04), 0 14px 36px -20px rgba(168,67,31,.28);
+    --font:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+  body{margin:0;font-family:var(--font);background:var(--paper);color:var(--ink);
+    line-height:1.75;font-size:18px;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  h1,h2,h3{line-height:1.24;letter-spacing:-.025em;font-weight:800;margin:0;}
+  p{margin:0;}
+  a{color:inherit;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+  .accent{color:var(--accent);}
+  .sage{color:var(--sage);}
+  b,strong{font-weight:800;}
+  mark{background:linear-gradient(180deg,transparent 58%, #F6D3A8 58%);color:inherit;padding:0 .05em;border-radius:2px;}
+
+  /* 상단 바 */
+  .topbar{position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(10px);
+    background:rgba(251,247,242,.84);border-bottom:1px solid var(--line);}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.03em;font-size:19px;}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-tint);}
+  .brand small{font-weight:600;color:var(--ink-faint);font-size:12px;letter-spacing:0;}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:16px;padding:12px 20px;border-radius:999px;
+    border:0;cursor:pointer;text-decoration:none;line-height:1;transition:transform .12s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 10px 24px -12px var(--accent-deep);}
+  .btn-primary:hover{transform:translateY(-1px);background:var(--accent-deep);}
+  .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line-strong);}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-lg{padding:17px 30px;font-size:18px;}
+  .topbar .btn{padding:10px 18px;font-size:15px;}
+
+  /* 히어로 */
+  .hero{position:relative;padding:88px 0 66px;overflow:hidden;}
+  .hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(1100px 460px at 80% -8%, var(--accent-tint), transparent 60%),
+      radial-gradient(720px 420px at 4% 16%, var(--sage-tint), transparent 64%);}
+  .hero .wrap{position:relative;z-index:2;}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:700;color:var(--accent-deep);
+    background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 15px;box-shadow:var(--shadow);letter-spacing:0;}
+  .eyebrow .live{width:7px;height:7px;border-radius:50%;background:var(--sage);animation:pulse 2.2s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(94,140,106,.5);}70%{box-shadow:0 0 0 9px rgba(94,140,106,0);}100%{box-shadow:0 0 0 0 rgba(94,140,106,0);}}
+
+  .hero h1{font-size:clamp(33px,6.2vw,62px);margin:24px 0 0;}
+  .hero h1 .hl{position:relative;white-space:nowrap;}
+  .hero h1 .hl::after{content:"";position:absolute;left:-2px;right:-2px;bottom:.06em;height:.32em;background:#F6D3A8;z-index:-1;border-radius:3px;}
+  .hero .sub{font-size:clamp(17px,2.4vw,21px);color:var(--ink-soft);margin:24px 0 0;max-width:660px;}
+  .hero .sub b{color:var(--ink);}
+  .hero .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin:34px 0 0;align-items:center;}
+  .hero .reassure{font-size:14px;color:var(--ink-faint);margin-top:14px;}
+  .hero .reassure b{color:var(--ink-soft);}
+
+  /* 플라이휠 */
+  .flywheel{display:grid;grid-template-columns:repeat(5,1fr);gap:0;align-items:center;margin:56px 0 0;
+    background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:26px 18px;box-shadow:var(--shadow);}
+  .fw-step{text-align:center;padding:6px 8px;position:relative;}
+  .fw-step .ic{width:52px;height:52px;margin:0 auto;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:25px;
+    background:var(--accent-tint);}
+  .fw-step:nth-child(5) .ic{background:var(--sage-tint);}
+  .fw-step .t{font-weight:800;font-size:15px;margin-top:11px;letter-spacing:-.02em;}
+  .fw-step .d{font-size:12.5px;color:var(--ink-faint);margin-top:4px;line-height:1.45;}
+  .fw-arrow{align-self:flex-start;margin-top:20px;color:var(--accent);font-size:20px;font-weight:800;text-align:center;}
+  .fw-cap{margin-top:14px;text-align:center;font-size:14px;color:var(--ink-soft);}
+  .fw-cap b{color:var(--accent-deep);}
+
+  /* 섹션 */
+  .band{padding:76px 0;}
+  .band.alt{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .kicker{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);
+    background:#fff;border:1px solid var(--line);padding:5px 12px;border-radius:999px;}
+  .band.alt .kicker{background:var(--paper);}
+  .sec-title{font-size:clamp(26px,4.2vw,40px);margin:18px 0 0;}
+  .sec-lead{font-size:clamp(16px,2vw,19px);color:var(--ink-soft);margin:18px 0 0;max-width:680px;}
+
+  /* 1막 통증 */
+  .pains{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:46px;}
+  .pain{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:26px 26px 22px;}
+  .band:not(.alt) .pain{background:#fff;}
+  .pain .who{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;letter-spacing:.02em;padding:5px 11px;border-radius:999px;margin-bottom:15px;}
+  .who.director{background:#EAF1FA;color:#1E4E8C;}
+  .who.manager{background:var(--accent-tint);color:var(--accent-deep);}
+  .who.patient{background:var(--sage-tint);color:#3F6B4A;}
+  .pain h3{font-size:20px;margin-bottom:10px;}
+  .pain p{color:var(--ink-soft);font-size:16px;}
+  .pain .quote{margin-top:14px;font-size:14.5px;color:var(--ink-faint);border-left:3px solid var(--line-strong);padding-left:13px;font-style:italic;}
+  .pain-foot{margin:46px auto 0;text-align:center;font-size:clamp(19px,2.6vw,27px);font-weight:800;letter-spacing:-.025em;color:var(--ink);max-width:800px;line-height:1.42;}
+
+  /* 2막 케이스 */
+  .case{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:20px;box-shadow:var(--shadow);}
+  .case .top{padding:28px 30px 24px;border-bottom:1px solid var(--line);position:relative;}
+  .case .top::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tcol,var(--accent));}
+  .case .tier{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:13px;letter-spacing:.02em;padding:6px 13px;border-radius:999px;color:#fff;margin-bottom:14px;}
+  .case h3{font-size:clamp(20px,2.6vw,25px);margin-bottom:12px;}
+  .case .situation{color:var(--ink-soft);font-size:16px;}
+  .case .hurt{margin-top:16px;background:var(--paper-2);border-radius:var(--r-sm);padding:13px 16px;font-size:15px;color:var(--ink-soft);}
+  .case .hurt b{color:var(--accent-deep);}
+  .case .bottom{padding:26px 30px 28px;display:grid;grid-template-columns:1fr 1fr;gap:26px;background:linear-gradient(180deg,var(--accent-tint),#fff 72%);}
+  .case .label{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-deep);margin-bottom:11px;}
+  .case .does{font-size:16.5px;font-weight:700;color:var(--ink);margin-bottom:14px;}
+  .effects{list-style:none;padding:0;margin:0;display:grid;gap:11px;}
+  .effects li{display:flex;gap:11px;align-items:flex-start;font-size:15px;color:var(--ink-soft);}
+  .effects li .ic{flex:0 0 auto;width:21px;height:21px;border-radius:50%;background:var(--sage);color:#fff;font-size:13px;line-height:21px;text-align:center;font-weight:800;margin-top:1px;}
+  .effects li b{color:var(--ink);}
+  .dual{display:flex;gap:8px;flex-wrap:wrap;align-content:flex-start;}
+  .dual span{font-size:12.5px;font-weight:700;padding:7px 12px;border-radius:9px;line-height:1.3;}
+  .dual .d-dir{background:#EAF1FA;color:#1E4E8C;}
+  .dual .d-mgr{background:var(--accent-tint);color:var(--accent-deep);}
+  .dual .d-pat{background:var(--sage-tint);color:#3F6B4A;}
+  .dual .dt{width:100%;font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:2px;}
+
+  .formula{margin-top:18px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:22px 20px;}
+  .feq{display:flex;align-items:stretch;justify-content:center;gap:10px;flex-wrap:wrap;}
+  .term{flex:1 1 120px;min-width:120px;text-align:center;border-radius:var(--r-sm);padding:14px 12px;border:1.5px solid var(--line);background:#fff;}
+  .term .big{font-weight:800;font-size:15px;letter-spacing:-.02em;}
+  .term .small{font-size:12px;color:var(--ink-faint);margin-top:5px;line-height:1.45;}
+  .term.w{border-color:#cfe0f0;background:#EFF5FB;}
+  .term.v{border-color:#ecdcc0;background:#FBF4E6;}
+  .term.t{border-color:#cfe6d6;background:#EFF6F0;}
+  .op{align-self:center;font-size:22px;font-weight:800;color:var(--ink-faint);}
+  .queue{display:grid;gap:9px;}
+  .qrow{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid var(--line);border-left-width:5px;border-radius:var(--r-sm);padding:12px 15px;}
+  .qrow .qt{font-weight:800;font-size:14px;}
+  .qrow .qd{font-size:13px;color:var(--ink-faint);}
+  .qrow .score{margin-left:auto;font-weight:800;font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums;}
+
+  /* 3막 스텝 */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:46px;counter-reset:s;}
+  .step-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:26px 22px 24px;position:relative;}
+  .step-card .num{counter-increment:s;font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.05em;}
+  .step-card .num::before{content:"STEP " counter(s);}
+  .step-card .ti{font-size:19px;font-weight:800;margin:12px 0 9px;letter-spacing:-.02em;}
+  .step-card p{font-size:14.5px;color:var(--ink-soft);}
+  .step-card .arrow{position:absolute;right:-11px;top:50%;transform:translateY(-50%);color:var(--line-strong);font-size:22px;z-index:3;}
+  .step-card:last-child .arrow{display:none;}
+
+  /* 최종 CTA */
+  .final{background:linear-gradient(135deg,var(--accent-deep),#7A2F14);color:#fff;border-radius:28px;
+    padding:clamp(40px,6vw,72px) 32px;text-align:center;position:relative;overflow:hidden;}
+  .final::before{content:"";position:absolute;inset:0;background:radial-gradient(700px 320px at 80% -20%, rgba(255,255,255,.14),transparent 60%);}
+  .final h2{font-size:clamp(27px,4.6vw,44px);position:relative;color:#fff;}
+  .final p{color:rgba(255,255,255,.86);font-size:clamp(16px,2.2vw,20px);margin:20px auto 0;max-width:580px;position:relative;}
+  .final .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px;position:relative;}
+  .final .btn-primary{background:#fff;color:var(--accent-deep);box-shadow:0 14px 34px -14px rgba(0,0,0,.5);}
+  .final .btn-primary:hover{background:#FBEFE7;}
+  .final .btn-ghost{color:#fff;border-color:rgba(255,255,255,.45);}
+  .final .btn-ghost:hover{border-color:#fff;color:#fff;}
+  .final .micro{margin-top:20px;font-size:13.5px;color:rgba(255,255,255,.74);position:relative;}
+
+  .disclaimer{margin-top:40px;background:var(--paper-2);border:1px dashed var(--line-strong);border-radius:var(--r);padding:22px 24px;font-size:14px;color:var(--ink-soft);}
+  .disclaimer b{color:var(--ink);}
+
+  footer{padding:46px 0 60px;color:var(--ink-faint);font-size:13.5px;border-top:1px solid var(--line);}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;}
+  footer b{color:var(--ink-soft);}
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+  @media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none;}.eyebrow .live{animation:none;}}
+
+  @media (max-width:880px){
+    .case .bottom{grid-template-columns:1fr;gap:20px;}
+    .steps{grid-template-columns:repeat(2,1fr);}
+    .step-card .arrow{display:none;}
+    .flywheel{grid-template-columns:1fr 1fr 1fr 1fr 1fr;padding:18px 10px;}
+    .fw-step .d{display:none;}
+    .fw-step .ic{width:44px;height:44px;font-size:21px;}
+    .fw-step .t{font-size:13px;}
+  }
+  @media (max-width:560px){
+    body{font-size:16.5px;}
+    .wrap{padding:0 18px;}
+    .hero{padding:56px 0 46px;}
+    .hero h1 .hl{white-space:normal;}
+    .hero .cta-row .btn{width:100%;justify-content:center;}
+    .pains{grid-template-columns:1fr;}
+    .band{padding:56px 0;}
+    .case .top,.case .bottom{padding:22px 20px;}
+    .feq{flex-direction:column;}
+    .op{transform:rotate(90deg);}
+    .term{min-width:0;}
+    .topbar .btn span.hide-sm{display:none;}
+    .btn-lg{padding:15px 22px;font-size:16.5px;}
+    /* 플라이휠 세로 */
+    .flywheel{grid-template-columns:1fr;gap:6px;}
+    .fw-step{display:flex;align-items:center;gap:14px;text-align:left;padding:8px 6px;}
+    .fw-step .ic{margin:0;flex:0 0 auto;}
+    .fw-step .d{display:block;}
+    .fw-arrow{transform:rotate(90deg);margin:0 auto;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span> AutoRecall <small>리콜 자동화</small></div>
+    <a href="#install" class="btn btn-primary">무료로 시작 <span class="hide-sm">→</span></a>
+  </div>
+</header>
+
+<!-- 히어로 -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="wrap">
+    <span class="eyebrow"><span class="live"></span> 치과 리콜(recall · 재내원 관리) 자동화</span>
+    <h1>환자가 환자를 데려오는 치과,<br>비결은 <span class="hl">때 맞춘 안부 전화</span>입니다.</h1>
+    <p class="sub">
+      좋은 치과는 광고비가 아니라 <b>‘챙김받는 느낌’</b>으로 큽니다.
+      적절한 때 건네는 리콜 한 통이 환자를 <b>단골</b>로 만들고, 그 단골이 <b>다음 환자를 소개</b>합니다.
+      AutoRecall은 그 ‘적절한 때, 적절한 환자’를 대신 찾아줍니다.
+    </p>
+    <div class="cta-row">
+      <a href="#install" class="btn btn-primary btn-lg">무료 버전으로 오늘 안부 큐 받기</a>
+      <a href="#cases" class="btn btn-ghost btn-lg">먼저 사례부터 보기</a>
+    </div>
+    <p class="reassure">복잡한 설정 없음 · <b>쓰던 차트(덴트웹) 그대로</b> · 명단 만들기·정리 0분</p>
+
+    <!-- 선순환 플라이휠 -->
+    <div class="flywheel reveal" aria-label="리콜에서 소개로 이어지는 선순환">
+      <div class="fw-step"><div class="ic">📞</div><div class="t">때 맞춘 리콜</div><div class="d">적기에 먼저 안부 전화</div></div>
+      <div class="fw-arrow">→</div>
+      <div class="fw-step"><div class="ic">💗</div><div class="t">챙김받는 느낌</div><div class="d">“여기 날 기억하네”</div></div>
+      <div class="fw-arrow">→</div>
+      <div class="fw-step"><div class="ic">🪥</div><div class="t">단골 정착</div><div class="d">꾸준히 다시 내원</div></div>
+      <div class="fw-arrow">→</div>
+      <div class="fw-step"><div class="ic">🗣️</div><div class="t">자연스런 소개</div><div class="d">가족·지인에게 추천</div></div>
+      <div class="fw-arrow">→</div>
+      <div class="fw-step"><div class="ic">🌱</div><div class="t">소개로 큰 병원</div><div class="d">광고 없이 신뢰로</div></div>
+    </div>
+    <p class="fw-cap reveal">리콜은 ‘영업 전화’가 아닙니다. <b>관계를 다시 잇는 한 통</b> — 그게 단골과 소개의 출발점입니다.</p>
+  </div>
+</section>
+
+<!-- 1막 : 공감 -->
+<section class="band">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="kicker">1막 · 혹시 우리 얘기 아닌가요</span>
+      <h2 class="sec-title">광고로 신환을 채우는 동안,<br>단골은 조용히 식어갑니다.</h2>
+      <p class="sec-lead">가장 좋은 환자는 <b>‘소개로 온 환자’</b>입니다. 그런데 소개는 만족에서 나오고, 만족은 ‘기억해 주고 챙겨주는 느낌’에서 나옵니다. 그 느낌을 만들 <b>구조</b>가 없을 뿐입니다.</p>
+    </div>
+
+    <div class="pains">
+      <div class="pain reveal">
+        <span class="who patient">😶 환자 마음</span>
+        <h3>“여기, 날 기억은 하나?”</h3>
+        <p>치료 끝나면 연락 한 번 없습니다. 아플 때만 가는 곳이 되니, 정도 안 들고 옮겨도 아쉽지 않습니다. 챙김받은 기억이 없으니 소개할 이유도 없죠.</p>
+        <p class="quote">만족은 ‘잘 고쳐줬다’가 아니라 ‘나를 신경 써준다’에서 옵니다.</p>
+      </div>
+      <div class="pain reveal">
+        <span class="who director">👔 원장</span>
+        <h3>신환은 광고비로, 단골은 운에 맡긴다</h3>
+        <p>신환 한 명에 광고비를 쓰면서, 이미 우리를 아는 구환은 그냥 흘려보냅니다. 소개로 오는 환자가 제일 좋은데, 그 통로를 키울 장치가 없습니다.</p>
+        <p class="quote">제일 싸고 좋은 마케팅(소개)을, 가장 방치하고 있는 셈.</p>
+      </div>
+      <div class="pain reveal">
+        <span class="who manager">🦷 실장</span>
+        <h3>챙기고 싶어도, 누굴 챙길지 모른다</h3>
+        <p>모두에게 안부를 돌릴 순 없습니다. ‘지금 챙기면 고마워할 사람’이 누군지 차트엔 정리돼 있지 않아, 결국 아무도 못 챙깁니다.</p>
+        <p class="quote">마음은 있는데, 매일 ‘누구부터’에서 막혀버립니다.</p>
+      </div>
+      <div class="pain reveal">
+        <span class="who manager">🦷 실장</span>
+        <h3>잘못 건 전화는 오히려 정을 깎는다</h3>
+        <p>“관심 없다”던 분께 또 전화, 기록이 안 남으니 같은 실수 반복. 챙기려던 전화가 되레 ‘귀찮은 영업’으로 느껴지면 만족이 깎입니다.</p>
+        <p class="quote">중복·엉뚱한 콜은 안 하느니만 못합니다.</p>
+      </div>
+    </div>
+
+    <p class="pain-foot reveal">결국 필요한 건 매출 압박이 아니라 — <span class="accent">‘지금 챙기면 좋아할 환자’</span>를<br>때맞춰 짚어주는 <span class="sage">구조</span> 하나입니다.</p>
+  </div>
+</section>
+
+<!-- 2막 : 케이스별 솔루션 -->
+<section class="band alt" id="cases">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="kicker">2막 · 운영 케이스별 해결</span>
+      <h2 class="sec-title">매일 벌어지는 5가지 장면,<br>‘만족 → 단골 → 소개’로 바꿉니다.</h2>
+      <p class="sec-lead">위는 <b>여러분 진료실의 흔한 장면</b>, 아래는 <b>AutoRecall이 하는 일과 그 효과</b>입니다. 효과는 매출 숫자가 아니라 <b>환자 만족·단골 정착·소개</b>의 언어로 보여드립니다.</p>
+    </div>
+
+    <article class="case reveal" style="--tcol:var(--t-slot)">
+      <div class="top">
+        <span class="tier" style="background:var(--t-slot)">🔥 슬롯필러</span>
+        <h3>케이스 ① 갑자기 비어버린 오후 2시</h3>
+        <p class="situation">예약 한 건이 펑크 났습니다. 빈 한 시간. 마침 ‘빨리 보고 싶었는데 자리가 없던’ 단골이 있다면, 그분께 먼저 권할 수 있다면 어떨까요.</p>
+        <div class="hurt"><b>지금의 아쉬움</b> — 빈자리는 그냥 사라지고, 정작 챙겨주면 고마워했을 단골은 “자리 없겠지” 하고 연락도 안 합니다.</div>
+      </div>
+      <div class="bottom">
+        <div>
+          <div class="label">AutoRecall이 하는 일</div>
+          <p class="does">‘오늘 이 시간에 반가워할 단골’을 즉시 추려 맨 위로 올립니다.</p>
+          <ul class="effects">
+            <li><span class="ic">♥</span><span><b>특별 대접 경험</b> — “자리 나서 먼저 연락드렸어요” 한마디가 단골에겐 VIP 대접으로 남습니다.</span></li>
+            <li><span class="ic">⚡</span><span><b>고민 0초</b> — 시간대·내원 패턴 매칭으로 ‘지금 반길 사람’을 자동 상단 노출.</span></li>
+          </ul>
+        </div>
+        <div class="dual"><span class="dt">이렇게 이어집니다</span><span class="d-pat">환자 · 챙김받는 느낌</span><span class="d-mgr">실장 · 급할 때 바로 명단</span></div>
+      </div>
+    </article>
+
+    <article class="case reveal" style="--tcol:var(--t-std)">
+      <div class="top">
+        <span class="tier" style="background:var(--t-std)">📅 표준 정기검진</span>
+        <h3>케이스 ② 스케일링 6개월, 다 흩어져 있음</h3>
+        <p class="situation">정기 검진·스케일링 때가 된 환자가 매달 수십 명. ‘때 됐어요, 한번 오세요’ 하고 먼저 챙겨주면 가장 고마워할 사람들인데, 명단이 없어 그냥 지나갑니다.</p>
+        <div class="hurt"><b>지금의 아쉬움</b> — 환자는 ‘알아서 챙겨주겠지’ 기대하다 잊고, 병원은 ‘알아서 오겠지’ 하다 놓칩니다. 그렇게 단골이 천천히 식습니다.</div>
+      </div>
+      <div class="bottom">
+        <div>
+          <div class="label">AutoRecall이 하는 일</div>
+          <p class="does">검진 시점을 추적해 ‘지금 챙기면 딱 좋을 환자’를 타이밍 큐로 자동 생성합니다.</p>
+          <ul class="effects">
+            <li><span class="ic">↻</span><span><b>‘챙겨주는 치과’ 각인</b> — 때맞춘 안부가 쌓이면, 환자에게 ‘내 주치의’가 됩니다.</span></li>
+            <li><span class="ic">◎</span><span><b>단골 루프 정착</b> — 빠져나갈 환자가 자연스럽게 돌아오는 흐름이 만들어집니다.</span></li>
+          </ul>
+        </div>
+        <div class="dual"><span class="dt">이렇게 이어집니다</span><span class="d-pat">환자 · 내 주치의 느낌</span><span class="d-dir">원장 · 단골 베이스 ↑</span></div>
+      </div>
+    </article>
+
+    <article class="case reveal" style="--tcol:var(--t-value)">
+      <div class="top">
+        <span class="tier" style="background:var(--t-value)">💗 고관여 케어</span>
+        <h3>케이스 ③ 큰 치료 상담만 받고 망설이는 환자</h3>
+        <p class="situation">임플란트·교정 상담을 받고 “생각해 볼게요” 한 분들. 강매는 부담스럽지만, ‘결정 도와드릴게요’ 하는 따뜻한 후속 한 통은 오히려 신뢰를 줍니다.</p>
+        <div class="hurt"><b>지금의 아쉬움</b> — 후속 연락이 없으니 환자는 ‘관심 없나 보다’ 느끼고, 병원은 ‘부담될까 봐’ 망설이다 골든타임을 놓칩니다.</div>
+      </div>
+      <div class="bottom">
+        <div>
+          <div class="label">AutoRecall이 하는 일</div>
+          <p class="does">상담 후 망설이는 환자를 ‘챙김 후속’ 대상으로 띄워, 적절한 때 다시 연결합니다.</p>
+          <ul class="effects">
+            <li><span class="ic">♥</span><span><b>강매 아닌 케어</b> — “궁금한 점 없으세요?”가 신뢰를 쌓고, 결정도 자연스러워집니다.</span></li>
+            <li><span class="ic">⏱</span><span><b>적시 후속</b> — 마음이 식기 전에, 명분 있는 따뜻한 전화로.</span></li>
+          </ul>
+        </div>
+        <div class="dual"><span class="dt">이렇게 이어집니다</span><span class="d-pat">환자 · 존중받는 느낌</span><span class="d-mgr">실장 · ‘왜 거는지’ 명확</span></div>
+      </div>
+    </article>
+
+    <article class="case reveal" style="--tcol:var(--accent)">
+      <div class="top">
+        <span class="tier" style="background:var(--accent)">⚙️ 점수제 우선순위</span>
+        <h3>케이스 ④ “그래서 누굴 먼저 챙기지?”</h3>
+        <p class="situation">모두를 챙길 순 없습니다. 핵심은 ‘지금 챙기면 가장 고마워할 사람’의 순서. 지금은 그걸 실장님 ‘감’에 맡기니, 사람마다 다르고 바쁜 날엔 흔들립니다.</p>
+        <div class="hurt"><b>지금의 아쉬움</b> — 챙김의 기준이 머릿속에만 있으니 공유도 인수인계도 안 됩니다. 담당자가 바뀌면 관계도 리셋.</div>
+        <div class="formula" aria-label="콜 우선도 공식">
+          <div class="feq">
+            <div class="term w"><div class="big">화이트 − 블랙</div><div class="small">환자의 ‘반응’<br>(호의·관심 vs 거부)</div></div>
+            <div class="op">×</div>
+            <div class="term v"><div class="big">기본 가치</div><div class="small">지금 챙길 ‘명분’<br>(임상·관계·적시성)</div></div>
+            <div class="op">×</div>
+            <div class="term t"><div class="big">타이밍 배수</div><div class="small">‘지금’의 적절함<br>(픽업확률·시점)</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div>
+          <div class="label">AutoRecall이 하는 일</div>
+          <p class="does">세 축을 곱해 ‘챙김 우선도’를 매기고, 높은 순으로 5단계 큐에 줄 세웁니다.</p>
+          <div class="dual"><span class="dt">이렇게 이어집니다</span><span class="d-dir">원장 · 기준이 시스템에 남음</span><span class="d-mgr">실장 · 위에서부터 챙기면 끝</span></div>
+        </div>
+        <div class="queue">
+          <div class="qrow" style="border-left-color:var(--t-slot)"><span class="qt">🔥 슬롯필러</span><span class="qd">오늘 빈자리</span><span class="score">98</span></div>
+          <div class="qrow" style="border-left-color:var(--t-clin)"><span class="qt">🚨 임상긴급</span><span class="qd">미루면 위험</span><span class="score">91</span></div>
+          <div class="qrow" style="border-left-color:var(--t-value)"><span class="qt">💗 고관여</span><span class="qd">큰 케이스</span><span class="score">84</span></div>
+          <div class="qrow" style="border-left-color:var(--t-std)"><span class="qt">📅 표준</span><span class="qd">정기 도래</span><span class="score">67</span></div>
+          <div class="qrow" style="border-left-color:var(--t-revive)"><span class="qt">🌱 재활성화</span><span class="qd">잠든 단골</span><span class="score">52</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="case reveal" style="--tcol:var(--t-revive)">
+      <div class="top">
+        <span class="tier" style="background:var(--t-revive)">🌱 재활성화 · 기록</span>
+        <h3>케이스 ⑤ 챙김이 ‘귀찮은 영업’이 되지 않게</h3>
+        <p class="situation">통화 결과가 안 남으면, 챙기려던 전화가 중복·엉뚱한 콜이 되어 오히려 정을 깎습니다. 한 번 거절한 분께 또 거는 건 가장 피해야 할 일입니다.</p>
+        <div class="hurt"><b>지금의 아쉬움</b> — ‘싫다’와 ‘부재중’이 섞여, 다시 반길 단골까지 묻히고, 거절한 분은 또 불편하게 합니다.</div>
+      </div>
+      <div class="bottom">
+        <div>
+          <div class="label">AutoRecall이 하는 일</div>
+          <p class="does">통화 후 결과 버튼 한 번 → 기록 저장 + 다음 챙김 시점 자동 설정.</p>
+          <ul class="effects">
+            <li><span class="ic">✓</span><span><b>정 깎는 실수 차단</b> — 거절(DNC)은 빼고, 부재중은 다시 적절한 때로. 챙김이 늘 ‘반가운 안부’로 유지됩니다.</span></li>
+            <li><span class="ic">↻</span><span><b>잠든 단골 깨우기</b> — 한동안 못 본 환자도 자연스러운 안부로 다시 관계 회복.</span></li>
+          </ul>
+        </div>
+        <div class="dual"><span class="dt">이렇게 이어집니다</span><span class="d-pat">환자 · 불쾌함 없음</span><span class="d-mgr">실장 · 손 덜 가고 안 헷갈림</span></div>
+      </div>
+    </article>
+
+    <div class="disclaimer reveal">
+      <b>표기 안내</b> — 위 점수(98·91…) 등 숫자는 동작 방식을 보여주기 위한 <b>예시값</b>이며, 실제 가중치는 각 치과 데이터에 맞춰 조정됩니다.
+      AutoRecall은 ‘누구를 언제 챙길지 정리’를 돕는 운영 도구로, <b>특정 치료 효과·만족도·소개 증가를 보장하지 않습니다.</b> 의료적 판단과 환자 안내는 의료진의 몫입니다. (세부 표현은 원장 검수 후 확정)
+    </div>
+  </div>
+</section>
+
+<!-- 3막 : 실사용 가이드 -->
+<section class="band" id="install">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="kicker">3막 · 이렇게 씁니다</span>
+      <h2 class="sec-title">설정은 한 번, 매일은 4단계.<br>오늘부터 ‘챙기는 치과’가 됩니다.</h2>
+      <p class="sec-lead">새 차트로 갈아탈 필요 없습니다. <b>쓰던 덴트웹 데이터를 그대로</b> 읽어, 오늘 챙길 환자를 띄워줍니다.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step-card reveal"><div class="num"></div><div class="ti">설치</div><p>데스크톱 앱을 받아 실행. 별도 서버·복잡한 세팅 없음.</p><span class="arrow">→</span></div>
+      <div class="step-card reveal"><div class="num"></div><div class="ti">차트 연결</div><p>쓰던 덴트웹 데이터를 연결. 새로 입력할 것 없습니다.</p><span class="arrow">→</span></div>
+      <div class="step-card reveal"><div class="num"></div><div class="ti">오늘 챙길 큐</div><p>아침에 열면 ‘오늘 안부 전할 환자’가 순서대로 떠 있습니다.</p><span class="arrow">→</span></div>
+      <div class="step-card reveal"><div class="num"></div><div class="ti">전화 → 결과 버튼</div><p>위에서부터 안부 전하고, 끝나면 결과 버튼 클릭. 그게 전부.</p><span class="arrow">→</span></div>
+    </div>
+
+    <div style="margin-top:54px">
+      <div class="final reveal">
+        <h2>광고로 채우지 말고,<br>단골로 채우세요.</h2>
+        <p>준비물은 쓰던 차트 하나뿐. 무료 버전으로 <b style="color:#fff">오늘 챙길 환자부터</b> 띄워, ‘소개가 도는 병원’의 첫 한 통을 시작해 보세요.</p>
+        <div class="cta-row">
+          <a href="#" class="btn btn-primary btn-lg">무료 버전 설치하기</a>
+          <a href="#cases" class="btn btn-ghost btn-lg">사례 다시 보기</a>
+        </div>
+        <p class="micro">설치 후 차트만 연결하면 바로 사용 · 부담 없이 먼저 써보고 결정</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div><b>AutoRecall</b> · 치과 리콜(재내원) 자동화 데스크톱 앱</div>
+    <div>숫자·효과 표기는 예시값이며 만족도·소개 증가를 보장하지 않습니다 · 세부 내용 원장 검수 필요</div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    },{threshold:.12, rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

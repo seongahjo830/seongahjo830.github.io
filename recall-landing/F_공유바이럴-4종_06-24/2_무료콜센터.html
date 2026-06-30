@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>대형병원 콜센터를, 동네치과가 무료로 — AutoRecall</title>
+<meta property="og:title" content="대형병원은 콜센터가 환자를 챙깁니다. 동네치과는요?">
+<meta property="og:description" content="대기업이 수천만 원 들이는 '환자 다시 부르기'를, 동네치과가 무료로. 이게 된다고?">
+<style>
+  :root{--bg:#07090d;--card:#12161d;--ink:#EDF1F7;--dim:#8C97A8;--line:#1f2630;--ac:#22D3EE;--ac2:#FFC23C;--go:#34d399}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;line-height:1.65;letter-spacing:-.015em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:0 22px}
+  section{padding:74px 0;border-bottom:1px solid var(--line)}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.05em;color:var(--ac);background:rgba(34,211,238,.1);padding:6px 13px;border-radius:99px;margin-bottom:18px}
+  h1{font-size:clamp(34px,7.2vw,60px);font-weight:900;line-height:1.08;letter-spacing:-.035em}
+  h2{font-size:clamp(25px,4vw,38px);font-weight:900;letter-spacing:-.03em;line-height:1.18}
+  p{font-size:17.5px;color:var(--dim)}p b{color:var(--ink);font-weight:700}
+  .ac{color:var(--ac)}.ac2{color:var(--ac2)}
+  .hero{min-height:90vh;display:flex;flex-direction:column;justify-content:center}
+  .hero .sub{font-size:20px;margin-top:22px;max-width:30em}
+  /* the vs */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:32px}
+  .vs .c{border-radius:18px;padding:24px;border:1px solid var(--line)}
+  .vs .big{background:linear-gradient(160deg,#101820,#0c1a1f);border-color:#1c3a40}
+  .vs .you{background:linear-gradient(160deg,#1a1410,#1f1208);border-color:#3a2a14}
+  .vs .who{font-weight:850;font-size:15px;margin-bottom:10px}
+  .vs .big .who{color:var(--ac)} .vs .you .who{color:var(--ac2)}
+  .vs ul{list-style:none}.vs li{font-size:14.5px;padding:6px 0;color:var(--dim)}
+  @media(max-width:560px){.vs{grid-template-columns:1fr}}
+  /* awe stat */
+  .awe{text-align:center;margin-top:10px}
+  .awe .pre{font-size:18px;color:var(--dim)}
+  .awe .free{font-size:clamp(52px,13vw,96px);font-weight:900;letter-spacing:-.05em;color:var(--go);line-height:1.05;margin:6px 0}
+  .awe .post{font-size:18px;color:var(--ink);font-weight:700;max-width:24em;margin:0 auto}
+  /* mechanism mini */
+  .mech{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
+  .mech .m{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center}
+  .mech .e{font-size:28px}.mech .t{font-weight:800;font-size:15px;margin:8px 0 4px}.mech .d{font-size:13px;color:var(--dim)}
+  @media(max-width:560px){.mech{grid-template-columns:1fr}}
+  /* talk line */
+  .talk{background:linear-gradient(135deg,#0c2a30,#103840);border:1px solid #1c4a52;border-radius:18px;padding:28px;text-align:center;margin-top:10px}
+  .talk .q{font-size:clamp(20px,3.4vw,28px);font-weight:850;line-height:1.4;letter-spacing:-.02em}
+  .talk .tag{font-size:13px;color:var(--ac);font-weight:700;margin-top:12px}
+  .share{display:inline-flex;align-items:center;gap:9px;background:#FEE500;color:#191600;font-weight:850;font-size:18px;padding:15px 30px;border-radius:13px;border:0;cursor:pointer;font-family:inherit;margin-top:22px;transition:transform .12s}
+  .share:hover{transform:translateY(-2px)}
+  .cta{display:inline-flex;align-items:center;gap:9px;background:var(--go);color:#04140d;font-weight:850;font-size:18px;padding:16px 30px;border-radius:13px;text-decoration:none}
+  .finep{font-size:13.5px;color:var(--dim);margin-top:14px}
+  .fill{display:inline-block;border:1.5px dashed #44505e;background:rgba(255,194,60,.08);color:var(--ac2);border-radius:8px;padding:2px 9px;font-size:13px;font-weight:650}
+  .final{text-align:center}
+  .nav{text-align:center;padding:24px 0 60px;font-size:14px}.nav a{color:var(--dim)}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#000;color:#fff;padding:13px 22px;border-radius:12px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:90}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <span class="eyebrow">😲 잠깐, 이게 된다고?</span>
+    <h1>대형병원은 <span class="ac">콜센터</span>가<br>환자를 챙깁니다.<br>동네치과는요?</h1>
+    <p class="sub">대형 병원·체인은 <b>전담 콜센터</b>가 안 온 환자를 다시 부릅니다. 동네치과 데스크는 진료 보조하느라 바쁘죠. 그 격차를 — <b class="ac2">무료로</b> 메우면 어떨까요?</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">불공평하잖아요</span>
+    <h2>같은 ‘안 온 환자’인데,<br>챙기는 사람이 다릅니다</h2>
+    <div class="vs">
+      <div class="c big">
+        <div class="who">🏥 대형병원 · 체인</div>
+        <ul>
+          <li>· 전담 콜센터 직원 수 명~수십 명</li>
+          <li>· 누구에게 언제 걸지 시스템이 관리</li>
+          <li>· 인건비만 월 수백~수천만 원</li>
+        </ul>
+      </div>
+      <div class="c you">
+        <div class="who">🦷 우리 동네치과</div>
+        <ul>
+          <li>· 데스크가 진료 보조하며 짬짬이</li>
+          <li>· 명단 위에서부터 ‘감’으로 전화</li>
+          <li>· 빈 체어 생겨도 못 메움</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="awe">
+      <div class="pre">대형병원 콜센터가 하는 그 일을, 데스크 한 명이</div>
+      <div class="free">무료로</div>
+      <div class="post">AutoRecall이 차트에서 ‘오늘 전화할 사람’을 매분 자동으로 줄 세워줍니다.</div>
+    </div>
+    <div class="mech">
+      <div class="m"><div class="e">🔥</div><div class="t">슬롯필러</div><div class="d">당일 빈 체어에 맞는 환자 자동 매칭</div></div>
+      <div class="m"><div class="e">🧮</div><div class="t">자동 우선순위</div><div class="d">임상긴급·고가치·타이밍 곱해 1순위부터</div></div>
+      <div class="m"><div class="e">🛡️</div><div class="t">사고 방지</div><div class="d">전화금지 기록 환자는 자동 제외</div></div>
+    </div>
+  </section>
+
+  <section class="final">
+    <span class="eyebrow">📣 동료한테 한마디 던지기 좋은</span>
+    <div class="talk">
+      <div class="q">“대형병원만 콜센터 있는 줄 알았는데,<br>그걸 <span class="ac2">무료로</span> 깔 수 있더라.”</div>
+      <div class="tag">— 단톡방에 이 한 줄이면 충분합니다</div>
+    </div>
+    <button class="share" id="shareBtn">🟡 동료 원장에게 카톡으로 보여주기</button>
+    <div style="margin-top:26px">
+      <a class="cta" href="#">무료로 직접 깔아보기 →</a>
+      <p class="finep">30일 무료 · 카드 없음 · 안 맞으면 삭제</p>
+      <div style="margin-top:8px"><span class="fill">실제 다운로드 링크 연결</span></div>
+    </div>
+  </section>
+</div>
+<div class="nav"><a href="index.html">← 공유 페이지 4종으로</a></div>
+<div class="toast" id="toast"></div>
+<script>
+document.getElementById('shareBtn').addEventListener('click',function(){
+  var t=document.getElementById('toast');
+  t.textContent='📲 (실제라면) 카톡 공유! "이게 무료라고?"가 가장 잘 퍼지는 한마디예요 😏';
+  t.classList.add('show');setTimeout(function(){t.classList.remove('show')},3000);
+});
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

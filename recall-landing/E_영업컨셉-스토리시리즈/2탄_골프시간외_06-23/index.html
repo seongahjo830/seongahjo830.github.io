@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리콜 프로그램 — 영업 컨셉 4스토리 (2탄)</title>
+<style>
+  :root{
+    --bg:#101418;--card:#191e26;--ink:#eef2f7;--dim:#8b97a8;--line:#262d38;
+    --c5:#2f7a52;--c6:#9a4f23;--c7:#f0a04b;--c8:#facc15;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,'Segoe UI',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:56px 24px 90px}
+  header{text-align:center;margin-bottom:46px}
+  header .kick{font-size:13px;letter-spacing:.2em;color:var(--dim);font-weight:700;text-transform:uppercase}
+  header h1{font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.15;margin:14px 0 12px;letter-spacing:-.02em}
+  header p{color:var(--dim);font-size:17px;max-width:640px;margin:0 auto}
+  header p b{color:var(--ink)}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media(max-width:720px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;text-decoration:none;color:inherit;transition:.22s;position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-4px);border-color:var(--ac)}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--ac)}
+  .card .no{font-size:13px;font-weight:800;color:var(--ac);letter-spacing:.1em}
+  .card h2{font-size:24px;font-weight:800;margin:8px 0 6px;letter-spacing:-.01em}
+  .card .story{font-size:15px;color:var(--dim);margin-bottom:18px;min-height:44px}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+  .meta span{font-size:12px;font-weight:700;padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.06)}
+  .open{margin-top:auto;font-size:15px;font-weight:700;color:var(--ac)}
+  .c5{--ac:var(--c5)}.c6{--ac:var(--c6)}.c7{--ac:var(--c7)}.c8{--ac:var(--c8)}
+  .recommend{position:absolute;top:18px;right:18px;font-size:11px;font-weight:800;background:#facc15;color:#1a1500;padding:4px 10px;border-radius:99px}
+  table{width:100%;border-collapse:collapse;margin-top:54px;font-size:14.5px}
+  caption{text-align:left;font-size:18px;font-weight:800;margin-bottom:14px}
+  th,td{padding:13px 14px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);font-weight:700;font-size:13px}
+  td b{color:var(--ink)}
+  .pick{color:#facc15;font-weight:800}
+  .note{margin-top:38px;background:var(--card);border:1px solid var(--line);border-left:4px solid #facc15;border-radius:14px;padding:22px 26px;color:var(--dim);font-size:15px}
+  .note b{color:var(--ink)}
+  .prev{margin-top:18px;font-size:14px;color:var(--dim);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="kick">리콜 프로그램 · 영업 컨셉 비교 허브 · 2탄</span>
+    <h1>또 다른 4개의 스토리</h1>
+    <p>1탄(손실·공감·안도·호기심)과 <b>안 겹치게</b> 새 감정 버튼을 누릅니다 — 자유·납득·경쟁·명료. 카드를 누르면 완성 페이지가 열려요.</p>
+  </header>
+
+  <div class="grid">
+    <a class="card c5" href="5_원장님의골프시간.html">
+      <span class="no">CONCEPT 05</span>
+      <h2>⛳️ 원장님의 골프 시간</h2>
+      <div class="story">"리콜은 알아서, 원장은 진료만." 잡일에서 해방되는 시스템.</div>
+      <div class="meta"><span>😌 자유·여유</span><span>역할 분담</span><span>라이프스타일</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+
+    <a class="card c6" href="6_단골의과학.html">
+      <span class="recommend">⭐ 추천</span>
+      <span class="no">CONCEPT 06</span>
+      <h2>🥐 단골의 과학</h2>
+      <div class="story">잘되는 동네 빵집의 비밀 = 기억해주기. 누구나 바로 납득.</div>
+      <div class="meta"><span>🤝 친근·납득</span><span>비유 스토리</span><span>따뜻한 리테일</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+
+    <a class="card c7" href="7_2026년12월두병원.html">
+      <span class="no">CONCEPT 07</span>
+      <h2>🍴 2026년 12월, 두 병원</h2>
+      <div class="story">같은 출발선, 1년 뒤 갈린 두 병원. "어느 쪽에 서 있을 건가."</div>
+      <div class="meta"><span>⚔️ 경쟁·기회비용</span><span>분기 내러티브</span><span>드라마틱</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+
+    <a class="card c8" href="8_숫자한개.html">
+      <span class="no">CONCEPT 08</span>
+      <h2>🔢 숫자 한 개</h2>
+      <div class="story">"매일 아침 숫자 하나만 보세요." 복잡함을 다 덜어낸 미니멀.</div>
+      <div class="meta"><span>🧘 통제·명료</span><span>덜어내기</span><span>극단 미니멀</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+  </div>
+
+  <table>
+    <caption>한눈 비교표 (2탄)</caption>
+    <thead>
+      <tr><th>컨셉</th><th>거는 감정</th><th>설득 논리</th><th>잘 먹히는 상대</th><th>위험</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><b>⛳️ 골프 시간</b></td><td>자유·여유</td><td>"내가 안 챙겨도 돌아간다"</td><td>잡일에 지친 원장</td><td>"한가해 보이긴 싫다" 반감</td></tr>
+      <tr class="pick"><td><b>🥐 단골의 과학 ⭐</b></td><td>친근·납득</td><td>"기억해주면 다시 온다"</td><td>설명충 없이 바로 이해시킬 때</td><td>비유라 구체 수치 약함</td></tr>
+      <tr><td><b>🍴 두 병원</b></td><td>경쟁·FOMO</td><td>"안 하면 뒤처진다"</td><td>경쟁의식·성장 욕심 강한 원장</td><td>겁주기로 보일 수 있음</td></tr>
+      <tr><td><b>🔢 숫자 한 개</b></td><td>통제·명료</td><td>"단순해서 부담 없다"</td><td>복잡한 거 싫어하는 원장</td><td>너무 단순해 미덥지 않을 수도</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <b>⭐ 왜 06 '단골의 과학'을 추천?</b> — 치과 용어·데이터를 1도 안 써도 <b>누구나 3초 만에 이해</b>하기 때문. 빵집 비유라 원장·실장·심지어 환자까지 같은 그림을 그립니다. 설득은 "이해시키는 순간 절반 끝"인데 06이 그 장벽이 가장 낮아요. 골프(05)는 호불호, 두 병원(07)은 FOMO라 세지만 부담, 숫자(08)는 세련됐지만 미덥지 않을 위험이 있습니다.
+  </div>
+  <p class="prev">※ 1탄 4편(수도꼭지·편지·실장의 하루·보이지 않는 명단)은 이전 폴더에 있어요. 총 8개 컨셉 확보.</p>
+
+</div>
+<!--recall-fab-->
+<a href="../../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

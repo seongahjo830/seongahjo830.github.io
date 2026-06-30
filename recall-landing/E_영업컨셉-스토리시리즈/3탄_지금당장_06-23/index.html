@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리콜 프로그램 — 영업 컨셉 3탄 「지금 당장 깔게」</title>
+<style>
+  :root{--bg:#0a0e16;--card:#141a26;--ink:#eef2f7;--dim:#8b97a8;--line:#222a36;
+    --c9:#34d399;--c10:#f5a524;--c11:#22d3ee;--c12:#a78bfa;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:56px 24px 90px}
+  header{text-align:center;margin-bottom:46px}
+  header .kick{font-size:13px;letter-spacing:.2em;color:var(--dim);font-weight:700;text-transform:uppercase}
+  header h1{font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.15;margin:14px 0 12px;letter-spacing:-.02em}
+  header p{color:var(--dim);font-size:17px;max-width:640px;margin:0 auto}
+  header p b{color:var(--ink)}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media(max-width:720px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;text-decoration:none;color:inherit;transition:.22s;position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-4px);border-color:var(--ac)}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--ac)}
+  .card .no{font-size:13px;font-weight:800;color:var(--ac);letter-spacing:.1em}
+  .card h2{font-size:24px;font-weight:800;margin:8px 0 6px;letter-spacing:-.01em}
+  .card .story{font-size:15px;color:var(--dim);margin-bottom:18px;min-height:44px}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+  .meta span{font-size:12px;font-weight:700;padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.06)}
+  .open{margin-top:auto;font-size:15px;font-weight:700;color:var(--ac)}
+  .c9{--ac:var(--c9)}.c10{--ac:var(--c10)}.c11{--ac:var(--c11)}.c12{--ac:var(--c12)}
+  .recommend{position:absolute;top:18px;right:18px;font-size:11px;font-weight:800;background:#facc15;color:#1a1500;padding:4px 10px;border-radius:99px}
+  table{width:100%;border-collapse:collapse;margin-top:54px;font-size:14.5px}
+  caption{text-align:left;font-size:18px;font-weight:800;margin-bottom:14px}
+  th,td{padding:13px 14px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);font-weight:700;font-size:13px}td b{color:var(--ink)}
+  .pick{color:#facc15;font-weight:800}
+  .note{margin-top:38px;background:var(--card);border:1px solid var(--line);border-left:4px solid #facc15;border-radius:14px;padding:22px 26px;color:var(--dim);font-size:15px}
+  .note b{color:var(--ink)}
+  .prev{margin-top:18px;font-size:14px;color:var(--dim);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="kick">리콜 프로그램 · 영업 컨셉 · 3탄</span>
+    <h1>지금 당장 ‘깔게’ 만드는 4가지</h1>
+    <p>1·2탄이 “사고 싶다”를 만들었다면, 3탄은 <b>“아 지금 일단 깔아놔야겠다”</b>는 즉시 행동을 노립니다. 무료라서 <b>‘설치’와 ‘결정’을 분리</b>하는 게 공통 무기예요. 카드를 누르면 완성 페이지가 열립니다.</p>
+  </header>
+
+  <div class="grid">
+    <a class="card c9" href="../리콜-영업컨셉-09_일단깔아둬_2026-06-23.html">
+      <span class="recommend">⭐ 추천</span>
+      <span class="no">CONCEPT 09</span>
+      <h2>🟢 일단 깔아만 둬</h2>
+      <div class="story">“사는 게 아니라 깔아두는 것.” 결정과 설치를 분리해 부담을 0으로.</div>
+      <div class="meta"><span>🧠 결정 분리</span><span>‘나중에’ 함정 인터랙션</span><span>무료=리스크0</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+
+    <a class="card c10" href="10_2분vs매일.html">
+      <span class="no">CONCEPT 10</span>
+      <h2>🟠 2분 vs 매일</h2>
+      <div class="story">설치는 한 번 2분, 안 깔면 매일. 저울이 기우는 비대칭을 들이댄다.</div>
+      <div class="meta"><span>⚖️ 비대칭 손실</span><span>지연비용</span><span>한 번 vs 영원</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+
+    <a class="card c11" href="11_깔면1분안에명단.html">
+      <span class="no">CONCEPT 11</span>
+      <h2>🔵 깔면 1분 안에 명단</h2>
+      <div class="story">설치 즉시 ‘오늘 전화할 환자’가 화면에. 설명 말고 직접 보게.</div>
+      <div class="meta"><span>⚡ 즉시 가치</span><span>아하 모먼트</span><span>0클릭 첫 가치</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+
+    <a class="card c12" href="12_안깔이유0.html">
+      <span class="no">CONCEPT 12</span>
+      <h2>🟣 안 깔 이유 0</h2>
+      <div class="story">돈·데이터·복잡·약정·영업 — 핑계를 하나씩 지운다. “그래서 안 깔 이유는?”</div>
+      <div class="meta"><span>🛡️ 리스크 리버설</span><span>핑계 소거</span><span>반박 차단</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+  </div>
+
+  <table>
+    <caption>한눈 비교표 (3탄 · 즉시 설치 특화)</caption>
+    <thead>
+      <tr><th>컨셉</th><th>심리 장치</th><th>거는 한마디</th><th>잘 먹히는 상대</th><th>위험</th></tr>
+    </thead>
+    <tbody>
+      <tr class="pick"><td><b>🟢 일단 깔아만 둬 ⭐</b></td><td>결정 분리(foot-in-the-door)</td><td>“사는 거 아니야, 깔아만 둬”</td><td>결정을 미루는 신중한 원장</td><td>너무 가벼워 보일 수도</td></tr>
+      <tr><td><b>🟠 2분 vs 매일</b></td><td>비대칭 손실·지연비용</td><td>“미루는 게 더 비싸”</td><td>손익·효율에 민감한 원장</td><td>겁주기로 보이면 거부</td></tr>
+      <tr><td><b>🔵 깔면 1분 안에 명단</b></td><td>즉시 가치·아하 모먼트</td><td>“말고, 직접 봐”</td><td>“증거부터” 의심 많은 원장</td><td>실제 1분 가치 못 주면 역효과</td></tr>
+      <tr><td><b>🟣 안 깔 이유 0</b></td><td>리스크 리버설·핑계 소거</td><td>“안 깔 이유 있어?”</td><td>핑계로 미루는 원장</td><td>따지는 톤이 거슬릴 수도</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <b>⭐ 왜 09 ‘일단 깔아만 둬’를 추천?</b> — 무료 제품의 진짜 장벽은 ‘설득’이 아니라 ‘미루기’예요. 09는 <b>“깔지 말지”가 아니라 “쓸지 말지”로 결정을 미루게</b> 해서, 행동 문턱 자체를 없앱니다(foot-in-the-door). 10·12는 논리로 밀어붙여 강하지만 회의적 원장에겐 부담, 11은 가장 정직하지만 ‘실제로 1분 안에 가치’를 줘야만 통합니다. 대상에 따라 <b>1곳에 1개만</b> 골라 쓰세요 — 4개 동시에 들이대면 메시지가 흩어집니다.
+  </div>
+  <p class="prev">※ 1탄(수도꼭지·편지·실장의 하루·명단), 2탄(골프·단골과학·두병원·숫자한개)은 이전 폴더에. 1·2·3탄 합쳐 총 12개 컨셉.</p>
+</div>
+<!--recall-fab-->
+<a href="../../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

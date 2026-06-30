@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리콜 1기 모집 랜딩 — 비교 & 결정 보드</title>
+<style>
+  :root{
+    --bg:#FBFAF8; --bg-soft:#F2F0EA; --card:#FFFFFF;
+    --ink:#1A1A1A; --ink-soft:#5C6360; --line:#E4E0D7;
+    --accent:#1D4ED8; --accent-soft:#E8EFFE;
+    --gold:#B08400; --red:#B23A3A; --amber:#B45309;
+    --radius:16px; --shadow:0 1px 2px rgba(20,20,20,.04),0 10px 34px rgba(20,20,20,.07);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+    font-size:17px;line-height:1.8;letter-spacing:-.011em;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  h1{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1.2;margin:0 0 10px}
+  h2{font-size:clamp(22px,2.8vw,28px);font-weight:800;letter-spacing:-.02em;margin:0 0 6px}
+  h3{font-size:19px;font-weight:750;margin:0}
+  p{margin:0 0 1em}
+  .muted{color:var(--ink-soft)}
+  a{color:var(--accent);text-decoration:none}
+  header{padding:54px 0 24px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,var(--bg))}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--accent);background:var(--accent-soft);padding:6px 13px;border-radius:99px;margin-bottom:16px}
+  section{padding:46px 0;border-bottom:1px solid var(--line)}
+  .lead{font-size:19px;color:var(--ink-soft);max-width:40em}
+
+  /* version cards */
+  .vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:24px}
+  @media(max-width:820px){.vgrid{grid-template-columns:1fr}}
+  .vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+  .vcard .top{padding:20px 20px 8px}
+  .vtag{font-size:12px;font-weight:800;letter-spacing:.04em;padding:4px 10px;border-radius:99px;display:inline-block;margin-bottom:12px}
+  .t1{background:#FBF1E4;color:var(--amber)} .t2{background:var(--accent-soft);color:var(--accent)} .t3{background:#1c1825;color:#E0B252}
+  .vcard h3{margin-bottom:6px}
+  .vcard .ch{font-size:15px;font-weight:700;color:var(--ink);margin:10px 0 4px;line-height:1.45}
+  .vcard ul{margin:6px 0 0;padding-left:18px;font-size:14px;color:var(--ink-soft);line-height:1.7}
+  .vcard .btn{margin:16px 20px 20px;display:block;text-align:center;background:var(--accent);color:#fff;font-weight:800;padding:13px;border-radius:11px}
+  .vcard .swatch{height:8px}
+  .sw1{background:linear-gradient(90deg,#B45309,#B23A3A)} .sw2{background:linear-gradient(90deg,#1D4ED8,#60A5FA)} .sw3{background:linear-gradient(90deg,#15121C,#B08400)}
+
+  /* catchphrase chooser */
+  .cgroup{margin-top:22px}
+  .cglabel{font-size:14px;font-weight:800;color:var(--ink);margin:18px 0 8px;display:flex;align-items:center;gap:8px}
+  .cglabel span{font-size:12px;font-weight:700;color:var(--ink-soft)}
+  .clist{display:flex;flex-direction:column;gap:8px}
+  .cphrase{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px;cursor:pointer;transition:.12s}
+  .cphrase:hover{border-color:var(--accent);background:#fff}
+  .cphrase.pick{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent) inset}
+  .cnum{flex:none;width:26px;height:26px;border-radius:8px;background:var(--bg-soft);color:var(--ink-soft);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+  .cphrase.pick .cnum{background:var(--accent);color:#fff}
+  .ctext{font-size:16px;font-weight:600;line-height:1.5}
+  .pickbar{position:sticky;bottom:0;background:rgba(251,250,248,.94);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:12px 0;margin-top:20px;font-size:15px;font-weight:700}
+
+  /* benefit table */
+  table{width:100%;border-collapse:collapse;margin-top:18px;font-size:15px;background:var(--card);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--bg-soft);font-weight:800;font-size:13px;letter-spacing:.02em}
+  tr:last-child td{border-bottom:0}
+  .rec{background:#EAF6EE;border:1px solid #BFE3CC;border-radius:12px;padding:14px 16px;margin-top:16px;font-size:15px}
+  .pill{display:inline-block;background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:12px;padding:3px 9px;border-radius:99px;margin-right:6px}
+  footer{padding:40px 0;color:var(--ink-soft);font-size:14px}
+  .note{font-size:13px;color:var(--ink-soft);margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <span class="eyebrow">리콜 프로그램 · 1기 창립 멤버 모집</span>
+    <h1>랜딩 비교 &amp; 결정 보드</h1>
+    <p class="lead">서로 다른 3가지 방향으로 만든 랜딩페이지입니다. 하나를 고르거나, 캐치프라이즈만 골라서 한 페이지로 합칠 수 있어요. 문제인식 → 자가진단(우리 치과는 몇 개 해당?) → 1기 모집 흐름은 세 버전 모두 공통입니다.</p>
+  </div>
+</header>
+
+<!-- 3 VERSIONS -->
+<section>
+  <div class="wrap">
+    <h2>① 세 가지 풀 랜딩페이지</h2>
+    <p class="muted">각 카드의 버튼을 눌러 실제 페이지를 여세요. 모두 모바일 대응 · 외부 의존성 0.</p>
+    <div class="vgrid">
+      <div class="vcard">
+        <div class="swatch sw1"></div>
+        <div class="top">
+          <span class="vtag t1">A · 문제 각성형</span>
+          <h3>1. 문제각성</h3>
+          <div class="ch">“안 오는 환자는 없습니다.<br>안 부른 환자만 있을 뿐.”</div>
+          <ul>
+            <li>“문제도 모르는 원장”을 먼저 때려 각성</li>
+            <li>진지한 경영 톤 · 큰 숫자 충격</li>
+            <li>잃은 매출 = 안 보이는 손실</li>
+          </ul>
+        </div>
+        <a class="btn" href="1_문제각성.html">문제각성 버전 열기 →</a>
+      </div>
+      <div class="vcard">
+        <div class="swatch sw2"></div>
+        <div class="top">
+          <span class="vtag t2">C · AI 기능 직설형</span>
+          <h3>2. AI직설</h3>
+          <div class="ch">“오늘 전화할 환자,<br>AI가 줄 세워 드립니다.”</div>
+          <ul>
+            <li>제품이 뭘 해주는지 1초 만에</li>
+            <li>토스풍 미니멀 · ‘오늘의 콜 큐’ 목업</li>
+            <li>3스텝(연결→정렬→1클릭 콜)</li>
+          </ul>
+        </div>
+        <a class="btn" href="2_AI직설.html">AI직설 버전 열기 →</a>
+      </div>
+      <div class="vcard">
+        <div class="swatch sw3"></div>
+        <div class="top">
+          <span class="vtag t3">B · 데스크 경영형</span>
+          <h3>3. 데스크경영</h3>
+          <div class="ch">“대형 치과의 데스크 경영,<br>이제 직원 한 명이면 됩니다.”</div>
+          <ul>
+            <li>프리미엄 다크 · 골드 · ROI 각성</li>
+            <li>대형병원 콜센터를 한 명에게</li>
+            <li>1기 희소성(벨벳 로프, 정직하게)</li>
+          </ul>
+        </div>
+        <a class="btn" href="3_데스크경영.html">데스크경영 버전 열기 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATCHPHRASE CHOOSER -->
+<section>
+  <div class="wrap">
+    <h2>② 캐치프라이즈 고르기</h2>
+    <p class="muted">마음에 드는 문장을 클릭하면 선택돼요. 고른 번호를 알려주시면 메인 H1으로 고정해 드립니다. (여러 개 골라 비교해도 됩니다.)</p>
+
+    <div class="cgroup">
+      <div class="cglabel">A. ‘안 온 환자 챙김’ 계열 <span>감성·문제제기</span></div>
+      <div class="clist">
+        <div class="cphrase" onclick="pick(this)"><div class="cnum">1</div><div class="ctext">안 온 환자, 오늘 누가 챙기고 있나요? <span class="muted">(원안)</span></div></div>
+        <div class="cphrase" onclick="pick(this)"><div class="cnum">2</div><div class="ctext">안 오는 환자는 없습니다. 안 부른 환자만 있을 뿐.</div></div>
+        <div class="cphrase" onclick="pick(this)"><div class="cnum">3</div><div class="ctext">잠든 환자를 깨우는 가장 쉬운 방법.</div></div>
+      </div>
+
+      <div class="cglabel">B. ‘대형병원 데스크경영을 1명에게’ 계열 <span>제품 포지셔닝</span></div>
+      <div class="clist">
+        <div class="cphrase" onclick="pick(this)"><div class="cnum">4</div><div class="ctext">대형 치과의 데스크 경영, 이제 직원 한 명이면 됩니다.</div></div>
+        <div class="cphrase" onclick="pick(this)"><div class="cnum">5</div><div class="ctext">대형병원은 콜센터가 합니다. 당신 치과는요?</div></div>
+        <div class="cphrase" onclick="pick(this)"><div class="cnum">6</div><div class="ctext">콜센터 없는 치과를 위한 콜센터.</div></div>
+      </div>
+
+      <div class="cglabel">C. ‘AI 통화목록 추천’ 계열 <span>기능 직설</span></div>
+      <div class="clist">
+        <div class="cphrase" onclick="pick(this)"><div class="cnum">7</div><div class="ctext">오늘 전화할 환자, AI가 줄 세워 드립니다.</div></div>
+        <div class="cphrase" onclick="pick(this)"><div class="cnum">8</div><div class="ctext">차트에 잠든 환자 명단, 오늘치만 뽑아 드립니다.</div></div>
+        <div class="cphrase" onclick="pick(this)"><div class="cnum">9</div><div class="ctext">오늘 누구에게 전화하죠? — 더는 고민하지 마세요.</div></div>
+      </div>
+
+      <div class="cglabel">D. ‘데스크 짬시간 = 매출’ 계열 <span>경영자 각성</span></div>
+      <div class="clist">
+        <div class="cphrase" onclick="pick(this)"><div class="cnum">10</div><div class="ctext">데스크가 비는 시간, 그게 매출이 새는 시간입니다.</div></div>
+        <div class="cphrase" onclick="pick(this)"><div class="cnum">11</div><div class="ctext">데스크의 빈 시간을 예약으로 바꾸는 AI.</div></div>
+      </div>
+
+      <div class="cglabel">E. ‘검증 불가’ 계열 <span>날카로운 한 방</span></div>
+      <div class="clist">
+        <div class="cphrase" onclick="pick(this)"><div class="cnum">12</div><div class="ctext">전화했다는 ‘말’ 대신, 전화한 ‘기록’을.</div></div>
+      </div>
+    </div>
+    <div class="pickbar wrap" id="pickbar">선택한 캐치프라이즈: <span id="picked" class="muted">아직 없음 — 위에서 클릭하세요</span></div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section>
+  <div class="wrap">
+    <h2>③ 1기 창립 멤버 — 혜택 메뉴</h2>
+    <p class="muted">무료 제품이라 ‘할인’이 아니라 <b>선점·지위·관계</b>를 혜택으로 겁니다(Superhuman·Notion 방식). 아래 8개 중 3~4개 조합을 추천.</p>
+    <table>
+      <tr><th>#</th><th>혜택</th><th>근거 / 메모</th></tr>
+      <tr><td>1</td><td><b>평생 고정가(그랜드파더링)</b></td><td>유료 전환돼도 1기는 옛 가격/무료 유지 — SaaS 표준</td></tr>
+      <tr><td>2</td><td><b>전담 무료 온보딩</b></td><td>직접 깔아주고 첫 콜 명단까지 띄워줌 · 수량 한정 = 진짜 희소성(Superhuman white-glove)</td></tr>
+      <tr><td>3</td><td>신기능 선체험(베타 우선권)</td><td>Notion AI 얼리액세스</td></tr>
+      <tr><td>4</td><td><b>로드맵 영향력</b></td><td>1기 의견이 기능 우선순위 결정(co-creation) — 의사 시장에 특히 강함</td></tr>
+      <tr><td>5</td><td>창립 멤버 명패(Founding Members)</td><td>지위 신호 · 1기 전용 배지</td></tr>
+      <tr><td>6</td><td><b>추천 부스트</b></td><td>동료 원장 초대 시 둘 다 혜택(추천 = 내 순번 당기기)</td></tr>
+      <tr><td>7</td><td>기수제 한정</td><td>직접 온보딩 가능 수가 한정이라 기수로 끊음(가짜 타이머 아님)</td></tr>
+      <tr><td>8</td><td>1기 전용 라운지</td><td>원장 네트워크 · 케이스 공유</td></tr>
+    </table>
+    <div class="rec"><span class="pill">추천 조합</span> ① 평생 고정가 + ② 전담 온보딩 + ④ 로드맵 영향력 + ⑥ 추천 부스트 — 정직한 희소성(⑦ 기수제)으로 묶기. 세 랜딩 모두 이 조합을 기본으로 넣어뒀습니다.</div>
+    <p class="note">※ 페이지의 ‘남은 자리 게이지’, 다운로드·초대 링크, 일부 수치(60% · ROI 9.5× 등)는 예시·자리표시자입니다. 실제 값은 채워야 합니다.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    주식회사 포프리즘(4Prism) · AutoRecall — 리콜 프로그램 1기 모집 랜딩 비교 보드 · 2026-06-29<br>
+    문제인식 + 자가진단(우리 치과는 몇 개 해당?) 콘텐츠는 세 페이지 안에 모두 들어 있습니다.
+  </div>
+</footer>
+
+<script>
+  function pick(el){
+    el.classList.toggle('pick');
+    var picks=[].slice.call(document.querySelectorAll('.cphrase.pick'))
+      .map(function(p){return '#'+p.querySelector('.cnum').textContent+' “'+p.querySelector('.ctext').childNodes[0].textContent.trim()+'”';});
+    var t=document.getElementById('picked');
+    if(picks.length){t.textContent=picks.join('  ·  ');t.classList.remove('muted');}
+    else{t.textContent='아직 없음 — 위에서 클릭하세요';t.classList.add('muted');}
+  }
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

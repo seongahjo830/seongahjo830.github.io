@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오토덴트 오토리콜 — 숨어있는 환자가 매출이 됩니다</title>
+<meta name="description" content="병원 DB에서 리콜이 필요한 환자를 자동으로 찾아 정리해드립니다. 마케팅비 쓰기 전에 이미 쌓여있는 구환부터 챙기세요.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  :root {
+    --blue: #3182f6;
+    --blue-deep: #1b64da;
+    --blue-soft: #e8f3ff;
+    --blue-darker: #0c4faa;
+    --green: #22a06b;
+    --green-soft: #e6f9f0;
+    --green-deep: #15724b;
+    --amber: #f59f00;
+    --amber-soft: #fff5e1;
+    --amber-deep: #b76e00;
+    --red: #f04452;
+    --red-soft: #ffeaea;
+    --ink-100: #191f28;
+    --ink-80: #333d4b;
+    --ink-60: #4e5968;
+    --ink-40: #6b7684;
+    --ink-20: #8b95a1;
+    --ink-10: #b0b8c1;
+    --line: #e5e8eb;
+    --line-soft: #f2f4f6;
+    --bg-soft: #f9fafb;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    color: var(--ink-100);
+    background: var(--white);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .wrap-narrow { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+
+  /* NAV */
+  nav.top {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .nav-brand { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+  .nav-brand-icon { width: 28px; height: 28px; background: var(--blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { font-size: 14px; color: var(--ink-60); font-weight: 500; }
+  .nav-links a:hover { color: var(--ink-100); }
+  .nav-cta { background: var(--ink-100); color: white; padding: 9px 18px; border-radius: 8px; font-size: 14px; font-weight: 600; }
+  .nav-cta:hover { background: var(--ink-80); }
+  @media (max-width: 768px) { .nav-links { display: none; } }
+
+  /* Typography */
+  .label { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--blue); margin-bottom: 16px; }
+  h1.hero-title { font-size: 56px; font-weight: 800; letter-spacing: -1.5px; line-height: 1.15; color: var(--ink-100); }
+  h2.section-title { font-size: 40px; font-weight: 800; letter-spacing: -1px; line-height: 1.2; color: var(--ink-100); }
+  p.lead { font-size: 18px; line-height: 1.6; color: var(--ink-60); }
+  @media (max-width: 720px) {
+    h1.hero-title { font-size: 36px; letter-spacing: -0.8px; }
+    h2.section-title { font-size: 28px; letter-spacing: -0.6px; }
+    p.lead { font-size: 16px; }
+  }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 14px 28px; border-radius: 12px; font-size: 16px; font-weight: 600; transition: transform 0.05s, background 0.15s; }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--blue); color: white; }
+  .btn-primary:hover { background: var(--blue-deep); }
+  .btn-secondary { background: var(--line-soft); color: var(--ink-100); }
+  .btn-secondary:hover { background: var(--line); }
+  .btn-lg { padding: 16px 32px; font-size: 17px; border-radius: 14px; }
+
+  /* HERO */
+  section.hero {
+    padding: 64px 0 100px;
+    background:
+      radial-gradient(ellipse 800px 400px at 80% -10%, rgba(49,130,246,0.08), transparent),
+      radial-gradient(ellipse 600px 300px at 0% 100%, rgba(34,160,107,0.05), transparent),
+      var(--white);
+  }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: var(--blue-soft); color: var(--blue); padding: 8px 14px; border-radius: 99px; font-size: 13px; font-weight: 600; margin-bottom: 28px; }
+  .hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .hero-cta-row { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
+  .hero-meta { display: flex; gap: 28px; margin-top: 32px; color: var(--ink-40); font-size: 13px; flex-wrap: wrap; }
+  .hero-meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .hero-meta i { color: var(--green); font-weight: 700; font-style: normal; }
+
+  .hero-visual { position: relative; min-height: 460px; }
+  .hero-card { background: white; border-radius: 20px; box-shadow: 0 24px 48px -12px rgba(0,0,0,0.12), 0 8px 16px -8px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04); overflow: hidden; position: absolute; }
+  .hero-card.main { top: 30px; right: 0; width: 100%; max-width: 420px; padding: 28px; z-index: 2; }
+  .hero-card.floating { bottom: -10px; left: 0; width: 280px; padding: 20px 22px; z-index: 3; }
+  .hc-label { font-size: 12px; color: var(--ink-20); font-weight: 600; margin-bottom: 6px; }
+  .hc-num { font-size: 38px; font-weight: 800; color: var(--green); letter-spacing: -0.5px; line-height: 1.1; }
+  .hc-delta { display: inline-flex; align-items: center; gap: 4px; background: var(--green-soft); color: var(--green); padding: 4px 10px; border-radius: 99px; font-size: 11.5px; font-weight: 700; margin-top: 10px; }
+  .hc-divider { height: 1px; background: var(--line-soft); margin: 18px 0 14px; }
+  .hc-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 13px; }
+  .hc-row .l { color: var(--ink-80); }
+  .hc-row .r { color: var(--green); font-weight: 700; }
+  .hc-floating-icon { width: 36px; height: 36px; background: var(--blue-soft); color: var(--blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 12px; }
+  .hc-floating-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .hc-floating-desc { font-size: 12px; color: var(--ink-40); line-height: 1.5; }
+
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 60px; }
+    .hero-visual { min-height: 380px; }
+    .hero-card.main { right: auto; left: 50%; transform: translateX(-50%); }
+    .hero-card.floating { left: 12px; bottom: -20px; }
+  }
+
+  /* Sections */
+  section.std { padding: 100px 0; }
+  section.std.alt { background: var(--bg-soft); }
+  section.std.dark { background: var(--ink-100); color: white; }
+  @media (max-width: 720px) { section.std { padding: 64px 0; } }
+  .sec-header { text-align: center; margin-bottom: 56px; }
+  .sec-header.left { text-align: left; }
+  .sec-header p.lead { margin-top: 16px; max-width: 600px; margin-left: auto; margin-right: auto; }
+  .sec-header.left p.lead { margin-left: 0; }
+
+  /* Problem */
+  .problem-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .problem-card { background: white; border-radius: 20px; padding: 28px 28px 24px; border: 1px solid var(--line-soft); }
+  .problem-card .pc-quote { font-size: 64px; font-weight: 800; color: var(--blue-soft); line-height: 0.8; height: 28px; margin-bottom: 8px; font-family: Georgia, serif; }
+  .problem-card h4 { font-size: 18px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; color: var(--ink-100); }
+  .problem-card p { font-size: 14px; color: var(--ink-60); line-height: 1.6; }
+  .pc-who { display: inline-block; margin-top: 16px; font-size: 12px; color: var(--ink-20); font-weight: 600; }
+  @media (max-width: 720px) { .problem-grid { grid-template-columns: 1fr; } }
+
+  /* Steps */
+  .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .step-card { background: white; border-radius: 20px; padding: 32px 28px; border: 1px solid var(--line-soft); }
+  .step-num { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: var(--ink-100); color: white; border-radius: 50%; font-weight: 700; font-size: 14px; margin-bottom: 20px; }
+  .step-card h4 { font-size: 19px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
+  .step-card p { font-size: 14px; color: var(--ink-60); line-height: 1.65; }
+  @media (max-width: 720px) { .steps-grid { grid-template-columns: 1fr; } }
+
+  /* Persona */
+  .persona { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+  .persona.reverse .persona-content { order: 2; }
+  .persona-tag { display: inline-block; padding: 6px 14px; border-radius: 99px; font-size: 12px; font-weight: 700; margin-bottom: 20px; }
+  .persona-tag.c1 { background: var(--blue-soft); color: var(--blue); }
+  .persona-tag.c2 { background: var(--green-soft); color: var(--green); }
+  .persona-tag.c3 { background: var(--amber-soft); color: var(--amber-deep); }
+  .persona-content h3 { font-size: 32px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.25; margin-bottom: 16px; }
+  .persona-pain { margin-top: 24px; margin-bottom: 28px; padding: 20px 24px; background: var(--bg-soft); border-left: 3px solid var(--ink-10); border-radius: 4px 12px 12px 4px; }
+  .persona-pain p { font-size: 15px; color: var(--ink-60); line-height: 1.7; font-style: italic; }
+  .persona-pain p + p { margin-top: 8px; }
+  .persona-solution ul { list-style: none; }
+  .persona-solution li { display: flex; gap: 12px; padding: 10px 0; font-size: 15px; line-height: 1.6; color: var(--ink-80); }
+  .persona-solution li .check { width: 22px; height: 22px; border-radius: 50%; background: var(--green); color: white; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; font-size: 12px; font-weight: 700; }
+
+  /* Mini dashboard */
+  .persona-dash { background: white; border-radius: 24px; padding: 28px; box-shadow: 0 24px 48px -12px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04); }
+  .pd-hero { margin-bottom: 16px; }
+  .pd-label { font-size: 12px; color: var(--ink-20); font-weight: 600; margin-bottom: 4px; }
+  .pd-num { font-size: 40px; font-weight: 800; letter-spacing: -0.8px; line-height: 1.05; }
+  .pd-num.green { color: var(--green); }
+  .pd-num-sub { display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; background: var(--green-soft); color: var(--green); padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+  .pd-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0; }
+  .pd-stat { background: var(--bg-soft); border-radius: 12px; padding: 12px 14px; }
+  .pd-stat .l { font-size: 11.5px; color: var(--ink-20); margin-bottom: 4px; font-weight: 600; }
+  .pd-stat .v { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+  .pd-list { background: var(--bg-soft); border-radius: 12px; padding: 14px 16px; }
+  .pd-list .l-head { font-size: 12px; color: var(--ink-20); font-weight: 700; margin-bottom: 6px; }
+  .pd-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; font-size: 13px; }
+  .pd-row + .pd-row { border-top: 1px solid var(--line-soft); }
+  .pd-row .l { color: var(--ink-80); }
+  .pd-row .r { color: var(--green); font-weight: 700; }
+
+  .pd-fnl { display: flex; flex-direction: column; gap: 6px; }
+  .pd-fnl-row { display: flex; align-items: center; gap: 8px; }
+  .pd-fnl-label { font-size: 11.5px; color: var(--ink-60); min-width: 36px; font-weight: 600; }
+  .pd-fnl-bar-wrap { flex: 1; background: var(--line-soft); border-radius: 8px; height: 26px; overflow: hidden; }
+  .pd-fnl-bar { height: 100%; display: flex; align-items: center; padding: 0 10px; color: white; font-size: 11.5px; font-weight: 700; }
+  .pd-fnl-pct { font-size: 11px; color: var(--ink-20); min-width: 30px; text-align: right; font-weight: 600; }
+
+  .pd-next { background: var(--amber-soft); border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; }
+  .pd-next-label { font-size: 10.5px; color: var(--amber); font-weight: 700; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .pd-next-name { font-size: 16px; font-weight: 700; color: var(--amber-deep); }
+  .pd-next-meta { font-size: 11.5px; color: var(--amber-deep); opacity: 0.85; margin-top: 4px; line-height: 1.4; }
+  .pd-call-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line-soft); }
+  .pd-call-row:first-of-type { border-top: none; }
+  .pd-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--blue-soft); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 700; flex-shrink: 0; }
+  .pd-avatar.warn { background: var(--amber-soft); color: var(--amber); }
+  .pd-call-body { flex: 1; min-width: 0; }
+  .pd-call-name { font-size: 12.5px; font-weight: 600; }
+  .pd-call-meta { font-size: 10.5px; color: var(--ink-20); margin-top: 2px; }
+  .pill { display: inline-flex; padding: 3px 8px; border-radius: 99px; font-size: 10.5px; font-weight: 700; flex-shrink: 0; }
+  .pill.s { background: var(--green-soft); color: var(--green); }
+  .pill.w { background: var(--amber-soft); color: var(--amber); }
+  .pill.i { background: var(--blue-soft); color: var(--blue); }
+
+  @media (max-width: 900px) {
+    .persona { grid-template-columns: 1fr; gap: 40px; }
+    .persona.reverse .persona-content { order: 0; }
+  }
+
+  /* CASE STUDY (new) */
+  .case-hero {
+    background: linear-gradient(135deg, #f7f9fc 0%, #eef4fb 100%);
+    border-radius: 24px;
+    padding: 48px;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .case-hero h3 { font-size: 32px; font-weight: 800; letter-spacing: -0.6px; line-height: 1.25; margin-bottom: 12px; }
+  .case-hero .case-meta {
+    display: inline-flex; gap: 14px;
+    padding: 8px 16px; background: white;
+    border-radius: 99px; font-size: 13px;
+    color: var(--ink-60); font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .case-hero .case-meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .case-hero .case-meta strong { color: var(--ink-100); font-weight: 700; }
+  .case-hero .case-quote { font-size: 22px; font-style: italic; color: var(--ink-80); font-weight: 500; margin-top: 4px; letter-spacing: -0.3px; }
+
+  .case-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .case-stat {
+    background: white;
+    border: 1px solid var(--line-soft);
+    border-radius: 20px;
+    padding: 28px;
+  }
+  .case-stat .cs-label {
+    font-size: 12px; color: var(--ink-40);
+    font-weight: 600; margin-bottom: 10px;
+    letter-spacing: 0.3px;
+  }
+  .case-stat .cs-num {
+    font-size: 40px; font-weight: 800;
+    letter-spacing: -1px; line-height: 1;
+    color: var(--blue);
+  }
+  .case-stat .cs-num.green { color: var(--green); }
+  .case-stat .cs-sub { font-size: 12px; color: var(--ink-40); margin-top: 8px; line-height: 1.5; }
+
+  .case-chart-wrap {
+    background: white;
+    border: 1px solid var(--line-soft);
+    border-radius: 20px;
+    padding: 36px;
+    margin-bottom: 32px;
+  }
+  .case-chart-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  .case-chart-sub { font-size: 13px; color: var(--ink-40); margin-bottom: 28px; }
+
+  .chart-rows { display: flex; flex-direction: column; gap: 16px; }
+  .chart-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 110px;
+    gap: 14px;
+    align-items: center;
+  }
+  .chart-label { font-size: 13px; color: var(--ink-60); font-weight: 600; }
+  .chart-bar-track {
+    height: 36px;
+    background: var(--bg-soft);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+  .chart-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    display: flex; align-items: center; padding: 0 14px;
+    color: white; font-size: 13px; font-weight: 700;
+    transition: width 0.8s ease;
+  }
+  .chart-bar-fill.m1 { width: 60%; background: linear-gradient(90deg, #5e9bf0, #3182f6); }
+  .chart-bar-fill.m2 { width: 80%; background: linear-gradient(90deg, #3182f6, #1b64da); }
+  .chart-bar-fill.m3 { width: 70%; background: linear-gradient(90deg, #4a8de8, #2670e5); }
+  .chart-value { font-size: 16px; font-weight: 700; color: var(--ink-100); letter-spacing: -0.3px; }
+  .chart-value small { font-size: 11.5px; color: var(--ink-40); font-weight: 500; }
+
+  .case-compare {
+    background: white;
+    border: 1px solid var(--line-soft);
+    border-radius: 20px;
+    padding: 36px;
+  }
+  .compare-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 140px;
+    gap: 16px;
+    align-items: center;
+    padding: 12px 0;
+  }
+  .compare-row + .compare-row { margin-top: 8px; }
+  .compare-label { font-size: 14px; font-weight: 600; color: var(--ink-80); }
+  .compare-bar-track { height: 36px; background: var(--bg-soft); border-radius: 10px; overflow: hidden; }
+  .compare-bar-fill { height: 100%; border-radius: 10px; }
+  .compare-bar-fill.before { width: 96%; background: var(--ink-10); }
+  .compare-bar-fill.after { width: 100%; background: linear-gradient(90deg, var(--green), #1d8c5d); }
+  .compare-value { font-size: 16px; font-weight: 700; text-align: right; letter-spacing: -0.3px; }
+  .compare-value.green { color: var(--green); }
+  .compare-value small { display: block; font-size: 11.5px; color: var(--ink-40); font-weight: 500; margin-top: 2px; }
+
+  @media (max-width: 720px) {
+    .case-hero { padding: 32px 24px; }
+    .case-hero h3 { font-size: 22px; }
+    .case-hero .case-quote { font-size: 17px; }
+    .case-stats { grid-template-columns: repeat(2, 1fr); }
+    .case-stat .cs-num { font-size: 30px; }
+    .case-chart-wrap, .case-compare { padding: 24px; }
+    .chart-row { grid-template-columns: 60px 1fr 80px; gap: 10px; }
+    .chart-bar-fill { font-size: 11px; padding: 0 10px; }
+    .compare-row { grid-template-columns: 72px 1fr 100px; }
+  }
+
+  /* Privacy */
+  .privacy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .privacy-card { background: white; border-radius: 20px; padding: 32px 28px; border: 1px solid var(--line-soft); }
+  .privacy-icon { width: 52px; height: 52px; background: var(--ink-100); color: white; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; }
+  .privacy-card h4 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .privacy-card p { font-size: 14px; color: var(--ink-60); line-height: 1.65; }
+  @media (max-width: 720px) { .privacy-grid { grid-template-columns: 1fr; } }
+
+  /* Setup steps - new shipping concept */
+  .ship-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 32px; }
+  .ship-step { background: white; border: 1px solid var(--line-soft); border-radius: 20px; padding: 24px; text-align: center; }
+  .ship-icon-wrap {
+    width: 64px; height: 64px;
+    background: var(--blue-soft);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px; font-size: 28px;
+  }
+  .ship-step h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .ship-step p { font-size: 13px; color: var(--ink-60); line-height: 1.55; }
+  .ship-time { display: inline-block; margin-top: 10px; padding: 3px 10px; background: var(--green-soft); color: var(--green); border-radius: 99px; font-size: 11.5px; font-weight: 700; }
+  @media (max-width: 720px) { .ship-steps { grid-template-columns: 1fr; } }
+
+  /* Pricing */
+  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 840px; margin: 0 auto; }
+  .price-card { background: white; border-radius: 24px; padding: 40px 36px; border: 1px solid var(--line); position: relative; }
+  .price-card.featured { background: var(--ink-100); color: white; border-color: var(--ink-100); transform: translateY(-8px); }
+  .price-card.featured .price-tier { color: var(--blue); }
+  .price-card.featured .price-num { color: white; }
+  .price-card.featured .price-feat li { color: rgba(255,255,255,0.9); }
+  .price-card.featured .price-feat { border-top-color: rgba(255,255,255,0.1); }
+  .price-card.featured .price-sub { color: rgba(255,255,255,0.7); }
+  .price-card.featured .price-sub-note { color: rgba(255,255,255,0.6); border-color: rgba(255,255,255,0.1); }
+  .featured-badge { position: absolute; top: -12px; right: 32px; background: var(--blue); color: white; padding: 5px 14px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+  .price-tier { font-size: 13px; font-weight: 700; letter-spacing: 1px; color: var(--blue); margin-bottom: 12px; }
+  .price-name { font-size: 22px; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.3px; }
+  .price-num { font-size: 44px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
+  .price-num small { font-size: 18px; color: var(--ink-20); font-weight: 500; margin-left: 4px; }
+  .price-card.featured .price-num small { color: rgba(255,255,255,0.6); }
+  .price-sub { font-size: 14px; color: var(--ink-40); margin-top: 12px; line-height: 1.5; }
+  .price-feat { list-style: none; margin: 28px 0; padding-top: 28px; border-top: 1px solid var(--line-soft); }
+  .price-feat li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; font-size: 14px; color: var(--ink-80); line-height: 1.55; }
+  .price-feat .check { width: 18px; height: 18px; background: var(--green); color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .price-feat .x { width: 18px; height: 18px; background: var(--line); color: var(--ink-20); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .price-card.featured .price-feat .x { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
+  .price-feat li.disabled { color: var(--ink-20); }
+  .price-card.featured .price-feat li.disabled { color: rgba(255,255,255,0.4); }
+  .price-cta { width: 100%; justify-content: center; padding: 14px; font-size: 15px; }
+  .price-sub-note { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line-soft); font-size: 12px; color: var(--ink-40); line-height: 1.6; }
+  @media (max-width: 720px) {
+    .pricing-grid { grid-template-columns: 1fr; }
+    .price-card.featured { transform: none; }
+  }
+
+  /* Roadmap */
+  .roadmap { position: relative; padding-left: 24px; border-left: 2px solid var(--line); }
+  .roadmap-item { position: relative; padding-bottom: 36px; }
+  .roadmap-item:last-child { padding-bottom: 0; }
+  .roadmap-dot { position: absolute; left: -33px; top: 6px; width: 18px; height: 18px; background: white; border: 3px solid var(--blue); border-radius: 50%; }
+  .roadmap-item.now .roadmap-dot { background: var(--blue); }
+  .roadmap-item.future .roadmap-dot { border-color: var(--ink-10); }
+  .roadmap-quarter { font-size: 12px; font-weight: 700; color: var(--blue); margin-bottom: 6px; letter-spacing: 0.5px; }
+  .roadmap-item.future .roadmap-quarter { color: var(--ink-20); }
+  .roadmap-title { font-size: 19px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.3px; }
+  .roadmap-item.future .roadmap-title { color: var(--ink-60); }
+  .roadmap-desc { font-size: 14.5px; color: var(--ink-60); line-height: 1.65; }
+
+  /* FAQ */
+  .faq { max-width: 760px; margin: 0 auto; }
+  .faq-item { border-bottom: 1px solid var(--line-soft); padding: 4px 0; }
+  .faq-q { width: 100%; background: transparent; text-align: left; padding: 22px 0; display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 17px; font-weight: 600; color: var(--ink-100); letter-spacing: -0.3px; }
+  .faq-q-icon { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--line-soft); color: var(--ink-40); display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; transition: transform 0.2s; }
+  .faq-item.open .faq-q-icon { transform: rotate(45deg); background: var(--blue); color: white; }
+  .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  .faq-a-inner { padding-bottom: 24px; font-size: 15px; color: var(--ink-60); line-height: 1.7; }
+
+  /* Founder */
+  .founder-card { background: var(--bg-soft); border-radius: 24px; padding: 48px; text-align: center; }
+  .founder-quote { font-size: 22px; line-height: 1.6; color: var(--ink-80); font-weight: 500; letter-spacing: -0.3px; max-width: 680px; margin: 0 auto; }
+  .founder-attr { margin-top: 28px; color: var(--ink-40); font-size: 14px; }
+  .founder-attr strong { color: var(--ink-100); font-weight: 700; display: block; margin-bottom: 2px; }
+  @media (max-width: 720px) { .founder-card { padding: 32px 24px; } .founder-quote { font-size: 18px; } }
+
+  /* Final CTA */
+  .final-cta { background: linear-gradient(135deg, #0c4faa 0%, #1b64da 50%, #3182f6 100%); color: white; padding: 100px 0; text-align: center; }
+  .final-cta h2 { font-size: 48px; font-weight: 800; letter-spacing: -1px; line-height: 1.2; margin-bottom: 20px; }
+  .final-cta p { font-size: 19px; line-height: 1.6; color: rgba(255,255,255,0.85); max-width: 600px; margin: 0 auto 36px; }
+  .final-cta .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .final-cta .btn-primary { background: white; color: var(--blue-darker); }
+  .final-cta .btn-primary:hover { background: rgba(255,255,255,0.92); }
+  .final-cta .btn-secondary { background: rgba(255,255,255,0.15); color: white; }
+  .final-cta .btn-secondary:hover { background: rgba(255,255,255,0.22); }
+  @media (max-width: 720px) { .final-cta h2 { font-size: 30px; } .final-cta p { font-size: 16px; } }
+
+  /* Footer */
+  footer { background: var(--ink-100); color: rgba(255,255,255,0.7); padding: 64px 0 32px; }
+  .foot-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+  .foot-brand-block { color: white; }
+  .foot-brand-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+  .foot-brand-desc { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.6); }
+  .foot-col h5 { font-size: 13px; font-weight: 700; color: white; margin-bottom: 14px; letter-spacing: 0.5px; }
+  .foot-col ul { list-style: none; }
+  .foot-col li { padding: 5px 0; }
+  .foot-col li a { font-size: 13.5px; color: rgba(255,255,255,0.6); }
+  .foot-col li a:hover { color: white; }
+  .foot-bottom { padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: rgba(255,255,255,0.4); }
+  @media (max-width: 720px) {
+    .foot-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .foot-brand-block { grid-column: 1 / -1; }
+    .foot-bottom { flex-direction: column; gap: 12px; }
+  }
+
+  /* Reveal */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-brand"><span class="nav-brand-icon">AD</span>오토덴트</a>
+    <div class="nav-links">
+      <a href="#problem">문제</a>
+      <a href="#solution">기능</a>
+      <a href="#case">파일럿 사례</a>
+      <a href="#pricing">가격</a>
+      <a href="#roadmap">로드맵</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a href="#cta" class="nav-cta">데모 신청</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="hero-eyebrow"><span class="dot"></span>덴트웹 연동 · 원내 자동 리콜 시스템</span>
+      <h1 class="hero-title">마케팅비 쓰기 전에,<br>이미 쌓여있는 구환부터.</h1>
+      <p class="lead" style="margin-top: 24px; max-width: 500px;">
+        병원 데이터베이스에서 리콜이 필요한 환자를 자동으로 찾아내고,<br>
+        데스크가 바로 연락할 수 있게 매일 아침 정리해드립니다.
+      </p>
+      <div class="hero-cta-row">
+        <a href="#cta" class="btn btn-primary btn-lg">데모 신청하기 →</a>
+        <a href="#solution" class="btn btn-secondary btn-lg">3분 만에 보기</a>
+      </div>
+      <div class="hero-meta">
+        <span><i>✓</i> 무료로 바로 시작</span>
+        <span><i>✓</i> 택배 배송 · 셀프 설치</span>
+        <span><i>✓</i> 원내 데이터 보안</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card main">
+        <div class="hc-label">5월 오토리콜 매출 기여</div>
+        <div class="hc-num">+ 1,890만원</div>
+        <span class="hc-delta">↑ 33% vs 지난 달</span>
+        <div class="hc-divider"></div>
+        <div class="hc-row"><span class="l">고가 진료 미완료군</span><span class="r">980만원</span></div>
+        <div class="hc-row"><span class="l">중단 케이스 복귀군</span><span class="r">560만원</span></div>
+        <div class="hc-row"><span class="l">장기 미내원 회수군</span><span class="r">350만원</span></div>
+      </div>
+      <div class="hero-card floating">
+        <div class="hc-floating-icon">🔍</div>
+        <div class="hc-floating-title">오늘 발굴된 환자 47명</div>
+        <div class="hc-floating-desc">우선순위 정렬 완료<br>데스크 큐 자동 배정</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem" class="std alt">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="label">왜 오토덴트인가</span>
+      <h2 class="section-title">혹시 이런 상황, 아니세요?</h2>
+      <p class="lead">원장님, 실장님, 데스크 직원의 매일 고민</p>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card reveal">
+        <div class="pc-quote">"</div>
+        <h4>마케팅 업체에 매달 수백만 원,<br>그런데 효과가 정말 있는 걸까?</h4>
+        <p>신환은 줄고 광고비는 늘어나는데, 정작 우리 환자였던 분들은 어디서 무얼 하고 있는지 모릅니다.</p>
+        <span class="pc-who">— 대표원장</span>
+      </div>
+      <div class="problem-card reveal">
+        <div class="pc-quote">"</div>
+        <h4>리콜 돌리고 싶은데<br>대체 누구한테 전화해야 하지?</h4>
+        <p>차트 뒤지는 데만 한 시간. 게다가 전화했다가 "할 거 없는데 왜 불렀냐"고 듣기라도 하면…</p>
+        <span class="pc-who">— 데스크 직원</span>
+      </div>
+      <div class="problem-card reveal">
+        <div class="pc-quote">"</div>
+        <h4>리콜 인력 따로 채용하기엔<br>인건비가 부담스럽습니다</h4>
+        <p>체계적으로 리콜을 추진할 사람이 필요한데, 사람 구하기도 어렵고 구해도 유지가 쉽지 않습니다.</p>
+        <span class="pc-who">— 실장</span>
+      </div>
+      <div class="problem-card reveal">
+        <div class="pc-quote">"</div>
+        <h4>리콜했는지 안 했는지<br>확인할 방법이 없습니다</h4>
+        <p>리스트 뽑아서 줘도 실제로 콜이 진행됐는지, 누가 응답했는지 추적할 방법이 없으니 시스템이 안 됩니다.</p>
+        <span class="pc-who">— 대표원장</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION OVERVIEW -->
+<section id="solution" class="std">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="label">오토덴트는 이렇게 작동합니다</span>
+      <h2 class="section-title">매일 아침, 오늘 리콜할<br>환자 리스트가 준비됩니다</h2>
+      <p class="lead">새벽 자동 분석 → 오전 9시 데스크 큐 활성화</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-num">1</div>
+        <h4>병원 DB를 자동으로 분석</h4>
+        <p>덴트웹과 연동된 원내 서버가 매일 새벽 환자 기록을 종합적으로 검토하여, 리콜이 필요한 환자를 자동으로 추려냅니다.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">2</div>
+        <h4>우선순위가 정렬된 리스트</h4>
+        <p>매출 기여 가능성과 전환 가능성에 따라 자동 정렬. 데스크는 위에서부터 차례대로 연락만 하면 됩니다. 어떤 포인트로 안내해야 하는지도 함께 표시.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-num">3</div>
+        <h4>실시간 집계와 ROI 리포트</h4>
+        <p>콜 결과가 실시간으로 집계되어 누가 언제 누구에게 연락했는지 추적. 매월 1일 대표원장님께 ROI 리포트 자동 발송.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PERSONA: 대표원장 -->
+<section class="std alt">
+  <div class="wrap">
+    <div class="persona reveal">
+      <div class="persona-content">
+        <span class="persona-tag c1">대표원장 입장에서</span>
+        <h3>마케팅비가 아깝다는<br>막연한 의심을 끝냅니다</h3>
+        <div class="persona-pain">
+          <p>"마케팅 업체 비용이 매달 빠져나가는데 효과가 있는지 모르겠다."</p>
+          <p>"이미 우리 환자였던 분들, 다시 오게 할 방법이 없을까?"</p>
+          <p>"리콜을 시작했는지, 결과가 어떤지 한눈에 봤으면 좋겠다."</p>
+        </div>
+        <div class="persona-solution">
+          <ul>
+            <li><span class="check">✓</span>이번 달 오토리콜로 발생한 매출 한 줄 요약</li>
+            <li><span class="check">✓</span>유형별 회수 성과를 분리하여 추적</li>
+            <li><span class="check">✓</span>구독료 대비 ROI 자동 계산 — 계속 쓸지 즉시 판단 가능</li>
+            <li><span class="check">✓</span>매월 1일 아침 이메일로 자동 리포트 발송</li>
+          </ul>
+        </div>
+      </div>
+      <div class="persona-dash">
+        <div class="pd-hero">
+          <div class="pd-label">5월 매출 기여</div>
+          <div class="pd-num green">+ 1,890만원</div>
+          <span class="pd-num-sub">↑ 33% vs 지난 달</span>
+        </div>
+        <div class="pd-stats">
+          <div class="pd-stat"><div class="l">내원</div><div class="v">27명</div></div>
+          <div class="pd-stat"><div class="l">ROI</div><div class="v">65배</div></div>
+          <div class="pd-stat"><div class="l">누적</div><div class="v">4,960만</div></div>
+        </div>
+        <div class="pd-list">
+          <div class="l-head">유형별 매출 기여</div>
+          <div class="pd-row"><span class="l">고가 진료 회수군</span><span class="r">980만원</span></div>
+          <div class="pd-row"><span class="l">중단 케이스 복귀군</span><span class="r">560만원</span></div>
+          <div class="pd-row"><span class="l">장기 미내원군</span><span class="r">350만원</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PERSONA: 실장 -->
+<section class="std">
+  <div class="wrap">
+    <div class="persona reverse reveal">
+      <div class="persona-dash">
+        <div class="pd-hero">
+          <div class="pd-label">전환 퍼널</div>
+        </div>
+        <div class="pd-fnl" style="margin-bottom: 16px;">
+          <div class="pd-fnl-row"><span class="pd-fnl-label">발송</span><div class="pd-fnl-bar-wrap"><div class="pd-fnl-bar" style="width: 100%; background: var(--blue);">142명</div></div><span class="pd-fnl-pct">100%</span></div>
+          <div class="pd-fnl-row"><span class="pd-fnl-label">응답</span><div class="pd-fnl-bar-wrap"><div class="pd-fnl-bar" style="width: 38%; background: #5e9bf0;">54명</div></div><span class="pd-fnl-pct">38%</span></div>
+          <div class="pd-fnl-row"><span class="pd-fnl-label">예약</span><div class="pd-fnl-bar-wrap"><div class="pd-fnl-bar" style="width: 23%; background: var(--amber);">33명</div></div><span class="pd-fnl-pct">23%</span></div>
+          <div class="pd-fnl-row"><span class="pd-fnl-label">내원</span><div class="pd-fnl-bar-wrap"><div class="pd-fnl-bar" style="width: 18%; background: var(--green);">26명</div></div><span class="pd-fnl-pct">18%</span></div>
+        </div>
+        <div class="pd-stats">
+          <div class="pd-stat"><div class="l">오늘 발송</div><div class="v">23</div></div>
+          <div class="pd-stat"><div class="l">대기 큐</div><div class="v">24</div></div>
+          <div class="pd-stat"><div class="l">기여</div><div class="v" style="color: var(--green);">1,890만</div></div>
+        </div>
+      </div>
+      <div class="persona-content">
+        <span class="persona-tag c2">실장 / 데스크 팀장 입장에서</span>
+        <h3>리콜 운영이<br>클릭 한 번으로 됩니다</h3>
+        <div class="persona-pain">
+          <p>"어떤 환자한테 어떤 멘트로 리콜해야 할지 매번 헷갈린다."</p>
+          <p>"콜이 진행됐는지 추적이 안 되니 직원 성과 측정도 어렵다."</p>
+          <p>"리콜 인력을 따로 채용하기엔 인건비가 부담된다."</p>
+        </div>
+        <div class="persona-solution">
+          <ul>
+            <li><span class="check">✓</span>오늘 콜할 환자 리스트를 자동 생성 — 챠트 뒤질 시간 0</li>
+            <li><span class="check">✓</span>리콜 대상을 유형별로 선택 가능 (자동 분류)</li>
+            <li><span class="check">✓</span>발송 → 응답 → 예약 → 내원 전환 퍼널 실시간 추적</li>
+            <li><span class="check">✓</span>데스크 직원별 성과 자동 집계로 공정한 KPI 관리</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PERSONA: 데스크 -->
+<section class="std alt">
+  <div class="wrap">
+    <div class="persona reveal">
+      <div class="persona-content">
+        <span class="persona-tag c3">데스크 직원 입장에서</span>
+        <h3>"왜 불렀냐"는 핀잔에서<br>"잘했다"는 칭찬으로</h3>
+        <div class="persona-pain">
+          <p>"대체 누구한테 전화해야 하지?"</p>
+          <p>"리콜했는데 할 거 없는 환자 왜 불렀냐고 혼나는 거 아냐?"</p>
+          <p>"그냥 바쁜 척이라도 해야지…"</p>
+        </div>
+        <div class="persona-solution">
+          <ul>
+            <li><span class="check">✓</span>오늘의 다음 콜 환자를 화면 가장 위에 강조 표시</li>
+            <li><span class="check">✓</span>어떤 진료를 안내해야 하는지 멘트 포인트까지 제시</li>
+            <li><span class="check">✓</span>차트 한 번 클릭으로 바로 확인 — 시간 낭비 제거</li>
+            <li><span class="check">✓</span>내 콜 결과가 실시간으로 집계되어 성과로 인정</li>
+          </ul>
+        </div>
+      </div>
+      <div class="persona-dash">
+        <div class="pd-next">
+          <div class="pd-next-label">다음 콜 추천</div>
+          <div class="pd-next-name">김O철 · 67세 · 남</div>
+          <div class="pd-next-meta">진료 미완료 케이스 · 2년 2개월 미내원<br>안내 포인트가 카드 클릭 시 표시됩니다</div>
+        </div>
+        <div style="background: var(--bg-soft); border-radius: 12px; padding: 14px 16px;">
+          <div style="font-size: 11.5px; color: var(--ink-20); font-weight: 700; margin-bottom: 6px;">최근 응대 기록</div>
+          <div class="pd-call-row">
+            <div class="pd-avatar">이OO</div>
+            <div class="pd-call-body">
+              <div class="pd-call-name">이O자 · 66세 여</div>
+              <div class="pd-call-meta">14:22 · 김민정 실장</div>
+            </div>
+            <span class="pill s">예약완료</span>
+          </div>
+          <div class="pd-call-row">
+            <div class="pd-avatar warn">박OO</div>
+            <div class="pd-call-body">
+              <div class="pd-call-name">박O수 · 65세 남</div>
+              <div class="pd-call-meta">13:55 · 박지영</div>
+            </div>
+            <span class="pill w">부재중</span>
+          </div>
+          <div class="pd-call-row">
+            <div class="pd-avatar">최OO</div>
+            <div class="pd-call-body">
+              <div class="pd-call-name">최O희 · 68세 여</div>
+              <div class="pd-call-meta">13:40 · 김민정 실장</div>
+            </div>
+            <span class="pill i">문자발송</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDY (NEW) -->
+<section id="case" class="std">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="label">실제 파일럿 사례</span>
+      <h2 class="section-title">3개월 만에 검증된 효과</h2>
+      <p class="lead">체어 8대 규모의 중견 치과에서 실제로 일어난 결과를 공유합니다</p>
+    </div>
+
+    <div class="case-hero reveal">
+      <div class="case-meta">
+        <span>📍 <strong>강남 N치과</strong></span>
+        <span>· 체어 <strong>8대</strong></span>
+        <span>· 운영 <strong>12년차</strong></span>
+        <span>· 누적 환자 <strong>약 22,400명</strong></span>
+      </div>
+      <h3>"매달 잃고 있던 매출이 보였습니다"</h3>
+      <p style="color: var(--ink-60); margin-top: 12px; font-size: 15px;">파일럿 시작 전: 1년 이상 미내원 환자 9,800명 (전체의 43.7%)</p>
+    </div>
+
+    <div class="case-stats reveal">
+      <div class="case-stat">
+        <div class="cs-label">3개월 누적 매출 기여</div>
+        <div class="cs-num green">+ 4,960만</div>
+        <div class="cs-sub">도입 전 동기간 대비</div>
+      </div>
+      <div class="case-stat">
+        <div class="cs-label">추가 내원 환자</div>
+        <div class="cs-num">76명</div>
+        <div class="cs-sub">3개월 누적, 신규 콜 발송 414명</div>
+      </div>
+      <div class="case-stat">
+        <div class="cs-label">월 매출 lift</div>
+        <div class="cs-num">+ 4.0%</div>
+        <div class="cs-sub">기존 월 매출 4억 1,200만 대비</div>
+      </div>
+      <div class="case-stat">
+        <div class="cs-label">구독료 대비 ROI</div>
+        <div class="cs-num green">57배</div>
+        <div class="cs-sub">3개월 구독료 87만원 기준</div>
+      </div>
+    </div>
+
+    <div class="case-chart-wrap reveal">
+      <p class="case-chart-title">월별 매출 기여 추이</p>
+      <p class="case-chart-sub">초기 1개월부터 효과가 나타나고, 2개월차에 정점을 찍은 후 안정화 단계로 접어듭니다</p>
+      <div class="chart-rows">
+        <div class="chart-row">
+          <span class="chart-label">1개월차</span>
+          <div class="chart-bar-track"><div class="chart-bar-fill m1">발굴 168 · 내원 24</div></div>
+          <div class="chart-value">+ 1,420만<br><small>시술 18건</small></div>
+        </div>
+        <div class="chart-row">
+          <span class="chart-label">2개월차</span>
+          <div class="chart-bar-track"><div class="chart-bar-fill m2">발굴 142 · 내원 27</div></div>
+          <div class="chart-value">+ 1,890만<br><small>시술 21건</small></div>
+        </div>
+        <div class="chart-row">
+          <span class="chart-label">3개월차</span>
+          <div class="chart-bar-track"><div class="chart-bar-fill m3">발굴 126 · 내원 25</div></div>
+          <div class="chart-value">+ 1,650만<br><small>시술 19건</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="case-compare reveal">
+      <p class="case-chart-title">도입 전 vs 도입 후 월 매출 비교</p>
+      <p class="case-chart-sub">기존 매출 흐름은 그대로 유지하면서, 잠자고 있던 구환에서 추가 매출이 발생합니다</p>
+      <div style="margin-top: 24px;">
+        <div class="compare-row">
+          <span class="compare-label">도입 전</span>
+          <div class="compare-bar-track"><div class="compare-bar-fill before"></div></div>
+          <div class="compare-value">4억 1,200만<br><small>월 평균</small></div>
+        </div>
+        <div class="compare-row">
+          <span class="compare-label">도입 후</span>
+          <div class="compare-bar-track"><div class="compare-bar-fill after"></div></div>
+          <div class="compare-value green">4억 2,850만<br><small>+ 1,650만/월</small></div>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align: center; margin-top: 32px; font-size: 13px; color: var(--ink-40); line-height: 1.7;">
+      ※ 파일럿 데이터 기준. 클리닉별 환자 구성, 진료 카테고리, 운영 방식에 따라 효과는 달라질 수 있습니다.<br>
+      Pro 구독으로 시작하시면 첫 30일 무료로 본인 클리닉에서 직접 검증해보실 수 있어요.
+    </p>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section class="std alt">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="label">데이터 보안</span>
+      <h2 class="section-title">환자 정보는 원내에서만</h2>
+      <p class="lead">의료 데이터는 한 번도 외부로 나가지 않습니다</p>
+    </div>
+    <div class="privacy-grid">
+      <div class="privacy-card reveal">
+        <div class="privacy-icon">🏥</div>
+        <h4>원내 서버에서만 처리</h4>
+        <p>병원에 설치된 맥미니가 모든 분석을 수행합니다. 환자 차트 데이터는 단 한 번도 외부 서버로 전송되지 않습니다.</p>
+      </div>
+      <div class="privacy-card reveal">
+        <div class="privacy-icon">🔒</div>
+        <h4>네트워크 분리 구성</h4>
+        <p>덴트웹 서버와는 로컬 네트워크로만 연결되며, 외부 인터넷 접근은 시스템 업데이트 시에만 제한적으로 허용됩니다.</p>
+      </div>
+      <div class="privacy-card reveal">
+        <div class="privacy-icon">📋</div>
+        <h4>의료법 준수 설계</h4>
+        <p>의료법, 개인정보보호법, 의료기록물 관리 규정을 모두 준수하도록 설계되었습니다. 감사 로그 자동 보관.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SETUP -->
+<section class="std">
+  <div class="wrap-narrow">
+    <div class="sec-header">
+      <span class="label">설치 절차</span>
+      <h2 class="section-title">택배 받고, 5분이면 끝</h2>
+      <p class="lead">출장 설치 기사 방문 없이 누구나 직접 설치할 수 있습니다</p>
+    </div>
+    <div class="ship-steps">
+      <div class="ship-step reveal">
+        <div class="ship-icon-wrap">📦</div>
+        <h4>택배 도착</h4>
+        <p>맥미니 본체와 케이블이 박스로 도착합니다</p>
+        <span class="ship-time">신청 후 2-3일</span>
+      </div>
+      <div class="ship-step reveal">
+        <div class="ship-icon-wrap">🔌</div>
+        <h4>전원 + 랜선 연결</h4>
+        <p>콘센트에 전원을 꽂고, 공유기에 랜선만 연결하면 됩니다</p>
+        <span class="ship-time">5분</span>
+      </div>
+      <div class="ship-step reveal">
+        <div class="ship-icon-wrap">✨</div>
+        <h4>다음 날 자동 시작</h4>
+        <p>새벽에 자동으로 분석을 시작하고 다음 날 아침 데스크 큐가 활성화됩니다</p>
+        <span class="ship-time">자동</span>
+      </div>
+    </div>
+    <p style="text-align: center; margin-top: 32px; font-size: 14px; color: var(--ink-40); line-height: 1.7;">
+      설치 중 막히는 부분이 있으면 카카오톡 상담으로 원격 지원해드립니다.<br>
+      덴트웹 연동 설정은 원격으로 처리되니 추가로 하실 일이 없습니다.
+    </p>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="std alt">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="label">가격</span>
+      <h2 class="section-title">인건비보다 저렴합니다</h2>
+      <p class="lead">리콜 담당자 한 명 채용 비용의 1/10로<br>훨씬 체계적인 리콜 시스템을 운영하세요</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">FREE</div>
+        <div class="price-name">웹 체험판</div>
+        <div class="price-num">0<small>원</small></div>
+        <p class="price-sub">서버 설치 없이 웹으로 가능성 확인</p>
+        <ul class="price-feat">
+          <li><span class="check">✓</span>주요 회수 대상 환자 일부 공개</li>
+          <li><span class="check">✓</span>우선순위 상위 일부 미리보기</li>
+          <li><span class="check">✓</span>월 1회 업데이트</li>
+          <li class="disabled"><span class="x">×</span>전체 환자 명단 접근</li>
+          <li class="disabled"><span class="x">×</span>역할별 대시보드</li>
+          <li class="disabled"><span class="x">×</span>실시간 콜 추적</li>
+          <li class="disabled"><span class="x">×</span>맥미니 서버</li>
+        </ul>
+        <a href="#cta" class="btn btn-secondary price-cta">무료로 시작하기</a>
+        <div class="price-sub-note">
+          가능성을 먼저 확인해보고 싶은 분께. 서버 설치 없이 웹에서 바로 사용 가능합니다.
+        </div>
+      </div>
+
+      <div class="price-card featured">
+        <span class="featured-badge">RECOMMENDED</span>
+        <div class="price-tier">PRO</div>
+        <div class="price-name">맥미니 서버 포함</div>
+        <div class="price-num">29만<small>원/월</small></div>
+        <p class="price-sub">30일 무료 체험 · 언제든 해지</p>
+        <ul class="price-feat">
+          <li><span class="check">✓</span>전체 환자 자동 분류 및 우선순위 정렬</li>
+          <li><span class="check">✓</span>대표원장 · 실장 · 데스크 3개 대시보드</li>
+          <li><span class="check">✓</span>실시간 콜 추적 + 전환 퍼널</li>
+          <li><span class="check">✓</span>카카오 알림톡 자동 발송</li>
+          <li><span class="check">✓</span>매월 ROI 리포트 이메일 발송</li>
+          <li><span class="check">✓</span>맥미니 M4 (32GB) 임대 포함 · 택배 배송</li>
+          <li><span class="check">✓</span>셀프 설치 (전원·랜선 5분) + 원격 지원</li>
+          <li><span class="check">✓</span>향후 모든 기능 업데이트 무료</li>
+        </ul>
+        <a href="#cta" class="btn btn-primary price-cta">데모 신청하기</a>
+        <div class="price-sub-note">
+          시술 1건 회수만으로도 수개월 구독료가 회수됩니다.<br>
+          파일럿 사례 기준 ROI 평균 50배 이상.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap" class="std">
+  <div class="wrap-narrow">
+    <div class="sec-header left">
+      <span class="label">제품 로드맵</span>
+      <h2 class="section-title">오토리콜은 시작입니다</h2>
+      <p class="lead">치과 운영의 모든 반복 작업을 자동화하는 방향으로 확장합니다</p>
+    </div>
+    <div class="roadmap">
+      <div class="roadmap-item now">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-quarter">NOW · 2026 Q2</div>
+        <div class="roadmap-title">오토리콜 출시</div>
+        <div class="roadmap-desc">자동 환자 분류 · 역할별 대시보드 · 실시간 콜 추적 · ROI 리포트</div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-quarter">2026 Q3</div>
+        <div class="roadmap-title">콜 녹음 + AI 통화 분석</div>
+        <div class="roadmap-desc">전화 응대 자동 녹음 · 환자가 망설이는 포인트 AI 추출 · 멘트 개선 가이드 자동 생성</div>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-quarter">2026 Q4</div>
+        <div class="roadmap-title">실시간 응대 AI 코칭</div>
+        <div class="roadmap-desc">통화 중 실시간 가이드 표시 · 신규 직원도 베테랑처럼 응대 가능</div>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-quarter">2027 Q1</div>
+        <div class="roadmap-title">동선 알림 시스템</div>
+        <div class="roadmap-desc">체어 가동률 실시간 추적 · 환자 대기 시간 최적화 · 진료 흐름 자동 알림</div>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-quarter">2027 Q2</div>
+        <div class="roadmap-title">AI 진료보조 시스템</div>
+        <div class="roadmap-desc">음성 자동 차팅 · 진단 보조 · 보험 청구 자동화 · 환자 설명 자료 자동 생성</div>
+      </div>
+    </div>
+    <div style="margin-top: 48px; padding: 24px 28px; background: var(--blue-soft); border-radius: 16px;">
+      <p style="font-size: 14px; color: var(--blue-darker); line-height: 1.65;">
+        <strong style="font-weight: 700;">Pro 구독자는 모든 신기능을 추가 비용 없이 사용</strong>할 수 있습니다.
+        지금 가입하시면 향후 추가되는 AI 기능까지 같은 구독료로 이용하실 수 있어요.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section class="std alt">
+  <div class="wrap-narrow">
+    <div class="founder-card">
+      <span class="label">왜 만들었나</span>
+      <p class="founder-quote">"마케팅 업체에 매달 수백만 원을 쓰면서도,<br>정작 이미 우리 환자였던 분들은 어디서 무엇을 하는지<br>모르고 있다는 걸 깨달았습니다."</p>
+      <div class="founder-attr">
+        <strong>치과 원장이 직접 만든 시스템</strong>
+        매일 운영하는 입장에서 정말 필요한 기능만 담았습니다
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="std">
+  <div class="wrap">
+    <div class="sec-header">
+      <span class="label">자주 묻는 질문</span>
+      <h2 class="section-title">FAQ</h2>
+    </div>
+    <div class="faq">
+      <div class="faq-item">
+        <button class="faq-q">덴트웹 외 다른 EMR도 지원하나요? <span class="faq-q-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">2026년 현재는 덴트웹 연동만 지원합니다. 한경/투웰브/하나로 등 다른 EMR 연동은 2027년 상반기 중 순차적으로 개발 예정이며, 사전 신청을 받고 있습니다.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">설치가 정말 5분이면 되나요? <span class="faq-q-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">택배로 도착한 맥미니에 전원 어댑터와 랜선만 연결하시면 됩니다. 공유기 옆이나 데스크 한쪽에 두실 수 있는 작은 박스 크기예요. 덴트웹 연동 설정은 원격으로 처리하므로 추가로 하실 일이 없습니다. 막히는 부분이 있으면 카카오톡 상담으로 원격 지원해드립니다.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">무료 버전과 Pro 버전의 차이는 무엇인가요? <span class="faq-q-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">무료 버전은 서버 설치 없이 웹에서 사용 가능하며, 일부 환자만 미리보기로 확인할 수 있습니다. Pro 버전은 맥미니 서버가 포함되어 전체 환자 명단에 대한 정교한 분석, 실시간 콜 추적, 역할별 대시보드, 카카오 알림톡 자동 발송 등 모든 기능을 사용할 수 있습니다.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">환자 정보가 외부로 유출될 우려는 없나요? <span class="faq-q-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Pro 버전의 경우 모든 분석은 병원에 설치된 맥미니 내부에서만 수행됩니다. 환자 차트 데이터는 한 번도 외부 서버로 전송되지 않으며, 시스템 업데이트만 외부와 통신합니다. 의료법, 개인정보보호법을 모두 준수하도록 설계되었습니다.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">효과가 없으면 환불받을 수 있나요? <span class="faq-q-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">Pro 구독은 30일 무료 체험 기간이 있고, 이 기간 동안 어떤 약정도 없습니다. 정식 결제 후에도 월 단위로 해지 가능합니다. 파일럿 사례를 보시면 보통 1개월차부터 매출 기여가 가시화되고, 2-3개월이면 ROI를 명확히 확인하실 수 있습니다.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">기존 데스크 직원들도 쉽게 쓸 수 있나요? <span class="faq-q-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">데스크 화면은 '오늘 콜할 환자 한 명'을 중심으로 설계되어 있습니다. 추가로 익혀야 할 것이 거의 없고, 사용법은 약 10분이면 익히실 수 있습니다. 기존 차트 시스템 사용 경험만 있으면 됩니다.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">맥미니 임대인가요, 구매인가요? <span class="faq-q-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">월 구독료 29만원에 맥미니 M4(32GB) 임대가 포함됩니다. 해지 시 반납해주시면 됩니다. 별도로 맥미니 구매 옵션도 가능하며, 이 경우 구독료가 인하됩니다 (문의 시 안내).</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">콜 녹음 기능은 언제 추가되나요? <span class="faq-q-icon">+</span></button>
+        <div class="faq-a"><div class="faq-a-inner">2026년 3분기 출시 예정입니다. Pro 구독자는 추가 비용 없이 이용 가능합니다. 통화 자동 녹음, AI 통화 내용 분석, 환자별 응대 멘트 개선 가이드가 함께 제공됩니다.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="cta" class="final-cta">
+  <div class="wrap-narrow">
+    <h2>매달 잃고 있는 매출,<br>이제 다시 찾아오세요</h2>
+    <p>30일 무료 체험 · 위험 부담 없이 직접 효과 확인<br>택배 배송 후 5분 셀프 설치 · 언제든 해지 가능</p>
+    <div class="btn-row">
+      <a href="mailto:info@autodent.kr" class="btn btn-primary btn-lg">데모 신청하기 →</a>
+      <a href="#" class="btn btn-secondary btn-lg">카카오톡 상담</a>
+    </div>
+    <p style="margin-top: 32px; font-size: 13px; color: rgba(255,255,255,0.6);">평일 09:00 - 18:00 · 평균 응답 시간 2시간 이내</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand-block">
+        <div class="foot-brand-title">오토덴트</div>
+        <p class="foot-brand-desc">치과 운영의 반복 작업을 자동화하는 AI 시스템.<br>오토리콜부터 시작합니다.</p>
+      </div>
+      <div class="foot-col">
+        <h5>제품</h5>
+        <ul>
+          <li><a href="#solution">오토리콜</a></li>
+          <li><a href="#case">파일럿 사례</a></li>
+          <li><a href="#pricing">가격</a></li>
+          <li><a href="#roadmap">로드맵</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>지원</h5>
+        <ul>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#cta">데모 신청</a></li>
+          <li><a href="mailto:info@autodent.kr">이메일 문의</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>회사</h5>
+        <ul>
+          <li><a href="#">개인정보처리방침</a></li>
+          <li><a href="#">이용약관</a></li>
+          <li><a href="#">의료정보보호</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>© 2026 오토덴트. All rights reserved.</div>
+      <div>info@autodent.kr · 02-XXXX-XXXX</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.faq-q').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var item = btn.closest('.faq-item');
+    var ans = item.querySelector('.faq-a');
+    var isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(function(other) {
+      other.classList.remove('open');
+      other.querySelector('.faq-a').style.maxHeight = '0';
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      ans.style.maxHeight = ans.scrollHeight + 'px';
+    }
+  });
+});
+
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+</script>
+
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

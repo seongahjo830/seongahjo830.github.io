@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아무 치과나 받지 않습니다 — 리콜 (심사·초대제)</title>
+<style>
+  :root{--bg:#0e0a0d;--card:#1a121a;--ink:#F4EEF2;--dim:#A892A4;--line:#2e2330;--ac:#D85A7F;--ac2:#B23A60;--gold:#E8C56A;--go:#34d399}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',system-ui,sans-serif;line-height:1.7;letter-spacing:-.013em;-webkit-font-smoothing:antialiased}
+  .tierbadge{position:fixed;top:10px;left:10px;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;font-weight:900;font-size:12px;padding:5px 12px;border-radius:7px;z-index:99}
+  .wrap{max-width:640px;margin:0 auto;padding:0 22px}
+  section{padding:46px 0;border-bottom:1px solid var(--line)}
+  .eyebrow{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.06em;color:var(--ac);border:1px solid var(--ac2);padding:5px 13px;border-radius:99px;margin-bottom:16px}
+  h1{font-size:clamp(30px,6.2vw,50px);font-weight:900;line-height:1.08;letter-spacing:-.035em}
+  h1 em{font-style:normal;color:var(--ac)}
+  h2{font-size:clamp(21px,3.4vw,28px);font-weight:850;letter-spacing:-.02em}
+  p{font-size:16.5px;color:var(--dim)}p b{color:var(--ink)}
+  .hero{padding:62px 0 30px;text-align:center}.hero .sub{max-width:27em;margin:18px auto 0}
+  .rope{font-size:40px;letter-spacing:6px;margin:18px 0;opacity:.8}
+  .gate{background:linear-gradient(160deg,#1f1320,#271826);border:1px solid var(--ac2);border-radius:16px;padding:24px;margin-top:22px;text-align:left}
+  .gate .k{font-size:13px;font-weight:800;color:var(--ac)}
+  .gate .row{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line);font-size:14.5px}
+  .gate .row:first-of-type{border-top:0;margin-top:10px}
+  .gate .v{font-weight:800;color:var(--gold)}
+  .codebox{display:flex;gap:8px;margin-top:14px}
+  .codebox input{flex:1;background:#100a10;border:1px solid var(--line);border-radius:10px;padding:13px;color:var(--ink);font-family:inherit;font-size:15px;text-align:center;letter-spacing:2px}
+  .codebox button{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:13px 18px;font-weight:800;font-family:inherit;cursor:pointer}
+  .cta{display:inline-block;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;font-weight:900;font-size:17px;padding:16px 30px;border-radius:13px;text-decoration:none;margin-top:20px}
+  .finep{font-size:13px;color:var(--dim);margin-top:12px}
+  .why{background:rgba(52,211,153,.06);border:1px solid #1d4a3c;border-radius:14px;padding:18px 20px;font-size:14px;color:var(--dim)}
+  .why b{color:var(--go)}
+  .warn{background:rgba(232,197,106,.08);border:1px solid #5a4a2e;border-radius:12px;padding:14px 16px;font-size:13px;color:var(--dim);margin-top:14px}
+  .warn b{color:var(--gold)}
+  .steps{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .steps .s{flex:1;min-width:110px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;font-size:13.5px;font-weight:650}
+  .fill{display:inline-block;border:1.5px dashed #5a3a48;background:rgba(216,90,127,.08);color:var(--ac);border-radius:7px;padding:2px 9px;font-size:12.5px;font-weight:650}
+  .final{text-align:center}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:#000;color:#fff;border:1px solid var(--ac2);padding:12px 18px;border-radius:10px;font-size:13.5px;font-weight:700;opacity:0;transition:.3s;z-index:90;max-width:90vw}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="tierbadge">🥇 초고수 ⑤ 심사·초대제</div>
+<div class="wrap">
+  <section class="hero">
+    <span class="eyebrow">✦ 추천받은 치과만 ✦</span>
+    <div class="rope">🔴 ⛓ 🔴</div>
+    <h1>아무 치과나<br><em>받지 않습니다.</em></h1>
+    <p class="sub">무료지만, 먼저 든 치과의 <b>추천</b>이나 심사를 통과한 곳만 들어옵니다. 직접 셋업까지 해드리니 한 번에 받을 수 있는 수가 한정이라서요. <b>합류 자체가 자격</b>이 됩니다.</p>
+
+    <div class="gate">
+      <div class="k">🚪 현재 입장 현황</div>
+      <div class="row"><span>이번 달 심사 통과</span><span class="v"><span class="fill">○곳</span></span></div>
+      <div class="row"><span>심사 대기 중</span><span class="v"><span class="fill">○곳</span></span></div>
+      <div class="codebox">
+        <input id="code" placeholder="추천 코드 입력" maxlength="8">
+        <button id="apply">신청</button>
+      </div>
+    </div>
+    <a class="cta" href="#get">초대 코드로 합류 신청 →</a>
+    <p class="finep">무료 · 코드 없으면 대기 신청 가능</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">🧠 왜 ‘못 들어오게’ 하나</span>
+    <h2>막을수록 더 원합니다</h2>
+    <p style="margin-top:10px">누구나 받으면 평범해져요. <b>벨벳 로프</b>(Studio 54)처럼 문을 좁히면, 들어온 사람은 ‘선택받은 치과’가 됩니다. 추천 코드는 원장이 동료에게 주는 <b>입장권이자 자랑거리</b> — 받은 동료도 ‘아무나 못 들어오는 데 초대받았다’가 됩니다.</p>
+    <div class="why" style="margin-top:16px">🧠 <b>심리 근거:</b> 반발 이론(Brehm — 막으면 더 원함) + 지위 신호(Veblen·버킨 — 못 가질수록 가치) + 사회적 정체성(초대=내집단 소속). 추천 코드 = 게이팅과 바이럴을 동시에.</div>
+    <div class="warn">⚠️ <b>진짜여야 함:</b> 심사·초대가 실제로 의미 있어야(셋업 수가 진짜 한정 등). “아무나 다 통과”면 들통나고 하수로 추락.</div>
+  </section>
+
+  <section class="final" id="get" style="border-bottom:0">
+    <span class="eyebrow">⚡ 합류 2분</span>
+    <h2>코드 입력 → 설치</h2>
+    <div class="steps" style="margin-top:14px">
+      <div class="s">1. 추천 코드·심사</div>
+      <div class="s">2. 다운로드·설치</div>
+      <div class="s">3. 덴트웹 연결</div>
+    </div>
+    <a class="cta" href="#" style="margin-top:18px">⬇ 합류 신청하기</a>
+    <p class="finep"><span class="fill">실제 신청 폼·코드 시스템 연결</span></p>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  function toast(t){var e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2800);}
+  document.getElementById('apply').addEventListener('click',function(){
+    var c=document.getElementById('code').value.trim();
+    toast(c?'🔓 코드 확인 중… 초대받은 치과만 통과 — 합류 자체가 자격이 됩니다.':'코드가 없으면 대기 신청 — 막힐수록 더 원하게 되는 게 포인트.');
+  });
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AutoRecall — 다크 테크</title>
+<style>
+  :root{
+    --bg:#080B12; --panel:#0E1320; --panel2:#121A2B; --ink:#E8EEF8; --soft:#9AA7BD; --faint:#5E6B82;
+    --line:#1C2740; --cyan:#22D3EE; --violet:#A78BFA; --green:#34D399;
+    --slot:#fb7185; --clin:#fbbf24; --val:#facc15; --std:#22d3ee; --rev:#34d399;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,sans-serif;
+    --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{overflow-x:hidden}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.7;font-size:17px;-webkit-font-smoothing:antialiased;overflow-x:hidden;width:100%}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:radial-gradient(rgba(255,255,255,.03) 1px,transparent 1px);background-size:30px 30px;
+    mask-image:radial-gradient(circle at 70% 0,#000,transparent 70%)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+  a{color:inherit}
+  .mono{font-family:var(--mono)}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}
+  nav{position:sticky;top:0;z-index:20;background:rgba(8,11,18,.7);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .brand{font-weight:800;letter-spacing:-.02em;font-size:19px}
+  .brand .d{color:var(--cyan)}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15px;text-decoration:none;border-radius:11px;padding:12px 20px;
+    background:linear-gradient(90deg,var(--cyan),var(--violet));color:#06121a;box-shadow:0 8px 30px -8px rgba(34,211,238,.5)}
+  .btn.lg{padding:16px 28px;font-size:17px}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+  /* hero */
+  .hero{padding:90px 0 70px;position:relative;overflow:hidden}
+  .glow{position:absolute;border-radius:50%;filter:blur(80px);opacity:.4;z-index:0}
+  .hero h1{font-size:clamp(36px,6.4vw,68px);line-height:1.08;letter-spacing:-.035em;font-weight:800;margin:22px 0 0}
+  .grad{background:linear-gradient(100deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .sub{font-size:clamp(17px,2.3vw,21px);color:var(--soft);max-width:600px;margin:24px 0 0}
+  .hero .row{display:flex;gap:13px;flex-wrap:wrap;margin-top:34px}
+  .hero .micro{font-family:var(--mono);font-size:12.5px;color:var(--faint);margin-top:16px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:54px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .stat .n{font-size:26px;font-weight:800;letter-spacing:-.02em}
+  .stat .n.c{color:var(--cyan)} .stat .l{font-size:13.5px;color:var(--soft);margin-top:6px}
+  @media(max-width:620px){.stats{grid-template-columns:1fr}}
+  section{padding:80px 0}
+  .sech{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.025em;line-height:1.18;margin-top:14px}
+  .lead{color:var(--soft);font-size:18px;max-width:640px;margin-top:16px}
+  /* pains */
+  .pains{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:40px}
+  .pain{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;overflow:hidden}
+  .pain::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cyan)}
+  .pain.m::before{background:var(--violet)}
+  .pain .who{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--faint)}
+  .pain h3{font-size:18px;margin:8px 0 8px}
+  .pain p{font-size:15px;color:var(--soft)}
+  @media(max-width:620px){.pains{grid-template-columns:1fr}}
+  /* tiers */
+  .tiers{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:40px}
+  .tier{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 16px;text-align:center;transition:transform .15s,border-color .15s}
+  .tier:hover{transform:translateY(-4px);border-color:var(--tc)}
+  .tier .ic{font-size:26px}
+  .tier .nm{font-weight:800;font-size:14px;margin-top:10px}
+  .tier .sc{font-family:var(--mono);font-size:22px;font-weight:800;color:var(--tc);margin-top:8px}
+  .tier .ds{font-size:12px;color:var(--faint);margin-top:6px}
+  @media(max-width:760px){.tiers{grid-template-columns:repeat(2,1fr)}}
+  /* formula */
+  .feq{display:flex;justify-content:center;align-items:stretch;gap:12px;flex-wrap:wrap;margin-top:36px}
+  .term{flex:1 1 180px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:22px;text-align:center}
+  .term b{font-size:16px} .term span{display:block;font-size:12.5px;color:var(--faint);margin-top:6px}
+  .op{align-self:center;font-size:24px;color:var(--cyan);font-weight:800}
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:38px}
+  .gstep{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .gstep .k{font-family:var(--mono);font-size:12px;color:var(--cyan)}
+  .gstep .t{font-weight:800;margin:8px 0 6px}
+  .gstep p{font-size:13.5px;color:var(--soft)}
+  @media(max-width:760px){.steps{grid-template-columns:repeat(2,1fr)}}
+  /* cta */
+  .final{margin:30px 0 0;background:linear-gradient(120deg,#0d2b33,#161033);border:1px solid var(--line);border-radius:26px;padding:64px 28px;text-align:center;position:relative;overflow:hidden}
+  .final .g{position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,.25),transparent 70%);top:-120px;right:-60px}
+  .final h2{font-size:clamp(26px,4.4vw,42px);font-weight:800;letter-spacing:-.02em;position:relative}
+  .final p{color:var(--soft);margin:16px auto 0;max-width:520px;position:relative}
+  .final .row{justify-content:center;margin-top:28px;position:relative;display:flex;gap:13px;flex-wrap:wrap}
+  footer{border-top:1px solid var(--line);padding:30px 0 50px;color:var(--faint);font-size:12.5px;font-family:var(--mono);text-align:center}
+</style>
+</head>
+<body>
+  <nav><div class="wrap">
+    <div class="brand">Auto<span class="d">●</span>Recall</div>
+    <a href="#install" class="btn">무료로 시작</a>
+  </div></nav>
+
+  <header class="hero">
+    <div class="glow" style="width:520px;height:520px;background:#0e7490;top:-160px;right:-120px"></div>
+    <div class="glow" style="width:360px;height:360px;background:#6d28d9;bottom:-120px;left:-100px;opacity:.25"></div>
+    <div class="wrap">
+      <div class="kicker">// AI-DRIVEN RECALL ENGINE</div>
+      <h1>오늘 전화할 환자,<br><span class="grad">점수순으로 자동 정렬.</span></h1>
+      <p class="sub">차트 데이터를 읽어 ‘오늘 누구부터 전화할지’를 결정론 엔진이 매일 아침 줄 세웁니다. 실장님은 위에서부터 누르기만.</p>
+      <div class="row"><a href="#install" class="btn lg">무료 버전 설치</a><a href="#tiers" class="btn ghost lg">5단계 큐 보기</a></div>
+      <p class="micro">$ 덴트웹 연동 · 원내 PC 구동 · 외부 서버 없음 · 설치 5분</p>
+      <div class="stats">
+        <div class="stat"><div class="n c">1-CLICK</div><div class="l">통화 후 결과 기록 → 다음 액션 자동</div></div>
+        <div class="stat"><div class="n c">0 min</div><div class="l">명단 만들고 정렬하는 준비 시간</div></div>
+        <div class="stat"><div class="n c">5-TIER</div><div class="l">슬롯·임상·고가치·표준·재활성화 큐</div></div>
+      </div>
+    </div>
+  </header>
+
+  <section><div class="wrap">
+    <div class="kicker">01 · PROBLEM</div>
+    <h2 class="sech">막막함의 원인은 의지가 아니라 구조.</h2>
+    <p class="lead">누구한테, 왜, 지금 전화해야 하는지가 어디에도 정리돼 있지 않습니다.</p>
+    <div class="pains">
+      <div class="pain"><div class="who">// 실장</div><h3>전화 대상을 ‘감’으로 고른다</h3><p>기억나는 사람한테만 돌게 되고, 와야 할 환자는 명단에 없습니다.</p></div>
+      <div class="pain m"><div class="who">// 원장</div><h3>이탈 매출은 숫자로 안 잡힌다</h3><p>안 온 환자는 조용히 옆 치과로. 새는 줄도 모릅니다.</p></div>
+      <div class="pain"><div class="who">// 실장</div><h3>전화 결과가 안 남는다</h3><p>어제 한 일이 오늘 사라져, 같은 사람한테 또 겁니다.</p></div>
+      <div class="pain m"><div class="who">// 원장</div><h3>‘리콜 돌려라’는 매번 미뤄진다</h3><p>사람 의지에 기대면 바쁜 날 제일 먼저 무너집니다.</p></div>
+    </div>
+  </div></section>
+
+  <section id="tiers"><div class="wrap">
+    <div class="kicker">02 · QUEUE</div>
+    <h2 class="sech">콜 우선도 → 5단계 큐</h2>
+    <div class="tiers">
+      <div class="tier" style="--tc:var(--slot)"><div class="ic">🔥</div><div class="nm">슬롯필러</div><div class="sc">98</div><div class="ds">오늘 빈자리</div></div>
+      <div class="tier" style="--tc:var(--clin)"><div class="ic">🚨</div><div class="nm">임상긴급</div><div class="sc">91</div><div class="ds">미루면 위험</div></div>
+      <div class="tier" style="--tc:var(--val)"><div class="ic">💰</div><div class="nm">고가치</div><div class="sc">84</div><div class="ds">큰 케이스</div></div>
+      <div class="tier" style="--tc:var(--std)"><div class="ic">📅</div><div class="nm">표준</div><div class="sc">67</div><div class="ds">정기 도래</div></div>
+      <div class="tier" style="--tc:var(--rev)"><div class="ic">🌱</div><div class="nm">재활성화</div><div class="sc">52</div><div class="ds">잠든 환자</div></div>
+    </div>
+    <div class="feq">
+      <div class="term"><b>환자 가치</b><span>임상·금전적 명분</span></div><div class="op">×</div>
+      <div class="term"><b>타이밍</b><span>도래 시점의 적시성</span></div><div class="op">×</div>
+      <div class="term"><b>받을 확률</b><span>지금 걸면 받는가</span></div>
+    </div>
+  </div></section>
+
+  <section><div class="wrap">
+    <div class="kicker">03 · DEPLOY</div>
+    <h2 class="sech">설정은 한 번, 매일은 4단계.</h2>
+    <div class="steps">
+      <div class="gstep"><div class="k">step_01</div><div class="t">설치</div><p>데스크톱 앱 실행. 서버·세팅 없음.</p></div>
+      <div class="gstep"><div class="k">step_02</div><div class="t">차트 연결</div><p>쓰던 덴트웹 데이터 그대로.</p></div>
+      <div class="gstep"><div class="k">step_03</div><div class="t">오늘 큐</div><p>아침에 열면 점수순 정렬 완료.</p></div>
+      <div class="gstep"><div class="k">step_04</div><div class="t">전화 → 결과</div><p>위에서부터 콜, 버튼 한 번 기록.</p></div>
+    </div>
+    <div class="final" id="install">
+      <div class="g"></div>
+      <h2>준비물은, 쓰던 차트 하나뿐.</h2>
+      <p>무료 버전으로 오늘의 리콜 큐부터 띄워 효과를 직접 확인해 보세요.</p>
+      <div class="row"><a href="#" class="btn lg">무료 버전 설치하기</a><a href="#tiers" class="btn ghost lg">다시 보기</a></div>
+    </div>
+  </div></section>
+
+  <footer>AutoRecall // 치과 리콜 자동화 · 점수·효과 표기는 예시값 · 치료 결과를 보장하지 않습니다</footer>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

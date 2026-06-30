@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoRecall 1기 모집 — 오늘 전화할 환자, AI가 줄 세워 드립니다</title>
+<!--
+  AutoRecall 1기 모집 랜딩페이지 (AI 기능 직설형 / 토스풍 미니멀)
+  외부 의존성 0 — 폰트/JS/이미지 CDN 사용 안 함, 시스템폰트만.
+  주의: 페이지 내 환자 이름·점수·통계 수치는 전부 예시·가정값(가짜 데이터)입니다.
+  실제 다운로드/초대 링크는 placeholder(fill 표시)로 비워둠.
+-->
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --bg-soft:#F6F8FB;
+    --accent:#1D4ED8;
+    --accent-soft:#EAF0FE;
+    --ink:#0F172A;
+    --ink-soft:#475569;
+    --ink-faint:#94A3B8;
+    --line:#E5EAF1;
+    --radius:16px;
+    --shadow:0 8px 30px rgba(15,23,42,.06);
+    --shadow-lg:0 16px 50px rgba(15,23,42,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    font-size:17px;
+    line-height:1.8;
+    -webkit-font-smoothing:antialiased;
+    word-break:keep-all;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px;}
+  .narrow{max-width:760px;margin:0 auto;}
+  section{padding:72px 0;}
+  h1,h2,h3{line-height:1.32;letter-spacing:-.02em;}
+  h2{font-size:30px;font-weight:800;margin-bottom:14px;}
+  .sub{color:var(--ink-soft);font-size:17px;}
+  .eyebrow{
+    display:inline-block;color:var(--accent);font-weight:700;font-size:14px;
+    letter-spacing:.02em;margin-bottom:10px;
+  }
+  .accent{color:var(--accent);}
+  .center{text-align:center;}
+
+  /* 버튼 */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--accent);color:#fff;font-weight:700;font-size:17px;
+    padding:15px 28px;border-radius:14px;text-decoration:none;border:none;cursor:pointer;
+    box-shadow:0 6px 20px rgba(29,78,216,.28);transition:transform .15s ease,box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(29,78,216,.34);}
+  .btn-ghost{
+    background:#fff;color:var(--accent);border:1.5px solid var(--accent);box-shadow:none;
+  }
+  .btn-sm{padding:9px 16px;font-size:14px;border-radius:10px;}
+
+  /* 헤더 */
+  header.nav{
+    position:sticky;top:0;z-index:50;background:rgba(255,255,255,.86);
+    backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line);
+  }
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:62px;}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;letter-spacing:-.02em;}
+  .logo .dot{width:11px;height:11px;border-radius:4px;background:var(--accent);display:inline-block;}
+  .logo small{font-weight:600;color:var(--ink-faint);font-size:12px;}
+
+  /* 히어로 */
+  .hero{padding:64px 0 40px;}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;}
+  .hero h1{font-size:44px;font-weight:800;letter-spacing:-.03em;}
+  .hero h1 .accent{display:inline;}
+  .hero .lead{font-size:19px;color:var(--ink-soft);margin:18px 0 12px;}
+  .hero .one-liner{
+    font-size:15.5px;color:var(--ink-soft);background:var(--bg-soft);
+    border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:18px 0 26px;
+  }
+  .hero-cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+  .hero-note{font-size:13px;color:var(--ink-faint);margin-top:14px;}
+
+  /* 콜 큐 목업 */
+  .mock{
+    background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-lg);
+    padding:18px;
+  }
+  .mock-head{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 14px;border-bottom:1px solid var(--line);}
+  .mock-title{font-weight:800;font-size:16px;}
+  .mock-title .pill{font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:999px;margin-left:8px;vertical-align:middle;}
+  .mock-date{font-size:12px;color:var(--ink-faint);}
+  .row{
+    display:flex;align-items:center;gap:12px;padding:13px 8px;border-bottom:1px solid var(--line);
+  }
+  .row:last-child{border-bottom:none;}
+  .rank{font-weight:800;color:var(--ink-faint);width:18px;text-align:center;font-size:14px;}
+  .avatar{width:38px;height:38px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 auto;}
+  .who{flex:1;min-width:0;}
+  .who .nm{font-weight:700;font-size:15px;}
+  .who .meta{font-size:12.5px;color:var(--ink-faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .score{
+    font-weight:800;font-size:13px;padding:5px 10px;border-radius:999px;white-space:nowrap;
+  }
+  .s-hot{background:#FEE2E2;color:#B91C1C;}
+  .s-warm{background:#FEF3C7;color:#B45309;}
+  .s-cool{background:#DBEAFE;color:#1D4ED8;}
+  .call-btn{
+    background:var(--accent);color:#fff;font-weight:700;font-size:13px;border:none;border-radius:10px;
+    padding:8px 12px;display:flex;align-items:center;gap:5px;white-space:nowrap;cursor:default;
+  }
+  .mock-foot{font-size:11px;color:var(--ink-faint);padding:10px 8px 4px;text-align:center;}
+
+  /* 3스텝 */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .step{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);
+  }
+  .step .n{
+    width:34px;height:34px;border-radius:10px;background:var(--accent);color:#fff;
+    font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:16px;
+  }
+  .step h3{font-size:18px;font-weight:800;margin-bottom:6px;}
+  .step p{font-size:15px;color:var(--ink-soft);}
+  .step-tag{display:block;margin-top:14px;font-size:13px;color:var(--accent);font-weight:700;}
+
+  /* 문제 인식 */
+  .soft{background:var(--bg-soft);}
+  .problems{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px;}
+  .prob{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;}
+  .prob .ic{font-size:26px;margin-bottom:10px;}
+  .prob h3{font-size:17px;font-weight:800;margin-bottom:6px;}
+  .prob p{font-size:14.5px;color:var(--ink-soft);}
+
+  /* 자가진단 */
+  .quiz{
+    background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);
+    padding:30px;margin-top:24px;
+  }
+  .q-item{
+    display:flex;align-items:flex-start;gap:13px;padding:13px 4px;border-bottom:1px solid var(--line);cursor:pointer;
+    user-select:none;
+  }
+  .q-item:last-of-type{border-bottom:none;}
+  .q-box{
+    width:24px;height:24px;flex:0 0 auto;border:2px solid var(--line);border-radius:7px;margin-top:3px;
+    display:flex;align-items:center;justify-content:center;transition:all .12s ease;color:#fff;font-size:14px;font-weight:800;
+  }
+  .q-item.on .q-box{background:var(--accent);border-color:var(--accent);}
+  .q-item.on .q-txt{color:var(--ink);}
+  .q-txt{font-size:16px;color:var(--ink-soft);line-height:1.55;}
+  .q-result{
+    margin-top:22px;padding:20px;border-radius:14px;text-align:center;font-weight:700;font-size:18px;
+    background:var(--bg-soft);color:var(--ink-soft);transition:all .2s ease;
+  }
+  .q-result .count{font-size:14px;font-weight:600;display:block;margin-top:4px;color:var(--ink-faint);}
+  .r-good{background:#DCFCE7;color:#15803D;}
+  .r-warn{background:#FEF3C7;color:#B45309;}
+  .r-bad{background:#FEE2E2;color:#B91C1C;}
+
+  /* 기능 그리드 */
+  .feats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .feat{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);
+  }
+  .feat .ic{
+    width:46px;height:46px;border-radius:12px;background:var(--accent-soft);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;
+  }
+  .feat h3{font-size:17px;font-weight:800;margin-bottom:6px;}
+  .feat p{font-size:14.5px;color:var(--ink-soft);}
+
+  /* 1기 모집 */
+  .join-wrap{
+    background:linear-gradient(180deg,#F6F8FB,#EEF3FC);
+  }
+  .join-card{
+    background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow-lg);
+    padding:40px;max-width:860px;margin:0 auto;
+  }
+  .perks{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:26px 0;}
+  .perk{display:flex;gap:13px;align-items:flex-start;}
+  .perk .pn{
+    width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;font-weight:800;
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:14px;
+  }
+  .perk h4{font-size:15.5px;font-weight:800;margin-bottom:2px;}
+  .perk p{font-size:14px;color:var(--ink-soft);}
+  .gauge-wrap{margin:8px 0 22px;}
+  .gauge-label{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-soft);margin-bottom:7px;font-weight:600;}
+  .gauge{height:12px;background:var(--bg-soft);border-radius:999px;overflow:hidden;border:1px solid var(--line);}
+  .gauge > i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#1D4ED8,#3B82F6);border-radius:999px;}
+  /* placeholder: '남은 자리' 게이지 폭(62%)·수치는 예시값. 실제 모집 현황과 연동 필요(fill). */
+  .join-cta{text-align:center;}
+  .join-cta .fineprint{font-size:13px;color:var(--ink-faint);margin-top:12px;}
+
+  /* placeholder fill 표시 */
+  .fill{
+    background:#FEF08A;color:#713F12;font-weight:700;font-size:12px;padding:1px 7px;border-radius:6px;
+    border:1px dashed #CA8A04;
+  }
+
+  /* 푸터 */
+  footer{background:#0F172A;color:#CBD5E1;padding:44px 0;font-size:14px;}
+  footer .f-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;align-items:flex-start;}
+  footer .f-brand{font-weight:800;color:#fff;font-size:17px;}
+  footer a{color:#93C5FD;text-decoration:none;}
+  footer .f-links{display:flex;flex-direction:column;gap:7px;}
+  footer .disclaimer{margin-top:26px;padding-top:18px;border-top:1px solid #1E293B;font-size:12px;color:#64748B;line-height:1.7;}
+
+  .note-mini{font-size:12px;color:var(--ink-faint);margin-top:18px;text-align:center;}
+
+  /* 모바일 반응형 */
+  @media (max-width:860px){
+    .hero-grid{grid-template-columns:1fr;gap:32px;}
+    .hero h1{font-size:34px;}
+    .steps,.problems,.feats{grid-template-columns:1fr;}
+    .perks{grid-template-columns:1fr;}
+  }
+  @media (max-width:560px){
+    body{font-size:16px;}
+    section{padding:52px 0;}
+    .hero h1{font-size:29px;}
+    h2{font-size:25px;}
+    .join-card{padding:26px 20px;}
+    .quiz{padding:22px 18px;}
+    .hero-cta{flex-direction:column;align-items:stretch;}
+    .btn{width:100%;}
+    .nav .btn-sm{padding:8px 12px;}
+    .logo small{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- 네비 -->
+<header class="nav">
+  <div class="wrap nav-in">
+    <div class="logo"><span class="dot"></span>AutoRecall <small>by 포프리즘</small></div>
+    <a href="#join" class="btn btn-sm">무료로 1기 합류</a>
+  </div>
+</header>
+
+<!-- 1) 히어로 -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">미내원 환자 회수 도구 · 1기 모집</span>
+      <h1>오늘 전화할 환자,<br><span class="accent">AI가 줄 세워 드립니다.</span></h1>
+      <p class="lead">안 온 환자, 오늘 누가 챙기고 있나요?<br>— 차트만 연결하면 끝.</p>
+      <p class="one-liner">
+        차트 데이터로 ‘오늘 전화하면 도움 되는 환자’를 매일 자동으로 줄 세워,
+        데스크가 1클릭으로 콜하게 하는 <b>미내원 환자 회수 도구</b>입니다.
+      </p>
+      <div class="hero-cta">
+        <a href="#join" class="btn">무료로 1기 합류 →</a>
+        <a href="#how" class="btn btn-ghost">3초 만에 이해하기</a>
+      </div>
+      <p class="hero-note">무료 · 카드 등록 없음 · 이번 기수 한정 혜택</p>
+    </div>
+
+    <!-- '오늘의 콜 큐' 목업 카드 (HTML+CSS, 가짜 데이터) -->
+    <div class="mock" aria-hidden="true">
+      <div class="mock-head">
+        <div class="mock-title">오늘의 콜 큐<span class="pill">AI 추천</span></div>
+        <div class="mock-date">2026.06.29 · 12명 대기</div>
+      </div>
+
+      <div class="row">
+        <span class="rank">1</span>
+        <span class="avatar">김</span>
+        <span class="who">
+          <span class="nm">김○수</span>
+          <span class="meta">치료 중단 · 임플란트 보철 미완 · 5개월 미내원</span>
+        </span>
+        <span class="score s-hot">94점</span>
+        <button class="call-btn">📞 콜</button>
+      </div>
+
+      <div class="row">
+        <span class="rank">2</span>
+        <span class="avatar">이</span>
+        <span class="who">
+          <span class="nm">이○희</span>
+          <span class="meta">정기검진 8개월 경과 · 고가치 환자</span>
+        </span>
+        <span class="score s-warm">81점</span>
+        <button class="call-btn">📞 콜</button>
+      </div>
+
+      <div class="row">
+        <span class="rank">3</span>
+        <span class="avatar">박</span>
+        <span class="who">
+          <span class="nm">박○민</span>
+          <span class="meta">예약부도(노쇼) 1회 · 스케일링 권유 대상</span>
+        </span>
+        <span class="score s-warm">76점</span>
+        <button class="call-btn">📞 콜</button>
+      </div>
+
+      <div class="row">
+        <span class="rank">4</span>
+        <span class="avatar">정</span>
+        <span class="who">
+          <span class="nm">정○아</span>
+          <span class="meta">크라운 세팅 후 경과관찰 시점 도래</span>
+        </span>
+        <span class="score s-cool">63점</span>
+        <button class="call-btn">📞 콜</button>
+      </div>
+
+      <div class="mock-foot">※ 화면 속 이름·점수는 예시(가짜 데이터)입니다.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2) 3초 설명 -->
+<section id="how" class="soft">
+  <div class="wrap">
+    <div class="center" style="margin-bottom:34px;">
+      <span class="eyebrow">3초 설명</span>
+      <h2>어떻게 동작하나요?</h2>
+      <p class="sub">설치는 한 번, 그다음부터는 매일 자동입니다.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="n">1</div>
+        <h3>차트를 연결한다</h3>
+        <p>쓰고 있는 전자차트(덴트웹)에 연결합니다. 새로 입력할 것 없이 기존 데이터를 그대로 읽어옵니다.</p>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <h3>AI가 줄 세운다</h3>
+        <p>‘오늘 전화하면 도움 되는 환자’를 점수순으로 자동 정렬합니다. 중단·미내원·고가치·적시성을 함께 봅니다.</p>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <h3>위에서부터 콜한다</h3>
+        <p>데스크가 1클릭으로 전화하고, 결과(예약·보류·거절·부재)는 차트에 자동 기록됩니다.</p>
+        <span class="step-tag">→ 누구한테 전화할지 고민이 사라진다.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3) 문제 인식 -->
+<section>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:34px;">
+      <span class="eyebrow">왜 필요한가</span>
+      <h2>전화는 ‘하면 좋은 일’이라<br>늘 뒤로 밀립니다.</h2>
+    </div>
+    <div class="problems">
+      <div class="prob">
+        <div class="ic">🪑</div>
+        <h3>데스크는 눈앞 환자가 1순위</h3>
+        <p>응대하느라 전화를 못 겁니다. 점심·진료 사이 빈 시간이 그냥 흘러가요 = 매출 누수.</p>
+      </div>
+      <div class="prob">
+        <div class="ic">🤷</div>
+        <h3>“전화했어요”의 진실</h3>
+        <p>말만 있고 실제 통화·결과는 확인이 안 됩니다. 챙겼는지 빠뜨렸는지 알 수가 없어요.</p>
+      </div>
+      <div class="prob">
+        <div class="ic">🏥</div>
+        <h3>콜센터는 대형병원만</h3>
+        <p>대형병원은 콜센터가 이 일을 합니다. 중소형엔 그런 인력이 없습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4) 자가진단 -->
+<section class="soft">
+  <div class="wrap narrow">
+    <div class="center" style="margin-bottom:10px;">
+      <span class="eyebrow">1분 자가진단</span>
+      <h2>우리 치과는 몇 개나 해당될까?</h2>
+      <p class="sub">해당되는 항목을 눌러보세요. 개수에 따라 진단이 바뀝니다.</p>
+    </div>
+
+    <div class="quiz">
+      <div class="q-item" data-q><span class="q-box">✓</span><span class="q-txt">데스크가 빈 시간에 ‘무엇을 해야 하는지’ 정해져 있지 않다</span></div>
+      <div class="q-item" data-q><span class="q-box">✓</span><span class="q-txt">안 온 환자에게 누가·언제·왜 전화하는지 규칙이 없다</span></div>
+      <div class="q-item" data-q><span class="q-box">✓</span><span class="q-txt">“전화했어요” 말만 듣고 실제 통화 여부·결과를 확인할 방법이 없다</span></div>
+      <div class="q-item" data-q><span class="q-box">✓</span><span class="q-txt">치료계획이 중간에 멈춘 환자가 몇 명인지 지금 바로 못 댄다</span></div>
+      <div class="q-item" data-q><span class="q-box">✓</span><span class="q-txt">6개월 이상 안 온 고가치 환자 명단을 뽑을 수 없다</span></div>
+      <div class="q-item" data-q><span class="q-box">✓</span><span class="q-txt">점심·진료 사이 빈 시간이 콜 없이 그냥 흘러간다</span></div>
+      <div class="q-item" data-q><span class="q-box">✓</span><span class="q-txt">노쇼(예약부도) 환자를 다시 부르는 절차가 없다</span></div>
+      <div class="q-item" data-q><span class="q-box">✓</span><span class="q-txt">‘오늘 전화할 환자’를 자동으로 줄 세워주는 도구가 없다</span></div>
+
+      <div class="q-result" id="qResult">
+        해당 항목을 눌러보세요
+        <span class="count" id="qCount">선택: 0 / 8</span>
+      </div>
+    </div>
+    <p class="note-mini">※ 판정 기준은 안내용 예시입니다. 실제 진단·상담은 도입 시 함께 진행합니다.</p>
+  </div>
+</section>
+
+<!-- 5) 핵심 기능 -->
+<section>
+  <div class="wrap">
+    <div class="center" style="margin-bottom:34px;">
+      <span class="eyebrow">핵심 기능</span>
+      <h2>제품이 실제로 해주는 일</h2>
+      <p class="sub">과장 없이, 지금 되는 것만 적었습니다.</p>
+    </div>
+    <div class="feats">
+      <div class="feat">
+        <div class="ic">📋</div>
+        <h3>AI 통화목록 추천</h3>
+        <p>오늘 전화할 환자를 점수순 큐로 자동 정렬. 위에서부터 걸기만 하면 됩니다.</p>
+      </div>
+      <div class="feat">
+        <div class="ic">🔒</div>
+        <h3>결정론 엔진</h3>
+        <p>같은 입력이면 같은 1등을 1년 보장. AI 서버·인터넷 약정 불필요, 아무 PC에서나 무료로 돕니다.</p>
+      </div>
+      <div class="feat">
+        <div class="ic">🖱️</div>
+        <h3>1클릭 콜 + 자동기록</h3>
+        <p>전화 한 번, 결과(예약·보류·거절·부재·건너뜀)는 전자차트에 자동으로 남습니다.</p>
+      </div>
+      <div class="feat">
+        <div class="ic">📶</div>
+        <h3>무응답·통화상태 표기</h3>
+        <p>통신사(LGU+) 연동으로 무응답·통화 여부를 표시. “전화했어요”가 사실인지 보입니다.</p>
+      </div>
+      <div class="feat">
+        <div class="ic">📊</div>
+        <h3>실장 페이지</h3>
+        <p>콜 갯수·성공률을 한눈에. 직접 만든 커스텀 콜 목록도 운영할 수 있습니다.</p>
+      </div>
+      <div class="feat">
+        <div class="ic">💰</div>
+        <h3>노는 데스크 시간을 매출로</h3>
+        <p>빈 시간에 채운 콜이 얼마의 기회로 이어졌는지 환산해서 보여줍니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6) 1기 모집 -->
+<section id="join" class="join-wrap">
+  <div class="wrap">
+    <div class="join-card">
+      <div class="center">
+        <span class="eyebrow">AutoRecall 1기 모집</span>
+        <h2>무료지만, 이번 기수에만 드리는 혜택</h2>
+        <p class="sub">제품은 무료입니다. 다만 1기에게만 따로 챙겨 드리는 것들이 있어요.</p>
+      </div>
+
+      <div class="perks">
+        <div class="perk">
+          <span class="pn">1</span>
+          <div>
+            <h4>평생 고정가 (그랜드파더링)</h4>
+            <p>나중에 유료 기능이 생겨도, 1기는 합류 시점의 조건을 계속 유지합니다.</p>
+          </div>
+        </div>
+        <div class="perk">
+          <span class="pn">2</span>
+          <div>
+            <h4>전담 무료 온보딩</h4>
+            <p>저희가 직접 설치하고 첫 콜 명단까지 만들어 드립니다. 수량이 진짜 한정이라 기수제로 운영해요(가짜 타이머 아님).</p>
+          </div>
+        </div>
+        <div class="perk">
+          <span class="pn">3</span>
+          <div>
+            <h4>로드맵 영향력</h4>
+            <p>1기의 요청은 다음 기능 순서에 먼저 반영됩니다. 현장 목소리가 제품을 만듭니다.</p>
+          </div>
+        </div>
+        <div class="perk">
+          <span class="pn">4</span>
+          <div>
+            <h4>추천 부스트</h4>
+            <p>동료 치과를 초대하면 두 치과 모두 혜택을 받습니다.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- placeholder: '남은 자리' 게이지 — 수치·폭은 예시값, 실제 모집 현황과 연동 필요(fill) -->
+      <div class="gauge-wrap">
+        <div class="gauge-label">
+          <span>1기 남은 자리 <span class="fill">fill</span></span>
+          <span>○○ / ○○곳</span>
+        </div>
+        <div class="gauge"><i></i></div>
+      </div>
+
+      <div class="join-cta">
+        <!-- placeholder: 실제 합류/신청 링크 연결 필요(fill) -->
+        <a href="#" class="btn" data-fill>무료로 1기 합류 <span class="fill" style="margin-left:6px;">fill</span></a>
+        <p class="fineprint">무료 · 카드 없음 · 다음 기수는 혜택 축소</p>
+      </div>
+    </div>
+    <p class="note-mini">※ 위 혜택 문구는 안내용이며, 세부 조건은 합류 시 별도 안내됩니다.</p>
+  </div>
+</section>
+
+<!-- 7) 푸터 -->
+<footer>
+  <div class="wrap f-grid">
+    <div>
+      <div class="f-brand">주식회사 포프리즘 (4Prism)</div>
+      <div style="margin-top:6px;color:#94A3B8;">AutoRecall · 미내원 환자 회수 도구</div>
+    </div>
+    <div class="f-links">
+      <!-- placeholder: 실제 링크 연결 필요(fill) -->
+      <a href="#" data-fill>제품 다운로드 <span class="fill">fill</span></a>
+      <a href="#" data-fill>동료 치과 초대 <span class="fill">fill</span></a>
+      <a href="#join">1기 모집 신청</a>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="disclaimer">
+      본 페이지의 환자 이름·점수·통계·게이지 수치는 모두 예시(가정값·가짜 데이터)이며 실제 데이터가 아닙니다.
+      ‘fill’로 표시된 링크·수치는 배포 전 실제 값으로 교체해야 합니다.
+      외부 폰트·스크립트·이미지 CDN을 사용하지 않는 단일 HTML 파일입니다.
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 자가진단 인터랙션 — 외부 라이브러리 없이 순수 JS
+  (function(){
+    var items = document.querySelectorAll('[data-q]');
+    var resultEl = document.getElementById('qResult');
+    var countEl = document.getElementById('qCount');
+    var total = items.length;
+
+    function update(){
+      var n = document.querySelectorAll('[data-q].on').length;
+      countEl.textContent = '선택: ' + n + ' / ' + total;
+
+      var cls = 'q-result', html;
+      if (n === 0){
+        html = '해당 항목을 눌러보세요';
+      } else if (n <= 2){
+        cls += ' r-good';
+        html = '양호';
+      } else if (n <= 5){
+        cls += ' r-warn';
+        html = '⚠️ 매출이 새고 있어요';
+      } else {
+        cls += ' r-bad';
+        html = '🚨 콜센터가 없는 상태 — 1기 추천';
+      }
+      resultEl.className = cls;
+      resultEl.innerHTML = html + '<span class="count">선택: ' + n + ' / ' + total + '</span>';
+    }
+
+    items.forEach(function(it){
+      function toggle(){ it.classList.toggle('on'); update(); }
+      it.addEventListener('click', toggle);
+      it.setAttribute('tabindex','0');
+      it.setAttribute('role','checkbox');
+      it.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+      });
+    });
+  })();
+</script>
+
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

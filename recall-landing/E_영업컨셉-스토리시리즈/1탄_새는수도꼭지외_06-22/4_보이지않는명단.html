@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>보이지 않는 명단 — 리콜 프로그램</title>
+<style>
+  :root{
+    --bg:#070b12; --panel:#0d1420; --ink:#e9eef7; --dim:#6f7e96;
+    --cyan:#22d3ee; --violet:#a78bfa; --amber:#fbbf24; --line:#1a2434;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Pretendard',-apple-system,'Segoe UI',system-ui,sans-serif;
+    line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 22px}
+  section{padding:84px 0;border-bottom:1px solid var(--line)}
+  .mono{font-family:'SF Mono',ui-monospace,Menlo,Consolas,monospace}
+  .tag{font-size:13px;letter-spacing:.22em;color:var(--cyan);font-weight:700;text-transform:uppercase}
+  h1{font-size:clamp(34px,6.5vw,62px);font-weight:800;line-height:1.1;margin:18px 0 22px;letter-spacing:-.02em}
+  .grad{background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  h2{font-size:clamp(25px,4vw,36px);font-weight:800;line-height:1.22;margin-bottom:18px;letter-spacing:-.01em}
+  p{color:var(--dim);font-size:18px;margin-bottom:16px}
+  p b{color:var(--ink);font-weight:700}
+  .hero{min-height:88vh;display:flex;flex-direction:column;justify-content:center}
+  .scan{position:relative;height:300px;margin:36px 0;border:1px solid var(--line);border-radius:18px;background:var(--panel);overflow:hidden}
+  .dot{position:absolute;width:9px;height:9px;border-radius:50%;background:#2a3850;transition:all .5s ease;transform:translate(-50%,-50%)}
+  .dot.hot{box-shadow:0 0 0 4px rgba(34,211,238,.12)}
+  .scanline{position:absolute;top:0;left:-30%;width:30%;height:100%;background:linear-gradient(90deg,transparent,rgba(34,211,238,.18),transparent);animation:sweep 3.4s linear infinite}
+  @keyframes sweep{to{left:130%}}
+  .scan-cap{position:absolute;bottom:12px;left:16px;font-size:12px;color:var(--dim)}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--dim);margin-top:6px}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+  .reveal-num{font-size:clamp(40px,9vw,76px);font-weight:900;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:28px}
+  @media(max-width:560px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .card .ico{font-size:22px}
+  .card h3{font-size:17px;font-weight:800;margin:10px 0 6px}
+  .card p{font-size:14.5px;margin:0}
+  .cta{display:inline-block;margin-top:26px;background:linear-gradient(90deg,var(--cyan),var(--violet));color:#06121a;font-weight:800;font-size:18px;padding:18px 40px;border-radius:14px;text-decoration:none;transition:.2s}
+  .cta:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(34,211,238,.3)}
+  .fine{font-size:13px;color:var(--dim);margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="hero">
+    <span class="tag">차트 속에 숨어 있는 것</span>
+    <h1>당신의 차트엔<br><span class="grad">보이지 않는 명단</span>이<br>잠들어 있습니다.</h1>
+    <p>새 환자를 찾으러 밖을 헤매는 동안, <b>이미 우리 환자였던 수백 명</b>의 기회가 데이터 속에서 조용히 식고 있습니다. 보이지 않으니 없는 줄 압니다.</p>
+    <div class="scan">
+      <div class="scanline"></div>
+      <div id="dots"></div>
+      <div class="scan-cap mono">SCANNING chart.db … 환자 이벤트 분석 중</div>
+    </div>
+    <div class="legend">
+      <span><i style="background:#2a3850"></i>식은 데이터</span>
+      <span><i style="background:#22d3ee"></i>지금 연락하면 가치 높은 환자</span>
+    </div>
+  </section>
+
+  <section style="text-align:center">
+    <span class="tag">스캔 결과</span>
+    <h2>같은 차트, 다른 눈으로 보면</h2>
+    <div class="reveal-num grad" id="found">0명</div>
+    <p>리콜 시점이 지났지만 <b>아직 늦지 않은</b> 환자가 이만큼 묻혀 있었습니다.<br>(데모 추정치 · 실제 연동 시 우리 병원 숫자로 산출)</p>
+  </section>
+
+  <section>
+    <span class="tag">숨은 명단을 캐내는 방식</span>
+    <h2>점수로 줄을 세웁니다.<br>감이 아니라.</h2>
+    <p>모든 환자를 4개 축으로 곱해 <b>"오늘 전화할 우선순위"</b>를 만듭니다.</p>
+    <div class="cards">
+      <div class="card"><div class="ico">🔥</div><h3>슬롯 필러</h3><p>오늘 빈 의자에 당장 올 수 있는 환자</p></div>
+      <div class="card"><div class="ico">🚨</div><h3>임상 긴급</h3><p>방치하면 위험해지는 치료 중단 환자</p></div>
+      <div class="card"><div class="ico">💰</div><h3>고가치</h3><p>임플란트·보철 상담만 받고 떠난 환자</p></div>
+      <div class="card"><div class="ico">🌱</div><h3>재활성화</h3><p>오래 안 왔지만 돌아올 만한 환자</p></div>
+    </div>
+  </section>
+
+  <section style="text-align:center">
+    <h2>밖에서 찾지 마세요.<br><span class="grad">안에 이미 있습니다.</span></h2>
+    <p>광고로 새 환자 1명 데려오는 비용으로, <b>잠든 옛 환자 여러 명</b>을 깨울 수 있습니다.</p>
+    <a class="cta" href="#">우리 차트 스캔해보기 →</a>
+    <p class="fine">덴트웹 데이터 그대로 읽기 · 병원 밖으로 데이터 안 나감</p>
+  </section>
+
+</div>
+<script>
+  // 산점도 점 뿌리고 일부를 'hot'으로 점화
+  const box = document.getElementById('dots');
+  const N = 90, hot = [];
+  for(let i=0;i<N;i++){
+    const d = document.createElement('div');
+    d.className='dot';
+    // 의사난수 대신 인덱스 기반 분포 (Math.random 미사용)
+    const x = ((i*37)%100), y = ((i*53)%90)+5;
+    d.style.left = x+'%'; d.style.top = y+'%';
+    box.appendChild(d);
+    if(i%6===0) hot.push(d);
+  }
+  // 스캔이 지나가며 점화
+  let k=0;
+  const ignite = setInterval(()=>{
+    if(k>=hot.length){clearInterval(ignite);return;}
+    hot[k].classList.add('hot');
+    hot[k].style.background='#22d3ee';
+    k++;
+  }, 220);
+  // 결과 숫자 카운트업
+  const fEl=document.getElementById('found'); let c=0; const tgt=hot.length*4;
+  const tt=setInterval(()=>{c+=Math.ceil(tgt/50); if(c>=tgt){c=tgt;clearInterval(tt);} fEl.textContent=c.toLocaleString('ko-KR')+'명';},30);
+</script>
+<!--recall-fab-->
+<a href="../../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

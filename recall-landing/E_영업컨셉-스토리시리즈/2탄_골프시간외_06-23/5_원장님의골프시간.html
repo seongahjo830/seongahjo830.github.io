@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>원장님의 골프 시간 — 리콜 프로그램</title>
+<style>
+  :root{
+    --bg:#fbfaf6; --ink:#1f2a23; --dim:#6c7a70; --green:#2f7a52; --green-soft:#e8f3ec;
+    --sky:#dfeaf2; --line:#e7e4da; --gold:#b58a3c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,'Segoe UI',system-ui,sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:0 26px}
+  section{padding:90px 0;border-bottom:1px solid var(--line)}
+  .tag{font-size:13px;letter-spacing:.2em;color:var(--green);font-weight:700;text-transform:uppercase}
+  h1{font-size:clamp(36px,7vw,66px);font-weight:800;line-height:1.1;margin:18px 0 24px;letter-spacing:-.02em}
+  h2{font-size:clamp(26px,4vw,38px);font-weight:800;line-height:1.22;margin-bottom:18px;letter-spacing:-.01em}
+  p{color:var(--dim);font-size:18.5px;margin-bottom:16px}
+  p b{color:var(--ink);font-weight:700}
+  .hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(180deg,var(--sky)00,transparent),radial-gradient(120% 60% at 50% 0,var(--green-soft),transparent)}
+  .scene{font-size:64px;margin-bottom:8px}
+  .quote{font-size:clamp(22px,3.6vw,30px);color:var(--ink);font-weight:600;line-height:1.5;border-left:3px solid var(--green);padding-left:22px;margin:30px 0}
+  .ledger{list-style:none;margin:24px 0}
+  .ledger li{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);font-size:17.5px}
+  .ledger .who{font-weight:800;min-width:96px}
+  .ledger .arrow{color:var(--green);font-weight:800}
+  .ledger .green{color:var(--green);font-weight:700}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+  @media(max-width:560px){.split{grid-template-columns:1fr}}
+  .box{border:1px solid var(--line);border-radius:16px;padding:22px;background:#fff}
+  .box h3{font-size:16px;font-weight:800;margin-bottom:8px}
+  .box.you h3{color:var(--gold)} .box.it h3{color:var(--green)}
+  .box ul{list-style:none;font-size:15px;color:var(--dim)}
+  .box li{padding:5px 0}
+  .box li::before{content:"· "}
+  .cta{display:inline-block;margin-top:24px;background:var(--green);color:#fff;font-weight:800;font-size:18px;padding:18px 40px;border-radius:14px;text-decoration:none;transition:.2s}
+  .cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(47,122,82,.28)}
+  .fine{font-size:14px;color:var(--dim);margin-top:14px}
+  .center{text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="hero">
+    <div class="scene">⛳️</div>
+    <span class="tag">원장님이 빠져도 굴러가는 병원</span>
+    <h1>리콜은 알아서 돌고,<br>원장님은<br>진료만 하세요.</h1>
+    <p>좋은 병원은 <b>원장님이 다 챙겨야 돌아가는 병원</b>이 아닙니다. 원장님이 잠깐 자리를 비워도 <b>똑같이 돌아가는 병원</b>입니다.</p>
+    <div class="quote">"누구한테 전화 돌리지?"를 더 이상 원장님이 고민하지 않는 순간, 병원은 그제야 시스템이 됩니다.</div>
+  </section>
+
+  <section>
+    <span class="tag">역할을 제자리로</span>
+    <h2>각자 잘하는 것만<br>하게 됩니다.</h2>
+    <p>지금은 원장님 머릿속에 너무 많은 게 들어 있습니다. 그걸 꺼내 놓는 것뿐입니다.</p>
+    <ul class="ledger">
+      <li><span class="who">프로그램</span><span class="arrow">→</span><span>오늘 <span class="green">전화할 환자 순서</span>를 기억한다</span></li>
+      <li><span class="who">실장님</span><span class="arrow">→</span><span>그 명단 보고 <span class="green">통화에 집중</span>한다</span></li>
+      <li><span class="who">원장님</span><span class="arrow">→</span><span><span class="green">진료와 큰 결정</span>에만 머리를 쓴다</span></li>
+    </ul>
+    <p>잡일을 내려놓은 만큼, <b>진짜 원장님만 할 수 있는 일</b>에 시간이 돌아옵니다.</p>
+  </section>
+
+  <section>
+    <span class="tag">무엇을 내려놓나</span>
+    <h2>원장님 손에서 떠나는 일</h2>
+    <div class="split">
+      <div class="box you">
+        <h3>😮‍💨 지금 원장님이 떠안은 것</h3>
+        <ul>
+          <li>"이번 달 리콜 누가 챙기지" 걱정</li>
+          <li>실장이 일 잘하나 매번 확인</li>
+          <li>빠진 환자 생각날 때마다 불안</li>
+          <li>사람 바뀌면 노하우도 같이 증발</li>
+        </ul>
+      </div>
+      <div class="box it">
+        <h3>✅ 프로그램이 대신 드는 것</h3>
+        <ul>
+          <li>매일 우선순위 명단 자동 생성</li>
+          <li>통화 결과가 기록으로 남음</li>
+          <li>놓친 환자를 시스템이 기억</li>
+          <li>직원 바뀌어도 그대로 인수인계</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="center">
+    <h2>병원이 원장님 없이도<br>돌아갈 때,<br>비로소 진짜 자산입니다.</h2>
+    <p>주말에 마음 편히 쉬는 것. 그게 좋은 시스템이 주는 진짜 보상입니다.</p>
+    <a class="cta" href="#">손에서 잡일 내려놓기 →</a>
+    <p class="fine">덴트웹 연동 · 원장님이 매일 들여다볼 필요 없음</p>
+  </section>
+
+</div>
+<!--recall-fab-->
+<a href="../../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

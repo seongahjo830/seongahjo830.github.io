@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AutoRecall — 에디토리얼</title>
+<style>
+  :root{
+    --paper:#FAF7F0; --ink:#1C1A16; --soft:#4B463E; --faint:#8C8576;
+    --rule:#DAD3C4; --accent:#0F4C42; --accent2:#9A6A1E;
+    --serif:"Iowan Old Style","Apple SD Gothic Neo",Georgia,"Nanum Myeongjo",serif;
+    --sans:"Pretendard","Apple SD Gothic Neo",-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--serif);line-height:1.75;font-size:18px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 32px}
+  a{color:inherit}
+  /* masthead */
+  .mast{border-bottom:2px solid var(--ink);}
+  .mast .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .logo{font-weight:800;letter-spacing:-.02em;font-size:22px}
+  .logo .o{color:var(--accent)}
+  .mast .meta{font-family:var(--sans);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+  .kicker{font-family:var(--sans);font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  .hr{height:1px;background:var(--rule);margin:0}
+  /* hero */
+  .hero{padding:72px 0 56px;text-align:center;border-bottom:1px solid var(--rule)}
+  .hero h1{font-size:clamp(40px,7vw,76px);line-height:1.04;letter-spacing:-.03em;font-weight:800;margin:22px 0 0}
+  .hero h1 em{font-style:italic;color:var(--accent)}
+  .hero .dek{font-size:clamp(18px,2.4vw,22px);color:var(--soft);max-width:640px;margin:26px auto 0;font-style:italic}
+  .hero .by{font-family:var(--sans);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-top:30px}
+  .cta{display:inline-block;font-family:var(--sans);font-weight:700;font-size:16px;letter-spacing:.01em;background:var(--ink);color:var(--paper);
+    padding:15px 30px;border-radius:2px;text-decoration:none;margin-top:30px;transition:background .2s}
+  .cta:hover{background:var(--accent)}
+  .cta.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink);margin-left:10px}
+  /* lead columns */
+  .lead{padding:64px 0;border-bottom:1px solid var(--rule)}
+  .lead .cols{column-count:2;column-gap:48px;font-size:18.5px;color:var(--soft);margin-top:24px}
+  .lead .cols p{margin:0 0 16px;break-inside:avoid}
+  .lead p::first-letter{}
+  .dropcap::first-letter{font-size:64px;float:left;line-height:.8;padding:6px 12px 0 0;font-weight:800;color:var(--accent)}
+  @media(max-width:680px){.lead .cols{column-count:1}}
+  .sech{font-size:clamp(28px,4vw,40px);letter-spacing:-.02em;font-weight:800;line-height:1.15}
+  /* cases as numbered list */
+  .cases{padding:64px 0;border-bottom:1px solid var(--rule)}
+  .case{display:grid;grid-template-columns:54px 1fr 1fr;gap:28px;padding:30px 0;border-top:1px solid var(--rule);align-items:start}
+  .case:first-of-type{border-top:2px solid var(--ink)}
+  .case .no{font-size:30px;font-weight:800;color:var(--accent2);font-family:var(--sans);line-height:1}
+  .case h3{font-size:23px;letter-spacing:-.02em;margin-bottom:8px}
+  .case .tier{font-family:var(--sans);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+  .case p{font-size:16px;color:var(--soft)}
+  .case .ans{font-family:var(--sans);font-size:15.5px;color:var(--ink);border-left:2px solid var(--accent);padding-left:16px}
+  .case .ans b{color:var(--accent)}
+  @media(max-width:680px){.case{grid-template-columns:40px 1fr;gap:14px}.case .ans{grid-column:1/-1;margin-top:6px}}
+  /* formula */
+  .how{padding:64px 0;text-align:center;border-bottom:1px solid var(--rule)}
+  .feq{display:flex;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap;margin-top:34px;font-family:var(--sans)}
+  .term{border:1px solid var(--ink);padding:18px 22px;min-width:150px}
+  .term b{display:block;font-size:17px;letter-spacing:-.01em}
+  .term span{font-size:12.5px;color:var(--faint)}
+  .op{font-size:26px;color:var(--accent2);font-weight:800}
+  /* close */
+  .close{padding:80px 0;text-align:center}
+  .close blockquote{font-size:clamp(26px,4vw,40px);line-height:1.3;letter-spacing:-.02em;max-width:760px;margin:0 auto;font-weight:800}
+  .close blockquote em{font-style:italic;color:var(--accent)}
+  footer{font-family:var(--sans);font-size:12.5px;color:var(--faint);text-align:center;padding:30px 0 50px;border-top:2px solid var(--ink);letter-spacing:.02em}
+</style>
+</head>
+<body>
+  <div class="mast"><div class="wrap">
+    <div class="logo">Auto<span class="o">·</span>Recall</div>
+    <div class="meta">치과 리콜 자동화 · EST. 2026</div>
+  </div></div>
+
+  <header class="hero"><div class="wrap">
+    <div class="kicker">The Recall Issue</div>
+    <h1>오늘 전화할 환자,<br>이제 <em>찾지 마세요.</em></h1>
+    <p class="dek">차트 어딘가엔 다 있습니다. 못 찾을 뿐이죠. 흩어진 환자를 매일 아침 ‘전화할 순서’로 정리해 드립니다.</p>
+    <div><a class="cta" href="#install">무료 버전 설치</a><a class="cta ghost" href="#cases">사례 읽기</a></div>
+    <div class="by">덴트웹 차트 그대로 · 설치형 데스크톱 앱 · 준비 0분</div>
+  </div></header>
+
+  <section class="lead"><div class="wrap">
+    <div class="kicker">1막 · 공감</div>
+    <h2 class="sech" style="margin-top:14px">전화가 돈이 되는 걸<br>몰라서 안 하는 건 아니잖아요.</h2>
+    <div class="cols">
+      <p class="dropcap">차트엔 수천 명이 있습니다. 그중 오늘 누구부터 전화해야 할까요. 결국 최근에 본 사람, 기억나는 사람한테만 돌게 됩니다. 나머지는 명단에조차 오르지 못한 채 조용히 빠져나갑니다.</p>
+      <p>안 온 환자는 항의도, 클레임도 하지 않습니다. 그저 옆 치과로 갈 뿐입니다. ‘마이너스’가 숫자로 보이지 않으니, 새는 줄도 모릅니다. 신환 유치엔 광고비를 쓰면서, 구환 재내원은 그냥 흘려보냅니다.</p>
+      <p>문제는 마음이 아니라 <b>구조</b>입니다. 누구한테, 왜, 지금 전화해야 하는지가 어디에도 정리돼 있지 않을 뿐. 그 한 가지만 앱에 넘기면 됩니다.</p>
+    </div>
+  </div></section>
+
+  <section class="cases" id="cases"><div class="wrap">
+    <div class="kicker">2막 · 운영 케이스</div>
+    <h2 class="sech" style="margin:14px 0 6px">매일 벌어지는 다섯 장면,<br>그리고 그 답.</h2>
+
+    <div class="case"><div class="no">01</div>
+      <div><div class="tier">🔥 슬롯필러</div><h3>갑자기 비어버린 오후 2시</h3><p>예약 펑크 한 건. 빈 체어는 그대로 매출 0. 지금 올 만한 사람을 떠올리기란 거의 불가능합니다.</p></div>
+      <div class="ans"><b>오늘 이 시간에 올 가능성이 높은 환자</b>를 픽업확률·시간대 매칭으로 가중(×3)해 맨 위에 띄웁니다.</div>
+    </div>
+    <div class="case"><div class="no">02</div>
+      <div><div class="tier">📅 표준 정기검진</div><h3>스케일링 6개월, 다 흩어져 있음</h3><p>정기 시기가 된 환자가 매달 수십 명. 명단이 없어 사실상 아무도 안 부르고 지나갑니다.</p></div>
+      <div class="ans">치료·검진 시점을 추적해 <b>‘지금이 적기인 환자’</b>를 타이밍 큐로 자동 생성합니다(6~12개월 우선).</div>
+    </div>
+    <div class="case"><div class="no">03</div>
+      <div><div class="tier">💰 고가치</div><h3>임플란트 상담만 받고 사라진 환자</h3><p>한 명이 큰 매출인데 바빠서 후속을 못 합니다. 결정의 골든타임이 지나면 영영 잊힙니다.</p></div>
+      <div class="ans">상담만 받고 미내원한 <b>고가치 잠재 환자</b>를 별도 발굴콜로 띄워, 식기 전에 다시 연결합니다.</div>
+    </div>
+    <div class="case"><div class="no">04</div>
+      <div><div class="tier">⚙️ 점수제 우선순위</div><h3>“그래서 누구부터 거는데?”</h3><p>우선순위를 실장 ‘감’에 맡깁니다. 사람마다 다르고, 바쁜 날엔 흔들리고, 담당자가 바뀌면 리셋됩니다.</p></div>
+      <div class="ans">가치 × 타이밍 × 받을확률을 곱해 <b>콜 우선도</b>를 매기고, 높은 순으로 5단계 큐에 줄 세웁니다.</div>
+    </div>
+    <div class="case"><div class="no">05</div>
+      <div><div class="tier">🌱 재활성화 · 기록</div><h3>건 결과가 안 남아 또 거는 일</h3><p>부재중인지 거절인지 예약인지 다음 사람이 알 수 없습니다. 중복 콜은 환자도 불쾌합니다.</p></div>
+      <div class="ans">통화 후 <b>결과 버튼 한 번</b>이면 기록 저장 + 다음 액션 자동 설정. ‘다음에’는 그때 다시, ‘거절’은 제외.</div>
+    </div>
+  </div></section>
+
+  <section class="how"><div class="wrap">
+    <div class="kicker">방법</div>
+    <h2 class="sech" style="margin-top:14px">감이 아니라, 곱셈 한 번으로.</h2>
+    <div class="feq">
+      <div class="term"><b>환자 가치</b><span>임상·금전적 명분</span></div><div class="op">×</div>
+      <div class="term"><b>타이밍</b><span>도래 시점의 적시성</span></div><div class="op">×</div>
+      <div class="term"><b>받을 확률</b><span>지금 걸면 받는가</span></div>
+    </div>
+  </div></section>
+
+  <section class="close" id="install"><div class="wrap">
+    <blockquote>준비물은, <em>쓰던 차트 하나</em>뿐입니다.</blockquote>
+    <div><a class="cta" href="#">무료 버전 설치하기</a></div>
+  </div></section>
+
+  <footer>AutoRecall · 치과 리콜(재내원) 자동화 데스크톱 앱 · 수치는 예시값이며 치료 결과를 보장하지 않습니다</footer>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

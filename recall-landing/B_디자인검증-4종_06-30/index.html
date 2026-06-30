@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AutoRecall 랜딩 — 디자인 4종 비교</title>
+<style>
+  :root{
+    --bg:#F4F5F7; --card:#fff; --ink:#16181D; --soft:#54585F; --faint:#8A8F98;
+    --line:#E4E6EA; --accent:#2563EB; --star:#F59E0B;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  a{color:inherit;text-decoration:none}
+  header{padding:54px 0 34px;text-align:center}
+  header .k{font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  header h1{font-size:clamp(28px,5vw,44px);font-weight:800;letter-spacing:-.03em;margin:14px 0 0}
+  header p{color:var(--soft);max-width:600px;margin:14px auto 0;font-size:16.5px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;padding:14px 0 10px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px -18px rgba(20,24,30,.3);transition:transform .15s,box-shadow .15s;position:relative}
+  .card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -18px rgba(20,24,30,.4)}
+  .card.rec{border:2px solid var(--star)}
+  .badge{position:absolute;top:14px;left:14px;z-index:5;background:var(--star);color:#fff;font-weight:800;font-size:12px;padding:6px 12px;border-radius:30px;box-shadow:0 6px 14px -6px rgba(245,158,11,.7)}
+  .thumb{position:relative;height:340px;overflow:hidden;border-bottom:1px solid var(--line);background:#fff}
+  .thumb iframe{width:250%;height:250%;border:0;transform:scale(.4);transform-origin:top left;pointer-events:none}
+  .thumb a.ov{position:absolute;inset:0;z-index:4}
+  .meta{padding:20px 22px 22px}
+  .meta .no{font-size:12px;font-weight:800;color:var(--faint);letter-spacing:.08em}
+  .meta h2{font-size:21px;font-weight:800;letter-spacing:-.02em;margin:4px 0 0;display:flex;align-items:center;gap:9px}
+  .meta .tags{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0}
+  .meta .tags span{font-size:12px;font-weight:700;color:var(--soft);background:var(--bg);border:1px solid var(--line);border-radius:30px;padding:5px 11px}
+  .meta .desc{font-size:14.5px;color:var(--soft);margin:14px 0 0}
+  .meta .who{font-size:13px;color:var(--faint);margin-top:10px}
+  .meta .who b{color:var(--ink)}
+  .actions{display:flex;gap:10px;margin-top:18px}
+  .btn{flex:1;text-align:center;font-weight:700;font-size:15px;padding:13px;border-radius:11px;border:1px solid var(--line);background:#fff;transition:.15s}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .btn.pri:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+  /* 평가표 */
+  .panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;margin:30px 0 0}
+  .panel h3{font-size:20px;font-weight:800;letter-spacing:-.02em}
+  .panel .sub{color:var(--faint);font-size:13.5px;margin-top:6px}
+  .tblwrap{overflow-x:auto;margin-top:18px}
+  table{border-collapse:collapse;width:100%;min-width:620px;font-size:14.5px}
+  th,td{padding:12px 14px;text-align:center;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left;font-weight:700}
+  thead th{background:var(--bg);font-weight:800;font-size:13px}
+  tbody tr:hover{background:#fafbfc}
+  td .s{font-weight:800;font-variant-numeric:tabular-nums}
+  .hi{color:#15a05a} .mid{color:#caa207} .lo{color:#c0563a}
+  .total{font-weight:900;color:var(--ink)}
+  .rec-row{background:#FFFBEB}
+  .reco{background:#FFFBEB;border:1px solid #F6D98A;border-radius:14px;padding:18px 20px;margin-top:18px;font-size:15px;color:var(--soft)}
+  .reco b{color:var(--ink)}
+  footer{text-align:center;color:var(--faint);font-size:13px;padding:34px 0 56px}
+  .note{font-size:12.5px;color:var(--faint);margin-top:10px;text-align:center}
+</style>
+</head>
+<body>
+  <header><div class="wrap">
+    <div class="k">Design Review · 4 Variants</div>
+    <h1>AutoRecall 랜딩페이지 — 디자인 4종</h1>
+    <p>같은 내용(공감 → 케이스 → 사용법 → 무료 설치)을 <b>완전히 다른 4가지 스타일</b>로 만들었습니다. 썸네일을 누르면 새 탭에서 전체 화면으로 열립니다.</p>
+  </div></header>
+
+  <div class="wrap">
+    <div class="grid">
+
+      <!-- 1 에디토리얼 -->
+      <div class="card">
+        <div class="thumb"><a class="ov" href="1_에디토리얼.html" target="_blank" rel="noopener" aria-label="에디토리얼 전체보기"></a><iframe src="1_에디토리얼.html" title="에디토리얼" loading="lazy"></iframe></div>
+        <div class="meta">
+          <div class="no">STYLE 01</div>
+          <h2>📰 에디토리얼 매거진</h2>
+          <div class="tags"><span>세리프</span><span>여백·하이라인</span><span>프리미엄</span></div>
+          <p class="desc">잡지 표지 같은 격식. 진중하고 신뢰감 있는 톤. 드롭캡·단 구성·번호 목차로 ‘읽는 글’처럼.</p>
+          <div class="who">잘 맞는 대상 — <b>보수적인 원장</b> (신뢰·품격)</div>
+          <div class="actions"><a class="btn pri" href="1_에디토리얼.html" target="_blank" rel="noopener">전체 화면으로 보기 →</a></div>
+        </div>
+      </div>
+
+      <!-- 2 다크테크 -->
+      <div class="card">
+        <div class="thumb"><a class="ov" href="2_다크테크.html" target="_blank" rel="noopener" aria-label="다크테크 전체보기"></a><iframe src="2_다크테크.html" title="다크테크" loading="lazy"></iframe></div>
+        <div class="meta">
+          <div class="no">STYLE 02</div>
+          <h2>🌌 다크 테크 / 네온</h2>
+          <div class="tags"><span>다크모드</span><span>네온 글로우</span><span>모노 폰트</span></div>
+          <p class="desc">검정 배경 + 시안·바이올렛 글로우. ‘AI·자동화’ 느낌이 강한 모던 SaaS 톤. 차별성 최고.</p>
+          <div class="who">잘 맞는 대상 — <b>젊은 개원의·테크 친화</b></div>
+          <div class="actions"><a class="btn pri" href="2_다크테크.html" target="_blank" rel="noopener">전체 화면으로 보기 →</a></div>
+        </div>
+      </div>
+
+      <!-- 3 토스풍 (추천) -->
+      <div class="card rec">
+        <span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="3_토스풍.html" target="_blank" rel="noopener" aria-label="토스풍 전체보기"></a><iframe src="3_토스풍.html" title="토스풍" loading="lazy"></iframe></div>
+        <div class="meta">
+          <div class="no">STYLE 03</div>
+          <h2>💙 토스풍 프렌들리</h2>
+          <div class="tags"><span>큰 라운드 카드</span><span>친근체</span><span>앱 목업</span></div>
+          <p class="desc">부드럽고 쉬운 핀테크 톤. ‘앱이 골라드려요’ 같은 친근한 카피 + 콜 큐 목업으로 실사용 장면이 바로 그려짐.</p>
+          <div class="who">잘 맞는 대상 — <b>실사용자 실장 + 무료 설치 전환</b></div>
+          <div class="actions"><a class="btn pri" href="3_토스풍.html" target="_blank" rel="noopener">전체 화면으로 보기 →</a></div>
+        </div>
+      </div>
+
+      <!-- 4 데이터임팩트 -->
+      <div class="card">
+        <div class="thumb"><a class="ov" href="4_데이터임팩트.html" target="_blank" rel="noopener" aria-label="데이터임팩트 전체보기"></a><iframe src="4_데이터임팩트.html" title="데이터임팩트" loading="lazy"></iframe></div>
+        <div class="meta">
+          <div class="no">STYLE 04</div>
+          <h2>📊 데이터 임팩트</h2>
+          <div class="tags"><span>초대형 숫자</span><span>흑백+레드</span><span>그리드</span></div>
+          <p class="desc">‘안 온 환자 = 매출’을 큰 숫자·막대로 들이미는 강한 대비. 매출·손실 임팩트로 즉시 설득.</p>
+          <div class="who">잘 맞는 대상 — <b>매출로 움직이는 원장</b></div>
+          <div class="actions"><a class="btn pri" href="4_데이터임팩트.html" target="_blank" rel="noopener">전체 화면으로 보기 →</a></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 평가표 -->
+    <div class="panel">
+      <h3>한눈 비교 — 주관적 디자인 평가</h3>
+      <div class="sub">각 항목 5점 만점. 아래 점수는 디자인 방향성 비교용 <b>주관 평가(예시)</b>이며, 실제 선택은 타깃·브랜드에 맞춰 정하세요.</div>
+      <div class="tblwrap">
+        <table>
+          <thead>
+            <tr><th>항목</th><th>📰 에디토리얼</th><th>🌌 다크테크</th><th>💙 토스풍</th><th>📊 데이터임팩트</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>첫인상 임팩트</td><td><span class="s mid">3</span></td><td><span class="s hi">5</span></td><td><span class="s mid">4</span></td><td><span class="s hi">5</span></td></tr>
+            <tr><td>신뢰감 (원장)</td><td><span class="s hi">5</span></td><td><span class="s mid">3</span></td><td><span class="s mid">4</span></td><td><span class="s hi">5</span></td></tr>
+            <tr class="rec-row"><td>친근함 (실장)</td><td><span class="s lo">2</span></td><td><span class="s mid">3</span></td><td><span class="s hi">5</span></td><td><span class="s mid">3</span></td></tr>
+            <tr><td>정보 가독성</td><td><span class="s mid">4</span></td><td><span class="s mid">3</span></td><td><span class="s hi">5</span></td><td><span class="s mid">4</span></td></tr>
+            <tr><td>모바일 적합</td><td><span class="s mid">3</span></td><td><span class="s mid">4</span></td><td><span class="s hi">5</span></td><td><span class="s mid">4</span></td></tr>
+            <tr><td>차별성·기억</td><td><span class="s mid">4</span></td><td><span class="s hi">5</span></td><td><span class="s mid">3</span></td><td><span class="s mid">4</span></td></tr>
+            <tr><td class="total">합계 (30점)</td><td class="total">21</td><td class="total">23</td><td class="total rec-row">26</td><td class="total">25</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="reco">
+        ⭐ <b>추천 = 토스풍(STYLE 03).</b> 최종 목표가 ‘무료 설치 전환’이고 실제로 매일 쓰는 사람이 <b>실장</b>이라, 친근함·가독성·모바일에서 가장 강합니다. 단, 의사결정자인 <b>원장</b>을 강하게 밀어야 하면 <b>데이터임팩트(04)</b>가 매출 논리로 더 셉니다. <b>이상적 조합 = 토스풍 본문 + 히어로·통계 섹션만 데이터임팩트의 큰 숫자 톤을 차용한 하이브리드.</b>
+      </div>
+    </div>
+
+    <p class="note">※ 4종 모두 같은 한 제품(AutoRecall) 이야기 · 수치·효과는 예시값이며 치료 결과를 보장하지 않습니다 · 세부 카피는 원장 검수 필요</p>
+  </div>
+
+  <footer>AutoRecall · 치과 리콜(재내원) 자동화 · 디자인 4종 비교 허브 · 2026-06-30</footer>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

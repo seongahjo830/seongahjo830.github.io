@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>데이터로 환자 챙기는 치과들 — 리콜 운동</title>
+<style>
+  :root{--bg:#07120d;--card:#0f1d16;--ink:#EAF6EF;--dim:#88a89a;--line:#1b2e24;--ac:#2DB87E;--ac2:#1E9466;--gold:#E8C56A;--go:#5BE3B0}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',system-ui,sans-serif;line-height:1.7;letter-spacing:-.013em;-webkit-font-smoothing:antialiased}
+  .tierbadge{position:fixed;top:10px;left:10px;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#04140d;font-weight:900;font-size:12px;padding:5px 12px;border-radius:7px;z-index:99}
+  .wrap{max-width:640px;margin:0 auto;padding:0 22px}
+  section{padding:46px 0;border-bottom:1px solid var(--line)}
+  .eyebrow{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.06em;color:var(--ac);border:1px solid var(--ac2);padding:5px 13px;border-radius:99px;margin-bottom:16px}
+  h1{font-size:clamp(30px,6.2vw,50px);font-weight:900;line-height:1.1;letter-spacing:-.035em}
+  h1 em{font-style:normal;color:var(--ac)}
+  h2{font-size:clamp(21px,3.4vw,28px);font-weight:850;letter-spacing:-.02em}
+  p{font-size:16.5px;color:var(--dim)}p b{color:var(--ink)}
+  .hero{padding:62px 0 30px}.hero .sub{max-width:28em;margin:18px 0 0}
+  /* manifesto */
+  .manifesto{background:linear-gradient(160deg,#0c1d15,#10271c);border:1px solid var(--ac2);border-radius:16px;padding:26px;margin-top:22px}
+  .manifesto .k{font-size:13px;font-weight:800;color:var(--ac);letter-spacing:.04em;margin-bottom:12px}
+  .manifesto ul{list-style:none}
+  .manifesto li{padding:9px 0 9px 26px;position:relative;font-size:15.5px;color:var(--ink);border-top:1px solid var(--line)}
+  .manifesto li:first-child{border-top:0}
+  .manifesto li::before{content:"✊";position:absolute;left:0}
+  .cta{display:inline-block;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#04140d;font-weight:900;font-size:17px;padding:16px 30px;border-radius:13px;text-decoration:none;margin-top:20px}
+  .finep{font-size:13px;color:var(--dim);margin-top:12px}
+  .count{text-align:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:16px}
+  .count .big{font-size:34px;font-weight:900;color:var(--ac)}
+  .count .l{font-size:13.5px;color:var(--dim)}
+  .why{background:rgba(91,227,176,.06);border:1px solid #1d4a3c;border-radius:14px;padding:18px 20px;font-size:14px;color:var(--dim);margin-top:16px}
+  .why b{color:var(--go)}
+  .warn{background:rgba(232,197,106,.08);border:1px solid #4a5a2e;border-radius:12px;padding:14px 16px;font-size:13px;color:var(--dim);margin-top:14px}
+  .warn b{color:var(--gold)}
+  .steps{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .steps .s{flex:1;min-width:110px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;font-size:13.5px;font-weight:650}
+  .fill{display:inline-block;border:1.5px dashed #2e5a44;background:rgba(45,184,126,.08);color:var(--ac);border-radius:7px;padding:2px 9px;font-size:12.5px;font-weight:650}
+  .final{text-align:center}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:#000;color:#fff;border:1px solid var(--ac2);padding:12px 18px;border-radius:10px;font-size:13.5px;font-weight:700;opacity:0;transition:.3s;z-index:90;max-width:90vw}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="tierbadge">🥇 초고수 ⑦ 운동·표준</div>
+<div class="wrap">
+  <section class="hero">
+    <span class="eyebrow">✊ 데이터로 환자 챙기는 치과들</span>
+    <h1>‘감으로 리콜’은<br><em>이제 끝났어요.</em></h1>
+    <p class="sub">안 온 환자를 누가·언제·왜 부를지 <b>데이터로</b> 정하는 치과들이 모이고 있어요. 제품을 ‘사는’ 게 아니라, <b>이 방식에 합류</b>하는 겁니다. 무료로.</p>
+
+    <div class="manifesto">
+      <div class="k">📜 우리가 믿는 것</div>
+      <ul>
+        <li>안 온 환자는 ‘감’이 아니라 데이터로 챙긴다</li>
+        <li>데스크의 짬 시간은 매출 기회다</li>
+        <li>직원이 바뀌어도 같은 수준으로 굴러가야 한다</li>
+        <li>사고(잘못된 전화) 0이 매출보다 먼저다</li>
+      </ul>
+    </div>
+
+    <div class="count">
+      <div class="big"><span class="fill">○○</span>개 치과</div>
+      <div class="l">이미 이 방식으로 환자를 챙기는 중</div>
+    </div>
+    <a class="cta" href="#get">이 방식에 합류하기 →</a>
+    <p class="finep">무료 · 합류 = 동참 선언</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">🧠 왜 ‘운동’으로 만드나</span>
+    <h2>제품은 사라져도,<br>‘표준’은 남습니다</h2>
+    <p style="margin-top:10px">‘좋은 제품’은 비교당하지만, <b>‘이게 표준’</b>이 되면 안 하는 쪽이 구식이 돼요. De Beers가 ‘다이아=약혼반지’를 표준으로 만든 것처럼, ‘리콜=데이터로’를 표준으로. 합류는 곧 <b>‘나는 앞서가는 원장’</b>이라는 정체성 신호라, 동료에게 자연스럽게 권유돼요.</p>
+    <div class="why">🧠 <b>심리 근거:</b> 사회적 정체성(내집단 소속) + 새 규범 발명(De Beers) + 지위(Veblen — 안 하면 뒤처짐). ‘구매 추천’이 아니라 ‘가치 동참’이라 의사도 부담 없이 전파.</div>
+    <div class="warn">⚠️ <b>톤 주의:</b> ‘안 하는 치과=구식’을 <b>동료 비방</b>으로 들리게 하면 역효과. ‘우리가 믿는 것’은 선언이되, 남을 깎지 않게. (표시광고법 부당비교도 주의)</div>
+  </section>
+
+  <section class="final" id="get" style="border-bottom:0">
+    <span class="eyebrow">⚡ 합류 2분</span>
+    <h2>동참 선언 → 설치</h2>
+    <div class="steps" style="margin-top:14px">
+      <div class="s">1. 다운로드</div>
+      <div class="s">2. 실행·설치</div>
+      <div class="s">3. 덴트웹 연결</div>
+    </div>
+    <a class="cta" href="#" style="margin-top:18px">⬇ 합류하고 시작 (무료)</a>
+    <p class="finep"><span class="fill">실제 다운로드·합류 카운터 연결</span></p>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var c=document.querySelector('.cta');
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

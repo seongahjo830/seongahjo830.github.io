@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리콜 1기 창립 멤버 — 먼저 합류한 치과만</title>
+<meta property="og:title" content="리콜 프로그램 ‘창립 멤버’ 모집 — 먼저 합류한 치과만">
+<meta property="og:description" content="무료. 단 이번 기수만. 동료 원장을 초대하면 둘 다 창립 멤버 혜택.">
+<style>
+  :root{--bg:#0c0a10;--card:#16121d;--ink:#F3EFF8;--dim:#9D93AE;--line:#2a2336;--gold:#E8C56A;--gold2:#C9A24A;--ac:#A98BFF;--go:#34d399}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',system-ui,sans-serif;line-height:1.7;letter-spacing:-.013em;-webkit-font-smoothing:antialiased}
+  .tierbadge{position:fixed;top:10px;left:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1400;font-weight:900;font-size:12px;padding:5px 12px;border-radius:7px;z-index:99;box-shadow:0 4px 14px rgba(232,197,106,.3)}
+  .wrap{max-width:660px;margin:0 auto;padding:0 22px}
+  section{padding:48px 0;border-bottom:1px solid var(--line)}
+  .eyebrow{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.08em;color:var(--gold);border:1px solid var(--gold2);padding:5px 13px;border-radius:99px;margin-bottom:16px}
+  h1{font-size:clamp(30px,6vw,48px);font-weight:900;line-height:1.08;letter-spacing:-.035em}
+  h1 em{font-style:normal;background:linear-gradient(135deg,var(--gold),#FFE9A8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  h2{font-size:clamp(22px,3.6vw,30px);font-weight:850;letter-spacing:-.02em}
+  p{font-size:16.5px;color:var(--dim)}p b{color:var(--ink)}
+  .hero{padding:62px 0 32px;text-align:center}
+  .hero .sub{max-width:28em;margin:18px auto 0}
+  /* cohort scarcity (real, reason-why) */
+  .cohort{background:linear-gradient(160deg,#1c1526,#241a2e);border:1px solid var(--gold2);border-radius:16px;padding:24px;margin-top:24px}
+  .cohort .k{font-size:13px;font-weight:800;color:var(--gold);letter-spacing:.05em}
+  .cohort .bar{height:10px;border-radius:99px;background:#2a2336;overflow:hidden;margin:14px 0 8px}
+  .cohort .fillbar{height:100%;width:72%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px}
+  .cohort .n{font-size:14px;color:var(--ink);font-weight:700}
+  .cohort .why{font-size:13px;color:var(--dim);margin-top:8px}
+  .cta{display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1400;font-weight:900;font-size:17px;padding:16px 32px;border-radius:13px;text-decoration:none;margin-top:22px}
+  .finep{font-size:13px;color:var(--dim);margin-top:12px}
+  /* referral skip-line */
+  .ref{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+  .ref .row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--line);font-size:15px}
+  .ref .row:first-child{border-top:0}
+  .ref .rank{font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums}
+  .ref button{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:800;font-family:inherit;cursor:pointer;font-size:14.5px}
+  .ref .me{background:rgba(169,139,255,.1);border:1px solid #3a2f52;border-radius:10px;padding:14px;margin-top:12px;text-align:center}
+  .ref .me .big{font-size:30px;font-weight:900;color:var(--ac);font-variant-numeric:tabular-nums}
+  /* brag card (structural virality + social currency) */
+  .pick{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:18px 0 10px}
+  .pick button{background:var(--card);border:1.5px solid var(--line);color:var(--dim);font-family:inherit;font-weight:700;font-size:13.5px;padding:8px 14px;border-radius:99px;cursor:pointer}
+  .pick button.on{background:var(--gold);border-color:var(--gold);color:#1a1400}
+  .brag{background:linear-gradient(160deg,#1d1628,#271b32);border:1px solid #3a2d48;border-radius:18px;padding:26px;text-align:center}
+  .brag .kk{font-size:12px;color:var(--dim);margin-bottom:14px}
+  .brag .msg{font-size:clamp(18px,3.4vw,24px);font-weight:850;line-height:1.5;min-height:3em}
+  .brag .msg span{color:var(--gold)}
+  .share{display:block;width:100%;background:#FEE500;color:#191600;font-weight:850;font-size:16px;padding:14px;border-radius:12px;border:0;cursor:pointer;font-family:inherit;margin-top:18px}
+  .why{background:rgba(52,211,153,.06);border:1px solid #1d4a3c;border-radius:14px;padding:18px 20px;margin-top:22px;font-size:14px;color:var(--dim)}
+  .why b{color:var(--go)}
+  .modes{display:grid;gap:12px;margin-top:18px}
+  .mode{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .mode.best{border-color:var(--gold2);background:linear-gradient(160deg,#1c1526,#241a2e)}
+  .mode .mb{font-weight:800;font-size:14px;color:var(--ac)}
+  .mode.best .mb{color:var(--gold)}
+  .mode .mq{font-size:16px;font-weight:700;color:var(--ink);margin:8px 0;line-height:1.5}
+  .mode .mp{font-size:13.5px;color:var(--dim)}
+  .mode .mp b{color:var(--ink)}
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+  .cmp .col{border-radius:14px;padding:18px;border:1px solid var(--line)}
+  .cmp .normal{background:rgba(255,107,107,.05);border-color:#4a2a30}
+  .cmp .big{background:rgba(232,197,106,.06);border-color:var(--gold2)}
+  .cmp .h{font-weight:800;font-size:14px;margin-bottom:10px}
+  .cmp .normal .h{color:#FF8A8A}.cmp .big .h{color:var(--gold)}
+  .cmp ul{list-style:none}.cmp li{font-size:13px;color:var(--dim);padding:6px 0 6px 18px;position:relative;border-top:1px solid rgba(255,255,255,.04)}
+  .cmp li:first-child{border-top:0}
+  .cmp .normal li::before{content:"·";position:absolute;left:6px;color:#FF8A8A;font-weight:800}
+  .cmp .big li::before{content:"✓";position:absolute;left:0;color:var(--gold);font-weight:800}
+  @media(max-width:520px){.cmp{grid-template-columns:1fr}}
+  .bring{text-align:center;font-size:15px;font-weight:800;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a1400;border-radius:12px;padding:14px;margin-top:14px}
+  .check{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:14px}
+  .check label{display:flex;gap:10px;align-items:center;padding:9px 0;font-size:15px;cursor:pointer;border-top:1px solid var(--line)}
+  .check label:first-of-type{border-top:0}
+  .check input{width:18px;height:18px;accent-color:var(--gold)}
+  .check .out{margin-top:12px;font-weight:750;color:var(--gold);min-height:1.5em}
+  /* powered by */
+  .powered{display:flex;gap:12px;align-items:center;background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:16px 18px;margin-top:16px;font-size:13.5px;color:var(--dim)}
+  .powered b{color:var(--ink)}
+  .fill{display:inline-block;border:1.5px dashed #5a4a2e;background:rgba(232,197,106,.08);color:var(--gold);border-radius:7px;padding:2px 9px;font-size:12.5px;font-weight:650}
+  .steps{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .steps .s{flex:1;min-width:110px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;font-size:13.5px;font-weight:650}
+  .final{text-align:center}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:#000;color:#fff;border:1px solid var(--gold2);padding:12px 18px;border-radius:10px;font-size:13.5px;font-weight:700;opacity:0;transition:.3s;z-index:90;max-width:90vw}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="tierbadge">🥇 초고수</div>
+<div class="wrap">
+  <section class="hero">
+    <span class="eyebrow">✦ 리콜 1기 · 창립 멤버 모집 ✦</span>
+    <h1>아무나 깔 수 있어요.<br>근데 <em>창립 멤버</em>는<br>이번 기수만.</h1>
+    <p class="sub">무료입니다. 단 <b>먼저 합류한 치과</b>는 ‘창립 멤버’로 — 평생 고정가·우선 지원·신기능 선체험. 직접 온보딩 지원할 수 있는 수가 한정이라, 기수로 끊어 받습니다.</p>
+
+    <div class="cohort">
+      <div class="k">🏛️ 1기 창립 멤버 — 남은 자리</div>
+      <div class="bar"><div class="fillbar"></div></div>
+      <div class="n"><span class="fill">○○곳 중 ○곳</span> 마감 임박 · <span class="fill">○월 ○일</span>까지</div>
+      <div class="why">※ 가짜 타이머 아님. 직접 깔아주고 첫 명단까지 띄워주는 ‘무료 온보딩’ 가능 수가 진짜로 한정이라 기수제로 운영합니다. 이번 기수 놓치면 다음 분기.</div>
+    </div>
+    <a class="cta" href="#get">1기 창립 멤버로 합류 →</a>
+    <p class="finep">무료 · 카드 없음 · 다음 기수는 혜택 축소</p>
+  </section>
+
+  <!-- referral skip-line (each doctor = recruiter) -->
+  <section>
+    <span class="eyebrow">🎟️ 순번을 당기는 법</span>
+    <h2>동료 원장을 초대하면<br>둘 다 창립 멤버로 당겨집니다</h2>
+    <p style="margin-top:10px">먼저 깔수록 좋은 혜택. 그래서 ‘추천’이 곧 ‘내 순번 당기기’예요. 동료도 창립 혜택을 받으니 미안할 것도 없죠.</p>
+    <div class="ref" style="margin-top:16px">
+      <div class="me">
+        <div>내 현재 대기 순번</div>
+        <div class="big" id="rank">#142</div>
+        <button id="invite" style="margin-top:10px">+ 동료 원장 초대하고 순번 당기기</button>
+      </div>
+      <div class="row"><span>동료 1명 초대</span><span class="rank">−30칸</span></div>
+      <div class="row"><span>그 동료가 설치 완료</span><span class="rank">−50칸</span></div>
+      <div class="row"><span>둘 다 받는 것</span><span class="rank">창립 혜택 ×2</span></div>
+    </div>
+    <p class="finep" style="margin-top:10px">※ 보상은 <b>초대한 동료가 ‘첫 명단’을 실제 확인</b>했을 때 — 가짜 가입 방지(Airbnb식)</p>
+  </section>
+
+  <!-- 보통 데스크 vs 대형치과 체계 (democratization) -->
+  <section>
+    <span class="eyebrow">🏥 대형치과는 ‘사람 여러 명’으로 합니다</span>
+    <h2>대형치과 데스크 경영을,<br><em>데스크 한 명</em>에게</h2>
+    <p style="margin-top:10px">대형 병원·체인은 <b>전담팀</b>이 안 온 환자를 체계로 관리해요. 동네치과 데스크는 진료 보조하며 ‘감’으로. AutoRecall은 그 <b>‘대형치과가 전담팀으로 하는 체계’를 데스크 한 명이 그대로</b> — 무료로 돌리게 합니다.</p>
+    <div class="cmp">
+      <div class="col normal">
+        <div class="h">😮‍💨 보통 동네치과 데스크</div>
+        <ul>
+          <li>안 온 환자 명단을 매일 보는 사람이 없음</li>
+          <li>누구부터 전화할지 ‘감’</li>
+          <li>빈 체어가 생겨도 못 메움</li>
+          <li>통화 결과를 따로 또 적음</li>
+        </ul>
+      </div>
+      <div class="col big">
+        <div class="h">🏥 대형치과·체인 데스크 (체계)</div>
+        <ul>
+          <li>매일 미내원 명단을 체계로 관리</li>
+          <li>데이터로 우선순위 — 감 아님</li>
+          <li>취소 나면 빈 슬롯에 맞는 환자 매칭</li>
+          <li>콜 기록이 자동으로 남음</li>
+        </ul>
+      </div>
+    </div>
+    <div class="bring">⬇ 그 오른쪽 체계를, 데스크 한 명에게 — 무료로</div>
+  </section>
+
+  <!-- real sharing psychology (replaces cringe brag) -->
+  <section>
+    <span class="eyebrow">🧠 실제 공유 심리 — 오글거리는 자랑은 안 함</span>
+    <h2>원장은 ‘나 이거 써 😎’<br>라고 안 던집니다</h2>
+    <p style="margin-top:10px">“나 요즘 이거 써”는 <b>영업처럼 보여서</b> 의사들이 제일 싫어해요(“내가 너네 영업사원이냐”). 실제 원장이 단톡방에 던지는 건 셋 중 하나 — 전부 <b>본인이 똑똑·도움 주는 사람</b>으로 보이는 방식입니다.</p>
+
+    <div class="modes">
+      <div class="mode">
+        <div class="mb">① 질문으로 슬쩍 던지기 (가장 흔함)</div>
+        <div class="mq">“다들 미내원 환자 관리 어떻게 해? 우리도 고민이라…”</div>
+        <div class="mp"><b>심리:</b> 나를 ‘고민하는 진지한 원장’으로 보이게(평판). 답이 오가다 자연스럽게 “우린 이거 써봤어”가 나옴. 영업 냄새 0.</div>
+      </div>
+      <div class="mode">
+        <div class="mb">② ‘내가 한 실험’ 결과로</div>
+        <div class="mq">“안 온 환자 자동 정리 6개월 돌려봤는데, 데스크 헤매던 게 없어졌어.”</div>
+        <div class="mp"><b>심리:</b> ‘추천’이 아니라 ‘내 케이스 공유’ 프레임. 학술 공유 톤이라 친구 사이 안 망가짐.</div>
+      </div>
+      <div class="mode best">
+        <div class="mb">③ 도움되는 ‘자료’로 던지기 ⭐ (가장 안전·강력)</div>
+        <div class="mq">“이거 한번 해봐 — 우리 치과 리콜 몇 점 새는지 1분이면 나와.”</div>
+        <div class="mp"><b>심리:</b> 자랑이 아니라 <b>도움 주기 + 호기심</b>. 받은 원장도 자기 점수가 궁금해서 깖. 던진 사람은 ‘유용한 거 아는 사람’이 됨.</div>
+      </div>
+    </div>
+
+    <div class="why">
+      🧠 <b>그래서 우리가 줄 ‘던질 거리’는 자랑 문구가 아니라 <span style="color:var(--gold)">자가진단 테스트</span>입니다.</b> 원장이 똑똑·도움 주는 사람으로 보이면서 퍼져요. (Wasko&Faraj 2005: 전문가는 <b>평판</b> 위해 공유 · ‘의사가 의사에게’ 전략: ‘추천’ 아닌 ‘질문·케이스’)
+    </div>
+    <a class="cta" href="#selfcheck" style="margin-top:18px">↓ 그 자가진단 해보기</a>
+
+    <div class="powered">
+      <span>🔗</span><div>게다가 원장이 만든 환자 안내 페이지 하단엔 자동으로 <b>“AutoRecall로 제작”</b> 한 줄 — 일하는 게 곧 노출(핫메일식 구조적 바이럴). 던질 필요조차 없음.</div>
+    </div>
+  </section>
+
+  <!-- 1분 자가체크 (made-to-share, 던질 거리) -->
+  <section id="selfcheck">
+    <span class="eyebrow">🩺 1분 자가체크 — 던지기 좋은 그 ‘자료’</span>
+    <h2>우리 치과는 몇 개나 해당될까?</h2>
+    <p style="margin-top:10px">위 ‘보통 데스크’ 4가지 중 우리가 몇 개인지 체크해 보세요. 이게 동료에게 던지기 좋은 자료예요 — <b>친구 원장은 몇 개 나올지 궁금하지 않아요?</b></p>
+    <div class="check">
+      <label><input type="checkbox" class="ck"> 안 온 환자 명단을 매일 보는 사람이 없다</label>
+      <label><input type="checkbox" class="ck"> 누구부터 전화할지 ‘감’으로 정한다</label>
+      <label><input type="checkbox" class="ck"> 오후 빈 체어가 생겨도 못 메운다</label>
+      <label><input type="checkbox" class="ck"> 통화 결과를 따로 또 적는다</label>
+      <div class="out" id="out">보통 2~3개 체크돼요. 친구 원장은 몇 개 나올지 궁금하지 않아요?</div>
+    </div>
+    <p class="finep" style="margin-top:12px">→ 해당될수록, 대형치과 체계를 데스크 한 명에게 얹을 자리가 큰 거예요.</p>
+  </section>
+
+  <!-- install -->
+  <section class="final" id="get" style="border-bottom:0">
+    <span class="eyebrow">⚡ 합류 2분</span>
+    <h2>1기 창립 멤버로 시작</h2>
+    <div class="steps" style="margin-top:14px">
+      <div class="s">1. 설치파일 다운로드</div>
+      <div class="s">2. 실행·설치</div>
+      <div class="s">3. 덴트웹 연결</div>
+    </div>
+    <a class="cta" href="#" style="margin-top:18px">⬇ 창립 멤버로 무료 합류</a>
+    <p class="finep"><span class="fill">실제 다운로드·초대 링크 채우기</span> · 다음 기수는 혜택 축소</p>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  function toast(t){var e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2800);}
+  var rank=142;
+  document.getElementById('invite').addEventListener('click',function(){
+    rank=Math.max(1,rank-30);
+    document.getElementById('rank').textContent='#'+rank;
+    toast(rank<=1?'🏛️ 1번! 추천이 곧 내 순번 — 그래서 원장이 알아서 퍼뜨려요.':'⬆ 순번 당겨짐! 동료도 창립 혜택 받으니 win-win 😎');
+  });
+  var cks=document.querySelectorAll('.ck'),out=document.getElementById('out');
+  cks.forEach(function(c){c.addEventListener('change',function(){
+    var n=[].filter.call(cks,function(x){return x.checked}).length;
+    out.textContent=n===0?'보통 2~3개 체크돼요. 친구 원장은 몇 개 나올지 궁금하지 않아요?':(n<=2?'✅ '+n+'개 — 대형치과 체계로 바로 메울 수 있어요.':'🔴 '+n+'개 — 새는 매출이 꽤 됩니다. 자동화가 답이에요.');
+  })});
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

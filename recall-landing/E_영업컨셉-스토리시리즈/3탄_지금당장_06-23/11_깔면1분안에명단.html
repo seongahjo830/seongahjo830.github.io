@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>깔면 1분 안에 명단이 뜬다 — 리콜 프로그램</title>
+<style>
+  :root{--bg:#0a0e16;--bg2:#111722;--ink:#e9eef6;--dim:#7d8aa0;--line:#1e2735;--ac:#22d3ee}
+  *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;line-height:1.7;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:0 24px}
+  section{padding:80px 0;border-bottom:1px solid var(--line)}
+  .tag{font-size:13px;letter-spacing:.16em;color:var(--ac);font-weight:800;text-transform:uppercase}
+  h1{font-size:clamp(38px,7.6vw,68px);line-height:1.06;font-weight:900;margin:18px 0 22px;letter-spacing:-.03em}
+  h2{font-size:clamp(26px,4.4vw,40px);font-weight:850;line-height:1.18;margin-bottom:18px;letter-spacing:-.02em}
+  p{color:var(--dim);font-size:18px;margin-bottom:16px}p b{color:var(--ink);font-weight:700}
+  .ac{color:var(--ac)}
+  .hero{min-height:88vh;display:flex;flex-direction:column;justify-content:center}
+  .hero .lead{font-size:20px;max-width:30em}
+  .cta{display:inline-flex;align-items:center;gap:9px;margin-top:26px;background:var(--ac);color:#04222a;font-weight:850;font-size:19px;padding:18px 34px;border-radius:14px;text-decoration:none;transition:.18s;width:fit-content}
+  .cta:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(34,211,238,.28)}
+  .finep{font-size:13.5px;color:var(--dim);margin-top:14px}
+  /* mock queue */
+  .scr{background:var(--bg2);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-top:26px}
+  .scr .bar{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--dim)}
+  .scr .bar b{color:var(--ink)}
+  .scr .live{color:var(--ac);font-weight:700;display:flex;align-items:center;gap:6px}
+  .scr .live i{width:7px;height:7px;border-radius:50%;background:var(--ac);display:inline-block}
+  .row{display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:0}
+  .rk{font-weight:800;color:var(--dim);width:16px;text-align:center}
+  .bd{font-size:11px;font-weight:750;padding:3px 8px;border-radius:7px;white-space:nowrap}
+  .b1{background:rgba(245,165,36,.16);color:#f5a524}.b2{background:rgba(255,107,107,.14);color:#ff6b6b}.b3{background:rgba(91,140,255,.16);color:#7ba0ff}.b4{background:rgba(125,138,160,.16);color:#9aa6b8}
+  .nm{flex:1;font-size:14.5px;font-weight:650}.nm small{display:block;color:var(--dim);font-weight:400;font-size:12.5px}
+  .sc{font-weight:800;color:var(--ac);font-variant-numeric:tabular-nums}
+  .label{font-size:12.5px;color:#9a4d08;background:rgba(245,165,36,.12);padding:3px 9px;border-radius:7px;font-weight:700}
+  .steps{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin:26px 0 6px}
+  .step{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:13px 18px;font-size:15.5px;font-weight:650}
+  .step b{width:23px;height:23px;border-radius:50%;background:var(--ac);color:#04222a;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex:0 0 auto}
+  .arrow{color:var(--dim);font-weight:800}
+  .final{text-align:center}
+  .fill{display:inline-block;border:1.5px dashed #2c5a63;background:rgba(34,211,238,.08);color:var(--ac);border-radius:9px;padding:3px 11px;font-size:14px;font-weight:650}
+  .nav{text-align:center;padding:30px 0 70px;font-size:14px}.nav a{color:var(--dim)}
+  @media(max-width:560px){.arrow{display:none}.steps{flex-direction:column}.step{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <span class="tag">백 마디 설명보다</span>
+    <h1>깔면 1분 안에,<br>‘오늘 전화할 환자’가<br>화면에 떠 있습니다.</h1>
+    <p class="lead">세팅도, 입력도 없습니다. 설치하는 순간 차트를 읽어서 <b>놓치고 있던 회수 환자</b>를 알아서 줄 세워 보여줍니다. 좋은지 아닌지는 — <b class="ac">깔고 1분이면 직접</b> 알게 돼요.</p>
+    <a class="cta" href="#get">1분 안에 직접 보기 (무료) →</a>
+    <p class="finep">설치하면 바로 이 화면이 우리 치과 데이터로 채워집니다</p>
+  </section>
+
+  <section>
+    <span class="tag">설치 직후, 이렇게</span>
+    <h2>아무것도 안 해도,<br>명단은 이미 채워져 있습니다.</h2>
+    <div class="scr">
+      <div class="bar"><b>오늘의 회수 명단</b><span class="live"><i></i>설치 1분 후 · 자동</span></div>
+      <div class="row"><span class="rk">1</span><span class="bd b1">🔥 슬롯필러</span><span class="nm">박○○ · 45세<small>임플 보철 미완 · 오후 빈 슬롯 매칭</small></span><span class="sc">98</span></div>
+      <div class="row"><span class="rk">2</span><span class="bd b2">🚨 임상긴급</span><span class="nm">김○○ · 52세<small>신경치료 중단 8개월</small></span><span class="sc">91</span></div>
+      <div class="row"><span class="rk">3</span><span class="bd b3">💰 고가치</span><span class="nm">이○○ · 38세<small>치료계획 확정 후 미내원</small></span><span class="sc">84</span></div>
+      <div class="row"><span class="rk">4</span><span class="bd b4">📅 표준검진</span><span class="nm">정○○ · 29세<small>정기검진 도래</small></span><span class="sc">62</span></div>
+    </div>
+    <p style="margin-top:16px"><span class="label">예시 데이터</span> &nbsp;설치하면 이 자리가 <b>우리 치과의 실제 미내원 환자</b>로 채워집니다. 놓치고 있던 게 눈앞에 숫자로 떠요.</p>
+  </section>
+
+  <section class="final" id="get">
+    <span class="tag">1분이면 됩니다</span>
+    <h2>설명은 그만, 직접 보세요.</h2>
+    <div class="steps">
+      <div class="step"><b>1</b> 설치파일 다운로드</div><div class="arrow">→</div>
+      <div class="step"><b>2</b> 실행해서 설치</div><div class="arrow">→</div>
+      <div class="step"><b>3</b> 1분 뒤 명단 확인</div>
+    </div>
+    <a class="cta" href="#" style="margin-top:22px">⬇ 1분 안에 확인하기 (무료)</a>
+    <p class="finep">안 맞으면 삭제 1초 · 데이터는 치과 안에 · 카드 없음</p>
+    <div style="margin-top:10px"><span class="fill">실제 설치파일 다운로드 링크를 위 버튼에 연결하세요</span></div>
+  </section>
+</div>
+<div class="nav"><a href="index.html">← 4개 컨셉 비교로</a></div>
+<!--recall-fab-->
+<a href="../../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

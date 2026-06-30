@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리콜 프로그램 — 영업 컨셉 4스토리 비교</title>
+<style>
+  :root{
+    --bg:#0f1320; --card:#171d2e; --ink:#eef2fb; --dim:#8b96ad; --line:#252e42;
+    --c1:#ff4d4d; --c2:#a23c2f; --c3:#2563eb; --c4:#22d3ee;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,'Segoe UI',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:56px 24px 90px}
+  header{text-align:center;margin-bottom:48px}
+  header .kick{font-size:13px;letter-spacing:.2em;color:var(--dim);font-weight:700;text-transform:uppercase}
+  header h1{font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.15;margin:14px 0 14px;letter-spacing:-.02em}
+  header p{color:var(--dim);font-size:17px;max-width:620px;margin:0 auto}
+  header p b{color:var(--ink)}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media(max-width:720px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;text-decoration:none;color:inherit;transition:.22s;position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-4px);border-color:var(--ac)}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--ac)}
+  .card .no{font-size:13px;font-weight:800;color:var(--ac);letter-spacing:.1em}
+  .card h2{font-size:24px;font-weight:800;margin:8px 0 6px;letter-spacing:-.01em}
+  .card .story{font-size:15px;color:var(--dim);margin-bottom:18px;min-height:44px}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+  .meta span{font-size:12px;font-weight:700;padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.06);color:var(--ink)}
+  .open{margin-top:auto;font-size:15px;font-weight:700;color:var(--ac)}
+  .c1{--ac:var(--c1)} .c2{--ac:var(--c2)} .c3{--ac:var(--c3)} .c4{--ac:var(--c4)}
+  .recommend{position:absolute;top:18px;right:18px;font-size:11px;font-weight:800;background:#fbbf24;color:#1a1500;padding:4px 10px;border-radius:99px}
+  table{width:100%;border-collapse:collapse;margin-top:56px;font-size:14.5px}
+  caption{text-align:left;font-size:18px;font-weight:800;margin-bottom:14px}
+  th,td{padding:13px 14px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);font-weight:700;font-size:13px}
+  td b{color:var(--ink)}
+  .pick{color:#fbbf24;font-weight:800}
+  .note{margin-top:40px;background:var(--card);border:1px solid var(--line);border-left:4px solid #fbbf24;border-radius:14px;padding:22px 26px;color:var(--dim);font-size:15px}
+  .note b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="kick">리콜 프로그램 · 영업 컨셉 비교 허브</span>
+    <h1>같은 제품, 전혀 다른 4개의 스토리</h1>
+    <p>똑같은 리콜 프로그램을 <b>4가지 각도</b>로 팝니다. 각 카드를 누르면 완성된 페이지가 열려요. 우리가 얘기한 <b>스토리·감정·기억</b> 원칙을 각자 다른 방식으로 씁니다.</p>
+  </header>
+
+  <div class="grid">
+    <a class="card c1" href="1_새는수도꼭지.html">
+      <span class="no">CONCEPT 01</span>
+      <h2>💧 새는 수도꼭지</h2>
+      <div class="story">"지금도 매달 돈이 조용히 새고 있다." 손실을 눈앞의 숫자로 들이댄다.</div>
+      <div class="meta"><span>😨 손실·불안</span><span>충격 숫자 1개</span><span>다크</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+
+    <a class="card c2" href="2_잊혀진환자의편지.html">
+      <span class="no">CONCEPT 02</span>
+      <h2>✉️ 잊혀진 환자의 편지</h2>
+      <div class="story">떠난 환자가 1인칭으로 쓴 편지. "전 그냥 잊혀진 기분이었어요."</div>
+      <div class="meta"><span>🥲 공감·후회</span><span>한 사람 스토리</span><span>에디토리얼</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+
+    <a class="card c3" href="3_실장의하루.html">
+      <span class="recommend">⭐ 추천</span>
+      <span class="no">CONCEPT 03</span>
+      <h2>🕘 실장의 하루</h2>
+      <div class="story">도입 전후 하루를 나란히. 실무자가 "이거 내 얘기네" 하고 바로 산다.</div>
+      <div class="meta"><span>😌 안도·해방</span><span>Before→After</span><span>토스풍</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+
+    <a class="card c4" href="4_보이지않는명단.html">
+      <span class="no">CONCEPT 04</span>
+      <h2>🔍 보이지 않는 명단</h2>
+      <div class="story">차트 속에 잠든 기회를 스캔으로 드러낸다. "안에 이미 있다."</div>
+      <div class="meta"><span>🤔 호기심·발견</span><span>위치·시각화</span><span>데이터임팩트</span></div>
+      <span class="open">페이지 열기 →</span>
+    </a>
+  </div>
+
+  <table>
+    <caption>한눈 비교표</caption>
+    <thead>
+      <tr><th>컨셉</th><th>거는 감정</th><th>설득 논리</th><th>잘 먹히는 상대</th><th>위험</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><b>💧 수도꼭지</b></td><td>손실회피</td><td>"안 하면 손해"</td><td>숫자에 민감한 원장</td><td>겁주기 과하면 거부감</td></tr>
+      <tr><td><b>✉️ 편지</b></td><td>공감·후회</td><td>"환자 마음을 놓쳤다"</td><td>환자 케어 자부심 강한 원장</td><td>감정 과하면 오글거림</td></tr>
+      <tr class="pick"><td><b>🕘 실장의 하루 ⭐</b></td><td>안도·해방</td><td>"내 일이 편해진다"</td><td>실무 결정권 있는 실장·원장</td><td>가장 무난, 임팩트는 중간</td></tr>
+      <tr><td><b>🔍 명단</b></td><td>호기심·발견</td><td>"숨은 기회가 있다"</td><td>데이터·효율 좋아하는 원장</td><td>추상적이면 와닿기 어려움</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <b>⭐ 왜 03 '실장의 하루'를 추천?</b> — 실제 구매·도입을 결정하는 사람(실장·원장)이 <b>자기 일상으로 즉시 치환</b>해서 보기 때문. 공포(01)나 감정(02)은 강하지만 호불호가 갈리고, 04는 멋지지만 추상적입니다. 03은 "이거 딱 내 얘기"라 전환이 가장 안정적이에요. 다만 <b>대상에 따라 1군데서 1개만 골라 쓰기</b>를 권합니다 — 4개를 한 번에 들이대면 메시지가 흩어집니다.
+  </div>
+
+</div>
+<!--recall-fab-->
+<a href="../../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

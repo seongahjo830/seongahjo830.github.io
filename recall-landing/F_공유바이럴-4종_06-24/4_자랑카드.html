@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>동료한테 보내는 자랑 한 장 — AutoRecall</title>
+<meta property="og:title" content="나 요즘 이걸로 안 온 환자 챙겨 — 너도 써봐 (둘 다 이득)">
+<meta property="og:description" content="원장이 동료에게 보내는 '자랑 카드' 한 장. 같이 쓰면 둘 다 혜택.">
+<style>
+  :root{--bg:#0d0a14;--card:#181225;--ink:#F0ECF8;--dim:#9A8FB0;--line:#2a2138;--ac:#A06CFF;--ac2:#FF6FB5;--go:#34d399;--gold:#FFC94A}
+  *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;line-height:1.65;letter-spacing:-.015em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:660px;margin:0 auto;padding:0 22px}
+  section{padding:56px 0}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.05em;color:var(--ac2);background:rgba(255,111,181,.12);padding:6px 13px;border-radius:99px;margin-bottom:16px}
+  h1{font-size:clamp(30px,6.4vw,50px);font-weight:900;line-height:1.08;letter-spacing:-.035em}
+  h1 em{font-style:normal;color:var(--ac)}
+  p{font-size:17px;color:var(--dim)}p b{color:var(--ink);font-weight:700}
+  .hero{padding:60px 0 26px;text-align:center}.hero p{max-width:27em;margin:18px auto 0}
+  /* tone picker */
+  .pick{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:24px 0 8px}
+  .pick button{background:var(--card);border:1.5px solid var(--line);color:var(--dim);font-family:inherit;font-weight:700;font-size:14px;padding:9px 16px;border-radius:99px;cursor:pointer;transition:.15s}
+  .pick button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+  /* brag card preview */
+  .brag{background:linear-gradient(160deg,#221634,#2c1840);border:1px solid #3a2a52;border-radius:22px;padding:30px 26px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+  .brag .kakao{display:flex;align-items:center;gap:8px;justify-content:center;font-size:12.5px;color:var(--dim);margin-bottom:16px}
+  .brag .kakao .dot{width:8px;height:8px;border-radius:50%;background:var(--go)}
+  .brag .msg{font-size:clamp(20px,3.8vw,27px);font-weight:850;line-height:1.45;letter-spacing:-.02em;min-height:3em}
+  .brag .msg span{color:var(--gold)}
+  .brag .by{font-size:13.5px;color:var(--dim);margin-top:16px}
+  .share{display:inline-flex;align-items:center;gap:9px;background:#FEE500;color:#191600;font-weight:850;font-size:17px;padding:15px 30px;border-radius:13px;border:0;cursor:pointer;font-family:inherit;margin-top:22px;transition:transform .12s}
+  .share:hover{transform:translateY(-2px)}
+  /* two-sided */
+  .two{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;margin-top:10px}
+  .two h3{font-size:20px;font-weight:850;margin-bottom:14px}
+  .twogrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .twogrid .s{border-radius:14px;padding:18px;text-align:center}
+  .twogrid .me{background:rgba(160,108,255,.1);border:1px solid #3a2a52}
+  .twogrid .you{background:rgba(255,111,181,.08);border:1px solid #4a2a3e}
+  .twogrid .w{font-weight:850;font-size:14px;margin-bottom:6px}
+  .twogrid .me .w{color:var(--ac)}.twogrid .you .w{color:var(--ac2)}
+  .twogrid .g{font-size:14px;color:var(--ink)}
+  .twogrid .fill{display:block;margin-top:6px}
+  @media(max-width:520px){.twogrid{grid-template-columns:1fr}}
+  .note{font-size:13px;color:var(--dim);margin-top:14px;text-align:center}
+  .fill{display:inline-block;border:1.5px dashed #4a4060;background:rgba(255,201,74,.08);color:var(--gold);border-radius:8px;padding:2px 9px;font-size:12.5px;font-weight:650}
+  .why{background:rgba(52,211,153,.06);border:1px solid #1d4a3c;border-radius:14px;padding:18px 20px;margin-top:24px;font-size:14.5px;color:var(--dim)}
+  .why b{color:var(--go)}
+  .cta{display:inline-block;background:var(--go);color:#04140d;font-weight:850;font-size:18px;padding:16px 30px;border-radius:13px;text-decoration:none;margin-top:8px}
+  .final{text-align:center}
+  .finep{font-size:13px;color:var(--dim);margin-top:12px}
+  .nav{text-align:center;padding:24px 0 60px;font-size:14px}.nav a{color:var(--dim)}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#000;color:#fff;padding:13px 22px;border-radius:12px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:90}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <span class="eyebrow">🤝 영업 아님 · 그냥 자랑</span>
+    <h1>“나 요즘 이걸로<br><em>안 온 환자</em> 챙겨”</h1>
+    <p>동료한테 추천하는 건 부담스럽죠. 그래서 <b>‘추천’이 아니라 ‘자랑’</b>으로. 톤만 고르면 카톡에 보낼 한 장이 완성돼요.</p>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="pick" id="pick">
+      <button data-i="0" class="on">😎 쿨하게</button>
+      <button data-i="1">📊 숫자로</button>
+      <button data-i="2">😂 솔직하게</button>
+      <button data-i="3">🤔 질문 던지기</button>
+    </div>
+
+    <div class="brag">
+      <div class="kakao"><span class="dot"></span> 원장 단톡방 미리보기</div>
+      <div class="msg" id="msg"></div>
+      <div class="by">— 무료라서 부담 없이 깔아보라고 링크만 툭</div>
+    </div>
+    <button class="share" id="shareBtn" style="display:block;width:100%;justify-content:center">🟡 이대로 카톡으로 보내기</button>
+    <p class="note">💡 진짜 핵심은 <b style="color:var(--ink)">내가 자랑하면 → 친구가 “그거 뭐야?” → 자동 추천</b>이에요</p>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="two">
+      <h3>같이 쓰면, 둘 다 이득</h3>
+      <div class="twogrid">
+        <div class="s me"><div class="w">🙋 추천한 나</div><div class="g">동료가 첫 명단 확인하면<span class="fill">혜택 채우기 (예: 프리미엄 1개월)</span></div></div>
+        <div class="s you"><div class="w">🙋 받은 친구</div><div class="g">시작하자마자<span class="fill">혜택 채우기 (예: 프리미엄 1개월)</span></div></div>
+      </div>
+      <p class="note">※ 보상은 <b style="color:var(--ink)">친구가 실제로 ‘첫 명단’을 확인했을 때</b> 지급 — 가짜 가입 방지 (Airbnb식)</p>
+    </div>
+
+    <div class="why">
+      🧠 <b>왜 이게 통하나:</b> 사람은 ‘남한테 추천’은 부담스러워해도 ‘내 자랑’은 즐겨요(자기개시는 뇌 보상). 게다가 의사는 <b>동료에게 정보 주는 사람</b>으로 보이고 싶어하죠. 그래서 ‘자랑 카드’ 한 장이 영업 멘트보다 100배 잘 퍼집니다.
+    </div>
+  </section>
+
+  <section class="final" style="padding-top:0">
+    <a class="cta" href="#">나도 무료로 시작하기 →</a>
+    <p class="finep">30일 무료 · 카드 없음 · 안 맞으면 삭제</p>
+    <div style="margin-top:8px"><span class="fill">실제 다운로드/추천 링크 연결</span></div>
+  </section>
+</div>
+<div class="nav"><a href="index.html">← 공유 페이지 4종으로</a></div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var msgs=[
+    '나 요즘 <span>안 온 환자</span> 챙기는 거 데스크가 알아서 해.<br>오늘 누구한테 전화할지 화면에 떠 있어 😎',
+    '미내원 환자 <span>매분 자동으로</span> 우선순위 떠.<br>빈 체어 생기면 맞는 환자도 띄워줌 📊',
+    '솔직히 그동안 안 온 환자 <span>감으로</span> 전화했는데…<br>이거 깔고 데스크가 헤맬 일이 없어졌어 😂',
+    '너네 6개월 넘게 안 온 환자 <span>몇 명</span>인지 알아?<br>난 이걸로 매일 자동으로 챙기는 중 🤔'
+  ];
+  var btns=document.querySelectorAll('#pick button'),msg=document.getElementById('msg');
+  function set(i){msg.innerHTML=msgs[i];btns.forEach(function(b){b.classList.toggle('on',+b.dataset.i===i)});}
+  btns.forEach(function(b){b.addEventListener('click',function(){set(+b.dataset.i)})});set(0);
+  document.getElementById('shareBtn').addEventListener('click',function(){
+    var t=document.getElementById('toast');
+    t.textContent='📲 (실제라면) 카톡으로! ‘추천’ 아닌 ‘자랑’이라 부담 0 😏';
+    t.classList.add('show');setTimeout(function(){t.classList.remove('show')},3000);
+  });
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

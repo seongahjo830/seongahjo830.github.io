@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoRecall — 오늘 전화할 환자, 줄 세워 드립니다</title>
+<meta name="description" content="치과 리콜(recall·재내원) 자동화 앱. 안 부른 환자, 흩어진 명단, 감으로 찍는 전화를 점수 큐 하나로. 무료 버전으로 지금 시작.">
+<style>
+  :root{
+    --bg:#FBFAF8; --bg-soft:#F2F0EA; --card:#FFFFFF;
+    --ink:#1A1A1A; --ink-soft:#5C6360; --line:#E4E0D7;
+    --accent:#1D4ED8; --accent-soft:#E8EFFE; --accent-deep:#163FB0;
+    --gold:#B08400; --red:#B23A3A; --amber:#B45309; --green:#1E7A4D; --green-soft:#E7F4ED;
+    --radius:16px; --radius-sm:12px;
+    --shadow:0 1px 2px rgba(20,20,20,.04),0 10px 34px rgba(20,20,20,.07);
+    --shadow-sm:0 1px 2px rgba(20,20,20,.05),0 4px 14px rgba(20,20,20,.05);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+    font-size:18px;line-height:1.85;letter-spacing:-.011em;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  .narrow{max-width:760px}
+  h1{font-size:clamp(30px,5.2vw,52px);font-weight:850;letter-spacing:-.035em;line-height:1.14;margin:0 0 18px}
+  h2{font-size:clamp(24px,3.4vw,34px);font-weight:820;letter-spacing:-.025em;line-height:1.24;margin:0 0 8px}
+  h3{font-size:clamp(18px,2.2vw,21px);font-weight:760;margin:0;letter-spacing:-.02em}
+  p{margin:0 0 1em}
+  .muted{color:var(--ink-soft)}
+  .accent{color:var(--accent)}
+  a{color:var(--accent);text-decoration:none}
+  mark{background:linear-gradient(180deg,transparent 58%,#FFE9A8 58%);color:inherit;padding:0 2px;border-radius:2px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.07em;color:var(--accent);background:var(--accent-soft);padding:6px 14px;border-radius:99px;margin-bottom:20px}
+  section{padding:clamp(48px,8vw,84px) 0;border-bottom:1px solid var(--line)}
+  .lead{font-size:clamp(18px,2.3vw,21px);color:var(--ink-soft);max-width:42em}
+
+  /* ── buttons ── */
+  .cta{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;font-weight:800;
+    font-size:17px;padding:16px 28px;border-radius:13px;box-shadow:var(--shadow-sm);transition:.14s;border:0;cursor:pointer}
+  .cta:hover{background:var(--accent-deep);transform:translateY(-1px)}
+  .cta.ghost{background:#fff;color:var(--accent);border:1.5px solid var(--line)}
+  .cta.ghost:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-1px)}
+  .ctarow{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+
+  /* ── hero ── */
+  header.hero{padding:clamp(56px,9vw,104px) 0 clamp(40px,6vw,64px);
+    background:radial-gradient(120% 90% at 78% -10%,#EDF2FE 0%,rgba(237,242,254,0) 55%),linear-gradient(180deg,#fff,var(--bg))}
+  .hero h1 span.hl{background:linear-gradient(180deg,transparent 62%,#CFE0FF 62%);padding:0 4px}
+  .hero .sub{font-size:clamp(18px,2.5vw,22px);color:var(--ink-soft);max-width:30em;margin:0 0 28px}
+  .heroflag{font-size:14px;color:var(--ink-soft);margin-top:18px;display:flex;flex-wrap:wrap;gap:6px 18px}
+  .heroflag b{color:var(--ink);font-weight:750}
+
+  /* ── pain (act 1) ── */
+  .paingrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
+  .paincard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px 22px;box-shadow:var(--shadow-sm)}
+  .paincard .ic{font-size:30px;line-height:1;margin-bottom:14px}
+  .paincard h3{margin-bottom:8px}
+  .paincard p{font-size:15.5px;color:var(--ink-soft);margin:0;line-height:1.7}
+  .painquote{margin-top:40px;font-size:clamp(20px,3vw,28px);font-weight:800;letter-spacing:-.02em;line-height:1.4;color:var(--ink);max-width:18em}
+  .painquote .small{display:block;font-size:16px;font-weight:600;color:var(--ink-soft);margin-top:14px;letter-spacing:0}
+
+  /* ── audience tabs ── */
+  .who{display:flex;flex-wrap:wrap;gap:10px;margin:30px 0 0}
+  .whochip{flex:1;min-width:240px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm)}
+  .whochip .role{font-size:13px;font-weight:800;letter-spacing:.04em;padding:4px 11px;border-radius:99px;display:inline-block;margin-bottom:12px}
+  .r-dir{background:#FBF1E4;color:var(--amber)} .r-mgr{background:var(--accent-soft);color:var(--accent)}
+  .whochip p{font-size:15.5px;color:var(--ink-soft);margin:0;line-height:1.7}
+  .whochip b{color:var(--ink)}
+
+  /* ── cases (act 2) ── */
+  .casehead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .casecount{font-size:14px;font-weight:800;color:var(--accent);background:var(--accent-soft);padding:4px 12px;border-radius:99px}
+  .case{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);
+    margin-top:22px;overflow:hidden}
+  .case .ctop{display:flex;gap:16px;padding:24px 26px 18px;align-items:flex-start;border-bottom:1px solid var(--line)}
+  .case .cnum{flex:none;width:46px;height:46px;border-radius:13px;background:var(--accent);color:#fff;
+    font-weight:850;font-size:21px;display:flex;align-items:center;justify-content:center}
+  .case .ctitle h3{font-size:clamp(19px,2.5vw,23px);font-weight:820;letter-spacing:-.02em;margin-bottom:4px}
+  .case .ctitle .scene{font-size:15.5px;color:var(--ink-soft);margin:0}
+  .cbody{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .cbody>div{padding:22px 26px}
+  .cbody .pain{border-right:1px solid var(--line);background:#FCF8F4}
+  .clabel{font-size:12px;font-weight:850;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+  .clabel.pain-l{color:var(--red)} .clabel.sol-l{color:var(--accent)}
+  .cbody p{font-size:15.5px;line-height:1.72;margin:0}
+  .cbody .feat{font-size:15px;color:var(--ink);background:var(--accent-soft);border-radius:10px;padding:11px 14px;margin-top:12px;font-weight:600;line-height:1.55}
+  .effect{display:flex;gap:10px;flex-wrap:wrap;padding:16px 26px;background:var(--green-soft);border-top:1px solid #CBE7D6}
+  .effect .etag{font-size:14px;font-weight:750;color:var(--green);background:#fff;border:1px solid #BFE3CC;border-radius:99px;padding:6px 14px}
+  .effect .efor{align-self:center;font-size:12.5px;font-weight:800;color:var(--ink-soft);margin-right:2px}
+
+  /* ── score formula box ── */
+  .formula{margin-top:20px;background:#15121C;color:#EDE7DA;border-radius:var(--radius);padding:24px 26px;box-shadow:var(--shadow)}
+  .formula .ftitle{font-size:13px;font-weight:800;letter-spacing:.05em;color:#E0B252;margin-bottom:14px}
+  .feq{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:15px;line-height:1.5}
+  .feq .term{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:9px 13px;font-weight:700}
+  .feq .term b{display:block;font-size:12px;font-weight:600;color:#A8A096;margin-top:3px}
+  .feq .op{font-size:20px;font-weight:800;color:#E0B252}
+
+  /* ── how (act 3) ── */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px;position:relative}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px 20px;box-shadow:var(--shadow-sm);position:relative}
+  .step .sn{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent);
+    font-weight:850;font-size:16px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+  .step .sic{font-size:26px;margin-bottom:8px;line-height:1}
+  .step h3{font-size:17px;font-weight:800;margin-bottom:6px}
+  .step p{font-size:14.5px;color:var(--ink-soft);margin:0;line-height:1.65}
+  .easybar{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+  .easychip{font-size:14.5px;font-weight:700;color:var(--ink);background:var(--card);border:1px solid var(--line);
+    border-radius:99px;padding:9px 16px;box-shadow:var(--shadow-sm)}
+  .easychip .ck{color:var(--green);font-weight:850;margin-right:6px}
+
+  /* ── final cta ── */
+  .finalcta{background:linear-gradient(180deg,var(--accent),var(--accent-deep));color:#fff;border-radius:22px;
+    padding:clamp(36px,6vw,56px) clamp(24px,5vw,48px);text-align:center;box-shadow:0 20px 50px rgba(29,78,216,.28);margin-top:8px}
+  .finalcta h2{color:#fff;margin-bottom:10px}
+  .finalcta p{color:#DCE6FF;font-size:18px;max-width:30em;margin:0 auto 26px}
+  .finalcta .cta{background:#fff;color:var(--accent);font-size:18px;padding:18px 34px}
+  .finalcta .cta:hover{background:#F0F4FF;color:var(--accent-deep)}
+  .finalcta .free{display:inline-block;margin-top:18px;font-size:14px;color:#BFD0FF}
+
+  /* ── disclaimer / footer ── */
+  .disc{background:#FBF6EC;border:1px solid #ECE0C7;border-radius:var(--radius-sm);padding:16px 20px;margin-top:34px;
+    font-size:14px;color:#705B2E;line-height:1.7}
+  .disc b{color:#5C4A20}
+  footer{padding:40px 0 60px;color:var(--ink-soft);font-size:14px}
+  .seclead{margin:6px 0 0}
+
+  /* ── responsive ── */
+  @media(max-width:1024px){
+    .steps{grid-template-columns:repeat(2,1fr)}
+  }
+  @media(max-width:768px){
+    body{font-size:17px}
+    .paingrid{grid-template-columns:1fr}
+    .who{flex-direction:column}
+    .cbody{grid-template-columns:1fr}
+    .cbody .pain{border-right:0;border-bottom:1px solid var(--line)}
+    .feq .op{width:100%;text-align:center}
+  }
+  @media(max-width:480px){
+    .wrap{padding:0 18px}
+    body{font-size:16px}
+    h1{line-height:1.18}
+    .ctarow{flex-direction:column}
+    .ctarow .cta{width:100%;justify-content:center}
+    .steps{grid-template-columns:1fr}
+    .case .ctop{flex-direction:column;gap:12px;padding:20px 20px 16px}
+    .case .cnum{width:40px;height:40px;font-size:19px}
+    .cbody>div{padding:18px 20px}
+    .effect{padding:14px 20px}
+    .heroflag{flex-direction:column;gap:6px}
+    .easychip{width:100%}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ ACT 1 · 공감 / 페인포인트 ═══════════════ -->
+<header class="hero">
+  <div class="wrap narrow">
+    <span class="eyebrow">치과 리콜(recall · 재내원 관리) 자동화</span>
+    <h1>안 오는 환자는 없습니다.<br><span class="hl">안 부른 환자</span>만 있을 뿐.</h1>
+    <p class="sub">스케일링 6개월 지난 환자, 상담만 받고 사라진 임플란트 환자 —
+      명단이 어디 있는지도 모른 채 매달 조용히 빠져나갑니다.
+      <b>AutoRecall</b>(오토리콜)은 오늘 전화할 환자를 <mark>점수 순으로 줄 세워</mark> 데스크에 띄워 줍니다.</p>
+    <div class="ctarow">
+      <a class="cta" href="#install">무료 버전으로 시작하기 →</a>
+      <a class="cta ghost" href="#cases">우리 치과 얘긴지 먼저 보기</a>
+    </div>
+    <div class="heroflag">
+      <span><b>덴트웹</b> 차트 그대로 연결</span>
+      <span><b>설치 1분</b> · 복잡한 설정 없음</span>
+      <span><b>무료 버전</b>부터 효과 체감</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <span class="eyebrow">잠깐, 이런 적 없으셨나요</span>
+    <h2>매출은 새 환자에서만 나오는 게 아닙니다.</h2>
+    <p class="lead seclead">이미 우리 치과를 아는 <b>구환(기존 환자)</b>이 가장 큰 매출원인데,
+      대부분의 치과가 이 명단을 <mark>관리할 도구가 없어서</mark> 그냥 흘려보냅니다.</p>
+
+    <div class="paingrid">
+      <div class="paincard">
+        <div class="ic">🕳️</div>
+        <h3>새는 줄도 모르는 매출</h3>
+        <p>리콜을 안 돌려서 빠져나간 환자는 <b>장부에 안 찍힙니다.</b>
+          오지 않은 손실이라 보이지 않고, 보이지 않으니 아무도 막지 않습니다.</p>
+      </div>
+      <div class="paincard">
+        <div class="ic">🎯</div>
+        <h3>감으로 찍는 전화</h3>
+        <p>오늘 누구한테 전화할지 <b>실장의 감(感)</b>에 달려 있습니다.
+          기준도 없고 근거도 없어, 정작 불러야 할 사람은 매번 뒤로 밀립니다.</p>
+      </div>
+      <div class="paincard">
+        <div class="ic">📋</div>
+        <h3>어디 있는지 모를 명단</h3>
+        <p>스케일링 6개월 도래 환자, 보철 점검 시기 환자 —
+          <b>명단이 차트 속에 흩어져</b> 있어 뽑으려면 하루가 갑니다. 그래서 안 뽑습니다.</p>
+      </div>
+    </div>
+
+    <p class="painquote">“바쁠 땐 전화를 못 돌리고,<br>한가할 땐 전화할 사람을 모릅니다.”
+      <span class="small">— 빈 슬롯(예약 공백)은 그대로, 부를 환자는 차트 속에 잠든 채로.</span></p>
+  </div>
+</section>
+
+<!-- 누구를 위한 도구인가 -->
+<section>
+  <div class="wrap">
+    <span class="eyebrow">읽는 사람에 따라 다르게 아픕니다</span>
+    <h2>같은 문제, 원장님과 실장님은 다르게 느낍니다.</h2>
+    <div class="who">
+      <div class="whochip">
+        <span class="role r-dir">원장님 관점</span>
+        <p><b>이건 돈의 문제입니다.</b> 한 번 온 환자가 다시 오지 않으면,
+          신환 유치 비용을 또 써야 합니다. 리콜은 <b>가장 싼 매출</b>이자
+          진료 외 시간을 갉아먹지 않는 매출입니다.</p>
+      </div>
+      <div class="whochip">
+        <span class="role r-mgr">실장님 관점</span>
+        <p><b>이건 노동의 문제입니다.</b> 누구한테 걸지 고르는 일,
+          거절당하는 감정노동, 표 없이 막막한 시작 —
+          AutoRecall은 <b>전화를 쉽게</b> 만들고 <b>결과를 남깁니다.</b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ACT 2 · 케이스별 솔루션 (핵심) ═══════════════ -->
+<section id="cases">
+  <div class="wrap">
+    <div class="casehead">
+      <span class="casecount">현장 케이스 6</span>
+      <span class="eyebrow" style="margin:0">우리 치과에 몇 개나 해당되나요?</span>
+    </div>
+    <h2 style="margin-top:14px">상황별로, AutoRecall이 무엇을 해주는지.</h2>
+    <p class="lead seclead">각 케이스는 <b>실제 데스크에서 벌어지는 상황</b>입니다.
+      지금의 고통 → AutoRecall이 하는 일 → 그래서 생기는 효과 순으로 보세요.</p>
+
+    <!-- CASE 1 -->
+    <div class="case">
+      <div class="ctop">
+        <div class="cnum">1</div>
+        <div class="ctitle">
+          <h3>빈 슬롯이 생겼는데, 채울 사람을 못 찾는 날</h3>
+          <p class="scene">오후 3시 예약이 갑자기 취소됐다. 한 시간이 통째로 빈다.</p>
+        </div>
+      </div>
+      <div class="cbody">
+        <div class="pain">
+          <div class="clabel pain-l">😣 지금의 고통</div>
+          <p>빈 시간을 채우려 해도, 지금 당장 부를 만한 사람을 떠올리지 못합니다.
+            결국 그 슬롯은 <b>빈 채로 날아가고</b>, 그날 매출에서 조용히 사라집니다.</p>
+        </div>
+        <div class="sol">
+          <div class="clabel sol-l">⚡ AutoRecall이 하는 일</div>
+          <p>오늘 빈 슬롯에 맞는 환자를 <b>즉시 추천</b>합니다. 가까이 살고, 마침 시술 주기가 도래했고,
+            전화 받을 확률이 높은 사람부터.</p>
+          <div class="feat">🔥 슬롯필러 — 당일 빈자리 채우기 추천 (당일 매칭 가중 ×3.0)</div>
+        </div>
+      </div>
+      <div class="effect">
+        <span class="efor">효과</span>
+        <span class="etag">빈 슬롯 회수율 ↑</span>
+        <span class="etag">당일 매출 방어</span>
+        <span class="etag">실장 판단 부담 0</span>
+      </div>
+    </div>
+
+    <!-- CASE 2 -->
+    <div class="case">
+      <div class="ctop">
+        <div class="cnum">2</div>
+        <div class="ctitle">
+          <h3>정기검진·스케일링 6개월 도래 환자가 명단 없이 흩어져 있음</h3>
+          <p class="scene">“이번 달 스케일링 부를 사람 누구죠?” — 아무도 정확히 모른다.</p>
+        </div>
+      </div>
+      <div class="cbody">
+        <div class="pain">
+          <div class="clabel pain-l">😣 지금의 고통</div>
+          <p>리콜 시기가 된 환자는 차트마다 흩어져 있습니다.
+            전부 뽑아 정리하려면 하루가 가니까 <b>결국 안 뽑고</b>, 환자는 다른 치과로 갑니다.</p>
+        </div>
+        <div class="sol">
+          <div class="clabel sol-l">⚡ AutoRecall이 하는 일</div>
+          <p>마지막 내원일과 시술 주기를 읽어, <b>리콜 시기가 된 환자를 매일 자동으로 큐에 올립니다.</b>
+            명단을 만들 필요가 없습니다. 매일 아침 이미 떠 있습니다.</p>
+          <div class="feat">📅 타이밍 기반 자동 큐 — 6~12개월 적시 구간을 알아서 포착</div>
+        </div>
+      </div>
+      <div class="effect">
+        <span class="efor">효과</span>
+        <span class="etag">정기관리 환자 유지율 ↑</span>
+        <span class="etag">명단 작업 시간 0</span>
+        <span class="etag">놓치는 환자 감소</span>
+      </div>
+    </div>
+
+    <!-- CASE 3 -->
+    <div class="case">
+      <div class="ctop">
+        <div class="cnum">3</div>
+        <div class="ctitle">
+          <h3>고가 치료 상담만 받고 사라진 환자가 방치됨</h3>
+          <p class="scene">임플란트·교정 상담까지 갔는데 결정을 미루고 그대로 끊긴 환자.</p>
+        </div>
+      </div>
+      <div class="cbody">
+        <div class="pain">
+          <div class="clabel pain-l">😣 지금의 고통</div>
+          <p>가장 매출이 큰 환자인데, <b>한 번 더 연락하지 못해</b> 놓칩니다.
+            상담 기록은 차트 깊숙이 묻혀 다시 들춰볼 일이 없습니다.</p>
+        </div>
+        <div class="sol">
+          <div class="clabel sol-l">⚡ AutoRecall이 하는 일</div>
+          <p>상담만 받고 미완료된 <b>고가치(高價値) 환자를 따로 골라 우선 큐에 올립니다.</b>
+            “언제 결정하실지 여쭤볼게요” 한 통의 명분을 만들어 줍니다.</p>
+          <div class="feat">💰 고가치 우선 발굴콜 — 미완료 상담 × 치료 규모 가중</div>
+        </div>
+      </div>
+      <div class="effect">
+        <span class="efor">효과</span>
+        <span class="etag">고가 치료 전환 기회 ↑</span>
+        <span class="etag">묻힌 상담 되살리기</span>
+        <span class="etag">콜 1통의 명분 확보</span>
+      </div>
+    </div>
+
+    <!-- CASE 4 -->
+    <div class="case">
+      <div class="ctop">
+        <div class="cnum">4</div>
+        <div class="ctitle">
+          <h3>실장이 누구한테 전화할지 우선순위를 감으로 정함</h3>
+          <p class="scene">시간은 한정돼 있고, 명단은 길다. 무엇부터 걸어야 할까?</p>
+        </div>
+      </div>
+      <div class="cbody">
+        <div class="pain">
+          <div class="clabel pain-l">😣 지금의 고통</div>
+          <p>기준이 없으니 <b>매번 처음부터 고민</b>합니다. 사람마다 순서가 다르고,
+            정작 가치 높은 환자가 뒤로 밀립니다. 잘했는지 확인할 방법도 없습니다.</p>
+        </div>
+        <div class="sol">
+          <div class="clabel sol-l">⚡ AutoRecall이 하는 일</div>
+          <p>환자마다 <b>콜 우선도를 점수로 계산</b>해 자동으로 줄 세웁니다.
+            실장은 위에서부터 누르기만 하면 됩니다. 감이 아니라 근거로.</p>
+          <div class="feat">📊 점수제 큐 — 아래 공식으로 매일 자동 정렬</div>
+        </div>
+      </div>
+      <div class="effect">
+        <span class="efor">효과</span>
+        <span class="etag">전화 우선순위 객관화</span>
+        <span class="etag">고가치 환자 누락 방지</span>
+        <span class="etag">신입도 첫날부터 가능</span>
+      </div>
+    </div>
+
+    <!-- score formula -->
+    <div class="formula">
+      <div class="ftitle">⚙️ 콜 우선도는 이렇게 계산됩니다 (감이 아니라 공식)</div>
+      <div class="feq">
+        <span class="term">화이트 − 블랙<b>환자 본질·관계</b></span>
+        <span class="op">×</span>
+        <span class="term">기본 가치<b>오늘 부를 명분</b></span>
+        <span class="op">×</span>
+        <span class="term">타이밍 배수<b>받을 확률·빈 슬롯</b></span>
+        <span class="op">=</span>
+        <span class="term" style="background:rgba(224,178,82,.18);border-color:rgba(224,178,82,.4)">콜 우선도<b>오늘의 순번</b></span>
+      </div>
+    </div>
+
+    <!-- CASE 5 -->
+    <div class="case">
+      <div class="ctop">
+        <div class="cnum">5</div>
+        <div class="ctitle">
+          <h3>전화한 결과가 안 남아, 다음에 또 같은 사람한테 전화</h3>
+          <p class="scene">어제 이미 통화했는데, 오늘 다른 직원이 또 건다. 환자는 짜증, 우리는 민망.</p>
+        </div>
+      </div>
+      <div class="cbody">
+        <div class="pain">
+          <div class="clabel pain-l">😣 지금의 고통</div>
+          <p>통화 결과를 적어 둘 곳이 마땅치 않아 <b>기억과 메모에 의존</b>합니다.
+            중복 전화·놓친 약속이 생기고, 무엇이 효과 있었는지 데이터가 안 쌓입니다.</p>
+        </div>
+        <div class="sol">
+          <div class="clabel sol-l">⚡ AutoRecall이 하는 일</div>
+          <p>통화 후 <b>결과 버튼 한 번</b>이면 끝. “예약 잡음 / 다음에 / 거절 / 부재중”을 누르면
+            다음 액션이 자동 설정되고, 결과가 데이터로 쌓입니다.</p>
+          <div class="feat">✅ 결과 버튼 1클릭 = 다음 액션 예약 + 성과 데이터 축적</div>
+        </div>
+      </div>
+      <div class="effect">
+        <span class="efor">효과</span>
+        <span class="etag">중복 전화 제거</span>
+        <span class="etag">통화 기록 자동 보존</span>
+        <span class="etag">무엇이 통하는지 학습</span>
+      </div>
+    </div>
+
+    <!-- CASE 6 -->
+    <div class="case">
+      <div class="ctop">
+        <div class="cnum">6</div>
+        <div class="ctitle">
+          <h3>한 달 동안 리콜이 얼마나 매출이 됐는지 아무도 모름</h3>
+          <p class="scene">원장님이 묻는다. “우리 리콜로 이번 달 얼마 벌었어?” — 답이 없다.</p>
+        </div>
+      </div>
+      <div class="cbody">
+        <div class="pain">
+          <div class="clabel pain-l">😣 지금의 고통</div>
+          <p>전화는 돌렸는데 <b>성과를 숫자로 못 봅니다.</b>
+            그래서 리콜이 “중요하지만 미루는 일”에 머물고, 바쁘면 가장 먼저 사라집니다.</p>
+        </div>
+        <div class="sol">
+          <div class="clabel sol-l">⚡ AutoRecall이 하는 일</div>
+          <p>건 전화 → 다시 온 환자 → 발생한 진료를 <b>리포트로 묶어 보여줍니다.</b>
+            리콜이 ‘느낌’이 아니라 ‘숫자’가 되면, 데스크 업무 1순위로 올라섭니다.</p>
+          <div class="feat">📈 리콜 성과 리포트 — 콜 → 재내원 → 매출 연결을 한눈에</div>
+        </div>
+      </div>
+      <div class="effect">
+        <span class="efor">효과</span>
+        <span class="etag">리콜 ROI 가시화</span>
+        <span class="etag">원장 보고 자동화</span>
+        <span class="etag">데스크 동기 부여</span>
+      </div>
+    </div>
+
+    <div class="disc">
+      <b>안내 ·</b> 위 효과는 도구가 돕는 <b>방향</b>을 보여주기 위한 설명이며,
+      구체적 회수율·전환율·매출 수치는 <b>가정값(원장 검수 전)</b>입니다.
+      실제 효과는 치과의 환자 구성·운영 방식에 따라 달라지며, 의료적 결과를 보장하지 않습니다.
+      AutoRecall은 진료 판단을 대신하지 않고, <b>‘누구에게 연락할지’를 정리해 주는 운영 도구</b>입니다.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ACT 3 · 실사용 가이드 (간편함) ═══════════════ -->
+<section id="how">
+  <div class="wrap">
+    <span class="eyebrow">생각보다 훨씬 쉽습니다</span>
+    <h2>설치부터 첫 전화까지, 4단계면 끝.</h2>
+    <p class="lead seclead">새 시스템을 배우는 게 아닙니다.
+      <b>쓰던 차트(덴트웹) 그대로</b> 연결하고, 매일 뜨는 큐대로 전화만 하면 됩니다.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="sn">1</div>
+        <div class="sic">⬇️</div>
+        <h3>설치</h3>
+        <p>앱을 내려받아 실행. 복잡한 서버·계정 설정 없이 데스크 PC에 바로.</p>
+      </div>
+      <div class="step">
+        <div class="sn">2</div>
+        <div class="sic">🔗</div>
+        <h3>차트 연결</h3>
+        <p>쓰던 <b>덴트웹</b> 데이터를 그대로 연결. 환자 정보를 옮기거나 새로 입력하지 않습니다.</p>
+      </div>
+      <div class="step">
+        <div class="sn">3</div>
+        <div class="sic">📞</div>
+        <h3>오늘의 큐 확인</h3>
+        <p>매일 아침 <b>오늘 전화할 환자</b>가 우선순위대로 떠 있습니다. 위에서부터 누르세요.</p>
+      </div>
+      <div class="step">
+        <div class="sn">4</div>
+        <div class="sic">✅</div>
+        <h3>결과 버튼 클릭</h3>
+        <p>통화 후 버튼 하나. 다음 액션이 자동 잡히고 성과가 쌓입니다. 끝.</p>
+      </div>
+    </div>
+
+    <div class="easybar">
+      <span class="easychip"><span class="ck">✓</span>복잡한 설정 없음</span>
+      <span class="easychip"><span class="ck">✓</span>쓰던 차트 그대로</span>
+      <span class="easychip"><span class="ck">✓</span>명단 직접 안 만듦</span>
+      <span class="easychip"><span class="ck">✓</span>신입도 첫날부터</span>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="install" style="border-bottom:0">
+  <div class="wrap narrow">
+    <div class="finalcta">
+      <h2>무료 버전으로, 지금 효과부터 느껴보세요.</h2>
+      <p>오늘 전화할 환자 명단이 1분 안에 데스크에 뜹니다.
+        깔아 보고, 첫 큐를 받아 보고, 효과가 보이면 그때 더 쓰세요.</p>
+      <a class="cta" href="#">무료 버전 설치하기 →</a>
+      <span class="free">설치 1분 · 카드 등록 없음 · 쓰던 차트 그대로</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap narrow">
+    <p class="muted">AutoRecall(오토리콜) · 치과 리콜(recall · 재내원) 운영 도구.
+      본 페이지의 수치·효과 표현은 가정값이며 원장 검수 전 자료입니다.
+      AutoRecall은 의료 행위·진료 판단을 대신하지 않습니다.</p>
+  </div>
+</footer>
+
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

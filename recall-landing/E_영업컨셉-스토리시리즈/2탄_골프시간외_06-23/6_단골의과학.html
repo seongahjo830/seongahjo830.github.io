@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>단골의 과학 — 리콜 프로그램</title>
+<style>
+  :root{
+    --bg:#fff8ee; --card:#fffdf8; --ink:#3a2e22; --dim:#8a7660; --brown:#c0703a;
+    --brown-deep:#9a4f23; --line:#ece0cf; --cream:#f7ead6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,'Segoe UI',system-ui,sans-serif;line-height:1.78;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:700px;margin:0 auto;padding:0 26px}
+  section{padding:84px 0;border-bottom:1px dashed var(--line)}
+  .tag{font-size:13px;letter-spacing:.16em;color:var(--brown);font-weight:800;text-transform:uppercase}
+  h1{font-size:clamp(34px,6.5vw,60px);font-weight:800;line-height:1.14;margin:16px 0 22px;letter-spacing:-.02em}
+  h2{font-size:clamp(25px,4vw,36px);font-weight:800;line-height:1.24;margin-bottom:18px;letter-spacing:-.01em}
+  p{color:var(--dim);font-size:18.5px;margin-bottom:16px}
+  p b{color:var(--ink);font-weight:700}
+  .hero{min-height:84vh;display:flex;flex-direction:column;justify-content:center}
+  .emoji{font-size:60px;margin-bottom:10px}
+  .story-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:30px;margin:26px 0;box-shadow:0 14px 36px rgba(150,100,40,.08)}
+  .story-card p:last-child{margin-bottom:0}
+  .hl{background:linear-gradient(transparent 60%,#ffe0b8 0);font-weight:700;color:var(--ink)}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}
+  @media(max-width:540px){.vs{grid-template-columns:1fr}}
+  .shop{border:1px solid var(--line);border-radius:18px;padding:24px;background:var(--card)}
+  .shop .name{font-size:17px;font-weight:800;margin-bottom:10px}
+  .shop.a .name{color:var(--dim)} .shop.b .name{color:var(--brown-deep)}
+  .shop p{font-size:15px;margin-bottom:8px}
+  .reveal{background:var(--cream)}
+  .map{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:20px 0;font-size:16px}
+  .map .chip{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 16px;font-weight:700;color:var(--ink)}
+  .map .eq{color:var(--brown);font-weight:800}
+  .cta{display:inline-block;margin-top:24px;background:var(--brown-deep);color:#fff7ec;font-weight:800;font-size:18px;padding:18px 40px;border-radius:14px;text-decoration:none;transition:.2s}
+  .cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(154,79,35,.28)}
+  .fine{font-size:14px;color:var(--dim);margin-top:14px}
+  .center{text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="hero">
+    <div class="emoji">🥐</div>
+    <span class="tag">잘 되는 가게의 비밀</span>
+    <h1>동네에서 제일<br>잘 되는 빵집은,<br>맛만 좋은 게 아니에요.</h1>
+    <p>그 집은 <b>단골을 만드는 시스템</b>이 있습니다. 그리고 그 원리는 치과에도 똑같이 통합니다.</p>
+  </section>
+
+  <section>
+    <span class="tag">두 빵집 이야기</span>
+    <h2>같은 골목, 다른 결말</h2>
+    <div class="vs">
+      <div class="shop a">
+        <div class="name">🍞 A 빵집</div>
+        <p>맛있다. 손님도 만족한다.</p>
+        <p>그런데 한 번 온 손님이 <b>또 올 이유</b>를 안 만든다.</p>
+        <p>"또 오겠지" 하고 기다린다.</p>
+      </div>
+      <div class="shop b">
+        <div class="name">🥖 B 빵집</div>
+        <p>맛은 비슷하다.</p>
+        <p>근데 <span class="hl">"OO님, 좋아하시는 빵 오늘 나왔어요"</span> 문자가 온다.</p>
+        <p>손님은 자기를 기억해주는 그 집에 <b>계속 간다.</b></p>
+      </div>
+    </div>
+    <p>1년 뒤, 두 집의 매출은 완전히 달라져 있습니다. 차이는 맛이 아니라 <b>"기억해주기"</b>였어요.</p>
+  </section>
+
+  <section class="reveal">
+    <span class="tag">치과로 번역하면</span>
+    <h2>치과의 '단골'은<br>이렇게 만들어집니다.</h2>
+    <div class="map">
+      <span class="chip">좋아하는 빵 나옴</span>
+      <span class="eq">=</span>
+      <span class="chip">검진·스케일링 때 됨</span>
+    </div>
+    <div class="map">
+      <span class="chip">"OO님" 문자</span>
+      <span class="eq">=</span>
+      <span class="chip">딱 맞는 타이밍 리콜 연락</span>
+    </div>
+    <div class="story-card">
+      <p>리콜 프로그램은 <span class="hl">B 빵집의 그 문자</span>를 치과에서 자동으로 해주는 도구입니다. <b>누구를, 언제, 어떻게</b> 기억해줄지를 차트가 알아서 알려줍니다.</p>
+      <p>환자는 생각합니다. <b>"여긴 날 챙겨주네."</b> — 그게 단골의 시작이에요.</p>
+    </div>
+  </section>
+
+  <section class="center">
+    <h2>새 손님을 모으는 것보다<br>단골을 안 놓치는 게<br>훨씬 쌉니다.</h2>
+    <p>광고는 비싸고, 단골은 남습니다. 가장 확실한 성장은 <b>이미 온 사람을 다시 오게</b> 하는 것.</p>
+    <a class="cta" href="#">우리 치과 단골 시스템 켜기 →</a>
+    <p class="fine">덴트웹 데이터로 자동 · 직원이 외울 것 없음</p>
+  </section>
+
+</div>
+<!--recall-fab-->
+<a href="../../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
