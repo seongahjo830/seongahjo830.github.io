@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AutoRecall — 웹툰: 데스크 실장의 하루</title>
+<meta name="description" content="치과 재내원(리콜) 자동화 AutoRecall. 세로 웹툰으로 읽고, 30초 자가진단으로 새는 매출을 확인하세요.">
+<style>
+  :root{
+    --bg:#FFF4E6; --panel:#FFFFFF; --ink:#241B12; --soft:#6A5C4C; --faint:#9A8B78;
+    --line:#1E1810; --ink-soft:#F0E6D6;
+    --pop:#FF5A5F; --pop2:#FFC542; --sky:#5AC8E6; --grass:#4CB782; --plum:#7C6FE0;
+    --accent:#1F9D66; --loss:#FF5A5F;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+    --maxw:540px;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(circle at 12% 8%,rgba(255,197,66,.18),transparent 30%),radial-gradient(circle at 88% 30%,rgba(90,200,230,.16),transparent 32%)}
+  a{color:inherit}
+  .strip{max-width:var(--maxw);margin:0 auto;padding:16px 14px 60px}
+  /* 컷(panel) 공통 */
+  .panel{position:relative;background:var(--panel);border:3px solid var(--line);border-radius:14px;padding:20px 18px;margin:14px 0;
+    box-shadow:6px 6px 0 var(--line)}
+  .panel .cap{position:absolute;top:-3px;left:-3px;background:var(--line);color:#fff;font-size:11px;font-weight:800;letter-spacing:.08em;padding:4px 11px;border-radius:11px 0 11px 0}
+  .scene{font-size:13px;color:var(--faint);font-weight:700;letter-spacing:.04em;margin-bottom:6px}
+  h1{font-size:clamp(26px,7vw,40px);font-weight:900;letter-spacing:-.03em;line-height:1.14}
+  h2.t{font-size:clamp(20px,5.4vw,26px);font-weight:900;letter-spacing:-.02em;line-height:1.2}
+  .narr{font-size:15px;color:var(--soft);font-weight:600;margin-top:8px}
+  /* 말풍선 */
+  .bubble{position:relative;display:inline-block;background:#fff;border:2.5px solid var(--line);border-radius:16px;padding:10px 14px;font-size:15px;font-weight:700;margin-top:10px;max-width:90%}
+  .bubble.me{background:var(--ink-soft)}
+  .bubble::after{content:"";position:absolute;left:26px;bottom:-12px;width:0;height:0;border:7px solid transparent;border-top-color:var(--line)}
+  .bubble.r{margin-left:auto;display:block;background:var(--pop2)}
+  .bubble.r::after{left:auto;right:26px}
+  .sfx{font-size:clamp(26px,9vw,46px);font-weight:900;letter-spacing:-.03em;-webkit-text-stroke:2px var(--line);color:#fff;transform:rotate(-6deg);display:inline-block;margin:4px 0}
+  .sfx.red{color:var(--pop)} .sfx.yellow{color:var(--pop2)}
+  /* 캐릭터(간단 일러스트) */
+  .char{width:96px;height:96px;border-radius:50%;border:3px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:46px;flex:none;box-shadow:4px 4px 0 var(--line)}
+  .char.desk{background:var(--sky)} .char.boss{background:var(--grass)} .char.bot{background:var(--plum)} .char.pt{background:var(--pop2)}
+  .row{display:flex;gap:14px;align-items:center}
+  /* 핵심 cta 버튼 */
+  .cta-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .btn{display:inline-flex;align-items:center;gap:7px;font-weight:900;font-size:15px;text-decoration:none;padding:13px 20px;border-radius:12px;border:2.5px solid var(--line);cursor:pointer;font-family:inherit;box-shadow:3px 3px 0 var(--line);transition:transform .1s}
+  .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+  .btn.primary{background:var(--pop);color:#fff}
+  .btn.ghost{background:#fff;color:var(--ink)}
+  .micro{margin-top:10px;font-size:11.5px;color:var(--faint)}
+  /* 통증 4컷 */
+  .beats{display:grid;gap:10px;margin-top:6px}
+  .beat{display:flex;gap:11px;align-items:flex-start;background:var(--ink-soft);border:2px solid var(--line);border-radius:12px;padding:11px 13px}
+  .beat .e{font-size:22px;flex:none}
+  .beat b{font-size:14px} .beat small{display:block;color:var(--soft);font-weight:600;font-size:12.5px;margin-top:2px}
+  /* 손실 강조 */
+  .lossbox{background:var(--pop);color:#fff;border:3px solid var(--line);border-radius:12px;padding:16px;text-align:center;box-shadow:4px 4px 0 var(--line);margin-top:10px}
+  .lossbox .big{font-size:clamp(18px,5vw,24px);font-weight:900;line-height:1.3}
+  .lossbox .data{margin-top:9px;font-size:12.5px;background:rgba(0,0,0,.18);border-radius:8px;padding:8px 11px;font-weight:600}
+  /* 면죄 */
+  .absolve-list{display:grid;gap:8px;margin-top:10px}
+  .absolve-list li{list-style:none;background:#fff;border:2px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px;color:var(--soft);font-weight:600}
+  .absolve-list b{color:var(--ink)}
+  /* 케이스 */
+  .cards{display:grid;gap:10px;margin-top:10px}
+  .ccard{border:2.5px solid var(--line);border-radius:12px;overflow:hidden}
+  .ccard .now{background:var(--ink-soft);padding:11px 13px}
+  .ccard .fix{background:#fff;padding:11px 13px;border-top:2px dashed var(--line)}
+  .ccard .tag{font-size:10.5px;font-weight:900;letter-spacing:.05em;text-transform:uppercase}
+  .ccard .now .tag{color:var(--loss)} .ccard .fix .tag{color:var(--accent)}
+  .ccard h3{font-size:14px;font-weight:900;margin:4px 0 0}
+  .ccard p{font-size:12.5px;color:var(--soft);margin:4px 0 0;font-weight:600}
+  .ccard .eff{margin-top:6px;font-size:12px;font-weight:900;color:var(--accent)}
+  /* 자가진단 */
+  .field label{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;font-weight:800}
+  .field label .val{font-size:16px;font-weight:900;color:var(--pop)}
+  .field{margin-bottom:16px}
+  .field input[type=range]{width:100%;margin-top:9px;-webkit-appearance:none;height:8px;border-radius:8px;background:var(--ink-soft);outline:none;border:2px solid var(--line)}
+  .field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--pop2);cursor:pointer;border:3px solid var(--line);box-shadow:2px 2px 0 var(--line)}
+  .field input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--pop2);cursor:pointer;border:3px solid var(--line)}
+  .field .hint{font-size:11px;color:var(--faint);margin-top:5px;font-weight:600}
+  .dontknow button{background:#fff;color:var(--soft);border:2px solid var(--line);border-radius:9px;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:2px 2px 0 var(--line)}
+  .results{background:var(--ink-soft);border:2.5px solid var(--line);border-radius:12px;padding:15px;margin-top:6px}
+  .res-row{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:2px dotted var(--line)}
+  .res-row:last-of-type{border-bottom:0}
+  .res-row .k{font-size:13px;color:var(--soft);font-weight:700}
+  .res-row .v{font-size:clamp(18px,5.5vw,23px);font-weight:900}
+  .v.loss{color:var(--loss)} .v.gain{color:var(--accent)} .v.neu{color:var(--ink)}
+  .score-bar{height:13px;border-radius:8px;background:#fff;border:2px solid var(--line);overflow:hidden;margin-top:11px}
+  .score-fill{height:100%;background:linear-gradient(90deg,var(--pop),var(--pop2),var(--grass));transition:width .25s}
+  .formula{margin-top:12px;font-size:10.5px;color:var(--faint);line-height:1.6;font-weight:600}
+  .formula b{color:var(--soft)}
+  /* 벤치마크 */
+  .bench{display:grid;gap:9px;margin-top:8px}
+  .bar{display:grid;grid-template-columns:74px 1fr 40px;align-items:center;gap:9px}
+  .bar .nm{font-size:12.5px;font-weight:800;color:var(--soft)}
+  .bar .track{height:20px;background:#fff;border:2px solid var(--line);border-radius:7px;overflow:hidden}
+  .bar .fill{height:100%}
+  .bar .sc{font-size:13px;font-weight:900;text-align:right}
+  .bar.me .nm{color:var(--ink)} .bar.me .fill{background:var(--grass)} .bar.me .sc{color:var(--accent)}
+  .bar.avg .fill{background:#C9BBA6} .bar.top .fill{background:var(--pop2)}
+  .verdict{margin-top:11px;background:#E5F6EC;border:2.5px solid var(--line);border-radius:11px;padding:12px 14px;font-size:13.5px;font-weight:800;color:#15663F}
+  /* 설치 */
+  .steps{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:14px 0 4px}
+  .step{background:#fff;border:2px solid var(--line);border-radius:9px;padding:8px 11px;font-size:11.5px;font-weight:800;box-shadow:2px 2px 0 var(--line)}
+  .step b{color:var(--pop)}
+  .faq{display:grid;gap:9px;margin-top:14px}
+  .faq .item{background:#fff;border:2px solid var(--line);border-radius:10px;padding:11px 13px}
+  .faq .qq{font-size:13px;font-weight:900} .faq .aa{font-size:12px;color:var(--soft);margin-top:4px;font-weight:600}
+  .failsafe{margin-top:14px;font-size:14px;font-weight:900;color:var(--loss);text-align:center}
+  .guard{margin-top:16px;font-size:11px;color:var(--faint);line-height:1.7;border-top:2px solid var(--line);padding-top:12px;font-weight:600}
+  footer{text-align:center;color:var(--faint);font-size:11.5px;padding:24px 0 10px;font-weight:600}
+  .end{text-align:center;font-size:30px;font-weight:900;-webkit-text-stroke:2px var(--line);color:var(--pop2);margin:8px 0}
+</style>
+</head>
+<body>
+<div class="strip">
+
+  <!-- 막1 · 1컷 히어로 -->
+  <div class="panel" style="background:linear-gradient(160deg,#FFE9C7,#FFF4E6)">
+    <span class="cap">EP.1 · 어느 바쁜 오후</span>
+    <div class="scene">치과 재내원(리콜) 자동화 · AutoRecall</div>
+    <div class="row">
+      <div class="char desk">😵‍💫</div>
+      <div>
+        <span class="sfx red">따르릉!</span>
+        <div class="bubble me">“오늘 누구한테<br>전화하지…?”</div>
+      </div>
+    </div>
+    <h1 style="margin-top:14px">안 오는 환자는<br>없어요.<br><span style="color:var(--pop)">안 부른 환자</span>만<br>있을 뿐.</h1>
+    <p class="narr">데스크 실장님의 진짜 하루를, 한 컷씩 따라가 볼까요? 마지막엔 — <b>우리 치과가 지금 몇 점인지</b> 직접 나옵니다.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="#diag">30초 자가진단 →</a>
+      <a class="btn ghost" href="#install">무료 설치</a>
+    </div>
+    <div class="micro">설치형 데스크톱 도구 · 차트(덴트웹) 읽기 전용 · 환자정보는 원내 로컬에서만</div>
+  </div>
+
+  <!-- 막1 · 통증 4컷 -->
+  <div class="panel">
+    <span class="cap">EP.2 · 매일 반복되는 장면</span>
+    <h2 class="t">“…어, 이거 우리 얘긴데?”</h2>
+    <div class="beats">
+      <div class="beat"><div class="e">🗂️</div><div><b>명단이 어디 갔지?</b><small>6개월 지난 환자, 차트 어딘가 흩어져 있고 모아 본 적이 없다.</small></div></div>
+      <div class="beat"><div class="e">🎯</div><div><b>결국 ‘감’으로 찍기</b><small>기준이 없으니 누구한테 걸지 매번 사람마다 다르다.</small></div></div>
+      <div class="beat"><div class="e">🔁</div><div><b>또 같은 사람한테…</b><small>전화했다는 ‘말’은 남지만, 전화한 ‘기록’은 없다.</small></div></div>
+      <div class="beat"><div class="e">💤</div><div><b>큰 손님이 조용히 잠수</b><small>상담만 받고 사라진 임플란트·교정 환자, 누군지 모른다.</small></div></div>
+    </div>
+  </div>
+
+  <!-- 막2 · 손실 -->
+  <div class="panel">
+    <span class="cap">EP.3 · 그 사이에</span>
+    <span class="sfx yellow">텅—</span>
+    <div class="lossbox">
+      <div class="big">“리스트가 있어도,<br>걸 시간이 없으면 0원!”</div>
+      <div class="data">방치 환자의 <b>71%</b>가 치료계획 후 <b>30일 안에</b> 떠날지 정합니다. 그 사이, 환자는 조용히 옆 치과로 갑니다.</div>
+    </div>
+  </div>
+
+  <!-- 막2 · 면죄 -->
+  <div class="panel" style="background:#EDFBF3">
+    <span class="cap">EP.4 · 원장님이 말했다</span>
+    <div class="row">
+      <div class="char boss">🙂</div>
+      <div class="bubble">“리콜, <b>안 하는 게 아니라<br>못 하는 거</b>예요. 실장님 탓 아니에요.”</div>
+    </div>
+    <ul class="absolve-list" style="padding:0">
+      <li>데스크 1순위는 <b>눈앞의 환자 응대</b>. 큐가 쌓여도 발신은 뒤로 밀린다.</li>
+      <li>한가한 날조차 “전화할 환자가 없는” 게 아니라 — <b>누군지 모를 뿐.</b></li>
+      <li>한 사람이 수천 명을 기억하고 전화까지? <b>하루가 너무 짧다.</b></li>
+    </ul>
+  </div>
+
+  <!-- 막2 · 조력자 등장(케이스) -->
+  <div class="panel">
+    <span class="cap">EP.5 · 새 동료 등장</span>
+    <div class="row" style="margin-bottom:6px">
+      <div class="char bot">🤖</div>
+      <div class="bubble r" style="margin-left:0">“오늘은 이 분들부터<br>걸어 보실래요?”</div>
+    </div>
+    <p class="narr">AutoRecall은 차트를 읽어 “오늘 누구부터”를 점수순으로 띄워 줘요. 사람이 못 하는 것만 대신합니다.</p>
+    <div class="cards">
+      <div class="ccard"><div class="now"><div class="tag">지금</div><h3>빈 슬롯 못 채우는 날</h3><p>취소·노쇼로 비는 시간을 흘려보냄.</p></div><div class="fix"><div class="tag">AutoRecall</div><h3>🔥 슬롯 필러 추천</h3><p>당일 빈 시간 맞는 환자 즉시 추천(타이밍 ×3.0).</p><div class="eff">→ 비는 의자를 매출로</div></div></div>
+      <div class="ccard"><div class="now"><div class="tag">지금</div><h3>6개월 환자 산재</h3><p>검진 시기를 일일이 확인.</p></div><div class="fix"><div class="tag">AutoRecall</div><h3>📅 타이밍 자동 큐</h3><p>6~12개월 환자 자동 정렬.</p><div class="eff">→ 놓치는 정기검진 0</div></div></div>
+      <div class="ccard"><div class="now"><div class="tag">지금</div><h3>고가 상담만 받고 잠수</h3><p>큰 매출이 조용히 사라짐.</p></div><div class="fix"><div class="tag">AutoRecall</div><h3>💰 고가치 우선 발굴</h3><p>임플란트·교정 미착수 환자를 상단에.</p><div class="eff">→ 잠든 큰 건부터 회수</div></div></div>
+      <div class="ccard"><div class="now"><div class="tag">지금</div><h3>‘감’으로 대상 선정</h3><p>좋은 대상이 묻힘.</p></div><div class="fix"><div class="tag">AutoRecall</div><h3>🎯 점수제 큐</h3><p>(관심−부정)×기본가치×타이밍 자동 정렬.</p><div class="eff">→ 천 명이 오늘 누를 몇 명으로</div></div></div>
+      <div class="ccard"><div class="now"><div class="tag">지금</div><h3>결과 기록 안 됨</h3><p>또 전화, 보고서는 수기.</p></div><div class="fix"><div class="tag">AutoRecall</div><h3>🧾 결과 버튼 1번</h3><p>부재중·거절·예약완료 한 번에 정리.</p><div class="eff">→ ‘말’ 대신 ‘기록’</div></div></div>
+    </div>
+  </div>
+
+  <!-- 막2 · 자가진단 -->
+  <div class="panel" id="diag" style="background:#FFF8EC">
+    <span class="cap">EP.6 · 우리 치과 점수는?</span>
+    <h2 class="t">슬라이더 3개만 슥— 움직여 보세요</h2>
+    <p class="narr">잠든 환자와 새고 있는 매출이 그 자리에서 나와요.</p>
+    <div style="margin-top:14px">
+      <div class="field"><label>전체 환자 수 <span class="val" id="vPatients">3,000명</span></label><input type="range" id="sPatients" min="500" max="20000" step="100" value="3000"><div class="hint">차트에 등록된 누적 환자 수(대략)</div></div>
+      <div class="field"><label>6개월+ 연락 끊긴 비율 <span class="val" id="vRate">35%</span></label><input type="range" id="sRate" min="5" max="70" step="1" value="35"><div class="hint">마지막 내원 6개월이 지나도록 연락이 끊긴 환자 비율</div><div class="dontknow"><button id="dunno">잘 모르겠어요 → 업계 평균(35%) 적용</button></div></div>
+      <div class="field"><label>재방문 1회 평균 진료비 <span class="val" id="vFee">8만원</span></label><input type="range" id="sFee" min="3" max="60" step="1" value="8"><div class="hint">다시 온 환자 1명이 1회 내원에서 쓰는 평균 금액(만원)</div></div>
+    </div>
+    <div class="results">
+      <div class="res-row"><span class="k">잠든 환자(연락 끊김)</span><span class="v neu" id="rSleep">1,050명</span></div>
+      <div class="res-row"><span class="k">지금 잃고 있는 매출(연, 추정)</span><span class="v loss" id="rLost">8,400만원</span></div>
+      <div class="res-row"><span class="k">되돌릴 수 있는 매출(보수적)</span><span class="v gain" id="rBack">1,260만원</span></div>
+      <div class="res-row"><span class="k">리콜 관리 점수</span><span class="v neu" id="rScore">65점</span></div>
+      <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:65%"></div></div>
+      <div class="formula"><b>계산식(투명 공개)</b> · 잠든 환자 = 전체 × 연락끊김율 · 잃은 매출 = 잠든 × 1회 진료비 · 되돌릴 매출 = 잠든 × 0.15 × 1회 진료비 · 관리 점수 = (1 − 연락끊김율) × 100<br>※ 모든 숫자는 <b>예시·가정값</b>이며 결과를 보장하지 않습니다. 입력값은 <b>저장·전송하지 않고</b> 이 화면 안에서만 계산됩니다.</div>
+    </div>
+  </div>
+
+  <!-- 막2 · 벤치마크 -->
+  <div class="panel">
+    <span class="cap">EP.7 · 옆 치과는?</span>
+    <h2 class="t">동급 치과와 비교하면?</h2>
+    <p class="narr">점수가 낮을수록 — 되돌릴 여지가 가장 큽니다.</p>
+    <div class="bench">
+      <div class="bar me"><div class="nm">우리 치과</div><div class="track"><div class="fill" id="benchMe" style="width:65%"></div></div><div class="sc" id="benchMeSc">65</div></div>
+      <div class="bar avg"><div class="nm">동급 평균</div><div class="track"><div class="fill" style="width:60%"></div></div><div class="sc">60</div></div>
+      <div class="bar top"><div class="nm">상위 25%</div><div class="track"><div class="fill" style="width:82%"></div></div><div class="sc">82</div></div>
+    </div>
+    <div class="verdict" id="verdict">상위권까지 17점 — 이 격차가 그대로 새는 매출입니다.</div>
+  </div>
+
+  <!-- 막3 · 결말 + 설치 -->
+  <div class="panel" id="install" style="background:linear-gradient(160deg,#E5F6EC,#FFF4E6)">
+    <span class="cap">EP.8 · 해피엔딩은 설치부터</span>
+    <div class="row" style="margin-bottom:8px">
+      <div class="char desk">😌</div>
+      <div class="bubble">“이제 ‘누구부터’<br>고민 안 해도 되네!”</div>
+    </div>
+    <h2 class="t">이 점수는 추정이에요.<br>진짜 <span style="color:var(--accent)">내 차트의 명단</span>으로 보려면.</h2>
+    <p class="narr">설치하면 슬라이더가 아니라 <b>우리 치과 실제 환자</b>로 오늘 누를 명단이 점수순으로 떠요. 쓰던 차트(덴트웹) 그대로.</p>
+    <div class="steps"><div class="step"><b>1</b> 설치(2분)</div><div class="step"><b>2</b> 차트 연결</div><div class="step"><b>3</b> 오늘 리콜 큐</div><div class="step"><b>4</b> 전화 → 결과 버튼</div></div>
+    <div class="cta-row" style="justify-content:center"><a class="btn primary" href="#" onclick="return false">무료 버전 설치하기</a></div>
+    <div class="faq">
+      <div class="item"><div class="qq">직원을 감시하나요?</div><div class="aa">아니요. 데스크를 돕는 도구입니다. 평가·감시용이 아닙니다.</div></div>
+      <div class="item"><div class="qq">통제권은 누구에게?</div><div class="aa">실장에게 있습니다. 누구에게 걸지·말지는 사람이 정합니다.</div></div>
+      <div class="item"><div class="qq">수신 거부 환자는?</div><div class="aa">‘전화하지 마라’ 1번 표시 = 큐에서 영구 제외됩니다.</div></div>
+      <div class="item"><div class="qq">환자 정보가 새나요?</div><div class="aa">전부 원내 로컬에서만 처리. 차트는 읽기만 합니다.</div></div>
+    </div>
+    <div class="failsafe">안 깔면 — EP.1이 내일 또 시작됩니다.</div>
+    <div class="guard">※ AutoRecall은 전화 우선순위 정리를 돕는 <b>운영 도구</b>이며, 치료 효과·결과를 보장하지 않습니다. · 화면의 점수·금액·평균값은 <b>예시·가정값</b>으로 원장 검수가 필요합니다. · 수신거부·동의 범위는 정보통신망법 등 규정과 각 치과 정책에 맞춰 운영됩니다. · 한글 우선 표기.</div>
+  </div>
+
+  <div class="end">- 끝 -</div>
+  <footer>AutoRecall · 치과 재내원(리콜) 자동화 · 세로 웹툰 컨셉(3막 8장) · 2026-07-01 · 카피·수치 원장 검수 전 초안</footer>
+</div>
+
+<script>
+(function(){
+  var P=document.getElementById('sPatients'),R=document.getElementById('sRate'),F=document.getElementById('sFee');
+  var vP=document.getElementById('vPatients'),vR=document.getElementById('vRate'),vF=document.getElementById('vFee');
+  var rSleep=document.getElementById('rSleep'),rLost=document.getElementById('rLost'),rBack=document.getElementById('rBack'),rScore=document.getElementById('rScore');
+  var fill=document.getElementById('scoreFill'),benchMe=document.getElementById('benchMe'),benchMeSc=document.getElementById('benchMeSc'),verdict=document.getElementById('verdict');
+  function won(m){ if(m>=10000){return (m/10000).toFixed(m>=100000?0:1).replace(/\.0$/,'')+'억원';} return Math.round(m).toLocaleString('ko-KR')+'만원'; }
+  function calc(){
+    var patients=+P.value,rate=+R.value/100,fee=+F.value;
+    var sleep=Math.round(patients*rate),lost=sleep*fee,back=Math.round(sleep*0.15*fee),score=Math.round((1-rate)*100);
+    vP.textContent=patients.toLocaleString('ko-KR')+'명'; vR.textContent=R.value+'%'; vF.textContent=F.value+'만원';
+    rSleep.textContent=sleep.toLocaleString('ko-KR')+'명'; rLost.textContent=won(lost); rBack.textContent=won(back); rScore.textContent=score+'점';
+    fill.style.width=score+'%'; benchMe.style.width=score+'%'; benchMeSc.textContent=score;
+    var v; if(score<60){v='동급 평균(60점)보다 '+(60-score)+'점 아래 — 되돌릴 여지가 가장 큽니다.';}
+    else if(score<82){v='상위 25%(82점)까지 '+(82-score)+'점 — 이 격차가 그대로 새는 매출입니다.';}
+    else{v='상위권입니다. 사람 손으로 이만큼 유지 중 — 이제 시스템으로 굳히세요.';}
+    verdict.textContent=v;
+  }
+  [P,R,F].forEach(function(el){el.addEventListener('input',calc);});
+  document.getElementById('dunno').addEventListener('click',function(){R.value=35;calc();});
+  calc();
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
