@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>전혀 다른 3가지 스토리라인 방식 — 제안 설계도 | AutoRecall</title>
+<style>
+  :root{
+    --bg:#FBFAF7; --ink:#1A1712; --soft:#574F45; --faint:#8B8377; --line:#ECE7DD; --card:#fff;
+    --accent:#1F6F54; --accent-soft:#E7F1EC; --loss:#C2522F;
+    --noir:#0E1116; --receipt:#C5341F; --cinema:#2E8B63;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.78;font-size:17px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:780px;margin:0 auto;padding:0 22px}
+  header{padding:54px 0 8px}
+  .kick{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:6px 13px;border-radius:999px}
+  h1{font-size:clamp(27px,4.4vw,38px);font-weight:900;letter-spacing:-.03em;line-height:1.22;margin:16px 0 0}
+  .sub{color:var(--soft);font-size:16.5px;margin-top:12px}
+  .bluf{background:#fff;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:14px;padding:20px 22px;margin:26px 0 0}
+  .bluf b{color:var(--ink)}
+  h2{font-size:22px;font-weight:800;letter-spacing:-.02em;margin:42px 0 0;padding-top:22px;border-top:1px solid var(--line)}
+  p{margin:12px 0 0}
+  p.s{color:var(--soft);font-size:15.5px}
+  /* 3방식 카드 */
+  .ways{display:grid;gap:16px;margin-top:20px}
+  .way{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 22px;border-top:5px solid var(--c)}
+  .way.n1{--c:var(--noir)} .way.n2{--c:var(--receipt)} .way.n3{--c:var(--cinema)}
+  .way .top{display:flex;align-items:center;gap:11px}
+  .way .em{font-size:25px}
+  .way .nm{font-size:19px;font-weight:900;letter-spacing:-.02em}
+  .way .genre{font-size:12.5px;font-weight:800;color:#fff;background:var(--c);border-radius:6px;padding:3px 9px;margin-left:auto}
+  .way .desc{margin-top:11px;color:var(--ink);font-size:15.5px}
+  .way .desc b{color:var(--c)}
+  .way .row{display:grid;grid-template-columns:78px 1fr;gap:8px;margin-top:12px;font-size:14px}
+  .way .row .lab{font-weight:800;color:var(--faint)}
+  .way .row .v{color:var(--soft)}
+  .way .v b{color:var(--ink)}
+  .way a.open{display:inline-block;margin-top:15px;background:var(--c);color:#fff;font-weight:800;text-decoration:none;font-size:14px;padding:11px 18px;border-radius:10px}
+  /* 공통표 */
+  table{width:100%;border-collapse:collapse;margin:16px 0 0;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  th,td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#FAF7F1;font-weight:800;font-size:12.5px}
+  td b{color:var(--accent)}
+  ul{margin:12px 0 0;padding-left:20px} li{margin:7px 0;color:var(--soft)} li b{color:var(--ink)}
+  .callout{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px 18px;margin-top:16px}
+  footer{padding:38px 0 60px;color:var(--faint);font-size:13px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <span class="kick">제안 설계도 · 3 Storyline Approaches</span>
+  <h1>같은 설계도, 전혀 다른 3가지 방식</h1>
+  <p class="sub">기존 <b>스토리라인 설계도(3막 8장 + 자가진단)</b>의 <b>내용·수치·전환장치는 그대로</b> 두고, <b>장르·시각언어·감정선만</b> 완전히 다르게 푼 세 가지 랜딩. “먼저 방식을 제안하고, 그 방식대로 만든다”의 결과물.</p>
+</div></header>
+
+<div class="wrap">
+  <div class="bluf">
+    <b>한 줄(BLUF).</b> 세 방식 모두 같은 8장 서사(히어로→통증→증폭→면죄→케이스→<b>자가진단</b>→벤치마크→설치)와 같은 계산식(잠든환자=전체×끊김율 · 잃은매출=잠든×객단가 · 회수=×0.15 · 점수=(1−끊김율)×100)을 쓴다. 다른 건 <b>“어떻게 보여주느냐”</b> 하나뿐 — ① <b>느와르 추리극</b>(사건·증거·도장) ② <b>키네틱 영수증</b>(실시간 인쇄·합계 틱업) ③ <b>스크롤 시네마</b>(09:00→마감, 빛이 바뀌는 하루).
+  </div>
+
+  <h2>세 가지 방식</h2>
+  <div class="ways">
+
+    <div class="way n1">
+      <div class="top"><span class="em">🔦</span><span class="nm">사건 파일 No.347</span><span class="genre">느와르 추리극</span></div>
+      <div class="desc">사라진 환자 = <b>미결 실종 사건</b>, 원장 = 형사. 어두운 수사보드 + 붉은 실로 이어진 흐릿한 증거 카드 + “미결(未決)” 도장으로 5초 안에 “내 얘기”로 끌어들인다.</div>
+      <div class="row"><span class="lab">첫 훅</span><span class="v"><b>수사 보드</b> + 붉은 실 + 타자기 헤드라인 “사라진 건 환자가 아니라 당신의 매출”</span></div>
+      <div class="row"><span class="lab">자가진단</span><span class="v">“사건 파일 열기” — 슬라이더=수사 입력, 결과=증거 <b>도시에(Dossier)</b>로 도장</span></div>
+      <div class="row"><span class="lab">감정선</span><span class="v">긴장·호기심 → 무혐의(면죄) → 종결(행동)</span></div>
+      <a class="open" href="1_사건파일-느와르추리.html">→ 1번 방식 열기</a>
+    </div>
+
+    <div class="way n2">
+      <div class="top"><span class="em">🧾</span><span class="nm">안 부른 환자 정산서</span><span class="genre">키네틱 영수증</span></div>
+      <div class="desc">페이지 전체가 <b>감열프린터 영수증</b>. 로드되자마자 한 줄씩 인쇄되고, “이번 달 놓친 매출” 빨간 숫자가 <b>실시간으로 틱업</b>된다. 손실회피를 가장 물리적으로 보여주는 방식.</div>
+      <div class="row"><span class="lab">첫 훅</span><span class="v">톱니 가장자리 <b>영수증이 인쇄되는 애니메이션</b> + ₩ 카운터 상승</span></div>
+      <div class="row"><span class="lab">자가진단</span><span class="v">슬라이더를 움직이면 <b>영수증 합계가 그 자리에서 재인쇄</b>(영수증=결과패널)</span></div>
+      <div class="row"><span class="lab">감정선</span><span class="v">충격(적자) → 면죄(과실 아님) → 정산 마감(CLOSED 도장)</span></div>
+      <a class="open" href="2_새는영수증-키네틱.html">→ 2번 방식 열기</a>
+    </div>
+
+    <div class="way n3">
+      <div class="top"><span class="em">🎬</span><span class="nm">데스크의 하루</span><span class="genre">스크롤 시네마</span></div>
+      <div class="desc">실장 1인칭으로 <b>09:00 개원부터 마감까지</b> 따라가는 시네마틱 스크롤. 스크롤하면 <b>하늘빛이 아침→한낮→노을→밤으로</b> 바뀌고, “못 부른 명단”이 데스크에 쌓인다. 공감 우선.</div>
+      <div class="row"><span class="lab">첫 훅</span><span class="v">풀블리드 + 큰 <b>시계 09:00</b> + 울리는 전화·쌓이는 서류(순수 CSS 애니메이션)</span></div>
+      <div class="row"><span class="lab">자가진단</span><span class="v">마감(19:00) <b>불 꺼진 어둠</b> 화면에서 “오늘 못 부른 사람 몇 명?” 슬라이더</span></div>
+      <div class="row"><span class="lab">감정선</span><span class="v">몰입(하루) → 연민(짧은 하루) → 여명(내일은 다르게)</span></div>
+      <a class="open" href="3_데스크의하루-시네마틱.html">→ 3번 방식 열기</a>
+    </div>
+
+  </div>
+
+  <h2>왜 “세 방식”인가 — 자기참조를 거는 각도가 다르다</h2>
+  <p class="s">같은 사람이라도 끌리는 입구가 다르다. 셋은 <b>self-relevance(내 얘기)를 거는 각도</b>를 일부러 분산했다.</p>
+  <table>
+    <tr><th>방식</th><th>핵심 심리 레버</th><th>가장 센 순간</th></tr>
+    <tr><td>🔦 추리극</td><td>호기심 갭 · 미스터리 · <b>패턴 인터럽트</b></td><td>“미결 도장”과 붉은 실 — 장르 전환으로 광고 회피 뚫기</td></tr>
+    <tr><td>🧾 영수증</td><td><b>손실회피</b>(Kahneman) · 구체성 · 즉시성</td><td>₩ 카운터가 오르는 1.9초 + 합계 실시간 재인쇄</td></tr>
+    <tr><td>🎬 시네마</td><td><b>공감</b> · 서사 몰입(Green/Brock) · 책임 재귀인</td><td>불 꺼진 마감 화면에서 “오늘 못 부른 몇 명?”</td></tr>
+  </table>
+
+  <h2>공통 가드레일(셋 다 지킴)</h2>
+  <ul>
+    <li><b>의료효과·치료결과 보장 표현 금지</b> — “전화 우선순위 정리를 돕는 운영 도구”로 포지셔닝.</li>
+    <li><b>모든 수치는 예시·가정값 + 계산식 공개</b> · 입력값 저장·전송 안 함(화면 내 계산).</li>
+    <li><b>반응형 · 외부 의존성 0</b> · 한글 우선(영어 괄호 병기).</li>
+  </ul>
+
+  <div class="callout" style="margin-top:18px">이 세 페이지는 같은 폴더에 함께 있습니다. 후보 목록(갤러리)에 <b>바둑판 미리보기</b>로 나란히 올라갑니다 — 어떤 방식이 원장·실장에게 가장 꽂히는지 비교용.</div>
+</div>
+
+<footer><div class="wrap">제안 설계도 — 전혀 다른 3가지 스토리라인 방식 · 같은 8장·같은 수치, 다른 장르 · 2026-06-30 · 카피·수치 원장 검수 전 초안</div></footer>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
