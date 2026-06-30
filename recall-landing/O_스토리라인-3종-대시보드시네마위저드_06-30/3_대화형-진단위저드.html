@@ -7,9 +7,9 @@
 <meta name="description" content="치과 재내원(리콜) 자동화 AutoRecall. 한 질문씩 답하면 우리 치과의 잠든 환자와 새는 매출을 진단 카드로 보여드립니다.">
 <style>
   :root{
-    --bg:#F3F6F4; --bg2:#E8F0EB; --card:#fff; --ink:#16201B; --soft:#566159; --faint:#8C968D;
+    --bg:#F3F6F4; --bg2:#E8F0EB; --card:#fff; --ink:#16201B; --soft:#566159; --faint:#6E7A71;
     --line:#E2E9E4; --green:#1F7A5C; --green-d:#0F4E3A; --green-soft:#E4F2EB;
-    --loss:#C2522F; --loss-soft:#FBEDE6; --gold:#C99A2E;
+    --loss:#B0461F; --loss-soft:#FBEDE6; --gold:#C99A2E;
     --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
   }
   *{box-sizing:border-box;margin:0}
@@ -120,6 +120,17 @@
     .q{font-size:25px}
     .kbd{display:none}
   }
+
+  /* focus visibility (a11y) */
+  .field input[type=range]:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+  .btn:focus-visible,.opt:focus-visible,.dk button:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+  .step:focus{outline:none}
+
+  /* prefers-reduced-motion (a11y) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+    .step.on .anim{animation:none!important}
+  }
 </style>
 </head>
 <body>
@@ -202,7 +213,7 @@
       <span class="tag anim">질문 2 · 우리 치과</span>
       <h2 class="q anim">차트에 등록된 <span class="hl">전체 환자</span>는 대략 몇 명인가요?</h2>
       <div class="slcard anim">
-        <div class="field"><label>전체 환자 수 <span class="val" id="vPatients">3,000명</span></label>
+        <div class="field"><label for="sPatients">전체 환자 수 <span class="val" id="vPatients">3,000명</span></label>
           <input type="range" id="sPatients" min="500" max="20000" step="100" value="3000">
           <div class="hint">정확하지 않아도 됩니다 — 대략으로 충분합니다.</div></div>
       </div>
@@ -213,13 +224,13 @@
       <span class="tag anim">질문 3 · 마지막 입력</span>
       <h2 class="q anim">연락 끊긴 비율과 <span class="hl">1회 진료비</span>는요?</h2>
       <div class="slcard anim">
-        <div class="field"><label>6개월+ 연락 끊긴 비율 <span class="val" id="vRate">35%</span></label>
+        <div class="field"><label for="sRate">6개월+ 연락 끊긴 비율 <span class="val" id="vRate">35%</span></label>
           <input type="range" id="sRate" min="5" max="70" step="1" value="35">
           <div class="hint">마지막 내원 6개월이 지나도록 연락이 끊긴 환자 비율</div>
           <div class="dk"><button id="dunno">잘 모르겠어요 → 업계 평균(35%) 적용</button></div></div>
       </div>
       <div class="slcard anim" style="margin-top:13px">
-        <div class="field"><label>재방문 1회 평균 진료비 <span class="val" id="vFee">8만원</span></label>
+        <div class="field"><label for="sFee">재방문 1회 평균 진료비 <span class="val" id="vFee">8만원</span></label>
           <input type="range" id="sFee" min="3" max="60" step="1" value="8">
           <div class="hint">다시 온 환자 1명이 1회 내원에서 쓰는 평균 금액(만원)</div></div>
       </div>
@@ -243,6 +254,7 @@
           <div class="sbar"><div class="sfill" id="sfill" style="width:65%"></div>
             <div class="mark" style="left:60%"></div><div class="mark" style="left:82%"></div></div>
           <div class="marklab"><span>평균 60</span><span>상위 25% · 82</span></div>
+          <div style="font-size:10.5px;opacity:.6;margin-top:8px">※ 평균 60·상위 82는 예시 벤치마크(가정값)입니다.</div>
         </div>
         <div class="verdict" id="verdict">상위권까지 17점 — 이 격차가 그대로 새는 매출입니다.</div>
         <div class="fnote">계산식 · 잠든=전체×끊김율 · 잃은매출=잠든×진료비 · 되돌릴=잠든×0.15×진료비 · 점수=(1−끊김율)×100 · 모든 숫자는 예시·가정값이며 결과를 보장하지 않습니다. 입력값은 저장·전송 없이 이 화면 안에서만 계산됩니다.</div>
@@ -274,23 +286,32 @@
   var steps=[].slice.call(document.querySelectorAll('.step'));
   var prog=document.getElementById('prog'), stepno=document.getElementById('stepno');
   var i=0, N=steps.length, pctDone=false;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  steps.forEach(function(s){s.setAttribute('tabindex','-1');});
+  if(prog){prog.setAttribute('role','progressbar');prog.setAttribute('aria-valuemin','1');prog.setAttribute('aria-valuemax',N);prog.setAttribute('aria-valuenow','1');prog.setAttribute('aria-label','진단 진행 단계');}
   function show(n){
     n=Math.max(0,Math.min(N-1,n));
+    if(n===i) return;                 // no-op move: don't reset card / scroll / replay
     steps[i].classList.remove('on'); i=n; steps[i].classList.add('on');
     prog.style.width=Math.round((i+1)/N*100)+'%';
+    prog.setAttribute('aria-valuenow',i+1);
     stepno.textContent=(i+1)+' / '+N;
-    window.scrollTo({top:0,behavior:'smooth'});
+    window.scrollTo({top:0,behavior:reduce?'auto':'smooth'});
+    steps[i].focus({preventScroll:true});   // move focus into the new step (a11y)
     if(steps[i].dataset.chap==='손실') firePct();
     if(i===N-1) calc(true);
   }
   document.querySelectorAll('[data-next]').forEach(function(b){b.addEventListener('click',function(){show(i+1);});});
   document.querySelectorAll('[data-back]').forEach(function(b){b.addEventListener('click',function(){show(i-1);});});
   document.addEventListener('keydown',function(e){
-    if(e.key==='Enter'){var on=steps[i];var nx=on.querySelector('[data-next]');if(nx){nx.click();}}
-    else if(e.key==='ArrowRight'){show(i+1);} else if(e.key==='ArrowLeft'){show(i-1);}
+    var onRange=e.target&&e.target.matches&&e.target.matches('input[type=range]');
+    if(e.key==='Enter'){var nx=steps[i].querySelector('[data-next]');if(nx){nx.click();}return;}
+    if(onRange) return;               // let arrow keys change the slider value, not navigate
+    if(e.key==='ArrowRight'){show(i+1);} else if(e.key==='ArrowLeft'){show(i-1);}
   });
 
   function firePct(){if(pctDone)return;pctDone=true;var el=document.getElementById('pct71');var to=71,t0=null;
+    if(reduce){el.textContent=to;return;}
     function s(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/900,1);el.textContent=Math.round(to*(0.1+0.9*p*(2-p)));
       if(p<1)requestAnimationFrame(s);else el.textContent=to;}requestAnimationFrame(s);}
 
@@ -298,11 +319,12 @@
   var vP=document.getElementById('vPatients'),vR=document.getElementById('vRate'),vF=document.getElementById('vFee');
   var rSleep=document.getElementById('rSleep'),rLost=document.getElementById('rLost'),rBack=document.getElementById('rBack'),rScore=document.getElementById('rScore');
   var sfill=document.getElementById('sfill'),scLabel=document.getElementById('scLabel'),verdict=document.getElementById('verdict');
-  function won(m){if(m>=10000){return (m/10000).toFixed(m>=100000?0:1).replace(/\.0$/,'')+'억원';}return Math.round(m).toLocaleString('ko-KR')+'만원';}
+  function won(m){if(m>=10000){var e=Math.floor(m/1000)/10;return (e%1===0?e.toFixed(0):e.toFixed(1))+'억원';}return Math.round(m).toLocaleString('ko-KR')+'만원';}
   function calc(animate){
     var patients=+P.value,rate=+R.value/100,fee=+F.value;
     var sleep=Math.round(patients*rate),lost=sleep*fee,back=Math.round(sleep*0.15*fee),score=Math.round((1-rate)*100);
     vP.textContent=patients.toLocaleString('ko-KR')+'명';vR.textContent=R.value+'%';vF.textContent=F.value+'만원';
+    P.setAttribute('aria-valuetext',vP.textContent);R.setAttribute('aria-valuetext',vR.textContent);F.setAttribute('aria-valuetext',vF.textContent);
     rSleep.textContent=sleep.toLocaleString('ko-KR')+'명';rLost.textContent=won(lost);rBack.textContent=won(back);
     rScore.textContent=score;scLabel.textContent=score;sfill.style.width=score+'%';
     var v;if(score<60){v='동급 평균(60점)보다 '+(60-score)+'점 아래 — 되돌릴 여지가 가장 큽니다.';}

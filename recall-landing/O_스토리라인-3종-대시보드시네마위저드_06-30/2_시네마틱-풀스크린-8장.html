@@ -75,7 +75,7 @@
   .alist li{list-style:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:16px 18px;font-size:15.5px}
   .alist li b{font-weight:800}
 
-  .cases{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:30px}
+  .cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:30px}
   .cc{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:16px 14px}
   .cc .ic{font-size:24px}.cc .h{font-size:14.5px;font-weight:800;margin-top:9px;line-height:1.3}
   .cc .e{font-size:12.5px;opacity:.78;margin-top:7px}
@@ -98,7 +98,7 @@
   .v.loss{color:#FFB48F}.v.gain{color:#8DF0CE}.v.neu{color:#fff}
   .sbar{height:10px;border-radius:7px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:12px}
   .sfill{height:100%;border-radius:7px;background:linear-gradient(90deg,#B8401E,#D9A93B,#8DF0CE);transition:width .3s}
-  .fnote{font-size:11px;opacity:.5;margin-top:14px;line-height:1.7}
+  .fnote{font-size:11px;opacity:.72;margin-top:14px;line-height:1.7}
 
   .bench{display:grid;gap:14px;margin-top:28px;max-width:680px}
   .bar{display:grid;grid-template-columns:110px 1fr 46px;align-items:center;gap:12px}
@@ -122,8 +122,20 @@
     .diagrid{grid-template-columns:1fr;gap:22px}
     .pains{grid-template-columns:1fr}
     .faq{grid-template-columns:1fr}
-    .rail{right:10px;gap:9px}.rail a{width:8px;height:8px}
+    .rail{display:none}
     .bar{grid-template-columns:78px 1fr 40px;gap:8px}
+  }
+
+  /* focus visibility (a11y) */
+  .field input[type=range]:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+  .btn:focus-visible,.dk button:focus-visible,.rail a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+
+  /* prefers-reduced-motion (a11y) */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    .deck{scroll-snap-type:none!important;scroll-behavior:auto!important}
+    .cue{animation:none!important}
+    .fx{opacity:1!important;transform:none!important}
   }
 </style>
 </head>
@@ -167,7 +179,7 @@
       <div class="chap fx">막 2 · 손실</div>
       <div class="big fx">“좋은 콜 리스트가 있어도,<br>걸 시간이 없으면 0원입니다.”</div>
       <div class="pct fx" style="margin-top:18px"><span class="cntp" data-count="71">0</span><small>%</small></div>
-      <p class="lead fx" style="margin:6px auto 0;max-width:600px">방치된 환자의 <b>71%</b>가 치료계획 후 <b>30일 안에</b> 떠날지 말지를 정합니다. 그 사이에도, 환자는 조용히 옆 치과로 갑니다.</p>
+      <p class="lead fx" style="margin:6px auto 0;max-width:600px">방치된 환자의 <b>71%</b>가 치료계획 후 <b>30일 안에</b> 떠날지 말지를 정합니다. 그 사이에도, 환자는 조용히 옆 치과로 갑니다. <span style="opacity:.7;font-size:.82em">(내부 차트 분석 기반 예시·추정)</span></p>
     </div>
     <div class="cue">계속 →</div>
   </section>
@@ -209,12 +221,12 @@
       <p class="lead fx">숫자 3개만 움직이면 — 잠든 환자와 새는 매출이 그 자리에서 나옵니다.</p>
       <div class="diagrid fx">
         <div class="sliders">
-          <div class="field"><label>전체 환자 수 <span class="val" id="vPatients">3,000명</span></label>
+          <div class="field"><label for="sPatients">전체 환자 수 <span class="val" id="vPatients">3,000명</span></label>
             <input type="range" id="sPatients" min="500" max="20000" step="100" value="3000"><div class="hint">차트에 등록된 누적 환자 수(대략)</div></div>
-          <div class="field"><label>6개월+ 연락 끊긴 비율 <span class="val" id="vRate">35%</span></label>
+          <div class="field"><label for="sRate">6개월+ 연락 끊긴 비율 <span class="val" id="vRate">35%</span></label>
             <input type="range" id="sRate" min="5" max="70" step="1" value="35"><div class="hint">마지막 내원 6개월이 지나도록 연락이 끊긴 환자 비율</div>
             <div class="dk"><button id="dunno">잘 모르겠어요 → 업계 평균(35%)</button></div></div>
-          <div class="field"><label>재방문 1회 평균 진료비 <span class="val" id="vFee">8만원</span></label>
+          <div class="field"><label for="sFee">재방문 1회 평균 진료비 <span class="val" id="vFee">8만원</span></label>
             <input type="range" id="sFee" min="3" max="60" step="1" value="8"><div class="hint">다시 온 환자 1명이 1회 내원에서 쓰는 평균(만원)</div></div>
         </div>
         <div class="out">
@@ -241,6 +253,7 @@
         <div class="bar top"><div class="nm" style="color:#16130E">상위 25%</div><div class="track" style="background:#E6DFD2"><div class="fill" style="width:82%;background:#D9A93B"></div></div><div class="sc" style="color:#9A7B1E">82</div></div>
       </div>
       <div class="verdict fx" id="verdict" style="color:#7C2A12">상위권까지 17점 — 이 격차가 그대로 새는 매출입니다.</div>
+      <div class="fx" style="font-size:12px;color:#7C2A12;opacity:.8;margin-top:8px">※ 동급 평균 60·상위 25% 82는 예시 벤치마크(가정값)입니다.</div>
     </div>
     <div class="cue">마지막 장 →</div>
   </section>
@@ -267,6 +280,7 @@
 
 <script>
 (function(){
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var deck=document.getElementById('deck');
   var scenes=[].slice.call(document.querySelectorAll('.scene'));
   var rail=document.getElementById('rail');
@@ -276,7 +290,7 @@
     rail.appendChild(a);});
   var dots=[].slice.call(rail.children);
 
-  function countUp(el){if(el.dataset.done)return;el.dataset.done=1;var to=+el.dataset.count,t0=null,dur=1100;
+  function countUp(el){if(el.dataset.done)return;el.dataset.done=1;var to=+el.dataset.count;if(reduce){el.textContent=to;return;}var t0=null,dur=1100;
     function step(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/dur,1);el.textContent=Math.round(to*(0.15+0.85*p*(2-p)));
       if(p<1)requestAnimationFrame(step);else el.textContent=to;}requestAnimationFrame(step);}
 
@@ -298,10 +312,11 @@
   var vP=document.getElementById('vPatients'),vR=document.getElementById('vRate'),vF=document.getElementById('vFee');
   var rSleep=document.getElementById('rSleep'),rLost=document.getElementById('rLost'),rBack=document.getElementById('rBack'),rScore=document.getElementById('rScore');
   var sfill=document.getElementById('sfill'),benchMe=document.getElementById('benchMe'),benchMeSc=document.getElementById('benchMeSc'),verdict=document.getElementById('verdict');
-  function won(m){if(m>=10000){return (m/10000).toFixed(m>=100000?0:1).replace(/\.0$/,'')+'억원';}return Math.round(m).toLocaleString('ko-KR')+'만원';}
+  function won(m){if(m>=10000){var e=Math.floor(m/1000)/10;return (e%1===0?e.toFixed(0):e.toFixed(1))+'억원';}return Math.round(m).toLocaleString('ko-KR')+'만원';}
   function calc(){var patients=+P.value,rate=+R.value/100,fee=+F.value;
     var sleep=Math.round(patients*rate),lost=sleep*fee,back=Math.round(sleep*0.15*fee),score=Math.round((1-rate)*100);
     vP.textContent=patients.toLocaleString('ko-KR')+'명';vR.textContent=R.value+'%';vF.textContent=F.value+'만원';
+    P.setAttribute('aria-valuetext',vP.textContent);R.setAttribute('aria-valuetext',vR.textContent);F.setAttribute('aria-valuetext',vF.textContent);
     rSleep.textContent=sleep.toLocaleString('ko-KR')+'명';rLost.textContent=won(lost);rBack.textContent=won(back);rScore.textContent=score+'점';
     sfill.style.width=score+'%';benchMe.style.width=score+'%';benchMeSc.textContent=score;
     var v;if(score<60){v='동급 평균(60점)보다 '+(60-score)+'점 아래 — 되돌릴 여지가 가장 큽니다.';}
