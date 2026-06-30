@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoRecall — 안 부른 게 아니라, 사람 손으론 원래 못 부르던 일</title>
+<meta name="description" content="치과 리콜(재내원) 자동화 데스크톱 앱. 매분 바뀌는 '전화할 가치'를 점수 큐 하나로 줄 세워, 데스크는 위에서부터 누르기만. 덴트웹 그대로, 외부 서버 없이 원내 PC에서. 무료 설치.">
+<style>
+  :root{
+    --bg:#FBFAF7; --bg-soft:#F2EFE8; --card:#FFFFFF;
+    --ink:#1B1A18; --ink-soft:#5C5A53; --ink-faint:#8A877E; --line:#E7E2D7;
+    --accent:#1D4ED8; --accent-soft:#E9EFFE; --accent-deep:#163FB0;
+    --gold:#9A7400; --gold-soft:#FBF3DC; --red:#B23A3A; --red-soft:#FBECEA;
+    --amber:#A85B12; --green:#1E7A4D; --green-soft:#E7F4ED; --purple:#6B4FB0; --purple-soft:#EFEAFB;
+    --radius:16px; --radius-sm:11px;
+    --shadow:0 1px 2px rgba(20,18,14,.04),0 12px 36px rgba(20,18,14,.07);
+    --shadow-sm:0 1px 2px rgba(20,18,14,.05),0 5px 16px rgba(20,18,14,.05);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+    font-size:18px;line-height:1.85;letter-spacing:-.011em;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+  .narrow{max-width:720px;margin-left:auto;margin-right:auto}
+  h1{font-size:clamp(30px,5.6vw,54px);font-weight:850;letter-spacing:-.038em;line-height:1.12;margin:0 0 18px}
+  h2{font-size:clamp(23px,3.6vw,35px);font-weight:830;letter-spacing:-.028em;line-height:1.24;margin:0 0 12px}
+  h3{font-size:clamp(18px,2.2vw,21px);font-weight:780;margin:0;letter-spacing:-.02em}
+  p{margin:0 0 1em}
+  .muted{color:var(--ink-soft)} .faint{color:var(--ink-faint)}
+  .accent{color:var(--accent)}
+  a{color:var(--accent);text-decoration:none}
+  mark{background:linear-gradient(180deg,transparent 56%,#FFE6A0 56%);color:inherit;padding:0 2px;border-radius:2px}
+  .u{text-decoration:underline;text-decoration-color:#C9D6F7;text-decoration-thickness:2px;text-underline-offset:3px}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--accent);background:var(--accent-soft);padding:6px 14px;border-radius:99px;margin-bottom:20px}
+  section{padding:clamp(52px,8.5vw,92px) 0;border-bottom:1px solid var(--line)}
+  .lead{font-size:clamp(18px,2.3vw,21px);color:var(--ink-soft);max-width:40em}
+  .est{font-size:.74em;font-weight:700;color:var(--amber);background:var(--gold-soft);border-radius:6px;padding:1px 7px;letter-spacing:0;vertical-align:middle;white-space:nowrap}
+  .real{font-size:.74em;font-weight:700;color:var(--green);background:var(--green-soft);border-radius:6px;padding:1px 7px;letter-spacing:0;vertical-align:middle;white-space:nowrap}
+
+  /* buttons */
+  .cta{display:inline-flex;align-items:center;gap:9px;background:var(--accent);color:#fff;font-weight:800;
+    font-size:17px;padding:16px 28px;border-radius:13px;box-shadow:var(--shadow-sm);transition:.14s;border:0;cursor:pointer;font-family:inherit}
+  .cta:hover{background:var(--accent-deep);transform:translateY(-1px)}
+  .cta.ghost{background:#fff;color:var(--accent);border:1.5px solid var(--line)}
+  .cta.ghost:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .ctarow{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+
+  /* hero */
+  header.hero{padding:clamp(54px,9vw,100px) 0 clamp(38px,6vw,60px);
+    background:radial-gradient(120% 90% at 80% -10%,#EAF0FE 0%,rgba(234,240,254,0) 55%),linear-gradient(180deg,#fff,var(--bg))}
+  .hero h1 .hl{background:linear-gradient(180deg,transparent 60%,#CFE0FF 60%);padding:0 4px}
+  .hero .sub{font-size:clamp(18px,2.5vw,22px);color:var(--ink-soft);max-width:27em;margin:0 0 26px}
+
+  /* living queue */
+  .queue{background:#14121A;border-radius:20px;padding:clamp(16px,3vw,24px);box-shadow:0 24px 60px rgba(20,18,14,.22);margin-top:8px;position:relative;overflow:hidden}
+  .queue::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 60% at 12% 0%,rgba(75,110,230,.16),transparent 60%);pointer-events:none}
+  .qhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;position:relative}
+  .qhead . qt{font-size:13.5px}
+  .qtitle{color:#EFE9DC;font-weight:800;font-size:14.5px;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+  .qdot{width:9px;height:9px;border-radius:50%;background:#37D08A;box-shadow:0 0 0 0 rgba(55,208,138,.6);animation:pulse 1.9s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(55,208,138,.55)}70%{box-shadow:0 0 0 9px rgba(55,208,138,0)}100%{box-shadow:0 0 0 0 rgba(55,208,138,0)}}
+  .qclock{color:#A39DB6;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums}
+  .qlist{position:relative;display:flex;flex-direction:column;gap:9px}
+  .qcard{display:flex;align-items:center;gap:13px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);
+    border-radius:13px;padding:13px 15px;transition:transform .55s cubic-bezier(.22,1,.36,1),background .3s,border-color .3s,box-shadow .3s;will-change:transform}
+  .qcard.top{background:rgba(80,120,240,.16);border-color:rgba(120,150,250,.5);box-shadow:0 6px 22px rgba(40,70,200,.32)}
+  .qrank{flex:none;width:26px;text-align:center;color:#8C86A0;font-weight:850;font-size:15px;font-variant-numeric:tabular-nums}
+  .qcard.top .qrank{color:#9DB6FF}
+  .qbody{flex:1;min-width:0}
+  .qname{color:#F2EDE2;font-weight:750;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;line-height:1.3}
+  .qkind{color:#A39DB6;font-size:12.5px;margin-top:2px;line-height:1.4}
+  .qtier{font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px;letter-spacing:-.01em;white-space:nowrap}
+  .t-t1{background:rgba(214,73,73,.2);color:#FF9E9E} .t-t25{background:rgba(170,91,18,.24);color:#F4B871}
+  .t-t2{background:rgba(75,110,230,.22);color:#A9C0FF} .t-t3{background:rgba(120,120,120,.2);color:#C7C2D2}
+  .qscore{flex:none;text-align:right;min-width:58px}
+  .qnum{color:#FBF6EC;font-weight:850;font-size:21px;font-variant-numeric:tabular-nums;line-height:1}
+  .qtrend{font-size:11px;font-weight:800;margin-top:3px}
+  .up{color:#37D08A} .down{color:#FF8F8F} .flat{color:#8C86A0}
+  .qcaption{color:var(--ink-soft);font-size:14.5px;margin-top:16px;max-width:34em}
+  .qcaption b{color:var(--ink)}
+  .punch{margin-top:34px;font-size:clamp(19px,3vw,27px);font-weight:820;letter-spacing:-.02em;line-height:1.42;max-width:20em}
+  .punch .big{color:var(--accent);font-variant-numeric:tabular-nums}
+
+  /* pain cards */
+  .paingrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:34px}
+  .paincard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 22px;box-shadow:var(--shadow-sm)}
+  .paincard .ic{font-size:26px;line-height:1;margin-bottom:12px}
+  .paincard h3{margin-bottom:7px;font-size:17.5px}
+  .paincard p{font-size:15px;color:var(--ink-soft);margin:0;line-height:1.66}
+  .painquote{margin-top:36px;font-size:clamp(19px,2.8vw,26px);font-weight:800;letter-spacing:-.02em;line-height:1.42;color:var(--ink);max-width:22em}
+
+  /* confession */
+  .confess{background:linear-gradient(180deg,#fff,#FCFAF4);border:1px solid var(--line);border-left:4px solid var(--accent);
+    border-radius:var(--radius);padding:clamp(26px,4vw,38px);box-shadow:var(--shadow-sm);margin-top:8px}
+  .confess .who{font-size:13px;font-weight:800;letter-spacing:.04em;color:var(--accent);margin-bottom:14px}
+  .confess p{font-size:clamp(18px,2.4vw,22px);line-height:1.7;margin:0 0 .7em;font-weight:550}
+  .confess p:last-child{margin:0}
+
+  /* day timeline */
+  .daybar{display:flex;height:54px;border-radius:12px;overflow:hidden;margin-top:30px;border:1px solid var(--line);box-shadow:var(--shadow-sm)}
+  .seg{display:flex;align-items:center;justify-content:center;color:#fff;font-size:12.5px;font-weight:750;letter-spacing:-.01em;text-align:center;line-height:1.2;padding:0 4px}
+  .seg.recall{background:repeating-linear-gradient(45deg,#C9402F,#C9402F 7px,#b3382a 7px,#b3382a 14px);position:relative}
+  .daylabels{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-faint);margin-top:8px}
+  .daynote{margin-top:18px;font-size:15.5px;color:var(--ink-soft)}
+  .daynote b{color:var(--red)}
+
+  /* impossibility — curves */
+  .curves{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+  .curve{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 18px 14px;box-shadow:var(--shadow-sm)}
+  .curve h3{font-size:15.5px;margin-bottom:3px}
+  .curve .cd{font-size:13px;color:var(--ink-soft);margin:0 0 12px;line-height:1.5}
+  .curve svg{width:100%;height:64px;display:block}
+  .impconc{margin-top:30px;font-size:clamp(18px,2.6vw,24px);font-weight:800;line-height:1.45;letter-spacing:-.02em;max-width:24em}
+
+  /* formula box */
+  .formula{margin-top:26px;background:#15121C;color:#EDE7DA;border-radius:var(--radius);padding:clamp(20px,3vw,28px);box-shadow:var(--shadow)}
+  .formula .ftitle{font-size:13px;font-weight:800;letter-spacing:.04em;color:#E0B252;margin-bottom:16px}
+  .feq{display:flex;flex-wrap:wrap;align-items:stretch;gap:9px}
+  .feq .term{flex:1;min-width:118px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:11px;padding:12px 13px;font-weight:800;font-size:14.5px}
+  .feq .term span{display:block;font-size:12px;font-weight:600;color:#A8A096;margin-top:5px;line-height:1.45}
+  .feq .op{align-self:center;font-size:19px;font-weight:800;color:#E0B252;flex:none}
+  .fnote{color:#A8A096;font-size:13px;margin:16px 0 0;line-height:1.6}
+
+  /* leak / faucet */
+  .leakwrap{display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin-top:30px}
+  .leaksvg{flex:none}
+  .leaktext{flex:1;min-width:260px}
+  .leaktext p{font-size:16px;color:var(--ink-soft);margin:0 0 .6em}
+  .leakbig{font-size:clamp(20px,3vw,28px);font-weight:850;color:var(--red);letter-spacing:-.02em}
+
+  /* absolution */
+  .absolve{text-align:center;max-width:20em;margin:0 auto;font-size:clamp(21px,3.4vw,32px);font-weight:830;line-height:1.4;letter-spacing:-.025em}
+  .absolve .s{display:block;font-size:.56em;font-weight:650;color:var(--ink-soft);margin-top:16px;letter-spacing:-.01em}
+
+  /* tool 3 + before/after */
+  .tool3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px 20px;box-shadow:var(--shadow-sm);text-align:center}
+  .tcard .ic{font-size:30px;margin-bottom:10px;line-height:1}
+  .tcard h3{font-size:17px;margin-bottom:6px}
+  .tcard p{font-size:14px;color:var(--ink-soft);margin:0;line-height:1.6}
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+  .bacol{border-radius:var(--radius);padding:22px 22px;border:1px solid var(--line)}
+  .bacol.before{background:#FCF6F4}.bacol.after{background:var(--green-soft);border-color:#BFE3CC}
+  .balabel{font-size:12px;font-weight:850;letter-spacing:.05em;margin-bottom:12px;text-transform:uppercase}
+  .before .balabel{color:var(--red)} .after .balabel{color:var(--green)}
+  .ba ul{margin:0;padding-left:18px} .ba li{font-size:15px;line-height:1.7;margin-bottom:6px;color:var(--ink-soft)}
+  .ba li b{color:var(--ink)}
+
+  /* trust strip (안전장치) */
+  .trust{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .tchip{font-size:14px;font-weight:700;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:99px;padding:9px 15px;box-shadow:var(--shadow-sm)}
+  .tchip b{color:var(--green)}
+
+  /* diagnosis widget */
+  .diag{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;margin-top:30px}
+  .diaghead{padding:22px 26px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#FCFAF4)}
+  .diaghead h3{font-size:18px;margin-bottom:4px}
+  .diaghead p{font-size:14.5px;color:var(--ink-soft);margin:0}
+  .qrow{display:flex;align-items:center;gap:14px;padding:16px 26px;border-bottom:1px solid var(--line)}
+  .qrow .qtext{flex:1;font-size:15.5px;line-height:1.5;font-weight:600}
+  .qrow .qtext small{display:block;font-weight:500;color:var(--ink-faint);font-size:13px;margin-top:2px}
+  .toggle{flex:none;display:flex;gap:6px}
+  .tbtn{border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);font-family:inherit;font-weight:800;font-size:14px;
+    padding:9px 16px;border-radius:10px;cursor:pointer;transition:.13s;min-width:54px}
+  .tbtn:hover{border-color:var(--accent)}
+  .tbtn.yes.on{background:var(--green);border-color:var(--green);color:#fff}
+  .tbtn.no.on{background:var(--red);border-color:var(--red);color:#fff}
+  .diagresult{padding:24px 26px;background:var(--bg-soft)}
+  .meter{height:12px;border-radius:99px;background:#E2DCCF;overflow:hidden;margin:4px 0 14px}
+  .meterfill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#C9402F,#E0A93E 55%,#1E7A4D);transition:width .5s cubic-bezier(.22,1,.36,1)}
+  .gradeline{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .gradescore{font-size:26px;font-weight:850;font-variant-numeric:tabular-nums}
+  .gradetag{font-size:13px;font-weight:800;padding:3px 11px;border-radius:99px}
+  .grademsg{font-size:16px;font-weight:650;line-height:1.55;margin:0}
+  .gradesub{font-size:13.5px;color:var(--ink-soft);margin:8px 0 0}
+
+  /* scale sliders */
+  .scale{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-sm);padding:24px 26px;margin-top:18px}
+  .scale h3{font-size:17px;margin-bottom:16px}
+  .slrow{margin-bottom:18px}
+  .sllabel{display:flex;justify-content:space-between;align-items:baseline;font-size:14.5px;font-weight:700;margin-bottom:8px}
+  .sllabel .v{color:var(--accent);font-weight:850;font-variant-numeric:tabular-nums;font-size:16px}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:7px;border-radius:99px;background:#E2DCCF;outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid #fff;box-shadow:0 2px 6px rgba(29,78,216,.4)}
+  input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid #fff}
+  .sleepout{margin-top:6px;background:var(--accent-soft);border-radius:14px;padding:18px 20px;text-align:center}
+  .sleepout .sn{font-size:clamp(30px,6vw,44px);font-weight:850;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.05}
+  .sleepout .sl{font-size:14.5px;color:var(--ink-soft);margin-top:4px}
+
+  /* benchmark */
+  .bench{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-sm);padding:24px 26px;margin-top:18px}
+  .bench h3{font-size:17px;margin-bottom:4px}
+  .bench>.bsub{font-size:13.5px;color:var(--ink-soft);margin:0 0 18px}
+  .brow{margin-bottom:16px}
+  .brow .bl{display:flex;justify-content:space-between;font-size:14px;font-weight:700;margin-bottom:6px}
+  .brow .bl .bv{color:var(--ink-soft);font-weight:700}
+  .btrack{height:26px;border-radius:8px;background:#F0ECE2;overflow:hidden;position:relative}
+  .bfill{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:10px;color:#fff;font-size:12.5px;font-weight:800}
+  .bfill.b1{background:var(--red)} .bfill.b2{background:var(--amber)} .bfill.b3{background:var(--green)}
+  .bbridge{margin-top:18px;padding:18px 20px;background:var(--accent-soft);border-radius:14px;font-size:15.5px;line-height:1.6}
+  .bbridge b{color:var(--accent)}
+
+  /* letter to director */
+  .letter{background:linear-gradient(180deg,#fff,#FCFAF4);border:1px solid var(--line);border-radius:var(--radius);
+    padding:clamp(26px,4vw,40px);box-shadow:var(--shadow-sm);max-width:40em;margin:8px auto 0}
+  .letter .lto{font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.04em;margin-bottom:14px}
+  .letter p{font-size:clamp(17px,2.2vw,20px);line-height:1.75;margin:0 0 .8em}
+  .letter p:last-child{margin:0}
+  .letter .sign{font-size:14px;color:var(--ink-faint);margin-top:18px}
+
+  /* final cta */
+  .finalcta{background:linear-gradient(180deg,var(--accent),var(--accent-deep));color:#fff;border-radius:24px;
+    padding:clamp(38px,6vw,60px) clamp(24px,5vw,48px);text-align:center;box-shadow:0 22px 54px rgba(29,78,216,.3);margin-top:34px}
+  .finalcta h2{color:#fff;margin-bottom:12px}
+  .finalcta p.fp{color:#DCE6FF;font-size:18px;max-width:28em;margin:0 auto 26px;line-height:1.7}
+  .finalcta .cta{background:#fff;color:var(--accent);font-size:18px;padding:18px 36px}
+  .finalcta .cta:hover{background:#EEF3FF;color:var(--accent-deep)}
+  .reassure{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:24px}
+  .rchip{font-size:13.5px;font-weight:700;color:#EAF0FF;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:8px 14px}
+  .finalcta .tieback{margin-top:22px;font-size:14.5px;color:#C8D6FF}
+
+  /* footer / disclaimer */
+  footer{padding:40px 0 60px}
+  .disc{font-size:12.5px;color:var(--ink-faint);line-height:1.7;max-width:50em}
+  .disc b{color:var(--ink-soft)}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* responsive */
+  @media(max-width:760px){
+    body{font-size:17px}
+    .paingrid,.curves,.tool3{grid-template-columns:1fr}
+    .ba{grid-template-columns:1fr}
+    .feq .term{min-width:0;flex-basis:100%}
+    .feq .op{display:none}
+    .qrow{flex-wrap:wrap;gap:10px}
+    .qrow .qtext{flex-basis:100%}
+    .daybar{height:46px}
+    .seg{font-size:11px}
+  }
+  @media(min-width:761px) and (max-width:1024px){
+    .paingrid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .reveal{opacity:1;transform:none}
+    .qdot{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ───────────────────────── HERO ───────────────────────── -->
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">치과 리콜(재내원) 자동화 · AutoRecall</span>
+    <h1>이걸 <span class="hl">머리로</span> 따라갈 수 있을까요?</h1>
+    <p class="sub">지금 이 순간에도 환자 수십 명의 <b>‘전화할 가치’</b>가 1분마다 바뀝니다.<br>누구부터 걸어야 할지, 사람 머리로는 따라잡을 수 없습니다.</p>
+
+    <div class="queue" id="queue" aria-label="실시간 콜 큐 시연">
+      <div class="qhead">
+        <div class="qtitle"><span class="qdot"></span> 오늘의 콜 큐 · 자동 재정렬 중</div>
+        <div class="qclock" id="qclock">14:30:00</div>
+      </div>
+      <div class="qlist" id="qlist"></div>
+    </div>
+    <p class="qcaption"><b>↑ 점수가 매분 다시 계산되고, 순위가 저절로 바뀝니다.</b> 부재중은 골든타임에 최고점이었다가 급락하고, 내일 예약 확인콜은 시간이 갈수록 차오릅니다. AutoRecall은 이 계산을 사람 대신 1분마다 돌립니다.</p>
+
+    <p class="punch">지금 우리 차트에 <span class="big">[N명]</span><span class="est">추정</span> 이 ‘부를 때’가 지났는데,<br>아무도 부르지 않았습니다.</p>
+    <div class="ctarow">
+      <a class="cta" href="#install">무료로 설치해 진짜 숫자 보기 →</a>
+      <a class="cta ghost" href="#diag">먼저 우리 치과 자가진단</a>
+    </div>
+  </div>
+</header>
+
+<!-- ───────────────────────── ① 어 내 얘기네 ───────────────────────── -->
+<section>
+  <div class="wrap">
+    <h2 class="reveal">혹시, 이런 적 없으세요?</h2>
+    <p class="lead reveal">매일 진료실에서 조용히 일어나는 일들입니다.</p>
+    <div class="paingrid">
+      <div class="paincard reveal"><div class="ic">🪥</div><h3>“6개월 뒤 스케일링이요”</h3><p>그렇게 안내하고 보냈는데, 그 6개월 뒤에 누가 챙기나요? 명단은 어디에도 떠 있지 않습니다.</p></div>
+      <div class="paincard reveal"><div class="ic">🗓️</div><h3>“다음 달에 체크하죠”</h3><p>환자도 잊고, 우리도 잊습니다. 그 ‘다음 달’은 끝내 오지 않았습니다.</p></div>
+      <div class="paincard reveal"><div class="ic">🪑</div><h3>오후에 빈 자리 3개</h3><p>부를 사람은 분명히 있습니다. 그런데 ‘지금 당장 부를 사람’ 명단이 손에 없습니다.</p></div>
+      <div class="paincard reveal"><div class="ic">🚪</div><h3>예약 안 잡고 간 환자</h3><p>“생각해 보고 연락드릴게요” — 그리고 조용히, 소리 없이 사라졌습니다.</p></div>
+    </div>
+    <p class="painquote reveal">하나라도 찔린다면,<br>이 페이지는 <span class="accent">당신의 치과 이야기</span>입니다.</p>
+  </div>
+</section>
+
+<!-- ───────────────────────── ②-1 데스크 고백 ───────────────────────── -->
+<section>
+  <div class="wrap narrow">
+    <h2 class="reveal">먼저, 데스크의 솔직한 이야기부터</h2>
+    <div class="confess reveal">
+      <div class="who">— 어느 치과 데스크의 1인칭</div>
+      <p>저는 데스크입니다. 6개월 스케일링, 3개월 정기검진, “다음 달에 체크”… <b>다 알아요.</b> 머리로는 다 알고 있어요.</p>
+      <p>그런데요, <mark>다 못 챙겨요.</mark></p>
+      <p class="muted">게을러서가 아닙니다. 하루가 어떻게 흘러가는지, 잠깐 같이 보실래요?</p>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── ②-2 하루의 진실 ───────────────────────── -->
+<section>
+  <div class="wrap">
+    <h2 class="reveal">데스크의 하루는 이미 꽉 차 있습니다</h2>
+    <p class="lead reveal">접수·수납·보험청구·예약·전화 응대로 빈틈이 없습니다. 리콜은 늘 ‘남는 시간에’ 밀립니다 — 그리고 남는 시간은 없습니다.</p>
+    <div class="daybar reveal" aria-label="데스크 하루 업무 비중">
+      <div class="seg" style="flex:18;background:#3F6CD8">접수·안내</div>
+      <div class="seg" style="flex:16;background:#5A7FDD">수납</div>
+      <div class="seg" style="flex:18;background:#2F8F6B">보험청구</div>
+      <div class="seg" style="flex:17;background:#7A6BC0">예약 조정</div>
+      <div class="seg" style="flex:21;background:#C99A2E">전화 응대</div>
+      <div class="seg recall" style="flex:6">리콜</div>
+    </div>
+    <div class="daylabels"><span>출근</span><span>점심</span><span>마감</span></div>
+    <p class="daynote reveal">맨 끝, 빗금 친 저 작은 칸이 리콜입니다. <b>매일 가장 먼저 잘려 나가는 칸</b>이기도 합니다.</p>
+  </div>
+</section>
+
+<!-- ───────────────────────── ②-3 불가능의 증명 ───────────────────────── -->
+<section>
+  <div class="wrap">
+    <h2 class="reveal">게다가 우선순위는 ‘매분’ 바뀝니다</h2>
+    <p class="lead reveal">콜마다 ‘지금 전화할 가치’가 시간에 따라 다르게 움직입니다. 그것도 제각각 다른 모양으로요.</p>
+    <div class="curves">
+      <div class="curve reveal">
+        <h3>부재중 콜백</h3>
+        <p class="cd">건 직후 <b>골든타임</b>에 최고점 → 몇 분 만에 급락. 신환은 골든타임이 단 <b>2분</b><span class="real">실측 곡선</span></p>
+        <svg viewBox="0 0 120 50" preserveAspectRatio="none" aria-hidden="true"><polyline points="2,12 22,12 30,40 60,46 118,48" fill="none" stroke="#C9402F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="curve reveal">
+        <h3>예약 도착·지각</h3>
+        <p class="cd">예약 <b>±10분</b>의 짧은 창에서만 의미. 창이 닫히면 큐에서 사라집니다.</p>
+        <svg viewBox="0 0 120 50" preserveAspectRatio="none" aria-hidden="true"><polyline points="2,48 40,48 46,14 74,12 80,48 118,48" fill="none" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="curve reveal">
+        <h3>예약 확인콜</h3>
+        <p class="cd">예약 <b>7일 전부터 서서히 차오르다</b> 전날·당일에 가장 급해집니다.</p>
+        <svg viewBox="0 0 120 50" preserveAspectRatio="none" aria-hidden="true"><polyline points="2,40 40,34 78,22 100,10 118,6" fill="none" stroke="#1E7A4D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+    <p class="impconc reveal"><mark>매분, 수십 명의 순위가 동시에 바뀝니다.</mark><br>이걸 사람 머리로 동시에 최적화하는 건 — 원래 불가능합니다.</p>
+
+    <div class="formula reveal">
+      <div class="ftitle">⚙️ AutoRecall이 1분마다 돌리는 계산</div>
+      <div class="feq">
+        <div class="term">기본가치<span>콜 종류의 무게 (신환 부재중·확인콜·회수콜…)</span></div>
+        <div class="op">×</div>
+        <div class="term">시간곡선<span>지금이 그 콜의 ‘제때’인가 (0~1)</span></div>
+        <div class="op">×</div>
+        <div class="term">환자 가중치<span>이 환자의 본질적 가치·관계</span></div>
+        <div class="op">×</div>
+        <div class="term">시도 확률<span>이번에 받을 가능성</span></div>
+      </div>
+      <p class="fnote">네 가지를 곱해 ‘지금 전화할 가치’ 점수를 냅니다. 모두 곱셈·비교·정렬뿐 — <b>외부로 데이터를 보내지 않고, 원내 PC 안에서</b> 1분마다 다시 계산합니다. 일상콜이 항상 위, 큰 금액의 회수콜은 빈틈에만 — 순서가 뒤집히지 않도록 계층(티어)으로 묶여 있습니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── ②-4 새는 것 ───────────────────────── -->
+<section>
+  <div class="wrap">
+    <h2 class="reveal">그래서, 환자가 샙니다</h2>
+    <div class="leakwrap">
+      <svg class="leaksvg reveal" width="150" height="150" viewBox="0 0 150 150" aria-hidden="true">
+        <rect x="46" y="20" width="58" height="20" rx="5" fill="#9AA0A6"/>
+        <rect x="68" y="38" width="14" height="26" fill="#B6BBC0"/>
+        <path d="M75 64 q0 14 0 18" stroke="#5A7FDD" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <circle cx="75" cy="92" r="5" fill="#5A7FDD"/>
+        <circle cx="75" cy="110" r="4" fill="#7FA0E8"/>
+        <circle cx="75" cy="126" r="3" fill="#A9C0FF"/>
+        <text x="75" y="148" text-anchor="middle" font-size="11" fill="#8A877E" font-family="sans-serif">→ 옆 치과로</text>
+      </svg>
+      <div class="leaktext reveal">
+        <p>안 부른 환자는 화내지 않습니다. 그냥 조용히, 한 명씩 옆 치과로 흘러갑니다.</p>
+        <p>본인은 우리가 ‘잊었다’는 사실조차 모릅니다. 우리도 모릅니다. 그래서 더 무섭습니다.</p>
+        <p class="leakbig">새는 매출 ≈ [────만 원/월] <span class="est">추정</span></p>
+        <p class="faint" style="font-size:13.5px">※ 실제 금액은 치과마다 다릅니다. 설치하면 우리 치과 차트로 정확히 추정해 드립니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── ②-5 면죄 한 줄 ───────────────────────── -->
+<section style="background:var(--bg-soft)">
+  <div class="wrap">
+    <p class="absolve reveal">유능해서 더 괴로운 일입니다.
+      <span class="s">사람 탓이 아니라, <span class="accent">도구가 없었을 뿐</span>입니다. 사람 머리로 동시에 풀 수 없는 일을, 매일 사람에게 맡겨 왔을 뿐입니다.</span></p>
+  </div>
+</section>
+
+<!-- ───────────────────────── ②-6 도구가 하는 일 ───────────────────────── -->
+<section>
+  <div class="wrap">
+    <h2 class="reveal">도구가 하는 일은 딱 세 가지</h2>
+    <p class="lead reveal">대단한 걸 새로 하라는 게 아닙니다. 사람이 ‘동시에’ 못 하던 세 가지를 대신할 뿐입니다.</p>
+    <div class="tool3">
+      <div class="tcard reveal"><div class="ic">🧲</div><h3>모아주기</h3><p>덴트웹 차트에서 부를 환자를 자동으로 모읍니다. 직접 추리지 않아도 됩니다.</p></div>
+      <div class="tcard reveal"><div class="ic">🔢</div><h3>순서 매기기</h3><p>‘지금 전화할 가치’ 순으로 1분마다 줄을 다시 세웁니다.</p></div>
+      <div class="tcard reveal"><div class="ic">📌</div><h3>기억하기</h3><p>“다음 달 체크”도 그때가 되면 알아서 큐에 다시 띄웁니다. 놓치지 않습니다.</p></div>
+    </div>
+    <div class="ba">
+      <div class="bacol before reveal">
+        <div class="balabel">전 (지금)</div>
+        <ul>
+          <li>틈날 때 <b>기억나는 사람</b>부터 전화</li>
+          <li>명단을 매번 <b>직접 추림</b> (시간 부족)</li>
+          <li>통화 결과는 머릿속에 / 메모에 흩어짐</li>
+          <li>담당이 바뀌면 <b>방식도 리셋</b></li>
+        </ul>
+      </div>
+      <div class="bacol after reveal">
+        <div class="balabel">후 (AutoRecall)</div>
+        <ul>
+          <li>큐 <b>맨 위부터</b> 차례로 누르기만</li>
+          <li>명단은 <b>이미 떠 있음</b> (자동)</li>
+          <li>1클릭이면 결과가 <b>전자차트에 자동 기록</b></li>
+          <li>누가 앉아도 <b>같은 순서</b>가 유지</li>
+        </ul>
+      </div>
+    </div>
+    <div class="trust reveal">
+      <span class="tchip"><b>✓</b> 수신거부·번호무효·의료분쟁 환자 자동 제외</span>
+      <span class="tchip"><b>✓</b> “리콜종료” 표시 환자 자동 제외 <span class="real" style="margin-left:4px">실측 112건</span></span>
+      <span class="tchip"><b>✓</b> 사망 환자 자동 제외 <span class="real" style="margin-left:4px">실측 100건</span></span>
+    </div>
+    <p class="faint" style="font-size:13px;margin-top:12px">※ ‘실측’ = 사계절치과 5년치(2021–2026) 차트에서 실제로 잡힌 건수. 부르면 안 될 환자를 먼저 거른 뒤에만 큐에 띄웁니다.</p>
+  </div>
+</section>
+
+<!-- ───────────────────────── ③ 자가진단 + 벤치마크 ───────────────────────── -->
+<section id="diag" style="background:var(--bg-soft)">
+  <div class="wrap">
+    <h2 class="reveal">그럼, 우리 치과는 지금 어느 수준일까요?</h2>
+    <p class="lead reveal">2분이면 됩니다. 직원을 평가하려는 게 아닙니다 — <b>구조에 구멍이 있는지</b>를 보는 겁니다.</p>
+
+    <!-- 7-A 자가진단 -->
+    <div class="diag reveal">
+      <div class="diaghead">
+        <h3>🩺 리콜 누수 자가진단 — 5문항</h3>
+        <p>‘아니오’ 하나가 곧 ‘새는 구멍’ 하나입니다.</p>
+      </div>
+      <div id="qrows"></div>
+      <div class="diagresult">
+        <div class="meter"><div class="meterfill" id="meterfill"></div></div>
+        <div class="gradeline">
+          <span class="gradescore" id="gradescore">— / 5</span>
+          <span class="gradetag" id="gradetag" style="display:none"></span>
+        </div>
+        <p class="grademsg" id="grademsg">위 문항에 답하면 우리 치과의 현재 수준이 여기에 나타납니다.</p>
+        <p class="gradesub" id="gradesub">어떤 결과든, 이건 ‘사람’이 아니라 ‘구조’의 문제입니다.</p>
+      </div>
+    </div>
+
+    <!-- 7-B 규모 입력 -->
+    <div class="scale reveal">
+      <h3>📊 우리 규모로 ‘잠든 환자’는 몇 명쯤일까</h3>
+      <div class="slrow">
+        <div class="sllabel"><span>전체 환자 수</span><span class="v" id="vTotal">3,000명</span></div>
+        <input type="range" id="slTotal" min="200" max="15000" step="100" value="3000">
+      </div>
+      <div class="slrow">
+        <div class="sllabel"><span>정기검진·리콜 대상 비율</span><span class="v" id="vRatio">40%</span></div>
+        <input type="range" id="slRatio" min="10" max="80" step="5" value="40">
+      </div>
+      <div class="sleepout">
+        <div class="sn" id="sleepN">— 명</div>
+        <div class="sl">‘부를 때가 지났는데 아직 안 부른’ 잠든 환자 추정 <span class="est">추정</span></div>
+      </div>
+      <p class="faint" style="font-size:12.5px;margin:12px 0 0">※ 대상자 중 약 30%가 도구 없이 누락된다는 <b>일반적 가정</b>으로 계산한 예시값입니다. 실제 비율은 치과마다 다릅니다.</p>
+    </div>
+
+    <!-- 7-C 벤치마크 -->
+    <div class="bench reveal">
+      <h3>🪞 보통 이런 치과는, 이 정도입니다</h3>
+      <p class="bsub">아래는 업계 공식 통계가 아니라 <b>현장에서 흔히 보이는 패턴</b>을 그린 <span class="est">예시</span>입니다.</p>
+      <div class="brow">
+        <div class="bl"><span>6개월+ 미내원으로 쌓인 환자 비중</span><span class="bv">흔히 상당 비중</span></div>
+        <div class="btrack"><div class="bfill b1" style="width:55%">자주 이만큼 잠들어 있음</div></div>
+      </div>
+      <div class="brow">
+        <div class="bl"><span>사람 손으로만 할 때, 도래 환자 누락</span><span class="bv">상당수 누락</span></div>
+        <div class="btrack"><div class="bfill b2" style="width:62%">손으로는 여기까지가 한계</div></div>
+      </div>
+      <div class="brow">
+        <div class="bl"><span>매일 회수콜이 체계적으로 도는 치과</span><span class="bv">많지 않음</span></div>
+        <div class="btrack"><div class="bfill b3" style="width:18%">드뭅니다</div></div>
+      </div>
+      <div class="bbridge">
+        이건 입력값으로 그린 <b>‘추정’</b>일 뿐입니다. <b>깔면 우리 치과 ‘진짜 차트’</b>로 정확히 뽑아 드립니다 — 잠든 환자가 정확히 누구누구인지, 이름까지요.
+      </div>
+      <div class="ctarow" style="justify-content:center;margin-top:20px">
+        <a class="cta" href="#install">진짜 숫자로 확인하기 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── ④ 설치 ───────────────────────── -->
+<section id="install">
+  <div class="wrap">
+    <h2 class="reveal" style="text-align:center">원장님께 드리는 한 가지 부탁</h2>
+    <div class="letter reveal">
+      <div class="lto">— 원장님께</div>
+      <p>직원들은 안 한 게 아닙니다. 사람 손으로는 <b>원래 못 하던 일</b>이었을 뿐입니다.</p>
+      <p>그러니 직원을 더 몰지 마시고, <mark>손 하나를 보태 주세요.</mark> 매분 수십 명의 점수를 동시에 계산하는 손 — 사람은 못 하지만, 도구는 합니다.</p>
+      <p>데스크는 그 손이 세워 준 줄의 <b>맨 위부터 누르기만</b> 하면 됩니다. 그게 전부입니다.</p>
+      <p class="sign">— AutoRecall</p>
+    </div>
+
+    <div class="finalcta reveal">
+      <h2>무료로, 직원 손에 쥐어 주세요</h2>
+      <p class="fp">덴트웹은 그대로. 새로 배울 것도 거의 없습니다. 데이터는 원내 PC 안에 머뭅니다.</p>
+      <a class="cta" href="#" onclick="return false;">무료 설치 시작하기</a>
+      <div class="reassure">
+        <span class="rchip">✓ 덴트웹 그대로 연동</span>
+        <span class="rchip">✓ 설치형 데스크톱 앱</span>
+        <span class="rchip">✓ 외부 서버 없이 원내 PC 구동</span>
+        <span class="rchip">✓ 새로 배울 것 거의 없음</span>
+      </div>
+      <p class="tieback">방금 보신 <b>[추정]</b> 숫자 — 깔면 우리 치과 <b>진짜 차트</b>로 다시 뽑아 드립니다.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p class="disc">
+      <b>표기 안내.</b> 이 페이지의 <span class="est">추정</span>·<span class="est">예시</span> 표시가 붙은 모든 수치(누수액·잠든 환자 수·벤치마크 비중 등)는 실제 데이터가 아닌 <b>가정·예시</b>이며, 치료 성과나 매출 증가를 보장하지 않습니다.
+      <span class="real">실측</span> 표시(리콜종료 112건·사망 100건)는 사계절치과 5년치(2021–2026) 차트에서 확인된 값입니다.
+      AutoRecall은 부를 환자를 모아 순서를 매기는 <b>업무 효율화 도구</b>이며, 직원 감시·평가 도구가 아닙니다. 임상 진단을 대신하거나 단정하지 않습니다.
+      LGU+ 통화 상태 연동은 제공되나 통신 환경에 따라 실시간 반영에 지연이 있을 수 있습니다.
+      ‘무료’ 제공 범위·설치 소요 시간 등 세부 문구는 <b>원장 검수가 필요</b>합니다.
+    </p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── 살아있는 콜 큐 ── */
+  // 시뮬 시계: 화면용으로 압축. 실제 엔진의 곡선 모양을 그대로 따른다.
+  function shapeA(dt,golden,half,floor){ if(dt<=golden) return 1.0; return Math.max(0.9*Math.exp(-(dt-golden)/half), floor); }
+  function shapeB(dt,open,close){ if(dt<open) return 0; if(dt>close) return -1; return 0.85+0.15*(dt-open)/(close-open); }
+  function shapeC(d){ if(d>=7) return 0.40; if(d>=1) return 0.40+(7-d)*(0.35/6); if(d<=0) return 0.92; return -1; }
+  function shapeD(dd){ if(dd>7) return -1; if(dd<1) return 0; return Math.max(Math.exp(-(dd-1)/2),0.10); }
+  function shapeE(m){ return 0.60 + Math.min(m,24)*(0.5/24); }
+
+  // 티어: T1 타임어택 / T2.5 의료긴급 / T2 오늘안에 / T3 이벤트
+  function makeCards(){
+    return [
+      {id:'n',  name:'김○○ · 신환',     kind:'부재중 콜백 (신환)',    arch:'A', base:98, p:{golden:2,half:15,floor:.12}, t:1.0, rate:1.4, tier:'T1', label:'🔥 타임어택'},
+      {id:'m',  name:'박○○',           kind:'부재중 콜백',          arch:'A', base:90, p:{golden:5,half:30,floor:.15}, t:4.0, rate:1.8, tier:'T1', label:'🔥 타임어택'},
+      {id:'eta',name:'이○○',           kind:'예약 도착 확인 (지각)', arch:'B', base:88, p:{open:-15,close:10}, t:-12, rate:1.3, tier:'T1', label:'🔥 타임어택'},
+      {id:'c',  name:'최○○',           kind:'내일 수술 예약 확인콜',  arch:'C', d:1.0, base:100, t:0, rate:0, tier:'T2', label:'📅 오늘 안에'},
+      {id:'d',  name:'정○○',           kind:'어제 발치 안부콜',       arch:'D', dd:1.0, base:85, t:0, rate:0, tier:'T2', label:'📅 오늘 안에'},
+      {id:'e1', name:'강○○',           kind:'치료 중단 회수콜 · 고액', arch:'E', m:8, base:55, ctx:1.5, t:0, rate:0, tier:'T3', label:'💰 고가치'},
+      {id:'e2', name:'윤○○',           kind:'정기검진 재활성화',      arch:'E', m:18, base:40, t:0, rate:0, tier:'T3', label:'🌱 재활성화'}
+    ];
+  }
+  var cards = makeCards();
+  var TIER_RANK = {T1:0,'T2.5':1,T2:2,T3:3};
+  var prevScore = {};
+
+  function scoreOf(c){
+    var s, sh;
+    if(c.arch==='A'){ sh=shapeA(c.t,c.p.golden,c.p.half,c.p.floor); }
+    else if(c.arch==='B'){ sh=shapeB(c.t,c.p.open,c.p.close); }
+    else if(c.arch==='C'){ sh=shapeC(c.d); }
+    else if(c.arch==='D'){ sh=shapeD(c.dd); }
+    else { sh=shapeE(c.m); }
+    if(sh<0){ return -1; } // expired
+    s = c.base * sh * (c.ctx||1.0);
+    return Math.round(s);
+  }
+
+  // 시뮬 시간 진행 + 만료된 콜 재활용(영원히 움직이게)
+  var simMin = 14*60+30; // 14:30
+  function advance(){
+    simMin += 1;
+    cards.forEach(function(c){
+      if(c.arch==='A'){ c.t += c.rate; if(scoreOf(c) < c.base*c.p.floor + 1){ c.t = 0; } } // 바닥 닿으면 새 콜로 리셋
+      else if(c.arch==='B'){ c.t += c.rate; if(c.t > c.p.close){ c.t = c.p.open - 2; } }
+      else if(c.arch==='C'){ /* 고정 표시(내일 예약) */ }
+      else if(c.arch==='D'){ /* 고정 */ }
+    });
+  }
+
+  function fmtClock(){
+    var h=Math.floor(simMin/60)%24, m=simMin%60, s=Math.floor((Date.now()/1000)%60);
+    function p(n){return (n<10?'0':'')+n;}
+    return p(h)+':'+p(m)+':'+p(s);
+  }
+
+  var listEl = document.getElementById('qlist');
+  var clockEl = document.getElementById('qclock');
+  var nodes = {};
+
+  function tierClass(t){ return t==='T1'?'t-t1':t==='T2.5'?'t-t25':t==='T2'?'t-t2':'t-t3'; }
+
+  function buildNode(c){
+    var el = document.createElement('div');
+    el.className='qcard'; el.dataset.id=c.id;
+    el.innerHTML =
+      '<div class="qrank"></div>'+
+      '<div class="qbody"><div class="qname">'+c.name+' <span class="qtier '+tierClass(c.tier)+'">'+c.label+'</span></div>'+
+      '<div class="qkind">'+c.kind+'</div></div>'+
+      '<div class="qscore"><div class="qnum"></div><div class="qtrend"></div></div>';
+    return el;
+  }
+
+  function render(){
+    clockEl.textContent = fmtClock();
+    // 점수 계산
+    var live = cards.map(function(c){ return {c:c, s:scoreOf(c)}; }).filter(function(x){ return x.s>=0; });
+    // 정렬: 티어 → 점수
+    live.sort(function(a,b){
+      var ta=TIER_RANK[a.c.tier], tb=TIER_RANK[b.c.tier];
+      if(ta!==tb) return ta-tb;
+      return b.s - a.s;
+    });
+
+    // FLIP: 이전 위치 기록
+    var first = {};
+    Object.keys(nodes).forEach(function(id){ if(nodes[id].parentNode){ first[id]=nodes[id].getBoundingClientRect().top; } });
+
+    // DOM 갱신
+    live.forEach(function(x,i){
+      var c=x.c, el=nodes[c.id];
+      if(!el){ el=buildNode(c); nodes[c.id]=el; }
+      if(el.parentNode!==listEl){ listEl.appendChild(el); }
+      el.querySelector('.qrank').textContent = (i+1);
+      el.querySelector('.qnum').textContent = x.s;
+      el.classList.toggle('top', i===0);
+      var tr = el.querySelector('.qtrend');
+      var prev = prevScore[c.id];
+      if(prev==null){ tr.textContent='•'; tr.className='qtrend flat'; }
+      else if(x.s>prev){ tr.textContent='▲ 상승'; tr.className='qtrend up'; }
+      else if(x.s<prev){ tr.textContent='▼ 하락'; tr.className='qtrend down'; }
+      else { tr.textContent='— 유지'; tr.className='qtrend flat'; }
+      prevScore[c.id]=x.s;
+    });
+    // 순서 재배치(정렬 순)
+    live.forEach(function(x){ listEl.appendChild(nodes[x.c.id]); });
+
+    // FLIP: 새 위치 → 역변환 → 트랜지션
+    if(!reduce){
+      live.forEach(function(x){
+        var el=nodes[x.c.id], id=x.c.id;
+        if(first[id]!=null){
+          var last=el.getBoundingClientRect().top;
+          var dy=first[id]-last;
+          if(dy){
+            el.style.transition='none';
+            el.style.transform='translateY('+dy+'px)';
+            requestAnimationFrame(function(){
+              el.style.transition='';
+              el.style.transform='';
+            });
+          }
+        }
+      });
+    }
+  }
+
+  render();
+  if(!reduce){
+    setInterval(function(){ advance(); render(); }, 1000);
+  }
+
+  /* ── 7-A 자가진단 ── */
+  var QS = [
+    {t:'정기검진·스케일링 도래 환자를 매일 ‘정해진 순서’로 전화하나요?'},
+    {t:'‘오늘 전화할 사람’ 명단이 자동으로 떠 있나요?', s:'(아니면 매번 직접 추림)'},
+    {t:'통화 결과가 차트에 ‘기록’으로 남나요?'},
+    {t:'“다음 달에 체크”라던 환자를, 그때가 되면 자동으로 다시 챙기나요?'},
+    {t:'담당 데스크가 바뀌어도 이 방식이 그대로 유지되나요?'}
+  ];
+  var answers = [null,null,null,null,null];
+  var qrows = document.getElementById('qrows');
+  QS.forEach(function(q,i){
+    var row=document.createElement('div'); row.className='qrow';
+    row.innerHTML='<div class="qtext">'+ (i+1)+'. '+q.t + (q.s?'<small>'+q.s+'</small>':'') +'</div>'+
+      '<div class="toggle"><button class="tbtn yes" data-i="'+i+'" data-v="1">예</button>'+
+      '<button class="tbtn no" data-i="'+i+'" data-v="0">아니오</button></div>';
+    qrows.appendChild(row);
+  });
+  qrows.addEventListener('click', function(e){
+    var b=e.target.closest('.tbtn'); if(!b) return;
+    var i=+b.dataset.i, v=+b.dataset.v;
+    answers[i]=v;
+    var row=b.closest('.qrow');
+    row.querySelectorAll('.tbtn').forEach(function(x){ x.classList.remove('on'); });
+    b.classList.add('on');
+    updateGrade();
+  });
+
+  var meterfill=document.getElementById('meterfill'), gradescore=document.getElementById('gradescore'),
+      gradetag=document.getElementById('gradetag'), grademsg=document.getElementById('grademsg'),
+      gradesub=document.getElementById('gradesub');
+  function updateGrade(){
+    var done = answers.filter(function(a){return a!==null;}).length;
+    var yes = answers.filter(function(a){return a===1;}).length;
+    if(done<5){
+      gradescore.textContent = yes+' / 5';
+      meterfill.style.width = (yes/5*100)+'%';
+      grademsg.textContent = '나머지 문항에도 답해 주세요. ('+done+'/5 완료)';
+      gradetag.style.display='none';
+      gradesub.textContent='어떤 결과든, 이건 ‘사람’이 아니라 ‘구조’의 문제입니다.';
+      return;
+    }
+    gradescore.textContent = yes+' / 5';
+    meterfill.style.width = (yes/5*100)+'%';
+    gradetag.style.display='inline-block';
+    var msg, tag, bg, col;
+    if(yes<=1){ msg='지금은 거의 사람 손·기억에 의존하고 있습니다 — 가장 많이 새는 단계입니다.'; tag='누수 큼'; bg='#FBECEA'; col='#B23A3A'; }
+    else if(yes<=3){ msg='절반은 시스템, 절반은 감으로 돌아갑니다 — 바쁜 날 가장 먼저 무너지는 구간입니다.'; tag='절반 의존'; bg='#FBF3DC'; col='#9A7400'; }
+    else { msg='꽤 체계적입니다. 그래도 ‘매분 동시 최적화’는 사람 손의 한계가 분명합니다.'; tag='체계적'; bg='#E7F4ED'; col='#1E7A4D'; }
+    grademsg.textContent = msg;
+    gradetag.textContent = tag;
+    gradetag.style.background=bg; gradetag.style.color=col;
+    gradesub.textContent = '비난이 아닙니다. ‘아니오’가 나온 자리마다 도구가 대신 채울 수 있는 구멍입니다.';
+  }
+
+  /* ── 7-B 규모 슬라이더 ── */
+  var slTotal=document.getElementById('slTotal'), slRatio=document.getElementById('slRatio'),
+      vTotal=document.getElementById('vTotal'), vRatio=document.getElementById('vRatio'), sleepN=document.getElementById('sleepN');
+  var LAPSE = 0.30; // [추정] 도구 없이 누락되는 비율
+  function comma(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+  function updateScale(){
+    var total=+slTotal.value, ratio=+slRatio.value;
+    vTotal.textContent = comma(total)+'명';
+    vRatio.textContent = ratio+'%';
+    var target = total*ratio/100;
+    var sleep = Math.round(target*LAPSE/10)*10;
+    sleepN.textContent = '약 '+comma(sleep)+'명';
+  }
+  slTotal.addEventListener('input', updateScale);
+  slRatio.addEventListener('input', updateScale);
+  updateScale();
+
+  /* ── reveal ── */
+  if('IntersectionObserver' in window && !reduce){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    },{threshold:.12});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

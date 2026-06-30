@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AutoRecall — 그래프가 직접 말합니다, 왜 사람 손으론 못 부르는지</title>
+<meta name="description" content="치과 리콜 자동화 데스크톱 앱 AutoRecall. 5개 가치곡선이 직접 말합니다 — 왜 사람 손으론 동시에 부를 수 없는지.">
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --bg-alt:#FAF8F4;
+    --ink:#16181D;
+    --gray:#6B6F75;
+    --grid:#E7E3DC;
+    --signal:#E0142F;        /* 시그널 레드 — 단일 액센트 */
+    --signal-soft:#FBE3E7;
+    --cA:#C44536;            /* 부재중 */
+    --cB:#2F6F6A;            /* 예약창 */
+    --cC:#4A5B8C;            /* 확인콜 */
+    --cD:#7A6A52;            /* 안부콜 */
+    --cE:#9AA0A6;            /* 이벤트콜 */
+    --serif:Georgia,'Times New Roman',"Noto Serif KR",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --measure:42rem;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:17px;
+    line-height:1.7;
+    letter-spacing:-0.01em;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+  .narrow{max-width:var(--measure);margin-left:auto;margin-right:auto}
+  section{padding:clamp(56px,9vw,108px) 0;position:relative}
+  .alt{background:var(--bg-alt)}
+  h1,h2,h3{font-family:var(--serif);font-weight:700;line-height:1.2;letter-spacing:-0.02em;margin:0 0 .5em}
+  h1{font-size:clamp(30px,6.4vw,58px)}
+  h2{font-size:clamp(24px,4.4vw,40px)}
+  h3{font-size:clamp(19px,2.8vw,25px)}
+  p{margin:0 0 1.1em}
+  .lede{font-size:clamp(18px,2.4vw,22px);color:#33363D;line-height:1.65}
+  .kicker{font-family:var(--mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal);margin:0 0 14px;font-weight:600}
+  .mono{font-family:var(--mono)}
+  .muted{color:var(--gray)}
+  .sig{color:var(--signal)}
+  a{color:inherit}
+  /* ── 버튼 ── */
+  .btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+  .btn{display:inline-flex;align-items:center;gap:.5em;min-height:48px;padding:12px 24px;border-radius:8px;
+    font-weight:600;font-size:16px;text-decoration:none;border:1.5px solid transparent;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease;font-family:var(--sans)}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--signal);color:#fff;box-shadow:0 6px 18px rgba(224,20,47,.22)}
+  .btn-primary:hover{box-shadow:0 10px 26px rgba(224,20,47,.30)}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--grid)}
+  .btn-ghost:hover{border-color:var(--ink)}
+  /* ── 차트 카드 ── */
+  .chartcard{background:#fff;border:1px solid var(--grid);border-radius:14px;padding:18px clamp(10px,2.5vw,22px) 20px;box-shadow:0 10px 40px rgba(22,24,29,.05)}
+  .alt .chartcard{background:#fff}
+  svg{display:block;width:100%;height:auto}
+  .axis-label{font-family:var(--mono);font-size:11px;fill:var(--gray)}
+  .grid-line{stroke:var(--grid);stroke-width:1}
+  .curve{fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .curve-area{opacity:.06}
+  /* 범례 */
+  .legend{display:flex;flex-wrap:wrap;gap:12px 18px;margin-top:14px;font-size:13.5px}
+  .legend span{display:inline-flex;align-items:center;gap:7px;color:#3a3d44;font-weight:500}
+  .swatch{width:22px;height:3px;border-radius:2px;display:inline-block}
+  .rankbox{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;font-family:var(--mono);font-size:12.5px}
+  .rankchip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--grid);border-radius:20px;background:#fff;color:#3a3d44}
+  .rankchip b{font-family:var(--mono)}
+  .rankno{display:inline-flex;width:18px;height:18px;border-radius:50%;background:var(--signal);color:#fff;font-size:11px;align-items:center;justify-content:center;font-weight:700}
+  /* ── 하루 막대 ── */
+  .day-bars{display:flex;flex-direction:column;gap:9px;margin-top:8px}
+  .bar-row{display:grid;grid-template-columns:96px 1fr;align-items:center;gap:12px}
+  .bar-label{font-size:13.5px;color:#3a3d44;text-align:right;font-weight:500}
+  .bar-track{height:30px;border-radius:6px;background:#EFEAE2;overflow:hidden;position:relative}
+  .bar-fill{height:100%;border-radius:6px;width:0;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+  .bar-recall .bar-track{background:repeating-linear-gradient(45deg,#F6EEE0,#F6EEE0 7px,#efe4cf 7px,#efe4cf 14px);border:1px dashed #d8b25a}
+  .bar-recall .bar-note{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#9a7a2e;font-weight:600;font-family:var(--mono)}
+  /* ── small multiples grid ── */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+  .panel{background:#fff;border:1px solid var(--grid);border-radius:12px;padding:16px}
+  .panel.bad{border-color:#e8c9ce}
+  .panel.good{border-color:#bfe0db}
+  .panel h4{margin:0 0 10px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray)}
+  .panel.bad h4{color:#a33}
+  .panel.good h4{color:#2F6F6A}
+  .panel ul{margin:0;padding-left:18px}
+  .panel li{margin:.35em 0;font-size:14.5px;color:#3a3d44}
+  /* ── 일 처리 3카드 ── */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:10px}
+  .featcard{background:#fff;border:1px solid var(--grid);border-radius:14px;padding:22px}
+  .featcard .num{font-family:var(--mono);font-size:13px;color:var(--signal);font-weight:700;letter-spacing:.1em}
+  .featcard h3{font-size:20px;margin:.4em 0 .35em}
+  .featcard p{font-size:14.5px;color:#3a3d44;margin:0}
+  /* ── 면죄 한 줄 ── */
+  .pardon{font-family:var(--serif);font-size:clamp(26px,5.2vw,46px);line-height:1.28;font-weight:700;letter-spacing:-0.02em}
+  .pardon .sig{font-style:italic}
+  /* 편지 */
+  .letter{background:#fff;border:1px solid var(--grid);border-radius:14px;padding:clamp(24px,4vw,40px);font-family:var(--serif);font-size:clamp(17px,2.2vw,20px);line-height:1.8}
+  .letter p:first-child{font-size:clamp(20px,3vw,26px);margin-bottom:.7em}
+  /* 안심 4 */
+  .safe4{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:24px}
+  .safe-item{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--grid);border-radius:10px;padding:14px 16px}
+  .safe-item .ico{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--signal-soft);color:var(--signal);display:flex;align-items:center;justify-content:center;font-weight:700;font-family:var(--mono);font-size:14px}
+  .safe-item div b{display:block;font-size:15px}
+  .safe-item div span{font-size:13.5px;color:var(--gray)}
+  /* 누수 / 안전장치 / 티어 박스 */
+  .note{font-size:13px;color:var(--gray);font-family:var(--mono)}
+  .pill{display:inline-block;font-family:var(--mono);font-size:11.5px;background:var(--signal-soft);color:var(--signal);padding:2px 9px;border-radius:20px;font-weight:600;vertical-align:middle}
+  .pill-gray{background:#EEE9E1;color:#5a5e64}
+  .tierwrap{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+  .tier{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:center;border:1px solid var(--grid);border-radius:12px;padding:14px 16px;background:#fff}
+  .tier .tag{font-family:var(--mono);font-weight:700;text-align:center;border-radius:8px;padding:8px 0;font-size:14px}
+  .tier.t1 .tag{background:var(--signal);color:#fff}
+  .tier.t2 .tag{background:#EAE7F0;color:var(--cC)}
+  .tier.t3 .tag{background:#EEE9E1;color:#5a5e64}
+  .tier b{font-size:15.5px}
+  .tier p{margin:.15em 0 0;font-size:13.5px;color:#3a3d44}
+  .killer{margin-top:14px;border-left:3px solid var(--signal);background:var(--signal-soft);padding:14px 16px;border-radius:0 10px 10px 0;font-size:15px}
+  .killer b{color:var(--signal)}
+  .footer-disc{font-size:13px;color:var(--gray);border-top:1px solid var(--grid);margin-top:40px;padding-top:22px;line-height:1.6}
+  .formula{font-family:var(--mono);font-size:clamp(13px,2.4vw,16px);background:#fff;border:1px solid var(--grid);border-radius:10px;padding:14px 16px;color:#33363D;overflow-x:auto;white-space:nowrap}
+  .formula .sig{color:var(--signal)}
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  .scanhint{font-size:13px;color:var(--gray);margin-top:10px;font-family:var(--mono)}
+  /* responsive */
+  @media(max-width:760px){
+    body{font-size:16px}
+    .grid2{grid-template-columns:1fr}
+    .cards3{grid-template-columns:1fr}
+    .safe4{grid-template-columns:1fr}
+    .bar-row{grid-template-columns:78px 1fr;gap:9px}
+    .bar-label{font-size:12.5px}
+    .tier{grid-template-columns:56px 1fr}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    .bar-fill{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════ 1. HERO ════════ -->
+<section id="top">
+  <div class="wrap">
+    <div class="narrow reveal">
+      <p class="kicker">AutoRecall · 치과 리콜 자동화</p>
+      <h1>이걸 머리로<br>따라갈 수 있을까요?</h1>
+      <p class="lede">지금 이 순간에도 수십 명의 <b>‘전화할 가치’</b>가 1분마다 오르내립니다.<br>
+      다섯 개의 곡선이 직접 말합니다 — 왜 사람 손으론 동시에 부를 수 없는지.</p>
+    </div>
+
+    <div class="chartcard reveal" style="margin-top:30px" aria-label="다섯 종류 콜의 가치 곡선이 시간축 위에서 변하는 라이브 차트">
+      <svg id="heroChart" viewBox="0 0 920 420" role="img" preserveAspectRatio="xMidYMid meet">
+        <title>5개 가치곡선 — 시간축을 따라 그려지고 now선이 지나가며 순위가 바뀜</title>
+        <!-- grid -->
+        <g id="hero-grid"></g>
+        <!-- y label -->
+        <text x="14" y="30" class="axis-label" transform="rotate(-90 14 30)" text-anchor="end" style="font-size:11px">전화할 가치 →</text>
+        <!-- areas + curves injected -->
+        <g id="hero-areas"></g>
+        <g id="hero-curves"></g>
+        <!-- now line -->
+        <line id="hero-now" x1="120" y1="20" x2="120" y2="360" stroke="var(--signal)" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <text id="hero-now-label" x="120" y="14" class="mono" fill="var(--signal)" font-size="11" text-anchor="middle">now</text>
+        <!-- dots at now -->
+        <g id="hero-dots"></g>
+        <!-- x axis caption -->
+        <text x="120" y="395" class="axis-label" text-anchor="start">← 시간(분·일) →</text>
+      </svg>
+      <div class="legend" aria-hidden="false">
+        <span><i class="swatch" style="background:var(--cA)"></i>부재중콜</span>
+        <span><i class="swatch" style="background:var(--cB)"></i>예약창(ETA)</span>
+        <span><i class="swatch" style="background:var(--cC)"></i>확인콜</span>
+        <span><i class="swatch" style="background:var(--cD)"></i>안부콜</span>
+        <span><i class="swatch" style="background:var(--cE)"></i>이벤트콜</span>
+      </div>
+      <div class="rankbox" id="hero-rank" aria-live="off"></div>
+      <p class="scanhint">↑ 붉은 세로선(now)이 지나는 시점의 ‘1순위’가 매 순간 바뀝니다.</p>
+    </div>
+
+    <div class="btns reveal">
+      <a class="btn btn-primary" href="#cta">무료로 시작하기</a>
+      <a class="btn btn-ghost" href="#proof">그래프로 보기 ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ 2. 데스크 1인칭 고백 ════════ -->
+<section class="alt">
+  <div class="wrap narrow reveal">
+    <p class="kicker">데스크에서, 하루의 끝에</p>
+    <h2>“누가 언제 와야 하는지,<br>다 알아요.”</h2>
+    <p class="lede">그런데 다 못 챙겨요.<br>
+    안 챙긴 게 아니라 — <b class="sig">챙길 손이 하나뿐이었어요.</b></p>
+    <p class="muted">머릿속엔 부재중 환자, 내일 수술 미확인, 어제 발치한 분 안부, 6개월 지난 정기검진까지
+    전부 떠 있습니다. 떠 있는데, 손이 하나라 순서를 정하지 못합니다.</p>
+  </div>
+</section>
+
+<!-- ════════ 3. 하루의 진실 ════════ -->
+<section>
+  <div class="wrap">
+    <div class="narrow reveal">
+      <p class="kicker">하루의 진실</p>
+      <h2>리콜 10분은 늘 ‘나중에’.<br>그 나중은 오지 않습니다.</h2>
+      <p class="lede">접수·수납·보험청구·예약조정·환자응대로 하루가 꽉 찹니다.
+      ‘전화 돌릴 10분’이 들어갈 빈칸이 없습니다.</p>
+    </div>
+    <div class="chartcard reveal" style="margin-top:24px">
+      <div class="day-bars" id="dayBars">
+        <div class="bar-row"><span class="bar-label">접수·대기응대</span><div class="bar-track"><div class="bar-fill" data-w="86%" style="background:var(--cC)"></div></div></div>
+        <div class="bar-row"><span class="bar-label">수납·보험청구</span><div class="bar-track"><div class="bar-fill" data-w="78%" style="background:var(--cB)"></div></div></div>
+        <div class="bar-row"><span class="bar-label">예약조정</span><div class="bar-track"><div class="bar-fill" data-w="64%" style="background:var(--cD)"></div></div></div>
+        <div class="bar-row"><span class="bar-label">전화응대</span><div class="bar-track"><div class="bar-fill" data-w="58%" style="background:var(--cE)"></div></div></div>
+        <div class="bar-row bar-recall"><span class="bar-label">리콜 전화</span><div class="bar-track"><span class="bar-note">빈칸 없음 — ‘나중에’</span></div></div>
+      </div>
+      <p class="scanhint" style="margin-top:16px">막대 = 하루의 시간 점유. 리콜 줄에는 채울 칸이 남지 않습니다. <span class="pill-gray pill">시간 배분 예시</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ 4. 불가능의 증명 ════════ -->
+<section class="alt" id="proof">
+  <div class="wrap">
+    <div class="narrow reveal">
+      <p class="kicker">불가능의 증명</p>
+      <h2>같은 1분, 다섯 곡선이<br>서로 다른 높이에 있습니다.</h2>
+      <p class="lede">한 시점(세로선 1개)에서 다섯 곡선의 높이가 전부 다릅니다.
+      그리고 이 다섯이 <b>매분 동시에</b> 움직입니다.</p>
+    </div>
+
+    <div class="chartcard reveal" style="margin-top:24px">
+      <svg id="proofChart" viewBox="0 0 920 400" role="img" preserveAspectRatio="xMidYMid meet">
+        <title>한 시점에서 다섯 곡선이 서로 다른 높이를 가지는 정적 비교 차트</title>
+        <g id="proof-grid"></g>
+        <g id="proof-areas"></g>
+        <g id="proof-curves"></g>
+        <line id="proof-now" x1="430" y1="20" x2="430" y2="350" stroke="var(--signal)" stroke-width="1.6"/>
+        <text x="430" y="14" class="mono" fill="var(--signal)" font-size="11" text-anchor="middle">지금 이 순간</text>
+        <g id="proof-dots"></g>
+        <text x="120" y="386" class="axis-label" text-anchor="start">← 시간(분·일) →</text>
+      </svg>
+      <div class="legend">
+        <span><i class="swatch" style="background:var(--cA)"></i>부재중 — 골든 5분, 신환은 2분</span>
+        <span><i class="swatch" style="background:var(--cB)"></i>예약창 — 15분 전~10분 지각만</span>
+        <span><i class="swatch" style="background:var(--cC)"></i>확인콜 — D-7부터 차오름</span>
+        <span><i class="swatch" style="background:var(--cD)"></i>안부콜 — 다음날 최고</span>
+        <span><i class="swatch" style="background:var(--cE)"></i>이벤트콜 — 낮게 깔림</span>
+      </div>
+    </div>
+
+    <div class="narrow reveal" style="margin-top:26px">
+      <p class="lede">머리에 그래프 30개를 동시에 그려서, 매분 순위를 다시 매길 수 있을까요?
+      <b class="sig">사람은 못 합니다. 아무리 유능해도요.</b></p>
+      <div class="killer">
+        <b>킬러룰 — 돈은 티어를 못 넘습니다.</b> 1,500만원 회수콜(T3)도, 골든 5분이 살아있는 부재중콜(T1)을 절대 못 넘습니다.
+        가치가 큰 콜이 아니라 <b>지금 사라지는 콜</b>이 먼저입니다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ 5. 그래서 새는 것 ════════ -->
+<section>
+  <div class="wrap">
+    <div class="narrow reveal">
+      <p class="kicker">그래서 새는 것</p>
+      <h2>안 부른 환자는,<br>조용히 옆 치과로 갑니다.</h2>
+      <p class="lede">그리고 그 빈자리를 <b>광고로 새 환자 모셔오는 비용</b>으로 다시 메웁니다.
+      이미 우리를 아는 환자를, 한 통의 전화로 다시 모실 수 있었는데요.</p>
+    </div>
+    <div class="chartcard reveal" style="margin-top:24px">
+      <svg id="leakChart" viewBox="0 0 920 260" role="img" preserveAspectRatio="xMidYMid meet">
+        <title>부르지 못해 새어 나가는 가치를 면적으로 표현한 그래프</title>
+        <g id="leak-grid"></g>
+        <path id="leak-recall" class="curve" stroke="var(--cB)"/>
+        <path id="leak-area" fill="var(--signal)" opacity="0.10"/>
+        <path id="leak-line" class="curve" stroke="var(--signal)" stroke-dasharray="6 5"/>
+        <text x="700" y="60" class="mono" fill="var(--signal)" font-size="12">새어 나간 콜 = 붉은 면적</text>
+      </svg>
+      <p class="scanhint" style="margin-top:14px">붉은 면적 = 시간이 지나 가치가 0으로 떨어진(=못 부른) 콜의 누적. <span class="pill">월 누수 추정은 원장 검수·실측 전 예시</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ 6. 면죄 한 줄 ════════ -->
+<section class="alt">
+  <div class="wrap narrow reveal">
+    <p class="pardon">유능해서 더 괴로운 일이었습니다.<br><span class="sig">사람 탓이 아니라, 도구가 없었을 뿐.</span></p>
+  </div>
+</section>
+
+<!-- ════════ 7. 도구가 하는 일 ════════ -->
+<section>
+  <div class="wrap">
+    <div class="narrow reveal">
+      <p class="kicker">도구가 하는 일</p>
+      <h2>딱 세 가지를 대신합니다.</h2>
+      <p class="lede">머리로 30개 곡선을 그리는 일은 기계가 합니다.
+      데스크가 할 일은 단 하나 — <b class="sig">맨 위부터 전화.</b></p>
+    </div>
+    <div class="cards3 reveal" style="margin-top:8px">
+      <div class="featcard">
+        <p class="num">01 · 모아주기</p>
+        <h3>덴트웹에서 자동으로</h3>
+        <p>전자차트(덴트웹) DB에 직접 연결해 대상 환자를 자동 추출합니다. 직원 입력은 <b>0</b>. 따로 명단을 만들 필요가 없습니다.</p>
+      </div>
+      <div class="featcard">
+        <p class="num">02 · 순서매기기</p>
+        <h3>약 1분마다 재정렬</h3>
+        <p>점수 큐가 약 1분마다 다시 계산되어 자동으로 줄을 세웁니다. ‘지금 사라지는 콜’이 늘 맨 위로 올라옵니다.</p>
+      </div>
+      <div class="featcard">
+        <p class="num">03 · 기억하기</p>
+        <h3>차트에 자동 기록</h3>
+        <p>통화 후 결과(예약/부재/거절)를 1클릭하면 전자차트에 자동 저장됩니다. LGU+ 통화상태도 연동됩니다.</p>
+      </div>
+    </div>
+
+    <div class="narrow reveal" style="margin-top:34px">
+      <h3>점수는 이렇게 매겨집니다</h3>
+      <p class="formula">점수 = 기본가치 × <span class="sig">시간곡선</span>(shape) × 맥락배수(화이트−블랙) × 시도확률</p>
+      <div class="tierwrap">
+        <div class="tier t1"><span class="tag">T1</span><div><b>타임어택 — 지금 아니면 사라짐</b><p>부재중 · 예약 ETA · 지각 · 빈 슬롯 · 당일 수술 확인</p></div></div>
+        <div class="tier t2"><span class="tag">T2</span><div><b>오늘 안에</b><p>확인콜 · 안부콜</p></div></div>
+        <div class="tier t3"><span class="tag">T3</span><div><b>여유 있게</b><p>이벤트콜(정기·재활성화)</p></div></div>
+      </div>
+      <div class="killer"><b>킬러룰:</b> 1,500만원 회수콜도 일상콜(T1)을 절대 못 넘습니다. 돈은 티어를 못 넘습니다.</div>
+
+      <h3 style="margin-top:32px">안전장치 — 부르지 말아야 할 분은 자동 제외</h3>
+      <p class="muted">수신거부 · 번호 무효 · 의료분쟁 · ‘리콜종료’ 표시 · 사망은 큐에서 자동으로 빠집니다.
+      <span class="note">리콜종료 112 / 사망 100(최근 5년) 실측 <span class="pill-gray pill">출처 확인 중</span></span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ 8. before / after ════════ -->
+<section class="alt">
+  <div class="wrap">
+    <div class="narrow reveal">
+      <p class="kicker">바뀌는 것</p>
+      <h2>전과 후.</h2>
+    </div>
+    <div class="grid2 reveal" style="margin-top:8px">
+      <div class="panel bad">
+        <h4>Before</h4>
+        <ul>
+          <li>구글시트에 명단 따로 정리</li>
+          <li>“오늘은 누구부터 걸지?” 매번 고민</li>
+          <li>통화 메모는 또 따로</li>
+          <li>바쁘면 그냥 — 빠뜨림</li>
+        </ul>
+        <svg viewBox="0 0 380 150" role="img" aria-label="우왕좌왕 흩어진 가치 곡선">
+          <title>전: 순서 없이 흩어진 곡선</title>
+          <g id="ba-before-grid"></g>
+          <path id="ba-before" class="curve" stroke="var(--cE)" stroke-width="2"/>
+          <path id="ba-before2" class="curve" stroke="var(--cA)" stroke-width="2" opacity=".6"/>
+        </svg>
+      </div>
+      <div class="panel good">
+        <h4>After</h4>
+        <ul>
+          <li>뜬 순서대로 위에서부터 전화</li>
+          <li>결과는 버튼 한 번 — <b>[예약]·[부재]·[거절]</b></li>
+          <li>차트에 자동 저장</li>
+          <li>빠뜨릴 명단 자체가 없음</li>
+        </ul>
+        <svg viewBox="0 0 380 150" role="img" aria-label="위에서부터 정렬된 깔끔한 곡선">
+          <title>후: 한 줄로 정렬된 곡선</title>
+          <g id="ba-after-grid"></g>
+          <path id="ba-after" class="curve" stroke="var(--cB)" stroke-width="2.6"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ 9. 원장에게 ════════ -->
+<section>
+  <div class="wrap narrow reveal">
+    <p class="kicker">원장님께</p>
+    <div class="letter">
+      <p>직원을 더 몰아붙이지 마세요.</p>
+      <p>리콜이 안 되는 건 직원이 게을러서가 아닙니다.
+      누가 언제 와야 하는지 다 알면서도, 손이 하나라 순서를 못 정했을 뿐입니다.</p>
+      <p>필요한 건 채찍이 아니라 <b>손 하나</b>입니다.
+      그 손을, 무료로 직원에게 쥐어 주세요.</p>
+      <p style="margin-bottom:0"><b class="sig">못 한 게 아니라, 도구가 없었을 뿐입니다.</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ 10. 최종 CTA ════════ -->
+<section class="alt" id="cta">
+  <div class="wrap narrow reveal">
+    <p class="kicker">시작하기</p>
+    <h2>무료로, 직원 손에<br>쥐어 주세요.</h2>
+    <p class="lede">설치형 데스크톱 앱입니다. 새로 배울 것도, 옮길 데이터도 없습니다.</p>
+
+    <div class="safe4">
+      <div class="safe-item"><span class="ico">✓</span><div><b>덴트웹 그대로</b><span>쓰던 전자차트에 그대로 연결</span></div></div>
+      <div class="safe-item"><span class="ico">✓</span><div><b>원내 PC에서만 작동</b><span>외부·클라우드 서버 없이 병원 안에서만</span></div></div>
+      <div class="safe-item"><span class="ico">✓</span><div><b>새로 배울 것 없음</b><span>맨 위부터 전화 — 그게 전부</span></div></div>
+      <div class="safe-item"><span class="ico">✓</span><div><b>환자정보는 밖으로 안 나감</b><span>데이터가 병원 밖으로 나가지 않습니다</span></div></div>
+    </div>
+
+    <div class="btns">
+      <a class="btn btn-primary" href="#top">무료 다운로드</a>
+      <a class="btn btn-ghost" href="#proof">곡선 다시 보기 ↑</a>
+    </div>
+
+    <p class="footer-disc">
+      ※ 본 페이지의 수치·그래프는 <b>예시 또는 추정</b>이며, 치료 결과나 매출을 보장하지 않습니다.
+      AutoRecall은 콜 우선순위를 정렬·기록하는 도구로, 임상 진단을 대신하지 않습니다.
+      세부 카피와 누수 추정치는 <b>원장 검수</b>가 필요합니다. 실측·출처 표기 항목은 데이터 확정 후 갱신됩니다.
+    </p>
+  </div>
+</section>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ────────── 곡선 정의 (정규화 t:0~1, 값:0~1) ────────── */
+  // 각 콜의 shape를 0~1 시간축 위 0~1 높이로 모델링
+  function clamp01(v){return v<0?0:v>1?1:v;}
+  function gauss(t,mu,sig){return Math.exp(-((t-mu)*(t-mu))/(2*sig*sig));}
+
+  // A 부재중: 0~0.08 만점 평평 → 급락(0.3쯤 반토막). 뾰족.
+  function shapeA(t){
+    if(t<=0.07) return 1.0;
+    return clamp01(Math.exp(-(t-0.07)*4.2));
+  }
+  // B 예약창: 좁은 종 모양 (수술 15분전~10분 지각), mu~0.55, 지나면 0
+  function shapeB(t){
+    var v = gauss(t,0.55,0.055);
+    if(t>0.63) v = Math.min(v, Math.max(0,(0.68-t)*4)); // 지나면 뚝
+    return clamp01(v*1.02);
+  }
+  // C 확인콜: D-7부터 완만히 차오르다 당일 미확인 급발진 spike
+  function shapeC(t){
+    var base = clamp01((t-0.25)*1.0); // 완만 상승
+    var spike = gauss(t,0.82,0.03)*0.85; // 당일 스파이크
+    return clamp01(Math.max(base*0.7, spike) + base*0.15);
+  }
+  // D 안부콜: 다음날 최고 → 7일 감쇠 후 만료
+  function shapeD(t){
+    if(t<0.12) return clamp01(t/0.12*0.92);
+    var v = 0.92*Math.exp(-(t-0.12)*3.0);
+    if(t>0.78) v*= Math.max(0,(0.92-t)*7); // 만료
+    return clamp01(v);
+  }
+  // E 이벤트콜: 아주 완만한 우상향, 낮게
+  function shapeE(t){
+    return clamp01(0.12 + t*0.30);
+  }
+
+  var SHAPES = [
+    {fn:shapeA,color:'var(--cA)',name:'부재중'},
+    {fn:shapeB,color:'var(--cB)',name:'예약창'},
+    {fn:shapeC,color:'var(--cC)',name:'확인콜'},
+    {fn:shapeD,color:'var(--cD)',name:'안부콜'},
+    {fn:shapeE,color:'var(--cE)',name:'이벤트콜'}
+  ];
+
+  /* 좌표 매핑 헬퍼 */
+  function mkMap(x0,x1,y0,y1){
+    return {
+      x:function(t){return x0+(x1-x0)*t;},
+      y:function(v){return y1-(y1-y0)*v;} // v 0→바닥(y1), 1→꼭대기(y0)
+    };
+  }
+
+  function pathFor(fn,map,n,tmax){
+    n = n||140; tmax = tmax||1;
+    var d='', i, t, X, Y;
+    for(i=0;i<=n;i++){
+      t=i/n*tmax;
+      X=map.x(t/tmax); Y=map.y(fn(t));
+      d += (i===0?'M':'L')+X.toFixed(1)+' '+Y.toFixed(1)+' ';
+    }
+    return d.trim();
+  }
+  function areaFor(fn,map,n,tmax){
+    n=n||140; tmax=tmax||1;
+    var d='M'+map.x(0).toFixed(1)+' '+map.y(0).toFixed(1)+' ', i,t,X,Y;
+    for(i=0;i<=n;i++){t=i/n*tmax;X=map.x(t/tmax);Y=map.y(fn(t));d+='L'+X.toFixed(1)+' '+Y.toFixed(1)+' ';}
+    d+='L'+map.x(1).toFixed(1)+' '+map.y(0).toFixed(1)+' Z';
+    return d;
+  }
+
+  function gridLines(g, x0,x1,y0,y1, rows, cols){
+    if(!g) return;
+    var html='', i, gy, gx;
+    for(i=0;i<=rows;i++){gy=y0+(y1-y0)*i/rows;html+='<line class="grid-line" x1="'+x0+'" y1="'+gy.toFixed(1)+'" x2="'+x1+'" y2="'+gy.toFixed(1)+'"/>';}
+    for(i=0;i<=cols;i++){gx=x0+(x1-x0)*i/cols;html+='<line class="grid-line" x1="'+gx.toFixed(1)+'" y1="'+y0+'" x2="'+gx.toFixed(1)+'" y2="'+y1+'" opacity="0.5"/>';}
+    g.innerHTML=html;
+  }
+  function svgEl(tag){return document.createElementNS('http://www.w3.org/2000/svg',tag);}
+
+  /* ────────── HERO CHART ────────── */
+  (function heroBuild(){
+    var X0=70,X1=860,Y0=30,Y1=350;
+    var map=mkMap(X0,X1,Y0,Y1);
+    gridLines(document.getElementById('hero-grid'),X0,X1,Y0,Y1,4,8);
+
+    var areas=document.getElementById('hero-areas');
+    var curves=document.getElementById('hero-curves');
+    var dots=document.getElementById('hero-dots');
+    var paths=[];
+
+    SHAPES.forEach(function(s){
+      var p=svgEl('path');
+      p.setAttribute('d',pathFor(s.fn,map));
+      p.setAttribute('class','curve');
+      p.setAttribute('stroke',s.color);
+      curves.appendChild(p);
+      paths.push(p);
+      var c=svgEl('circle');
+      c.setAttribute('r','4.5'); c.setAttribute('fill',s.color);
+      c.setAttribute('stroke','#fff'); c.setAttribute('stroke-width','1.5');
+      dots.appendChild(c); s._dot=c;
+    });
+
+    // stroke-dash draw-in
+    if(!reduce){
+      paths.forEach(function(p){
+        var len=p.getTotalLength();
+        p.style.strokeDasharray=len; p.style.strokeDashoffset=len;
+        p.style.transition='stroke-dashoffset 1.4s ease';
+      });
+    }
+
+    var nowLine=document.getElementById('hero-now');
+    var nowLabel=document.getElementById('hero-now-label');
+    var rankBox=document.getElementById('hero-rank');
+
+    function setNow(t){
+      var X=map.x(t);
+      nowLine.setAttribute('x1',X); nowLine.setAttribute('x2',X);
+      nowLabel.setAttribute('x',X);
+      // dots + rank
+      var arr=SHAPES.map(function(s,idx){return {idx:idx,v:s.fn(t),s:s};});
+      arr.forEach(function(o){o.s._dot.setAttribute('cx',X);o.s._dot.setAttribute('cy',map.y(o.v));});
+      arr.sort(function(a,b){return b.v-a.v;});
+      var html='';
+      arr.forEach(function(o,r){
+        if(r<3 && o.v>0.04){
+          html+='<span class="rankchip"><span class="rankno">'+(r+1)+'</span><i class="swatch" style="width:14px;background:'+o.s.color+'"></i><b>'+o.s.name+'</b></span>';
+        }
+      });
+      if(!html) html='<span class="rankchip muted">지금은 급한 콜 없음</span>';
+      rankBox.innerHTML=html;
+    }
+
+    // initial
+    setNow(0.15);
+
+    if(reduce){
+      setNow(0.55);
+      return;
+    }
+
+    // draw-in then animate now line
+    var started=false;
+    function start(){
+      if(started) return; started=true;
+      requestAnimationFrame(function(){paths.forEach(function(p){p.style.strokeDashoffset='0';});});
+      var t0=null, dur=9000;
+      function tick(ts){
+        if(t0===null) t0=ts;
+        var prog=((ts-t0)%dur)/dur; // 0..1 loop
+        // ease back-and-forth feel: just sweep 0..1
+        setNow(0.02+prog*0.96);
+        rafId=requestAnimationFrame(tick);
+      }
+      var rafId=requestAnimationFrame(tick);
+    }
+    // start when visible
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){start();io.disconnect();}});},{threshold:0.2});
+    io.observe(document.getElementById('heroChart'));
+  })();
+
+  /* ────────── PROOF CHART (정적, now선 1개) ────────── */
+  (function proofBuild(){
+    var X0=70,X1=860,Y0=30,Y1=350;
+    var map=mkMap(X0,X1,Y0,Y1);
+    gridLines(document.getElementById('proof-grid'),X0,X1,Y0,Y1,4,8);
+    var curves=document.getElementById('proof-curves');
+    var dots=document.getElementById('proof-dots');
+    var T=0.39; // 비교 시점
+    var nowX=map.x(T);
+    var nl=document.getElementById('proof-now');
+    nl.setAttribute('x1',nowX); nl.setAttribute('x2',nowX);
+    document.querySelector('#proofChart text[fill="var(--signal)"]').setAttribute('x',nowX);
+
+    SHAPES.forEach(function(s){
+      var p=svgEl('path');
+      p.setAttribute('d',pathFor(s.fn,map));
+      p.setAttribute('class','curve'); p.setAttribute('stroke',s.color);
+      curves.appendChild(p);
+      var v=s.fn(T);
+      var c=svgEl('circle');
+      c.setAttribute('cx',nowX); c.setAttribute('cy',map.y(v));
+      c.setAttribute('r','5'); c.setAttribute('fill',s.color);
+      c.setAttribute('stroke','#fff'); c.setAttribute('stroke-width','1.6');
+      dots.appendChild(c);
+      // label height
+      var tx=svgEl('text');
+      tx.setAttribute('x',nowX+10); tx.setAttribute('y',map.y(v)+4);
+      tx.setAttribute('class','mono'); tx.setAttribute('fill',s.color);
+      tx.setAttribute('font-size','11'); tx.textContent=s.name;
+      dots.appendChild(tx);
+    });
+
+    if(!reduce){
+      curves.querySelectorAll('path').forEach(function(p){
+        var len=p.getTotalLength();
+        p.style.strokeDasharray=len; p.style.strokeDashoffset=len;
+        p.style.transition='stroke-dashoffset 1.3s ease';
+      });
+      var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){
+        curves.querySelectorAll('path').forEach(function(p){p.style.strokeDashoffset='0';});
+        io.disconnect();
+      }});},{threshold:0.25});
+      io.observe(document.getElementById('proofChart'));
+    }
+  })();
+
+  /* ────────── LEAK CHART ────────── */
+  (function leakBuild(){
+    var X0=70,X1=860,Y0=30,Y1=210;
+    var map=mkMap(X0,X1,Y0,Y1);
+    gridLines(document.getElementById('leak-grid'),X0,X1,Y0,Y1,3,8);
+    // 이상선(부르면 받는 가치) 높은 평탄, 실제(못부른) 낮은 → 사이 면적=누수
+    function ideal(t){return 0.85;}
+    function actual(t){return clamp01(0.85*Math.exp(-t*1.6)+0.06);}
+    document.getElementById('leak-line').setAttribute('d',pathFor(ideal,map));
+    document.getElementById('leak-recall').setAttribute('d',pathFor(actual,map));
+    // area between
+    var d='M'+map.x(0).toFixed(1)+' '+map.y(ideal(0)).toFixed(1)+' ';
+    var i,t;
+    for(i=0;i<=120;i++){t=i/120;d+='L'+map.x(t).toFixed(1)+' '+map.y(ideal(t)).toFixed(1)+' ';}
+    for(i=120;i>=0;i--){t=i/120;d+='L'+map.x(t).toFixed(1)+' '+map.y(actual(t)).toFixed(1)+' ';}
+    d+='Z';
+    document.getElementById('leak-area').setAttribute('d',d);
+
+    if(!reduce){
+      ['leak-line','leak-recall'].forEach(function(id){
+        var p=document.getElementById(id);
+        var len=p.getTotalLength();
+        p.style.strokeDasharray=len; p.style.strokeDashoffset=len;
+        p.style.transition='stroke-dashoffset 1.4s ease';
+      });
+      var area=document.getElementById('leak-area');
+      area.style.opacity='0'; area.style.transition='opacity 1s ease .6s';
+      var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){
+        document.getElementById('leak-line').style.strokeDashoffset='0';
+        document.getElementById('leak-recall').style.strokeDashoffset='0';
+        area.style.opacity='0.10';
+        io.disconnect();
+      }});},{threshold:0.3});
+      io.observe(document.getElementById('leakChart'));
+    }
+  })();
+
+  /* ────────── before/after mini ────────── */
+  (function baBuild(){
+    var X0=14,X1=366,Y0=14,Y1=126;
+    var map=mkMap(X0,X1,Y0,Y1);
+    gridLines(document.getElementById('ba-before-grid'),X0,X1,Y0,Y1,2,4);
+    gridLines(document.getElementById('ba-after-grid'),X0,X1,Y0,Y1,2,4);
+    // before: 흩어진 두 곡선
+    function b1(t){return clamp01(0.5+0.4*Math.sin(t*18)+0.1*Math.sin(t*7));}
+    function b2(t){return clamp01(0.45+0.35*Math.cos(t*13+1));}
+    document.getElementById('ba-before').setAttribute('d',pathFor(b1,map,120));
+    document.getElementById('ba-before2').setAttribute('d',pathFor(b2,map,120));
+    // after: 깔끔한 단조 하강(정렬된 우선순위)
+    function a1(t){return clamp01(0.92-t*0.78);}
+    document.getElementById('ba-after').setAttribute('d',pathFor(a1,map,120));
+
+    if(!reduce){
+      ['ba-before','ba-before2','ba-after'].forEach(function(id){
+        var p=document.getElementById(id); var len=p.getTotalLength();
+        p.style.strokeDasharray=len; p.style.strokeDashoffset=len;
+        p.style.transition='stroke-dashoffset 1.2s ease';
+      });
+      var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){
+        ['ba-before','ba-before2','ba-after'].forEach(function(id){document.getElementById(id).style.strokeDashoffset='0';});
+        io.disconnect();
+      }});},{threshold:0.3});
+      io.observe(document.querySelector('.grid2'));
+    }
+  })();
+
+  /* ────────── day bars fill ────────── */
+  (function barsBuild(){
+    var fills=document.querySelectorAll('.bar-fill[data-w]');
+    function fill(){fills.forEach(function(f){f.style.width=f.getAttribute('data-w');});}
+    if(reduce){fill();return;}
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){fill();io.disconnect();}});},{threshold:0.3});
+    io.observe(document.getElementById('dayBars'));
+  })();
+
+  /* ────────── reveal ────────── */
+  (function reveal(){
+    var els=document.querySelectorAll('.reveal');
+    if(reduce){els.forEach(function(e){e.classList.add('in');});return;}
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
