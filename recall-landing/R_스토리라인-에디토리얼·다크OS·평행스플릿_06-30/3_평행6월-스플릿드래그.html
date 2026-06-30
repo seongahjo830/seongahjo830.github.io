@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>평행 6월 — 같은 치과, 두 개의 6개월 뒤</title>
+<style>
+  :root{
+    --ink:#15110C; --soft:#5A5247; --faint:#8B8273; --paper:#F6F3EC; --line:#E4DDCF;
+    /* loss world (안 부른) */
+    --L-bg:#241C19; --L-bg2:#2E2320; --L-ink:#F3E4DD; --L-soft:#C7A99C; --L-acc:#E26A45;
+    /* gain world (부른) */
+    --G-bg:#0E3D2E; --G-bg2:#114A38; --G-ink:#E8F6EE; --G-soft:#A7D6BE; --G-acc:#36E5A0;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  a{text-decoration:none;color:inherit}
+
+  /* ── HERO SPLIT ── */
+  .hero{position:relative;height:100svh;min-height:560px;overflow:hidden;background:var(--L-bg);user-select:none;touch-action:pan-y}
+  .side{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(22px,5vw,68px)}
+  /* loss side (bottom layer) — content anchored LEFT */
+  .side.loss{background:radial-gradient(120% 90% at 0% 0%,var(--L-bg2),var(--L-bg));color:var(--L-ink);align-items:flex-start;text-align:left}
+  .side.loss .lab{color:var(--L-acc)}
+  /* gain side (top layer, clipped) — content anchored RIGHT */
+  .side.gain{background:radial-gradient(120% 90% at 100% 100%,var(--G-bg2),var(--G-bg));color:var(--G-ink);align-items:flex-end;text-align:right;clip-path:inset(0 0 0 var(--x,50%));}
+  .side.gain .lab{color:var(--G-acc)}
+  .lab{font-size:12.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+  .side h2{font-size:clamp(26px,5vw,52px);font-weight:900;letter-spacing:-.03em;line-height:1.08;margin:14px 0 0;max-width:11em;text-wrap:balance}
+  .side .chips{margin-top:22px;display:flex;flex-direction:column;gap:10px;max-width:340px}
+  .chip{display:inline-flex;align-items:center;gap:10px;font-size:14.5px;font-weight:600;padding:10px 14px;border-radius:11px;backdrop-filter:blur(4px)}
+  .loss .chip{background:rgba(226,106,69,.12);border:1px solid rgba(226,106,69,.3);color:var(--L-ink)}
+  .gain .chip{background:rgba(54,229,160,.12);border:1px solid rgba(54,229,160,.34);color:var(--G-ink);flex-direction:row-reverse;text-align:right}
+  .chip .n{font-weight:900;font-size:17px}
+  .loss .chip .n{color:var(--L-acc)} .gain .chip .n{color:var(--G-acc)}
+
+  /* divider handle */
+  .divider{position:absolute;top:0;bottom:0;left:var(--x,50%);width:3px;background:linear-gradient(var(--L-acc),var(--G-acc));transform:translateX(-50%);z-index:6;box-shadow:0 0 24px rgba(255,255,255,.25)}
+  .knob{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;background:var(--paper);color:var(--ink);display:grid;place-items:center;font-size:20px;font-weight:900;cursor:ew-resize;box-shadow:0 8px 28px rgba(0,0,0,.4),0 0 0 4px rgba(255,255,255,.18);z-index:7}
+  .knob::after{content:"⇆"}
+  .drag-hint{position:absolute;left:50%;bottom:78px;transform:translateX(-50%);z-index:7;font-size:12.5px;font-weight:800;letter-spacing:.05em;color:#fff;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.25);padding:8px 16px;border-radius:999px;backdrop-filter:blur(6px);animation:bob 1.8s ease-in-out infinite;white-space:nowrap}
+  @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-5px)}}
+  .topbar{position:absolute;top:0;left:0;right:0;z-index:8;display:flex;justify-content:space-between;align-items:center;padding:18px clamp(18px,4vw,40px);pointer-events:none}
+  .topbar .brand{font-weight:800;color:#fff;display:flex;align-items:center;gap:9px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .topbar .brand .mk{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,var(--G-acc),var(--G-bg));display:grid;place-items:center;color:#06150E;font-weight:900;font-size:14px}
+  .center-q{position:absolute;top:clamp(74px,12vh,120px);left:50%;transform:translateX(-50%);z-index:8;text-align:center;width:min(92%,640px);pointer-events:none}
+  .center-q .k{font-size:12.5px;font-weight:800;letter-spacing:.2em;color:#fff;opacity:.9;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+  .center-q h1{font-size:clamp(22px,3.6vw,34px);font-weight:900;letter-spacing:-.02em;color:#fff;margin-top:8px;line-height:1.2;text-shadow:0 2px 12px rgba(0,0,0,.55)}
+  .scrollcue{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);z-index:8;color:#fff;font-size:12px;opacity:.8;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .scrollcue .ar{animation:bob 1.8s infinite}
+  @media(max-width:600px){.side h2{font-size:clamp(22px,7vw,30px)}.side .chips{max-width:62%}.chip{font-size:13px;padding:8px 11px}}
+
+  /* ── BODY ── */
+  section{padding:64px 0}
+  .kick{font-size:12.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--G-bg)}
+  h3.sh{font-size:clamp(25px,4.2vw,40px);font-weight:900;letter-spacing:-.03em;line-height:1.14;margin:12px 0 0;text-wrap:balance}
+  .sub{color:var(--soft);max-width:620px;margin:15px 0 0;font-size:16.5px;line-height:1.62}
+  .reveal{opacity:0;transform:translateY(22px);transition:.7s} .reveal.in{opacity:1;transform:none}
+
+  /* 장2 scenes */
+  .scenes{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:32px}
+  @media(max-width:680px){.scenes{grid-template-columns:1fr}}
+  .scene{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 12px 30px -22px rgba(40,30,15,.4)}
+  .scene .ic{font-size:22px}.scene .q{font-size:18px;font-weight:800;margin-top:10px;line-height:1.4}
+  .scene .q em{font-style:normal;color:var(--L-acc)}
+  .scene .c{font-size:14px;color:var(--soft);margin-top:8px;line-height:1.55}
+
+  /* 장3 amplify */
+  .amp{margin-top:30px;background:var(--L-bg);color:var(--L-ink);border-radius:20px;padding:38px 30px;text-align:center}
+  .amp q{font-size:clamp(22px,3.8vw,34px);font-weight:900;letter-spacing:-.02em;line-height:1.3;quotes:"“" "”"}
+  .amp .src{font-size:12.5px;color:var(--L-soft);margin-top:12px}
+  .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.08);border-radius:14px;overflow:hidden;margin-top:26px}
+  @media(max-width:680px){.metrics{grid-template-columns:1fr}}
+  .metric{background:var(--L-bg2);padding:20px 18px}.metric .v{font-size:28px;font-weight:900;color:var(--L-acc);letter-spacing:-.02em}.metric .l{font-size:13px;color:var(--L-soft);margin-top:6px;line-height:1.5}
+
+  /* 장4 absolution */
+  .absolve{margin-top:28px;background:var(--G-bg);color:var(--G-ink);border-radius:20px;padding:34px 30px;text-align:center}
+  .absolve .h{font-size:clamp(20px,3.4vw,28px);font-weight:900;line-height:1.4}
+  .absolve .h em{font-style:normal;color:var(--G-acc)}
+  .absolve .p{color:var(--G-soft);font-size:15px;margin-top:12px;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.65}
+
+  /* 장5 ledger compare (mirrors hero theme) */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:32px}
+  @media(max-width:680px){.vs{grid-template-columns:1fr}}
+  .vcol{border-radius:18px;padding:24px 22px;border:1px solid var(--line)}
+  .vcol.l{background:linear-gradient(180deg,#2E2320,#241C19);color:var(--L-ink);border-color:rgba(226,106,69,.25)}
+  .vcol.g{background:linear-gradient(180deg,#114A38,#0E3D2E);color:var(--G-ink);border-color:rgba(54,229,160,.28)}
+  .vcol .ch{font-size:13px;font-weight:800;letter-spacing:.04em}
+  .vcol.l .ch{color:var(--L-acc)} .vcol.g .ch{color:var(--G-acc)}
+  .vcol ul{list-style:none;margin:14px 0 0}
+  .vcol li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid rgba(255,255,255,.08);font-size:14.5px;line-height:1.5}
+  .vcol li:first-child{border-top:none}
+  .vcol.l li::before{content:"✕";color:var(--L-acc);font-weight:900} .vcol.g li::before{content:"✓";color:var(--G-acc);font-weight:900}
+
+  /* 장6 self-diagnosis (split readout) */
+  .diag{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:36px 30px;box-shadow:0 24px 60px -40px rgba(40,30,15,.5)}
+  @media(max-width:560px){.diag{padding:26px 20px}}
+  .ctrls{display:grid;gap:24px;margin-top:24px}
+  .ctrl .lab2{display:flex;justify-content:space-between;align-items:baseline;font-size:14.5px;font-weight:600;color:var(--soft)}
+  .ctrl .lab2 b{font-size:20px;font-weight:900;color:var(--ink)}
+  .ctrl input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;margin-top:12px;background:linear-gradient(90deg,var(--L-acc),var(--G-acc));outline:none}
+  .ctrl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--ink);cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+  .ctrl input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--ink);cursor:pointer}
+  .splitout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-radius:16px;overflow:hidden;margin-top:28px}
+  @media(max-width:560px){.splitout{grid-template-columns:1fr}}
+  .so{padding:24px 20px;text-align:center}
+  .so.l{background:linear-gradient(180deg,#2E2320,#241C19);color:var(--L-ink)} .so.g{background:linear-gradient(180deg,#114A38,#0E3D2E);color:var(--G-ink)}
+  .so .t{font-size:12.5px;font-weight:700;opacity:.85}
+  .so .v{font-size:clamp(26px,5.6vw,40px);font-weight:900;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+  .so.l .v{color:var(--L-acc)} .so.g .v{color:var(--G-acc)}
+  .so .sub2{font-size:12.5px;opacity:.8;margin-top:6px}
+  .formula{font-size:12.5px;color:var(--faint);margin-top:18px;line-height:1.8}
+  .formula b{color:var(--G-bg)} .formula code{background:var(--paper);padding:1px 7px;border-radius:5px;font-family:ui-monospace,monospace;font-size:11.5px}
+
+  /* 장7 benchmark */
+  .gauge{margin-top:30px;display:grid;gap:14px}
+  .grow{display:flex;align-items:center;gap:14px}
+  .grow .nm{width:118px;font-size:14px;font-weight:700;color:var(--soft);flex-shrink:0}
+  .grow .track{flex:1;height:32px;background:#fff;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .grow .fill{height:100%;width:0;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:11px;font-weight:900;font-size:13px;color:#fff;transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+  .grow.us .fill{background:var(--L-acc)} .grow.avg .fill{background:#A99A7C} .grow.top .fill{background:var(--G-bg)}
+
+  /* 장8 CTA */
+  .final{text-align:center;padding:74px 0 30px}
+  .final h3{font-size:clamp(28px,5.2vw,52px);font-weight:900;letter-spacing:-.03em;line-height:1.1}
+  .final .g{color:var(--G-bg)} .final .l{color:var(--L-acc)}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:16px;padding:15px 26px;border-radius:13px;transition:transform .14s,box-shadow .14s}
+  .btn.p{background:var(--G-bg);color:#fff;box-shadow:0 12px 34px -10px rgba(14,61,46,.6)}
+  .btn.p:hover{transform:translateY(-2px)}
+  .faq{max-width:660px;margin:34px auto 0;text-align:left}
+  details{border:1px solid var(--line);background:#fff;border-radius:14px;margin-top:12px;padding:2px 20px}
+  summary{cursor:pointer;list-style:none;padding:16px 0;font-weight:800;font-size:16px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";color:var(--G-bg);font-size:22px;transition:.2s}
+  details[open] summary::after{transform:rotate(45deg)}
+  details .a{padding:0 0 18px;color:var(--soft);font-size:15px;line-height:1.7}
+  .lastline{margin-top:38px;font-size:clamp(18px,3vw,24px);font-weight:800}
+  footer{border-top:1px solid var(--line);padding:30px 0 80px;color:var(--faint);font-size:12.5px;line-height:1.8}
+</style>
+</head>
+<body>
+
+<!-- ── 장1 HERO: draggable split ── -->
+<div class="hero" id="hero">
+  <div class="topbar">
+    <div class="brand"><span class="mk">R</span>AutoRecall</div>
+  </div>
+  <div class="center-q">
+    <div class="k">같은 치과 · 같은 환자 명단 · 6개월 뒤</div>
+    <h1>무엇이 두 치과를 갈랐을까?</h1>
+  </div>
+
+  <!-- loss side (anchored left) -->
+  <div class="side loss">
+    <div class="lab">✕ 안 부른 치과 — 6개월 뒤</div>
+    <h2>의자는 비어가고, 명단은 잠든 채.</h2>
+    <div class="chips">
+      <div class="chip"><span class="n">347명</span><span>그대로 잠든 환자</span></div>
+      <div class="chip"><span class="n">−8,200만</span><span>추정 잃은 매출</span></div>
+      <div class="chip"><span class="n">감(感)</span><span>오늘 누굴 부를지 여전히 모름</span></div>
+    </div>
+  </div>
+
+  <!-- gain side (anchored right, clipped) -->
+  <div class="side gain">
+    <div class="lab">부른 치과 — 6개월 뒤 ✓</div>
+    <h2>같은 명단으로, 의자를 다시 채웠다.</h2>
+    <div class="chips">
+      <div class="chip"><span>매출 큰 순서로 다시 깨운 환자</span><span class="n">+회수</span></div>
+      <div class="chip"><span>위에서부터 전화만</span><span class="n">큐 1줄</span></div>
+      <div class="chip"><span>빈 슬롯·골든타임 자동 표시</span><span class="n">놓침↓</span></div>
+    </div>
+  </div>
+
+  <div class="divider" id="divider"><div class="knob" id="knob" role="slider" aria-label="두 치과 비교 손잡이" tabindex="0"></div></div>
+  <div class="drag-hint" id="dragHint">⇆ 손잡이를 좌우로 끌어보세요</div>
+  <a class="scrollcue" href="#story"><span>왜 갈렸는지 보기</span><span class="ar">↓</span></a>
+</div>
+
+<!-- ── 장2 ── -->
+<section id="story"><div class="wrap reveal">
+  <span class="kick">기 · 갈림길의 시작</span>
+  <h3 class="sh">차이는 실력이 아니라, ‘누굴 부를지 보이느냐’였습니다</h3>
+  <p class="sub">왼쪽 치과도 콜 리스트는 있었습니다. 다만 매일 데스크에서 이런 일이 반복됐을 뿐.</p>
+  <div class="scenes">
+    <div class="scene"><div class="ic">🗂️</div><div class="q">“6개월 지난 환자, <em>누구누구죠?</em>”</div><div class="c">명단이 없다 — 한 명씩 차트 뒤질 시간은 더 없다.</div></div>
+    <div class="scene"><div class="ic">🎲</div><div class="q">“오늘은 <em>감으로</em> 몇 명만.”</div><div class="c">기준 없이 찍는다. 돈 되는 환자는 건너뛴다.</div></div>
+    <div class="scene"><div class="ic">🔁</div><div class="q">“<em>저번에도 전화</em> 드렸던 분인데…”</div><div class="c">기록이 흩어져 같은 사람에게 또. 신뢰가 깎인다.</div></div>
+    <div class="scene"><div class="ic">💤</div><div class="q">“상담받고 <em>그대로 잠수.</em>”</div><div class="c">결심이 식는 30일 골든타임을 놓친다.</div></div>
+  </div>
+</div></section>
+
+<!-- ── 장3 ── -->
+<section><div class="wrap reveal">
+  <span class="kick">승 · 왼쪽이 잃은 것</span>
+  <div class="amp">
+    <q>좋은 콜 리스트가 있어도, 걸 시간이 없으면 0원이다.</q>
+    <div class="src">— 데스크·콜 타이밍 운영 현실(내부 기록)</div>
+    <div class="metrics">
+      <div class="metric"><div class="v">71%</div><div class="l">방치 환자, 치료계획 후 30일 내 이탈(추정)</div></div>
+      <div class="metric"><div class="v">7,901만원</div><div class="l">30~90일 미완주 44건의 잠긴 매출(예시)</div></div>
+      <div class="metric"><div class="v">1.9→1.0회</div><div class="l">1인당 연 외래 감소 · 생존 길 = 기존 환자 리콜</div></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ── 장4 ── -->
+<section><div class="wrap reveal">
+  <span class="kick">승 · 짚고 넘어갈 것</span>
+  <div class="absolve">
+    <div class="h">“리콜, 안 하는 게 아니라 <em>못 하는</em> 겁니다.”</div>
+    <div class="p">두 치과의 데스크 모두 성실했습니다. 잠든 환자까지 일일이 찾아 거는 건 사람의 한계지 의지의 문제가 아닙니다. 오른쪽 치과는 더 다그친 게 아니라 — <b>누굴 부를지 보여주는 화면 한 장</b>을 가졌을 뿐.</div>
+  </div>
+</div></section>
+
+<!-- ── 장5 ── -->
+<section><div class="wrap reveal">
+  <span class="kick">전 · 무엇이 달랐나</span>
+  <h3 class="sh">같은 상황, 갈라진 다음 행동</h3>
+  <div class="vs">
+    <div class="vcol l">
+      <div class="ch">✕ 안 부른 치과</div>
+      <ul>
+        <li>오늘 누굴 부를지 감으로 찍기</li>
+        <li>빈 슬롯 나면 대기 명단 뒤적</li>
+        <li>상담 후 잠수 환자 잊혀짐</li>
+        <li>고가 미완 치료 방치</li>
+        <li>통화 이력 흩어져 중복 전화</li>
+      </ul>
+    </div>
+    <div class="vcol g">
+      <div class="ch">부른 치과 ✓</div>
+      <ul>
+        <li>우선순위 큐 상단부터 순서대로</li>
+        <li>당일 올 확률 높은 환자 자동 매칭</li>
+        <li>30일 골든타임에 다시 떠오름</li>
+        <li>잃은 매출 큰 순으로 표시</li>
+        <li>통화 이력 한 줄로 정리</li>
+      </ul>
+    </div>
+  </div>
+  <p class="sub" style="margin-top:18px">※ AutoRecall은 전화 우선순위 정리를 돕는 <b>운영 도구</b>입니다. 치료 결과·내원을 보장하지 않으며, 차트는 원내에서 읽기만 합니다.</p>
+</div></section>
+
+<!-- ── 장6 자가진단 ── -->
+<section id="diag"><div class="wrap reveal">
+  <span class="kick">⭐ 전 · 30초 자가진단</span>
+  <h3 class="sh">우리 치과는 지금 어느 쪽에 가까울까</h3>
+  <p class="sub">슬라이더를 움직이면 ‘이대로 둘 때’와 ‘부를 때’ 두 숫자가 동시에 나옵니다. 입력값은 <b>저장·전송하지 않습니다</b>.</p>
+  <div class="diag">
+    <div class="ctrls">
+      <div class="ctrl"><div class="lab2">전체 환자 수 <b><span id="vPat">2,000</span>명</b></div><input type="range" id="rPat" min="300" max="8000" step="100" value="2000"></div>
+      <div class="ctrl"><div class="lab2">6개월 이상 안 온 비율 <b><span id="vGap">18</span>%</b></div><input type="range" id="rGap" min="5" max="45" step="1" value="18"></div>
+      <div class="ctrl"><div class="lab2">환자 1인당 평균 진료액 <b><span id="vVal">35</span>만원</b></div><input type="range" id="rVal" min="10" max="150" step="5" value="35"></div>
+    </div>
+    <div class="splitout">
+      <div class="so l"><div class="t">✕ 이대로 두면 — 잠긴 매출</div><div class="v" id="oLoss">1.26억</div><div class="sub2">잠든 환자 <span id="oSleep">360</span>명</div></div>
+      <div class="so g"><div class="t">부르면 — 회수 가능(보수적)</div><div class="v" id="oRec">1,890만</div><div class="sub2">잠긴 매출 × 0.15 가정</div></div>
+    </div>
+    <div class="formula">계산식 공개 — 잠든 환자 = 전체 × 미내원율 · 잠긴 매출 = 잠든 환자 × 평균진료액 · 회수 가능 = 잠긴 매출 <code>× 0.15</code>(보수적 회수율 가정). 모두 <b>예시·가정값</b>이며, 진짜 명단은 설치 후 차트에서만 확인됩니다.</div>
+  </div>
+</div></section>
+
+<!-- ── 장7 벤치마크 ── -->
+<section><div class="wrap reveal">
+  <span class="kick">전 · 남들과 비교</span>
+  <h3 class="sh">리콜 회수율, 우리는 어느 쪽에 서 있을까</h3>
+  <div class="gauge">
+    <div class="grow us"><div class="nm">우리 치과(추정)</div><div class="track"><div class="fill" id="fUs">42</div></div></div>
+    <div class="grow avg"><div class="nm">업계 평균</div><div class="track"><div class="fill" id="fAvg">60</div></div></div>
+    <div class="grow top"><div class="nm">상위 치과</div><div class="track"><div class="fill" id="fTop">82</div></div></div>
+  </div>
+  <p class="sub" style="margin-top:18px">평균(60) 아래라면 — 잃고 있는 게 아니라 <b>아직 안 부른 것</b>뿐입니다. 숫자는 예시이며 실제 점수는 설치 후 우리 차트로 계산됩니다.</p>
+</div></section>
+
+<!-- ── 장8 CTA ── -->
+<section class="final"><div class="wrap reveal">
+  <span class="kick">결 · 어느 6월을 고를까</span>
+  <h3>두 개의 6월 중,<br><span class="g">오른쪽</span>을 고르는 건 — 설치 한 번.</h3>
+  <p class="sub" style="margin:18px auto 0">추정은 여기까지. <b>진짜 명단</b>은 설치해야 보입니다.</p>
+  <div style="margin-top:26px"><a class="btn p" href="#diag">우리 치과 두 숫자 다시 보기 →</a></div>
+  <div class="faq">
+    <details><summary>환자 정보가 밖으로 나가나요?</summary><div class="a">아니요. <b>원내 컴퓨터에서 차트를 읽기만</b> 하고, 입력값·환자정보는 저장·전송하지 않습니다.</div></details>
+    <details><summary>지금 쓰는 차트를 바꿔야 하나요?</summary><div class="a">바꾸지 않습니다. 기존 차트는 그대로 두고 옆에서 <b>‘오늘 누굴 부를지’만</b> 정리합니다.</div></details>
+    <details><summary>데스크가 새로 배울 게 많나요?</summary><div class="a">화면은 <b>‘위에서부터 전화’</b> 한 줄로 끝납니다. 하던 일을 더 쉽게 만드는 도구입니다.</div></details>
+    <details><summary>효과를 보장하나요?</summary><div class="a">치료 결과·내원을 <b>보장하지 않습니다</b>. 놓치는 환자를 줄이도록 전화 우선순위를 정리해 돕습니다.</div></details>
+  </div>
+  <div class="lastline">안 깔면, <span class="l">왼쪽 6월</span>이 다시 옵니다.</div>
+</div></section>
+
+<footer><div class="wrap">
+  평행 6월 · AutoRecall · 2026 — 본 페이지의 모든 수치는 <b>예시·가정값</b>이며 결과를 보장하지 않습니다 · 전화 우선순위 정리를 돕는 운영 도구로 차트는 원내에서 읽기만 하고 입력값은 저장·전송하지 않습니다 · 한글 우선 · 세부 카피·수치는 원장 검수 필요
+</div></footer>
+
+<script>
+  // ── draggable split divider ──
+  (function(){
+    var hero=document.getElementById('hero'), knob=document.getElementById('knob'),
+        hint=document.getElementById('dragHint');
+    var x=50, dragging=false, hinted=false;
+    function set(px){
+      var r=hero.getBoundingClientRect();
+      var pct=((px-r.left)/r.width)*100;
+      x=Math.max(6,Math.min(94,pct));
+      hero.style.setProperty('--x',x+'%');
+    }
+    hero.style.setProperty('--x','50%');
+    function start(e){dragging=true; if(!hinted){hinted=true;hint.style.opacity='0';} e.preventDefault();}
+    function move(e){ if(!dragging) return; var p=e.touches?e.touches[0].clientX:e.clientX; set(p); }
+    function end(){dragging=false;}
+    knob.addEventListener('mousedown',start); hero.addEventListener('mousedown',function(e){if(e.target===hero||e.target.classList.contains('side')||e.target.classList.contains('divider')){start(e);set(e.clientX);}});
+    window.addEventListener('mousemove',move); window.addEventListener('mouseup',end);
+    knob.addEventListener('touchstart',start,{passive:false}); window.addEventListener('touchmove',move,{passive:false}); window.addEventListener('touchend',end);
+    knob.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'){x=Math.max(6,x-4);hero.style.setProperty('--x',x+'%');}if(e.key==='ArrowRight'){x=Math.min(94,x+4);hero.style.setProperty('--x',x+'%');}});
+    // gentle auto-nudge on load to signal interactivity
+    var t=0,iv=setInterval(function(){t++;var v=50+Math.sin(t/2)*8;hero.style.setProperty('--x',v+'%');if(t>6){clearInterval(iv);hero.style.setProperty('--x','50%');}},120);
+  })();
+
+  // scroll reveal
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+  // self-diagnosis
+  var rPat=document.getElementById('rPat'),rGap=document.getElementById('rGap'),rVal=document.getElementById('rVal');
+  function fmtMan(n){ if(n>=10000) return (n/10000).toFixed(2).replace(/\.?0+$/,'')+'억'; return Math.round(n).toLocaleString('ko-KR')+'만'; }
+  function calc(){
+    var pat=+rPat.value,gap=+rGap.value,val=+rVal.value;
+    document.getElementById('vPat').textContent=pat.toLocaleString('ko-KR');
+    document.getElementById('vGap').textContent=gap; document.getElementById('vVal').textContent=val;
+    var sleep=Math.round(pat*gap/100), loss=sleep*val, rec=loss*0.15;
+    document.getElementById('oSleep').textContent=sleep.toLocaleString('ko-KR');
+    document.getElementById('oLoss').textContent=fmtMan(loss);
+    document.getElementById('oRec').textContent=fmtMan(rec);
+    var us=Math.max(18,Math.min(74,Math.round(78-gap*1.7)));
+    var f=document.getElementById('fUs'); f.style.width=us+'%'; f.textContent=us;
+  }
+  [rPat,rGap,rVal].forEach(function(r){r.addEventListener('input',calc);});
+  var done=false, io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&!done){done=true;
+    document.getElementById('fAvg').style.width='60%'; document.getElementById('fTop').style.width='82%'; calc();
+  }});},{threshold:.3});
+  var g=document.querySelector('.gauge'); if(g) io2.observe(g);
+  calc();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

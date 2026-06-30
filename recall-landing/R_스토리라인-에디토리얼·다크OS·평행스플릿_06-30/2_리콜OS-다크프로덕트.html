@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리콜 OS — 오늘 누굴 부를지, 화면이 정해줍니다</title>
+<style>
+  :root{
+    --bg:#0A0E0C; --bg2:#0E1411; --panel:#121A16; --glass:rgba(28,40,33,.55);
+    --ink:#EAF2EC; --soft:#9DB1A4; --faint:#67786D; --line:rgba(255,255,255,.08);
+    --neon:#34E5A0; --neon2:#27C08A; --neonglow:rgba(52,229,160,.45);
+    --amber:#F5B544; --loss:#FF6B4A;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  a{text-decoration:none;color:inherit}
+  .mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(50% 40% at 78% 8%,rgba(52,229,160,.16) 0,transparent 70%),
+      radial-gradient(46% 38% at 12% 30%,rgba(39,192,138,.12) 0,transparent 72%),
+      radial-gradient(60% 50% at 50% 108%,rgba(52,229,160,.10) 0,transparent 70%);}
+  .grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:46px 46px;-webkit-mask-image:radial-gradient(circle at 50% 22%,#000,transparent 75%);mask-image:radial-gradient(circle at 50% 22%,#000,transparent 75%)}
+  .wrap,nav.bar{position:relative;z-index:2}
+
+  /* nav */
+  nav.bar{display:flex;align-items:center;justify-content:space-between;max-width:1120px;margin:0 auto;padding:18px 24px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.01em}
+  .logo .mk{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--neon),var(--neon2));box-shadow:0 0 18px var(--neonglow);display:grid;place-items:center;color:#06150E;font-weight:900;font-size:15px}
+  .navcta{font-size:14px;font-weight:700;color:#06150E;background:var(--neon);padding:9px 16px;border-radius:9px;box-shadow:0 0 20px var(--neonglow)}
+
+  /* hero */
+  .hero{padding:52px 0 36px;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+  @media(max-width:900px){.hero{grid-template-columns:1fr;gap:30px;padding:34px 0 18px}}
+  .pill{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--neon);background:rgba(52,229,160,.08);border:1px solid rgba(52,229,160,.28);padding:6px 13px;border-radius:999px}
+  .pill .lv{width:7px;height:7px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px var(--neon);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+  h1{font-size:clamp(34px,5.6vw,60px);font-weight:900;letter-spacing:-.035em;line-height:1.06;margin:20px 0 0;text-wrap:balance}
+  h1 .g{background:linear-gradient(120deg,var(--neon),#9BE7C9);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{color:var(--soft);font-size:clamp(16px,2.1vw,19px);max-width:520px;margin:20px 0 0;line-height:1.62}
+  .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:16px;padding:14px 24px;border-radius:12px;transition:transform .14s,box-shadow .14s,background .14s}
+  .btn.p{background:var(--neon);color:#06150E;box-shadow:0 0 0 1px rgba(52,229,160,.4),0 10px 34px -8px var(--neonglow)}
+  .btn.p:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(52,229,160,.6),0 16px 44px -8px var(--neonglow)}
+  .btn.g{background:var(--glass);color:var(--ink);border:1px solid var(--line);backdrop-filter:blur(8px)}
+  .btn.g:hover{border-color:rgba(52,229,160,.5)}
+  .trust{display:flex;gap:22px;margin-top:26px;flex-wrap:wrap}
+  .trust .t{font-size:13px;color:var(--faint)} .trust .t b{color:var(--ink);font-weight:800}
+
+  /* product mock — glowing call queue */
+  .mock{position:relative;border-radius:18px;background:linear-gradient(180deg,#101814,#0C120F);border:1px solid var(--line);
+    box-shadow:0 40px 90px -30px rgba(0,0,0,.8),0 0 0 1px rgba(52,229,160,.06),inset 0 1px 0 rgba(255,255,255,.04);overflow:hidden}
+  .mock::before{content:"";position:absolute;inset:-1px;border-radius:18px;padding:1px;background:linear-gradient(140deg,rgba(52,229,160,.5),transparent 40%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:.6}
+  .mock .bar{display:flex;align-items:center;gap:7px;padding:13px 16px;border-bottom:1px solid var(--line)}
+  .mock .bar i{width:11px;height:11px;border-radius:50%;background:#2A352E}
+  .mock .bar i:nth-child(1){background:#FF5F57}.mock .bar i:nth-child(2){background:#FEBC2E}.mock .bar i:nth-child(3){background:#28C840}
+  .mock .bar .ttl{margin-left:8px;font-size:12.5px;color:var(--faint);font-family:var(--mono)}
+  .mock .body{padding:14px 14px 18px}
+  .mock .head{display:flex;justify-content:space-between;align-items:baseline;padding:4px 6px 12px}
+  .mock .head .h{font-size:13px;font-weight:800;color:var(--soft)}
+  .mock .head .live{font-size:11px;font-family:var(--mono);color:var(--neon);display:flex;align-items:center;gap:6px}
+  .mock .head .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--neon);box-shadow:0 0 8px var(--neon);animation:pulse 1.6s infinite}
+  .qrow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:11px 12px;border-radius:11px;margin-top:7px;background:#0F1713;border:1px solid var(--line);transition:.3s;opacity:.55;transform:translateX(0)}
+  .qrow.on{opacity:1;background:#13201A;border-color:rgba(52,229,160,.34);box-shadow:0 0 0 1px rgba(52,229,160,.12),0 8px 24px -12px var(--neonglow)}
+  .qrow .rank{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-weight:900;font-size:13px;font-family:var(--mono);background:#1B2620;color:var(--soft)}
+  .qrow.on .rank{background:var(--neon);color:#06150E;box-shadow:0 0 14px var(--neonglow)}
+  .qrow .who{font-size:14px;font-weight:700}
+  .qrow .meta{font-size:11.5px;color:var(--faint);font-family:var(--mono);margin-top:2px}
+  .qrow .tag{font-size:11px;font-weight:800;padding:3px 9px;border-radius:7px;white-space:nowrap}
+  .tag.slot{background:rgba(245,181,68,.14);color:var(--amber)} .tag.high{background:rgba(52,229,160,.14);color:var(--neon)} .tag.gold{background:rgba(255,107,74,.14);color:var(--loss)}
+  .mock .foot{display:flex;justify-content:space-between;align-items:center;padding:12px 8px 4px;font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+  .mock .foot b{color:var(--neon)}
+
+  /* generic section */
+  section{padding:64px 0;position:relative;z-index:2}
+  .kick{font-size:12.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--neon)}
+  h2{font-size:clamp(26px,4.2vw,40px);font-weight:900;letter-spacing:-.03em;line-height:1.14;margin:12px 0 0;text-wrap:balance}
+  .sub{color:var(--soft);max-width:620px;margin:16px 0 0;font-size:16.5px;line-height:1.62}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+  .reveal.in{opacity:1;transform:none}
+
+  /* pain scenes (장2) */
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:34px}
+  @media(max-width:680px){.cards{grid-template-columns:1fr}}
+  .gcard{background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:22px 22px;backdrop-filter:blur(10px);transition:.2s}
+  .gcard:hover{border-color:rgba(52,229,160,.32);transform:translateY(-3px)}
+  .gcard .ic{font-size:22px}
+  .gcard .q{font-size:18px;font-weight:800;margin-top:10px;line-height:1.4}
+  .gcard .c{font-size:14px;color:var(--soft);margin-top:8px;line-height:1.55}
+
+  /* loss amplify (장3) */
+  .amp{margin-top:30px;border-radius:18px;border:1px solid rgba(255,107,74,.22);background:linear-gradient(180deg,rgba(255,107,74,.07),transparent);padding:34px 30px;text-align:center}
+  .amp q{font-size:clamp(22px,3.6vw,32px);font-weight:900;letter-spacing:-.02em;line-height:1.3;quotes:"“" "”"}
+  .amp .src{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:12px}
+  .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+  @media(max-width:680px){.metrics{grid-template-columns:1fr}}
+  .metric{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .metric .v{font-size:30px;font-weight:900;letter-spacing:-.02em;color:var(--loss)}
+  .metric .l{font-size:13.5px;color:var(--soft);margin-top:6px;line-height:1.5}
+
+  /* absolution (장4) */
+  .absolve{margin-top:28px;display:flex;gap:18px;align-items:flex-start;border-radius:16px;border:1px solid rgba(52,229,160,.22);background:linear-gradient(180deg,rgba(52,229,160,.06),transparent);padding:26px 26px}
+  .absolve .big{font-size:34px;line-height:1}
+  .absolve .h{font-size:clamp(19px,3vw,24px);font-weight:900;line-height:1.4}
+  .absolve .p{color:var(--soft);font-size:15px;margin-top:8px;line-height:1.6}
+
+  /* before/after compare (장5) */
+  .compare{display:grid;grid-template-columns:1fr auto 1fr;gap:0;margin-top:34px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--bg2)}
+  @media(max-width:760px){.compare{grid-template-columns:1fr}}
+  .colh{padding:16px 22px;font-weight:800;font-size:14px;letter-spacing:.02em}
+  .before .colh{color:var(--loss)} .after .colh{color:var(--neon)}
+  .compare .mid{width:1px;background:var(--line)} @media(max-width:760px){.compare .mid{display:none}}
+  .crow{padding:14px 22px;border-top:1px solid var(--line);font-size:14.5px;display:flex;gap:10px;align-items:flex-start}
+  .before .crow{color:#C9A99E} .after .crow{color:#A7D9C2}
+  .crow .x{color:var(--loss);font-weight:900} .crow .v{color:var(--neon);font-weight:900}
+
+  /* self-diagnosis (장6) */
+  .diag{margin-top:18px;border-radius:22px;border:1px solid rgba(52,229,160,.24);background:linear-gradient(180deg,#0F1814,#0B100D);padding:38px 32px;box-shadow:0 30px 80px -40px var(--neonglow),inset 0 1px 0 rgba(255,255,255,.04)}
+  @media(max-width:560px){.diag{padding:28px 20px}}
+  .diag .ctrls{display:grid;gap:24px;margin-top:28px}
+  .ctrl .lab{display:flex;justify-content:space-between;align-items:baseline;font-size:14.5px;font-weight:600;color:var(--soft)}
+  .ctrl .lab b{font-family:var(--mono);font-size:20px;font-weight:800;color:var(--neon)}
+  .ctrl input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;margin-top:12px;background:#22302A;outline:none}
+  .ctrl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--neon);border:3px solid #08120D;cursor:pointer;box-shadow:0 0 0 4px rgba(52,229,160,.18),0 0 16px var(--neonglow)}
+  .ctrl input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--neon);border:3px solid #08120D;cursor:pointer}
+  .readout{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+  @media(max-width:560px){.readout{grid-template-columns:1fr}}
+  .ro{background:#0C120F;border:1px solid var(--line);border-radius:14px;padding:22px 18px;text-align:center;position:relative;overflow:hidden}
+  .ro .t{font-size:12.5px;color:var(--faint);font-weight:700}
+  .ro .v{font-size:clamp(26px,5vw,36px);font-weight:900;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+  .ro.sleep .v{color:#E9CFC4}.ro.loss .v{color:var(--loss)}.ro.rec .v{color:var(--neon)}
+  .ro.rec::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 60% at 50% 120%,var(--neonglow),transparent 70%);opacity:.5;pointer-events:none}
+  .formula{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:18px;line-height:1.8}
+  .formula b{color:var(--neon)}
+
+  /* benchmark (장7) */
+  .gauge{margin-top:30px;display:grid;gap:16px}
+  .grow{display:flex;align-items:center;gap:14px}
+  .grow .nm{width:120px;font-size:14px;font-weight:700;color:var(--soft);flex-shrink:0}
+  .grow .track{flex:1;height:34px;background:#111815;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .grow .fill{height:100%;width:0;border-radius:9px;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;font-weight:900;font-size:14px;color:#06150E;transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+  .grow.us .fill{background:linear-gradient(90deg,#FF8A5E,var(--loss));color:#fff} .grow.avg .fill{background:#4B5A51;color:#D6E2DA} .grow.top .fill{background:linear-gradient(90deg,var(--neon2),var(--neon))}
+
+  /* final CTA (장8) */
+  .final{text-align:center;padding:72px 0 36px}
+  .final h2{font-size:clamp(30px,5.4vw,54px)}
+  .final .g{background:linear-gradient(120deg,var(--neon),#9BE7C9);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .faq{max-width:680px;margin:36px auto 0;text-align:left}
+  details{border:1px solid var(--line);border-radius:14px;background:var(--glass);backdrop-filter:blur(8px);margin-top:12px;padding:2px 20px}
+  summary{cursor:pointer;list-style:none;padding:16px 0;font-weight:800;font-size:16px;display:flex;justify-content:space-between;gap:14px;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";color:var(--neon);font-size:22px;transition:transform .2s}
+  details[open] summary::after{transform:rotate(45deg)}
+  details .a{padding:0 0 18px;color:var(--soft);font-size:15px;line-height:1.7}
+  .lastline{margin-top:40px;font-size:clamp(18px,3vw,24px);font-weight:800}
+  .lastline .loss{color:var(--loss)}
+  footer{position:relative;z-index:2;border-top:1px solid var(--line);padding:30px 0 80px;color:var(--faint);font-size:12.5px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="mesh"></div><div class="grid-bg"></div>
+
+<nav class="bar">
+  <div class="logo"><span class="mk">R</span><span>리콜 OS <span style="color:var(--faint);font-weight:600">· AutoRecall</span></span></div>
+  <a class="navcta" href="#diag">30초 진단</a>
+</nav>
+
+<!-- 장1 HERO -->
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-l">
+      <span class="pill"><span class="lv"></span>전화 우선순위 정리 운영 도구 · 차트는 읽기만</span>
+      <h1>오늘 누굴 부를지,<br><span class="g">화면이 정해줍니다.</span></h1>
+      <p class="lead">“안 오는 환자는 없습니다. <b>안 부른 환자</b>만 있을 뿐.” 잠든 환자를 매출이 큰 순서로 줄 세워, 데스크는 <b>위에서부터 전화</b>만 하면 됩니다.</p>
+      <div class="cta-row">
+        <a class="btn p" href="#diag">내 치과 누수액 계산 →</a>
+        <a class="btn g" href="#how">작동 방식 보기</a>
+      </div>
+      <div class="trust">
+        <div class="t"><b>원내 로컬</b> · 차트 읽기만</div>
+        <div class="t"><b>입력값 저장 안 함</b></div>
+        <div class="t"><b>차트 교체 불필요</b></div>
+      </div>
+    </div>
+    <!-- glowing product mock -->
+    <div class="mock" id="mock">
+      <div class="bar"><i></i><i></i><i></i><span class="ttl">recall-os · 오늘의 콜 큐</span></div>
+      <div class="body">
+        <div class="head"><span class="h">📞 오늘 부를 환자 — 우선순위순</span><span class="live">실시간</span></div>
+        <div class="qrow" data-i="0"><span class="rank">1</span><div><div class="who">윤○○</div><div class="meta">빈 슬롯 14:30 · 당일 픽업 확률 高</div></div><span class="tag slot">슬롯필러</span></div>
+        <div class="qrow" data-i="1"><span class="rank">2</span><div><div class="who">정○○</div><div class="meta">상담 후 28일 · 골든타임</div></div><span class="tag high">고확률</span></div>
+        <div class="qrow" data-i="2"><span class="rank">3</span><div><div class="who">김○○</div><div class="meta">고가 치료 미완 · 추정 매출 大</div></div><span class="tag gold">고가치</span></div>
+        <div class="qrow" data-i="3"><span class="rank">4</span><div><div class="who">한○○</div><div class="meta">6개월 미내원 · 정기검진</div></div><span class="tag high">표준</span></div>
+      </div>
+      <div class="foot"><span>큐 갱신 <b id="mkTime">방금</b></span><span>다음 콜 <b>위에서부터</b></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 장2 통증 -->
+<section id="how"><div class="wrap reveal">
+  <span class="kick">기 · 매일의 데스크</span>
+  <h2>바쁜 게 아니라, 누굴 불러야 할지 안 보입니다</h2>
+  <p class="sub">콜 리스트가 없어서가 아닙니다. 흩어진 차트 속에서 ‘오늘 이 한 명’을 골라낼 시간이 없을 뿐.</p>
+  <div class="cards">
+    <div class="gcard"><div class="ic">🗂️</div><div class="q">“6개월 지난 환자, 누구누구죠?”</div><div class="c">명단이 없다 — 한 명씩 차트를 뒤질 시간은 더 없다.</div></div>
+    <div class="gcard"><div class="ic">🎲</div><div class="q">“오늘은 감으로 몇 명만.”</div><div class="c">기준 없이 찍는다. 정작 돈 되는 환자는 건너뛴다.</div></div>
+    <div class="gcard"><div class="ic">🔁</div><div class="q">“저번에도 전화 드렸던 분인데…”</div><div class="c">기록이 흩어져 같은 사람에게 또. 신뢰가 깎인다.</div></div>
+    <div class="gcard"><div class="ic">💤</div><div class="q">“상담받고 그대로 잠수.”</div><div class="c">결심이 식는 30일 골든타임을 매번 놓친다.</div></div>
+  </div>
+</div></section>
+
+<!-- 장3 증폭 -->
+<section><div class="wrap reveal">
+  <span class="kick">승 · 손실의 크기</span>
+  <div class="amp">
+    <q>좋은 콜 리스트가 있어도, 걸 시간이 없으면 0원이다.</q>
+    <div class="src">// 데스크·콜 타이밍 운영 현실 — 내부 기록</div>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="v">71%</div><div class="l">방치 환자는 치료계획 후 <b>30일 내</b> 이탈 결정(추정)</div></div>
+    <div class="metric"><div class="v">7,901만원</div><div class="l">30~90일 미완주 <b>44건</b>의 잠긴 매출(내부·예시)</div></div>
+    <div class="metric"><div class="v">1.9→1.0회</div><div class="l">1인당 연 외래 감소 · 생존 길 = <b>기존 환자 리콜</b></div></div>
+  </div>
+</div></section>
+
+<!-- 장4 면죄 -->
+<section><div class="wrap reveal">
+  <div class="absolve">
+    <div class="big">🫶</div>
+    <div>
+      <div class="h">“리콜, 안 하는 게 아니라 <span style="color:var(--neon)">못 하는</span> 겁니다.”</div>
+      <div class="p">데스크의 1순위는 눈앞의 환자 응대입니다. 잠든 환자까지 일일이 찾아 거는 건 사람의 한계지 의지의 문제가 아닙니다. 필요한 건 다그침이 아니라 — <b>누굴 부를지 보여주는 화면 한 장</b>.</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 장5 케이스 -->
+<section><div class="wrap reveal">
+  <span class="kick">전 · 무엇이 달라지나</span>
+  <h2>감(感)을 우선순위 큐로 바꾸면</h2>
+  <div class="compare">
+    <div class="before">
+      <div class="colh">지금 데스크</div>
+      <div class="crow"><span class="x">✕</span>오늘 누굴 부를지 감으로 찍기</div>
+      <div class="crow"><span class="x">✕</span>빈 슬롯 나면 대기 명단 뒤적</div>
+      <div class="crow"><span class="x">✕</span>상담 후 잠수 환자 잊혀짐</div>
+      <div class="crow"><span class="x">✕</span>고가 미완 치료 방치</div>
+      <div class="crow"><span class="x">✕</span>통화 이력 흩어짐 → 중복 전화</div>
+    </div>
+    <div class="mid"></div>
+    <div class="after">
+      <div class="colh">리콜 OS가 켜지면</div>
+      <div class="crow"><span class="v">✓</span>우선순위 큐 상단부터 순서대로</div>
+      <div class="crow"><span class="v">✓</span>당일 올 확률 높은 환자 자동 매칭</div>
+      <div class="crow"><span class="v">✓</span>30일 골든타임에 다시 떠오름</div>
+      <div class="crow"><span class="v">✓</span>잃은 매출 큰 순으로 표시</div>
+      <div class="crow"><span class="v">✓</span>통화 이력 한 줄로 정리</div>
+    </div>
+  </div>
+  <p class="sub" style="margin-top:18px">※ 전화 우선순위 정리를 돕는 운영 도구입니다. 치료 결과·내원을 보장하지 않으며, 차트는 원내에서 읽기만 합니다.</p>
+</div></section>
+
+<!-- 장6 자가진단 -->
+<section id="diag"><div class="wrap reveal">
+  <span class="kick">⭐ 전 · 30초 자가진단</span>
+  <h2>우리 치과엔 지금 얼마가 잠들어 있을까</h2>
+  <p class="sub">슬라이더 3개만 움직이면 ‘내 숫자’가 나옵니다. 입력값은 <b>저장·전송하지 않고</b> 화면 안에서만 계산됩니다.</p>
+  <div class="diag">
+    <div class="ctrls">
+      <div class="ctrl"><div class="lab">전체 환자 수 <b><span id="vPat">2,000</span>명</b></div><input type="range" id="rPat" min="300" max="8000" step="100" value="2000"></div>
+      <div class="ctrl"><div class="lab">6개월 이상 안 온 비율 <b><span id="vGap">18</span>%</b></div><input type="range" id="rGap" min="5" max="45" step="1" value="18"></div>
+      <div class="ctrl"><div class="lab">환자 1인당 평균 진료액 <b><span id="vVal">35</span>만원</b></div><input type="range" id="rVal" min="10" max="150" step="5" value="35"></div>
+    </div>
+    <div class="readout">
+      <div class="ro sleep"><div class="t">잠든 환자(추정)</div><div class="v" id="oSleep">360명</div></div>
+      <div class="ro loss"><div class="t">잠긴 매출(추정)</div><div class="v" id="oLoss">1.26억</div></div>
+      <div class="ro rec"><div class="t">회수 가능(보수적)</div><div class="v" id="oRec">1,890만</div></div>
+    </div>
+    <div class="formula">// 계산식 공개 — 잠든 환자 = 전체 × 미내원율 · 잠긴 매출 = 잠든 환자 × 평균진료액 · 회수 가능 = 잠긴 매출 <b>× 0.15</b>(보수적 회수율 가정). 모두 <b>예시·가정값</b>이며, 진짜 명단은 설치 후 차트에서만 확인됩니다.</div>
+  </div>
+</div></section>
+
+<!-- 장7 벤치마크 -->
+<section><div class="wrap reveal">
+  <span class="kick">전 · 남들과 비교</span>
+  <h2>리콜 회수율, 우리는 어디쯤일까</h2>
+  <div class="gauge">
+    <div class="grow us"><div class="nm">우리 치과(추정)</div><div class="track"><div class="fill" id="fUs">42</div></div></div>
+    <div class="grow avg"><div class="nm">업계 평균</div><div class="track"><div class="fill" id="fAvg">60</div></div></div>
+    <div class="grow top"><div class="nm">상위 치과</div><div class="track"><div class="fill" id="fTop">82</div></div></div>
+  </div>
+  <p class="sub" style="margin-top:18px">평균(60) 아래라면 — 잃고 있는 게 아니라 <b>아직 안 부른 것</b>뿐입니다. 숫자는 예시이며 실제 점수는 설치 후 우리 차트로 계산됩니다.</p>
+</div></section>
+
+<!-- 장8 CTA -->
+<section class="final"><div class="wrap reveal">
+  <span class="kick">결 · 다음 한 걸음</span>
+  <h2>추정은 여기까지.<br><span class="g">진짜 명단</span>은 설치해야 보입니다.</h2>
+  <div class="cta-row" style="justify-content:center;margin-top:26px">
+    <a class="btn p" href="#diag">우리 치과 누수액 다시 보기 →</a>
+  </div>
+  <div class="faq">
+    <details><summary>환자 정보가 밖으로 나가나요?</summary><div class="a">아니요. <b>원내 컴퓨터에서 차트를 읽기만</b> 하고, 입력값·환자정보는 저장·전송하지 않습니다.</div></details>
+    <details><summary>지금 쓰는 차트를 바꿔야 하나요?</summary><div class="a">바꾸지 않습니다. 기존 차트는 그대로 두고 옆에서 <b>‘오늘 누굴 부를지’만</b> 정리합니다.</div></details>
+    <details><summary>데스크가 새로 배울 게 많나요?</summary><div class="a">화면은 <b>‘위에서부터 전화’</b> 한 줄로 끝납니다. 하던 일을 더 쉽게 만드는 도구입니다.</div></details>
+    <details><summary>효과를 보장하나요?</summary><div class="a">치료 결과·내원을 <b>보장하지 않습니다</b>. 놓치는 환자를 줄이도록 전화 우선순위를 정리해 돕습니다.</div></details>
+  </div>
+  <div class="lastline">안 깔면, <span class="loss">다음 달도</span> 그대로입니다.</div>
+</div></section>
+
+<footer><div class="wrap">
+  리콜 OS · AutoRecall · 2026 — 본 페이지의 모든 수치는 <b>예시·가정값</b>이며 결과를 보장하지 않습니다 · 전화 우선순위 정리를 돕는 운영 도구로 차트는 원내에서 읽기만 하고 입력값은 저장·전송하지 않습니다 · 한글 우선 · 세부 카피·수치는 원장 검수 필요
+</div></footer>
+
+<script>
+  // mock: rotate the "active" highlighted call row
+  (function(){
+    var rows=[].slice.call(document.querySelectorAll('.qrow')); if(!rows.length) return;
+    var i=0; rows[0].classList.add('on');
+    setInterval(function(){ rows[i].classList.remove('on'); i=(i+1)%rows.length; rows[i].classList.add('on'); },1700);
+  })();
+
+  // scroll reveal
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+  // self-diagnosis
+  var rPat=document.getElementById('rPat'),rGap=document.getElementById('rGap'),rVal=document.getElementById('rVal');
+  function fmtMan(n){ if(n>=10000) return (n/10000).toFixed(2).replace(/\.?0+$/,'')+'억'; return Math.round(n).toLocaleString('ko-KR')+'만'; }
+  function calc(){
+    var pat=+rPat.value,gap=+rGap.value,val=+rVal.value;
+    document.getElementById('vPat').textContent=pat.toLocaleString('ko-KR');
+    document.getElementById('vGap').textContent=gap;
+    document.getElementById('vVal').textContent=val;
+    var sleep=Math.round(pat*gap/100), loss=sleep*val, rec=loss*0.15;
+    document.getElementById('oSleep').textContent=sleep.toLocaleString('ko-KR')+'명';
+    document.getElementById('oLoss').textContent=fmtMan(loss);
+    document.getElementById('oRec').textContent=fmtMan(rec);
+    var us=Math.max(18,Math.min(74,Math.round(78-gap*1.7)));
+    var f=document.getElementById('fUs'); f.style.width=us+'%'; f.textContent=us;
+  }
+  [rPat,rGap,rVal].forEach(function(r){r.addEventListener('input',calc);});
+
+  // benchmark animate on view
+  var done=false, io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&!done){done=true;
+    document.getElementById('fAvg').style.width='60%';
+    document.getElementById('fTop').style.width='82%';
+    calc();
+  }});},{threshold:.3});
+  var g=document.querySelector('.gauge'); if(g) io2.observe(g);
+  calc();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

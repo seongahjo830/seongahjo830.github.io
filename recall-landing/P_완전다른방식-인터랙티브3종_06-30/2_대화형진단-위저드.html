@@ -288,6 +288,8 @@
   });
 
   function animateCount(el, target, fmt){
+    el.textContent=fmt(target);                 // 폴백: 최종값 먼저 보장(백그라운드·배터리절약 등 rAF 멈춤 대비)
+    if(document.hidden) return;                  // 숨겨진 탭이면 애니메이션 없이 최종값 유지
     var start=0, dur=900, t0=null;
     function tick(t){ if(!t0)t0=t; var p=Math.min((t-t0)/dur,1); var e=1-Math.pow(1-p,3);
       el.textContent=fmt(Math.round(start+(target-start)*e)); if(p<1) requestAnimationFrame(tick); }

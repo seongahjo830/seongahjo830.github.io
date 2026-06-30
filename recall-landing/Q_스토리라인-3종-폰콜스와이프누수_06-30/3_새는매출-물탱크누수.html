@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoRecall — 새는 매출, 물탱크 누수 시뮬레이션</title>
+<style>
+  :root{
+    --navy:#0e1726;
+    --navy2:#15233a;
+    --slate:#1d2d49;
+    --slate-soft:#243css;
+    --ink:#0b1220;
+    --water:#2f7fe0;
+    --water-light:#5aa6f5;
+    --water-deep:#1c5cb3;
+    --amber:#f5a623;
+    --red:#e5484d;
+    --red-soft:#ff6b6b;
+    --green:#2bb673;
+    --paper:#f6f8fb;
+    --line:rgba(255,255,255,.10);
+    --line-strong:rgba(255,255,255,.18);
+    --txt:#e8eef7;
+    --txt-mute:#9fb0c8;
+    --txt-dim:#7286a3;
+    --card:#13203a;
+    --radius:16px;
+    --shadow:0 10px 40px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,"Segoe UI","Malgun Gothic",sans-serif;
+    background:
+      radial-gradient(1200px 700px at 50% -10%, #1a2c4d 0%, transparent 60%),
+      linear-gradient(180deg,#0e1726 0%,#0b1220 100%);
+    color:var(--txt);
+    font-size:17px;
+    line-height:1.7;
+    overflow-x:hidden;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px;}
+  section{padding:62px 0;}
+  h1,h2,h3{line-height:1.28;letter-spacing:-.02em;margin:0 0 .5em;}
+  h1{font-size:30px;font-weight:800;}
+  h2{font-size:25px;font-weight:800;}
+  h3{font-size:19px;font-weight:700;}
+  p{margin:0 0 1em;color:var(--txt);}
+  .mute{color:var(--txt-mute);}
+  .dim{color:var(--txt-dim);font-size:14px;}
+  .amber{color:var(--amber);}
+  .red{color:var(--red-soft);}
+  .green{color:var(--green);}
+  .water{color:var(--water-light);}
+  .eyebrow{
+    display:inline-block;font-size:13px;font-weight:700;letter-spacing:.04em;
+    color:var(--water-light);background:rgba(47,127,224,.12);
+    border:1px solid rgba(90,166,245,.25);
+    padding:6px 13px;border-radius:999px;margin-bottom:18px;
+  }
+  .kicker{font-size:14px;font-weight:700;color:var(--amber);letter-spacing:.02em;margin-bottom:10px;}
+  .lead{font-size:19px;color:var(--txt-mute);}
+  .note{font-size:13px;color:var(--txt-dim);}
+  .hr{height:1px;background:var(--line);margin:8px 0;border:0;}
+
+  /* ===== HERO ===== */
+  .hero{
+    padding-top:54px;padding-bottom:40px;text-align:center;position:relative;
+  }
+  .hero h1{font-size:33px;margin-top:14px;}
+  .hero .sub{font-size:18px;color:var(--txt-mute);max-width:520px;margin:0 auto 8px;}
+
+  /* leak counter */
+  .leakcounter{
+    margin:26px auto 6px;max-width:440px;
+    background:linear-gradient(180deg,rgba(229,72,77,.10),rgba(245,166,35,.06));
+    border:1px solid rgba(245,166,35,.30);
+    border-radius:var(--radius);padding:18px 16px;
+  }
+  .leakcounter .lab{font-size:13px;color:var(--amber);font-weight:700;letter-spacing:.02em;}
+  .leakcounter .val{
+    font-size:40px;font-weight:800;letter-spacing:-.02em;
+    color:var(--red-soft);font-variant-numeric:tabular-nums;margin-top:2px;line-height:1.1;
+  }
+  .leakcounter .unit{font-size:18px;color:var(--txt-mute);font-weight:700;}
+  .leakcounter .sub{font-size:12px;color:var(--txt-dim);margin-top:4px;}
+
+  /* SVG tank */
+  .tankstage{margin:18px auto 6px;max-width:360px;}
+  svg.tank{display:block;width:100%;height:auto;}
+
+  .cta-row{display:flex;flex-direction:column;gap:12px;align-items:center;margin-top:26px;}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    min-height:52px;padding:0 26px;border-radius:13px;font-size:17px;font-weight:800;
+    text-decoration:none;cursor:pointer;border:0;width:100%;max-width:360px;
+    transition:transform .12s ease, filter .12s ease;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:linear-gradient(180deg,#36a0ff,#1c5cb3);color:#fff;box-shadow:0 8px 24px rgba(28,92,179,.45);}
+  .btn-warn{background:linear-gradient(180deg,#f5a623,#e07d12);color:#1b1205;box-shadow:0 8px 24px rgba(245,166,35,.35);}
+  .btn-ghost{background:transparent;color:var(--txt);border:1px solid var(--line-strong);}
+  .btn:focus-visible{outline:3px solid var(--water-light);outline-offset:3px;}
+
+  /* ===== generic cards ===== */
+  .card{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:20px 18px;box-shadow:var(--shadow);
+  }
+  .scene{display:flex;gap:14px;align-items:flex-start;padding:16px 4px;border-bottom:1px solid var(--line);}
+  .scene:last-child{border-bottom:0;}
+  .scene .ic{
+    flex:0 0 auto;width:42px;height:42px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;font-size:21px;
+    background:rgba(229,72,77,.12);border:1px solid rgba(229,72,77,.25);
+  }
+  .scene h3{margin:.1em 0 .2em;font-size:17px;}
+  .scene p{margin:0;color:var(--txt-mute);font-size:15px;}
+
+  .bigquote{
+    font-size:23px;font-weight:800;line-height:1.4;letter-spacing:-.02em;
+    border-left:4px solid var(--amber);padding:6px 0 6px 18px;margin:10px 0 18px;
+  }
+  .stat{
+    background:linear-gradient(180deg,rgba(229,72,77,.10),transparent);
+    border:1px solid rgba(229,72,77,.22);border-radius:14px;padding:18px;text-align:center;margin-top:8px;
+  }
+  .stat .num{font-size:46px;font-weight:800;color:var(--red-soft);line-height:1;font-variant-numeric:tabular-nums;}
+  .stat .cap{font-size:14px;color:var(--txt-mute);margin-top:8px;}
+
+  /* absolve */
+  .absolve{
+    background:linear-gradient(180deg,#16263f,#10192c);
+    border:1px solid var(--line-strong);border-radius:var(--radius);padding:24px 20px;text-align:center;
+  }
+  .absolve h2{font-size:23px;}
+  .absolve .big{font-size:21px;font-weight:800;color:var(--water-light);margin:10px 0;}
+
+  /* before/after solution */
+  .compare{display:flex;flex-direction:column;gap:14px;margin-top:18px;}
+  .row{
+    display:grid;grid-template-columns:1fr;gap:0;
+    border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card);
+  }
+  .row .now,.row .fix{padding:15px 16px;}
+  .row .now{background:rgba(229,72,77,.07);border-bottom:1px solid var(--line);}
+  .row .fix{background:rgba(43,182,115,.07);}
+  .row .tag{font-size:11px;font-weight:800;letter-spacing:.04em;display:inline-block;padding:3px 9px;border-radius:999px;margin-bottom:7px;}
+  .row .tag.t-now{color:var(--red-soft);background:rgba(229,72,77,.15);}
+  .row .tag.t-fix{color:var(--green);background:rgba(43,182,115,.15);}
+  .row p{margin:0;font-size:15px;color:var(--txt);}
+  .row .now p{color:var(--txt-mute);}
+
+  /* dual tank compare */
+  .dualtank{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0 6px;}
+  .dualtank .tk{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 10px 10px;text-align:center;}
+  .dualtank .tk svg{width:100%;max-width:130px;height:auto;}
+  .dualtank .tk .cap{font-size:13px;font-weight:700;margin-top:8px;}
+  .dualtank .tk.leak .cap{color:var(--red-soft);}
+  .dualtank .tk.sealed .cap{color:var(--green);}
+
+  /* ===== diagnostic ===== */
+  .diag{background:linear-gradient(180deg,#14243f,#0e1828);border:1px solid var(--line-strong);border-radius:20px;padding:22px 18px;box-shadow:var(--shadow);}
+  .slider-block{margin:18px 0;}
+  .slider-block label{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;font-weight:700;margin-bottom:9px;gap:10px;}
+  .slider-block label .v{color:var(--water-light);font-size:17px;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:99px;
+    background:linear-gradient(90deg,var(--water-deep),var(--water-light));outline:none;margin:0;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:30px;height:30px;border-radius:50%;
+    background:#fff;border:3px solid var(--water);cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.45);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:30px;height:30px;border-radius:50%;background:#fff;border:3px solid var(--water);cursor:pointer;
+  }
+  input[type=range]:focus-visible{outline:3px solid var(--water-light);outline-offset:4px;}
+
+  .diag-out{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:22px;}
+  .out{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:13px;padding:14px 12px;text-align:center;}
+  .out.span{grid-column:1 / -1;background:linear-gradient(180deg,rgba(229,72,77,.12),transparent);border-color:rgba(229,72,77,.28);}
+  .out .lab{font-size:12px;color:var(--txt-mute);font-weight:700;}
+  .out .num{font-size:27px;font-weight:800;line-height:1.15;margin-top:4px;font-variant-numeric:tabular-nums;}
+  .out.span .num{font-size:34px;color:var(--red-soft);}
+  .out .num.green{color:var(--green);}
+  .out .num.water{color:var(--water-light);}
+  .out .u{font-size:14px;font-weight:700;color:var(--txt-mute);}
+
+  .diag-tank{display:flex;justify-content:center;margin:6px 0 2px;}
+  .diag-tank svg{width:150px;height:auto;}
+
+  .formula{margin-top:18px;background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:13px;padding:15px 16px;}
+  .formula .ft{font-size:13px;font-weight:800;color:var(--amber);margin-bottom:8px;letter-spacing:.02em;}
+  .formula ul{margin:0;padding-left:18px;}
+  .formula li{font-size:13.5px;color:var(--txt-mute);margin:5px 0;line-height:1.55;}
+  .formula .privacy{font-size:12px;color:var(--txt-dim);margin-top:10px;display:flex;gap:6px;align-items:flex-start;}
+
+  /* ===== benchmark ===== */
+  .bench{margin-top:6px;}
+  .bar{margin:14px 0;}
+  .bar .bl{display:flex;justify-content:space-between;font-size:14px;font-weight:700;margin-bottom:6px;}
+  .bar .track{height:16px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden;position:relative;border:1px solid var(--line);}
+  .bar .fill{height:100%;border-radius:99px;transition:width .5s ease;}
+  .bar.me .fill{background:linear-gradient(90deg,var(--water-deep),var(--water-light));}
+  .bar.avg .fill{background:linear-gradient(90deg,#5a6b86,#8298b8);}
+  .bar.top .fill{background:linear-gradient(90deg,#1f8f57,#2bb673);}
+  .verdict{margin-top:16px;border-radius:13px;padding:16px;text-align:center;font-weight:700;font-size:16px;border:1px solid var(--line);}
+  .verdict.risk{background:rgba(229,72,77,.10);border-color:rgba(229,72,77,.30);color:var(--red-soft);}
+  .verdict.mid{background:rgba(245,166,35,.10);border-color:rgba(245,166,35,.30);color:var(--amber);}
+  .verdict.good{background:rgba(43,182,115,.10);border-color:rgba(43,182,115,.30);color:var(--green);}
+
+  /* ===== CTA final ===== */
+  .final{
+    background:linear-gradient(180deg,#13243f,#0d1626);
+    border:1px solid var(--line-strong);border-radius:20px;padding:30px 22px;text-align:center;box-shadow:var(--shadow);
+  }
+  .final h2{font-size:26px;}
+  .friction{display:flex;flex-direction:column;gap:10px;margin:20px 0;text-align:left;}
+  .friction .fr{display:flex;gap:11px;align-items:center;font-size:15px;color:var(--txt-mute);}
+  .friction .fr .ck{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:rgba(43,182,115,.15);border:1px solid rgba(43,182,115,.35);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;}
+  .warnline{margin-top:8px;font-size:15px;font-weight:700;color:var(--amber);}
+
+  footer{padding:34px 0 120px;text-align:center;color:var(--txt-dim);font-size:13px;}
+
+  /* sticky bottom CTA */
+  .sticky{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;
+    background:linear-gradient(180deg,rgba(11,18,32,.4),rgba(11,18,32,.97));
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    border-top:1px solid var(--line-strong);
+    padding:11px 16px calc(11px + env(safe-area-inset-bottom,0));
+  }
+  .sticky .inner{max-width:720px;margin:0 auto;display:flex;gap:10px;}
+  .sticky a{flex:1;min-height:48px;border-radius:12px;font-size:16px;font-weight:800;text-decoration:none;display:flex;align-items:center;justify-content:center;}
+  .sticky .s-diag{background:rgba(255,255,255,.08);color:var(--txt);border:1px solid var(--line-strong);}
+  .sticky .s-install{background:linear-gradient(180deg,#f5a623,#e07d12);color:#1b1205;}
+  .sticky a:focus-visible{outline:3px solid var(--water-light);outline-offset:2px;}
+
+  /* ===== water animations ===== */
+  @keyframes ripple{0%,100%{transform:translateX(0);}50%{transform:translateX(-14px);}}
+  @keyframes drop{
+    0%{transform:translateY(0);opacity:0;}
+    8%{opacity:1;}
+    85%{opacity:1;}
+    100%{transform:translateY(46px);opacity:0;}
+  }
+  @keyframes wonfall{
+    0%{transform:translateY(0);opacity:0;}
+    14%{opacity:.95;}
+    100%{transform:translateY(54px);opacity:0;}
+  }
+  .ripple{animation:ripple 5s ease-in-out infinite;}
+  .d1{animation:drop 2.6s linear infinite;}
+  .d2{animation:drop 2.6s linear infinite;animation-delay:.9s;}
+  .d3{animation:drop 2.6s linear infinite;animation-delay:1.7s;}
+  .won1{animation:wonfall 2.9s ease-in infinite;animation-delay:.3s;}
+  .won2{animation:wonfall 2.9s ease-in infinite;animation-delay:1.5s;}
+
+  @media (max-width:380px){
+    body{font-size:16px;}
+    h1{font-size:27px;}
+    .hero h1{font-size:29px;}
+    .leakcounter .val{font-size:34px;}
+    .diag-out{grid-template-columns:1fr;}
+    .dualtank{grid-template-columns:1fr 1fr;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ripple,.d1,.d2,.d3,.won1,.won2{animation:none !important;}
+    .btn{transition:none;}
+    .bar .fill{transition:none;}
+    .d1,.d2,.d3{opacity:.85;}
+    .won1,.won2{opacity:.9;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 1. HERO ============ -->
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">🌊 새는 매출 — 물탱크 누수 시뮬레이션</span>
+    <h1>환자는 새고 있습니다.<br>매달, 조용히.</h1>
+    <p class="sub">안 부른 환자가 곧 새는 매출입니다.<br><b class="water">안 오는 환자는 없습니다. 안 부른 환자만 있을 뿐입니다.</b></p>
+
+    <div class="leakcounter">
+      <div class="lab">이번 달 새는 매출 (추정 · 예시·가정값)</div>
+      <div class="val"><span id="heroLeak">0</span><span class="unit"> 만원</span></div>
+      <div class="sub">활성 2,000명 · 끊김율 30% 가정으로 자동 추정한 예시 숫자입니다</div>
+    </div>
+
+    <div class="tankstage">
+      <!-- SVG 물탱크: 차오른 물 + 균열 누수 + ₩ 낙하 -->
+      <svg class="tank" viewBox="0 0 280 320" role="img" aria-label="환자를 상징하는 물이 차 있는 탱크에서 매출이 새어 떨어지는 시뮬레이션">
+        <defs>
+          <linearGradient id="waterG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#5aa6f5"/>
+            <stop offset="1" stop-color="#1c5cb3"/>
+          </linearGradient>
+          <linearGradient id="tankG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1d2d49"/>
+            <stop offset="1" stop-color="#101a2e"/>
+          </linearGradient>
+          <clipPath id="tankClip"><rect x="40" y="34" width="200" height="216" rx="16"/></clipPath>
+        </defs>
+
+        <!-- 탱크 몸체 -->
+        <rect x="40" y="34" width="200" height="216" rx="16" fill="url(#tankG)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+
+        <!-- 물 (clip 안) -->
+        <g clip-path="url(#tankClip)">
+          <rect id="waterRect" x="40" y="96" width="200" height="160" fill="url(#waterG)" opacity="0.92"/>
+          <!-- 물 표면 잔물결 -->
+          <path class="ripple" id="waterTop" d="M20 96 q14 -7 28 0 t28 0 t28 0 t28 0 t28 0 t28 0 t28 0 t28 0 v60 h-280 z" fill="#7bbcff" opacity="0.55"/>
+        </g>
+
+        <!-- 균열 (옆면·바닥) -->
+        <path d="M40 178 l-9 4 l7 5 l-8 5" fill="none" stroke="#e5484d" stroke-width="2.4" stroke-linecap="round" opacity="0.9"/>
+        <path d="M138 250 l-5 9 l6 4 l-4 8" fill="none" stroke="#e5484d" stroke-width="2.4" stroke-linecap="round" opacity="0.9"/>
+
+        <!-- 새는 물방울 (옆면) -->
+        <g>
+          <ellipse class="d1" cx="26" cy="190" rx="4.5" ry="6" fill="#5aa6f5"/>
+          <ellipse class="d2" cx="26" cy="190" rx="3.5" ry="5" fill="#7bbcff"/>
+        </g>
+        <!-- 새는 물방울 (바닥) -->
+        <ellipse class="d3" cx="134" cy="268" rx="4.5" ry="6" fill="#5aa6f5"/>
+
+        <!-- ₩ 함께 흘러내림 -->
+        <text class="won1" x="18" y="206" font-size="15" font-weight="800" fill="#f5a623" text-anchor="middle">₩</text>
+        <text class="won2" x="150" y="282" font-size="15" font-weight="800" fill="#f5a623" text-anchor="middle">₩</text>
+
+        <!-- 받침대 -->
+        <rect x="62" y="250" width="156" height="12" rx="4" fill="#0c1424"/>
+        <rect x="78" y="262" width="14" height="24" rx="3" fill="#0c1424"/>
+        <rect x="188" y="262" width="14" height="24" rx="3" fill="#0c1424"/>
+      </svg>
+    </div>
+
+    <p class="note">30초면 끝납니다. 슬라이더 3개로 <b>내 치과가 매달 얼마를 흘리는지</b> 바로 추정해 드립니다.</p>
+
+    <div class="cta-row">
+      <a href="#diag" class="btn btn-warn">⏱️ 30초 자가진단 시작</a>
+      <a href="#solution" class="btn btn-ghost">누수, 어떻게 막나요?</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. 통증 공감 ============ -->
+<section style="background:rgba(255,255,255,.015);">
+  <div class="wrap">
+    <div class="kicker">혹시, 이 장면들 — 익숙하신가요</div>
+    <h2>탱크에 금이 가도,<br>아무도 어디서 새는지 모릅니다.</h2>
+    <div class="card" style="margin-top:18px;">
+      <div class="scene">
+        <div class="ic">🕳️</div>
+        <div><h3>① 누가 안 왔는지 명단을 모른다</h3>
+        <p>분명 끊긴 환자가 쌓이는데, 차트 어딘가에 흩어져 있을 뿐 <b>한 장의 명단</b>으로 본 적이 없습니다.</p></div>
+      </div>
+      <div class="scene">
+        <div class="ic">🎯</div>
+        <div><h3>② 그래서 '감'으로 찍어 전화한다</h3>
+        <p>오늘은 누구한테 걸지, 기준 없이 기억나는 이름 몇 개로 돌립니다. 정작 새는 곳은 그대로입니다.</p></div>
+      </div>
+      <div class="scene">
+        <div class="ic">⏳</div>
+        <div><h3>③ 오늘도 또 전화 돌릴 시간이 없다</h3>
+        <p>데스크는 눈앞 응대로 꽉 찹니다. "리콜 돌려야 하는데"가 매일 다음 날로 밀립니다.</p></div>
+      </div>
+      <div class="scene">
+        <div class="ic">🌫️</div>
+        <div><h3>④ 상담까지 했는데 그 뒤로 잠수</h3>
+        <p>치료계획까지 설명했는데 다음 예약이 안 잡힙니다. 다시 연락할 타이밍을 놓치면 그대로 증발합니다.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. 통증 증폭 ============ -->
+<section>
+  <div class="wrap">
+    <div class="kicker">진짜 문제는 따로 있습니다</div>
+    <div class="bigquote">좋은 콜 리스트가 있어도,<br>걸 시간이 없으면 <span class="amber">0원</span>입니다.</div>
+    <p class="mute">명단을 뽑는 게 끝이 아닙니다. 결국 누군가 시간을 내서 걸어야 매출이 됩니다. 그 시간이 없으니, 금은 점점 벌어지고 물은 더 빨리 샙니다.</p>
+
+    <div class="stat">
+      <div class="num">71%</div>
+      <div class="cap">방치된 환자가 <b>치료계획 후 30일 안에 이탈</b>한다는 추정 (예시·가정값)<br><span class="dim">— 한 번 새기 시작한 균열은 시간이 갈수록 커집니다</span></div>
+    </div>
+
+    <!-- 누수량이 커지는 비주얼 -->
+    <div class="tankstage" style="max-width:300px;margin-top:24px;">
+      <svg class="tank" viewBox="0 0 280 200" role="img" aria-label="시간이 지날수록 균열이 커져 누수량이 늘어나는 모습">
+        <rect x="20" y="20" width="68" height="150" rx="12" fill="url(#tankG)" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
+        <rect x="100" y="20" width="68" height="150" rx="12" fill="url(#tankG)" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
+        <rect x="180" y="20" width="68" height="150" rx="12" fill="url(#tankG)" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
+        <clipPath id="t1"><rect x="20" y="20" width="68" height="150" rx="12"/></clipPath>
+        <clipPath id="t2"><rect x="100" y="20" width="68" height="150" rx="12"/></clipPath>
+        <clipPath id="t3"><rect x="180" y="20" width="68" height="150" rx="12"/></clipPath>
+        <g clip-path="url(#t1)"><rect x="20" y="55" width="68" height="115" fill="url(#waterG)"/></g>
+        <g clip-path="url(#t2)"><rect x="100" y="92" width="68" height="78" fill="url(#waterG)"/></g>
+        <g clip-path="url(#t3)"><rect x="180" y="128" width="68" height="42" fill="url(#waterG)"/></g>
+        <!-- 균열 점점 커짐 -->
+        <path d="M88 120 l5 3 l-4 4" fill="none" stroke="#e5484d" stroke-width="2" stroke-linecap="round"/>
+        <path d="M168 120 l8 4 l-6 6 l7 4" fill="none" stroke="#e5484d" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M248 120 l11 5 l-8 7 l10 5 l-7 6" fill="none" stroke="#e5484d" stroke-width="3" stroke-linecap="round"/>
+        <text x="54" y="190" font-size="11" fill="#7286a3" text-anchor="middle">1개월</text>
+        <text x="134" y="190" font-size="11" fill="#9fb0c8" text-anchor="middle">3개월</text>
+        <text x="214" y="190" font-size="11" fill="#ff6b6b" text-anchor="middle" font-weight="700">6개월+</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. 철학적 면죄 ============ -->
+<section style="background:rgba(255,255,255,.015);">
+  <div class="wrap">
+    <div class="absolve">
+      <div class="kicker" style="color:var(--water-light);">잠깐, 짚고 갑니다</div>
+      <h2>리콜, 안 하는 게 아니라<br>못 하는 겁니다.</h2>
+      <div class="big">데스크의 1순위는 언제나 눈앞의 환자 응대니까요.</div>
+      <p class="mute">전화를 안 돌리는 건 직원의 게으름이 아닙니다. 사람이 하루에 쓸 수 있는 손과 시간은 정해져 있고, 그 시간은 지금 진료실 앞에 선 환자에게 먼저 갑니다. <b class="green">탓할 사람은 없습니다.</b> 단지, 새는 균열을 사람 손으로 일일이 막을 수 없을 뿐입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. 케이스 해결 (가이드 등장) ============ -->
+<section id="solution">
+  <div class="wrap">
+    <div class="kicker">그래서, 균열에 밸브를 답니다</div>
+    <h2>주인공은 원장님과 실장님.<br>AutoRecall은 옆에서 돕는 도구입니다.</h2>
+    <p class="mute">AutoRecall은 <b>전화 우선순위 정리를 돕는 운영 도구</b>입니다. 치료 효과를 보장하지 않습니다 — 그저 <b>새는 곳을 한눈에 보이게 하고, 막을 순서를 정리</b>해 드립니다.</p>
+
+    <div class="compare">
+      <div class="row">
+        <div class="now"><span class="tag t-now">지금 현실</span><p>누가 대상인지 모름 — 명단이 흩어져 있다</p></div>
+        <div class="fix"><span class="tag t-fix">AutoRecall 적용</span><p>끊긴 환자를 <b>점수순 큐</b>로 한 장에 정리</p></div>
+      </div>
+      <div class="row">
+        <div class="now"><span class="tag t-now">지금 현실</span><p>감으로 콜 — 기억나는 이름부터 건다</p></div>
+        <div class="fix"><span class="tag t-fix">AutoRecall 적용</span><p><b>우선순위 자동</b> — 오늘 누구부터 걸지 위에서부터</p></div>
+      </div>
+      <div class="row">
+        <div class="now"><span class="tag t-now">지금 현실</span><p>시간 없음 — 빈 슬롯을 손으로 못 맞춘다</p></div>
+        <div class="fix"><span class="tag t-fix">AutoRecall 적용</span><p><b>당일 빈 슬롯 매칭</b> — 비는 시간에 맞춰 추천</p></div>
+      </div>
+      <div class="row">
+        <div class="now"><span class="tag t-now">지금 현실</span><p>잠수 환자 방치 — 다시 걸 타이밍을 놓친다</p></div>
+        <div class="fix"><span class="tag t-fix">AutoRecall 적용</span><p><b>타이밍 알림</b> — 다시 연락할 시점을 짚어줌</p></div>
+      </div>
+      <div class="row">
+        <div class="now"><span class="tag t-now">지금 현실</span><p>기록 흩어짐 — 통화 결과가 여기저기</p></div>
+        <div class="fix"><span class="tag t-fix">AutoRecall 적용</span><p><b>한 화면</b> — 대상·우선순위·결과를 한곳에</p></div>
+      </div>
+    </div>
+
+    <!-- 새는 탱크 vs 막은 탱크 -->
+    <div class="dualtank">
+      <div class="tk leak">
+        <svg viewBox="0 0 120 150" role="img" aria-label="밸브가 없어 물이 새고 수위가 낮아진 탱크">
+          <rect x="14" y="10" width="92" height="130" rx="12" fill="url(#tankG)" stroke="rgba(255,255,255,.14)" stroke-width="2"/>
+          <clipPath id="lk"><rect x="14" y="10" width="92" height="130" rx="12"/></clipPath>
+          <g clip-path="url(#lk)"><rect x="14" y="92" width="92" height="48" fill="url(#waterG)" opacity=".9"/></g>
+          <path d="M14 110 l-7 4 l6 5" fill="none" stroke="#e5484d" stroke-width="2.4" stroke-linecap="round"/>
+          <ellipse class="d1" cx="4" cy="120" rx="3.5" ry="5" fill="#5aa6f5"/>
+        </svg>
+        <div class="cap">밸브 없음 → 수위 ↓</div>
+      </div>
+      <div class="tk sealed">
+        <svg viewBox="0 0 120 150" role="img" aria-label="밸브로 균열을 막아 수위가 유지된 탱크">
+          <rect x="14" y="10" width="92" height="130" rx="12" fill="url(#tankG)" stroke="rgba(43,182,115,.35)" stroke-width="2"/>
+          <clipPath id="sl"><rect x="14" y="10" width="92" height="130" rx="12"/></clipPath>
+          <g clip-path="url(#sl)"><rect x="14" y="40" width="92" height="100" fill="url(#waterG)"/></g>
+          <!-- 밸브 -->
+          <circle cx="14" cy="112" r="7" fill="#2bb673" stroke="#0b1220" stroke-width="2"/>
+          <path d="M14 112 l4 -3 M14 112 l4 3 M14 112 l-5 0" stroke="#0b1220" stroke-width="1.6"/>
+        </svg>
+        <div class="cap">밸브로 막음 → 수위 유지</div>
+      </div>
+    </div>
+    <p class="note" style="text-align:center;">AutoRecall은 <b>새는 균열을 막는 밸브</b>처럼, 흘러나가던 환자 명단을 붙잡아 둡니다.</p>
+  </div>
+</section>
+
+<!-- ============ 6. 자가진단 ============ -->
+<section id="diag">
+  <div class="wrap">
+    <div class="kicker">⭐ 30초 자가진단</div>
+    <h2>내 탱크는 지금<br>얼마나 새고 있을까요?</h2>
+    <p class="mute">슬라이더를 움직이면 <b>균열이 커지고 물이 더 빨리 새며</b> 잃은 매출이 실시간으로 올라갑니다. 숫자부터 보세요.</p>
+
+    <div class="diag">
+      <div class="slider-block">
+        <label for="s-active">활성 환자 수 <span class="v"><span id="v-active">2,000</span>명</span></label>
+        <input type="range" id="s-active" min="300" max="5000" step="50" value="2000"
+               aria-valuetext="2000명">
+      </div>
+      <div class="slider-block">
+        <label for="s-churn">6개월+ 미내원(끊김) 비율 <span class="v"><span id="v-churn">30</span>%</span></label>
+        <input type="range" id="s-churn" min="10" max="50" step="1" value="30"
+               aria-valuetext="30 퍼센트">
+      </div>
+      <div class="slider-block">
+        <label for="s-value">환자 1인 평균 치료가치 <span class="v"><span id="v-value">60</span>만원</span></label>
+        <input type="range" id="s-value" min="30" max="150" step="5" value="60"
+               aria-valuetext="60만원">
+      </div>
+
+      <!-- 진단용 동적 탱크 -->
+      <div class="diag-tank">
+        <svg viewBox="0 0 160 180" role="img" aria-label="입력값에 따라 수위와 누수가 변하는 진단 탱크">
+          <rect x="20" y="14" width="120" height="150" rx="14" fill="url(#tankG)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+          <clipPath id="dgClip"><rect x="20" y="14" width="120" height="150" rx="14"/></clipPath>
+          <g clip-path="url(#dgClip)">
+            <rect id="dgWater" x="20" y="70" width="120" height="94" fill="url(#waterG)" opacity=".92"/>
+            <path class="ripple" id="dgTop" d="M0 70 q12 -6 24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 v40 h-160 z" fill="#7bbcff" opacity=".5"/>
+          </g>
+          <path id="dgCrack" d="M20 110 l-7 4 l6 5 l-7 4" fill="none" stroke="#e5484d" stroke-width="2.6" stroke-linecap="round"/>
+          <ellipse class="d1" id="dgDrop1" cx="9" cy="122" rx="4" ry="5.5" fill="#5aa6f5"/>
+          <ellipse class="d2" id="dgDrop2" cx="9" cy="122" rx="3" ry="4.5" fill="#7bbcff"/>
+          <text class="won1" x="9" y="138" font-size="13" font-weight="800" fill="#f5a623" text-anchor="middle">₩</text>
+        </svg>
+      </div>
+
+      <div class="diag-out">
+        <div class="out">
+          <div class="lab">잠든 환자</div>
+          <div class="num water"><span id="o-sleep">600</span><span class="u"> 명</span></div>
+        </div>
+        <div class="out">
+          <div class="lab">리콜 건강점수</div>
+          <div class="num" id="o-health-num"><span id="o-health">52</span><span class="u"> 점</span></div>
+        </div>
+        <div class="out span">
+          <div class="lab">추정 잃은 매출 (예시·가정값)</div>
+          <div class="num"><span id="o-lost">36,000</span><span class="u"> 만원</span></div>
+        </div>
+        <div class="out" style="grid-column:1 / -1;">
+          <div class="lab green">회수 가능 (회수율 15% 가정)</div>
+          <div class="num green"><span id="o-recover">5,400</span><span class="u"> 만원</span></div>
+        </div>
+      </div>
+
+      <div class="formula">
+        <div class="ft">📐 계산식 (그대로 공개합니다)</div>
+        <ul>
+          <li><b>잠든 환자</b> = 활성환자 × 끊김율</li>
+          <li><b>추정 잃은 매출</b> = 잠든환자 × 평균치료가치</li>
+          <li><b>회수 가능</b> = 잠든환자 × 평균치료가치 × 0.15 <span class="dim">(회수율 15% 가정)</span></li>
+          <li><b>리콜 건강점수</b> = 100 − 끊김율% × 1.6 <span class="dim">(0~100 사이로 보정)</span></li>
+        </ul>
+        <div class="privacy">🔒 <span>입력값은 <b>이 화면 안에서만 계산</b>됩니다. 어디에도 저장·전송되지 않습니다. 모든 숫자는 <b>예시·가정값</b>이며, 실제 명단·금액과 다를 수 있습니다.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. 벤치마크 ============ -->
+<section style="background:rgba(255,255,255,.015);">
+  <div class="wrap">
+    <div class="kicker">⭐ 내 점수, 어디쯤일까요</div>
+    <h2>업계 평균과 비교하면</h2>
+    <p class="mute">아래는 <b>예시 기준선</b>입니다. 내 리콜 건강점수를 업계 평균·상위권과 나란히 놓아 봅니다.</p>
+
+    <div class="bench card" style="margin-top:16px;">
+      <div class="bar me">
+        <div class="bl"><span>내 점수</span><span class="water"><span id="b-me">52</span>점</span></div>
+        <div class="track"><div class="fill" id="b-me-fill" style="width:52%"></div></div>
+      </div>
+      <div class="bar avg">
+        <div class="bl"><span>업계 평균 (예시)</span><span class="mute">60점</span></div>
+        <div class="track"><div class="fill" style="width:60%"></div></div>
+      </div>
+      <div class="bar top">
+        <div class="bl"><span>상위권 (예시)</span><span class="green">82점</span></div>
+        <div class="track"><div class="fill" style="width:82%"></div></div>
+      </div>
+
+      <div class="verdict" id="verdict">계산 중…</div>
+      <p class="note" style="margin-top:12px;text-align:center;">기준선 60·82는 예시·가정값입니다. 자가진단 슬라이더를 바꾸면 내 점수도 함께 움직입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. 설치 CTA ============ -->
+<section>
+  <div class="wrap">
+    <div class="final">
+      <div class="kicker" style="color:var(--amber);">결론</div>
+      <h2>추정 아닌 진짜 명단은,<br>설치해야 보입니다.</h2>
+      <p class="mute">여기까지 본 숫자는 전부 <b>예시·가정값</b>입니다. 내 차트에서 <b>실제로 누가, 얼마나 새고 있는지</b>는 AutoRecall을 깔아야 보입니다.</p>
+
+      <div class="friction">
+        <div class="fr"><span class="ck">✓</span> 원내 PC 안에서만 도는 <b>로컬 설치</b> — 데이터가 밖으로 안 나갑니다 (예시)</div>
+        <div class="fr"><span class="ck">✓</span> 기존 차트를 <b>읽기만</b> 합니다 — 진료 데이터에 손대지 않습니다 (예시)</div>
+        <div class="fr"><span class="ck">✓</span> 설치 <b>5분</b> 예시 — 데스크 업무 흐름은 그대로</div>
+      </div>
+
+      <p class="warnline">⚠️ 안 깔면, 다음 달도 탱크는 그대로 샙니다.</p>
+
+      <a href="#" class="btn btn-warn" style="margin-top:10px;">🛡️ 누수 막기 — 설치하고 진짜 명단 보기</a>
+      <p class="note" style="margin-top:12px;">AutoRecall은 전화 우선순위 정리를 돕는 운영 도구입니다. 치료 효과·결과를 보장하지 않습니다.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    AutoRecall · 치과 리콜 운영 도구<br>
+    이 페이지의 모든 수치는 예시·가정값이며, 입력값은 화면 내 계산만 수행합니다 (저장·전송 없음).
+  </div>
+</footer>
+
+<!-- sticky bottom CTA -->
+<div class="sticky">
+  <div class="inner">
+    <a href="#diag" class="s-diag">⏱️ 30초 자가진단</a>
+    <a href="#" class="s-install">🛡️ 설치하기</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- helpers ----
+  function fmt(n){ return Math.round(n).toLocaleString('ko-KR'); }
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+
+  // ---- elements ----
+  var sActive = document.getElementById('s-active');
+  var sChurn  = document.getElementById('s-churn');
+  var sValue  = document.getElementById('s-value');
+
+  var vActive = document.getElementById('v-active');
+  var vChurn  = document.getElementById('v-churn');
+  var vValue  = document.getElementById('v-value');
+
+  var oSleep  = document.getElementById('o-sleep');
+  var oLost   = document.getElementById('o-lost');
+  var oRecover= document.getElementById('o-recover');
+  var oHealth = document.getElementById('o-health');
+  var oHealthNum = document.getElementById('o-health-num');
+
+  var dgWater = document.getElementById('dgWater');
+  var dgTop   = document.getElementById('dgTop');
+  var dgCrack = document.getElementById('dgCrack');
+  var dgDrop1 = document.getElementById('dgDrop1');
+  var dgDrop2 = document.getElementById('dgDrop2');
+
+  var bMe     = document.getElementById('b-me');
+  var bMeFill = document.getElementById('b-me-fill');
+  var verdict = document.getElementById('verdict');
+
+  function compute(){
+    var active = +sActive.value;
+    var churn  = +sChurn.value;       // %
+    var value  = +sValue.value;       // 만원
+
+    // labels
+    vActive.textContent = fmt(active);
+    vChurn.textContent  = churn;
+    vValue.textContent  = value;
+    sActive.setAttribute('aria-valuetext', fmt(active)+'명');
+    sChurn.setAttribute('aria-valuetext', churn+' 퍼센트');
+    sValue.setAttribute('aria-valuetext', value+'만원');
+
+    // formulas (공개식 그대로)
+    var sleep   = active * (churn/100);
+    var lost    = sleep * value;                 // 만원
+    var recover = sleep * value * 0.15;          // 만원
+    var health  = clamp(Math.round(100 - churn*1.6), 0, 100);
+
+    oSleep.textContent   = fmt(sleep);
+    oLost.textContent    = fmt(lost);
+    oRecover.textContent = fmt(recover);
+    oHealth.textContent  = health;
+
+    // health color
+    oHealthNum.className = 'num ' + (health < 55 ? '' : (health > 75 ? 'green' : 'water'));
+    if(health < 55){ oHealthNum.style.color = 'var(--red-soft)'; }
+    else { oHealthNum.style.color = ''; }
+
+    // ---- 진단 탱크: 수위 = 끊김 클수록 낮게, 균열·물방울 = 끊김 클수록 크게 ----
+    // 탱크 내부 y:14~164 (height 150). 끊김 10%~50% → 수위 표면 y 40(높음)~120(낮음)
+    var topY = 40 + (churn-10)/(50-10) * 80;     // 40..120
+    var h = 164 - topY;
+    dgWater.setAttribute('y', topY.toFixed(1));
+    dgWater.setAttribute('height', h.toFixed(1));
+    // ripple path follows surface
+    var d = 'M0 '+topY.toFixed(1)+' q12 -6 24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 v40 h-160 z';
+    dgTop.setAttribute('d', d);
+
+    // 균열 크기: 끊김 클수록 더 벌어진 지그재그
+    var f = (churn-10)/(50-10);                  // 0..1
+    var w = 4 + f*9;
+    dgCrack.setAttribute('d',
+      'M20 110 l-'+(w*0.7).toFixed(1)+' 4 l'+(w*0.55).toFixed(1)+' 5 l-'+(w*0.7).toFixed(1)+' 4');
+    dgCrack.setAttribute('stroke-width', (2.4 + f*1.4).toFixed(1));
+    // 물방울 크기
+    var r = 3 + f*2.6;
+    dgDrop1.setAttribute('rx', r.toFixed(1));
+    dgDrop1.setAttribute('ry', (r*1.35).toFixed(1));
+    dgDrop2.setAttribute('rx', (r*0.72).toFixed(1));
+    dgDrop2.setAttribute('ry', (r*1.05).toFixed(1));
+    // 누수 속도: 끊김 클수록 빠르게 (reduced-motion이면 무시됨 — 애니 자체가 꺼져 있음)
+    if(!reduce){
+      var dur = (3.2 - f*1.6).toFixed(2)+'s';
+      dgDrop1.style.animationDuration = dur;
+      dgDrop2.style.animationDuration = dur;
+    }
+
+    // ---- 벤치마크 ----
+    bMe.textContent = health;
+    bMeFill.style.width = health + '%';
+    if(health < 55){
+      verdict.className = 'verdict risk';
+      verdict.innerHTML = '⚠️ 위험 — 평균(60점) 아래입니다. 새는 양이 큽니다. 지금 균열을 막을 때입니다.';
+    } else if(health > 75){
+      verdict.className = 'verdict good';
+      verdict.innerHTML = '✅ 양호 — 상위권(82점)에 가깝습니다. 새는 곳을 잘 막고 계십니다.';
+    } else {
+      verdict.className = 'verdict mid';
+      verdict.innerHTML = '🟡 보통 — 평균선 부근입니다. 조금만 더 막으면 상위권으로 갑니다.';
+    }
+    return lost;
+  }
+
+  // ---- 히어로 카운트업 (예시·가정값: 2000 × 30% × 60만 = 36,000만원) ----
+  var heroLeak = document.getElementById('heroLeak');
+  var heroTarget = 2000 * 0.30 * 60; // = 36000 만원
+  if(reduce){
+    heroLeak.textContent = fmt(heroTarget);
+  } else {
+    var start = null, dur = 1600;
+    function step(ts){
+      if(start===null) start = ts;
+      var p = clamp((ts-start)/dur, 0, 1);
+      var eased = 1 - Math.pow(1-p, 3);
+      heroLeak.textContent = fmt(heroTarget * eased);
+      if(p < 1) requestAnimationFrame(step);
+      else heroLeak.textContent = fmt(heroTarget);
+    }
+    requestAnimationFrame(step);
+  }
+
+  sActive.addEventListener('input', compute);
+  sChurn.addEventListener('input', compute);
+  sValue.addEventListener('input', compute);
+  compute();
+})();
+</script>
+
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
