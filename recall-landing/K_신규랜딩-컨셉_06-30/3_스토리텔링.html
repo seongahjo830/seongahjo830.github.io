@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoRecall — 안 부른 게 아니라, 사람 손으론 원래 못 부르는 일이었습니다</title>
+<style>
+  :root{
+    --paper:#FBFAF7;
+    --paper-2:#F4F1EA;
+    --ink:#23201B;
+    --ink-2:#5A5349;
+    --ink-3:#8A8275;
+    --line:#E7E1D6;
+    --accent:#0F6E63;       /* 단일 액센트 (teal) */
+    --accent-deep:#0A554C;
+    --accent-soft:#E6F1EF;
+    --accent-tint:#F0F7F5;
+    --warn:#B9742A;
+    --warn-soft:#FBF1E4;
+    --maxw:720px;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Segoe UI",system-ui,-apple-system,sans-serif;
+    font-size:18px;
+    line-height:1.85;
+    letter-spacing:-0.01em;
+    -webkit-font-smoothing:antialiased;
+    word-break:keep-all;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  section{padding:64px 0}
+  p{margin:0 0 1.1em}
+  b{color:var(--accent-deep);font-weight:700}
+  .accent{color:var(--accent-deep);font-weight:700}
+  mark{background:linear-gradient(180deg,transparent 58%,var(--accent-soft) 58%);color:inherit;padding:0 2px}
+  .muted{color:var(--ink-2)}
+  .small{font-size:14px;line-height:1.7;color:var(--ink-3)}
+  .tag{display:inline-block;font-size:12px;font-weight:700;color:var(--warn);background:var(--warn-soft);border-radius:999px;padding:2px 9px;letter-spacing:0;vertical-align:middle;line-height:1.5}
+  .kicker{font-size:13px;font-weight:800;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin:0 0 14px}
+  h1{font-size:clamp(28px,6.4vw,44px);line-height:1.28;letter-spacing:-0.03em;margin:0 0 18px;font-weight:800}
+  h2{font-size:clamp(23px,4.6vw,32px);line-height:1.35;letter-spacing:-0.025em;margin:0 0 18px;font-weight:800}
+  h3{font-size:clamp(18px,3vw,21px);line-height:1.45;margin:0 0 10px;font-weight:700}
+  .lead{font-size:clamp(18px,2.6vw,21px);color:var(--ink-2);line-height:1.8}
+
+  /* ---- 진입 애니메이션 ---- */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---- 히어로 ---- */
+  .hero{padding-top:54px;padding-bottom:40px}
+  .hero .promise{font-size:clamp(20px,3.4vw,26px);font-weight:800;color:var(--ink);line-height:1.45;margin:0 0 8px}
+  .hero .promise .u{box-shadow:inset 0 -10px 0 var(--accent-soft)}
+  .hero .sub{color:var(--ink-2);font-size:clamp(16px,2.4vw,19px);margin:0 0 30px}
+
+  /* ---- 살아있는 콜 큐 ---- */
+  .queue-frame{
+    background:#fff;border:1px solid var(--line);border-radius:18px;
+    box-shadow:0 18px 50px -28px rgba(20,40,38,.35);
+    padding:16px 16px 18px;
+  }
+  .queue-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 4px 12px;border-bottom:1px dashed var(--line);margin-bottom:12px}
+  .queue-head .t{font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:#E5484D;box-shadow:0 0 0 0 rgba(229,72,77,.5);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(229,72,77,.45)}70%{box-shadow:0 0 0 8px rgba(229,72,77,0)}100%{box-shadow:0 0 0 0 rgba(229,72,77,0)}}
+  .queue-head .clock{font-variant-numeric:tabular-nums;font-size:14px;color:var(--ink-3);font-weight:700}
+  #queue{position:relative;transition:height .4s ease}
+  .qcard{
+    position:absolute;left:0;right:0;top:0;height:62px;
+    display:flex;align-items:center;gap:12px;
+    background:var(--paper);border:1px solid var(--line);border-radius:12px;
+    padding:0 12px;
+    transition:transform .65s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .3s,opacity .4s;
+    will-change:transform;
+  }
+  .qcard.top{border-color:var(--accent);box-shadow:0 8px 22px -14px rgba(15,110,99,.7);background:#fff}
+  .qrank{flex:0 0 26px;text-align:center;font-weight:800;font-size:15px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+  .qcard.top .qrank{color:var(--accent)}
+  .qbody{flex:1 1 auto;min-width:0}
+  .qname{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .qkind{font-size:12.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .qright{flex:0 0 88px;text-align:right}
+  .qscore{font-weight:800;font-size:19px;font-variant-numeric:tabular-nums;line-height:1}
+  .qbar{height:5px;border-radius:99px;background:var(--paper-2);margin-top:6px;overflow:hidden}
+  .qbar > i{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width .6s ease,background .4s}
+  .qcap{margin-top:16px;text-align:center;font-size:14px;color:var(--ink-3)}
+  .qcap b{color:var(--ink)}
+
+  .hero-punch{font-size:clamp(22px,3.6vw,28px);font-weight:800;line-height:1.4;margin-top:46px}
+
+  /* ---- 카운트 펀치 ---- */
+  .count-box{text-align:center;background:var(--accent-deep);color:#fff;border-radius:20px;padding:46px 24px}
+  .count-box .n{font-size:clamp(56px,16vw,108px);font-weight:800;line-height:.95;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+  .count-box .n sup{font-size:.24em;vertical-align:super;font-weight:700;opacity:.8;margin-left:6px}
+  .count-box .cap{font-size:clamp(16px,2.6vw,20px);opacity:.94;margin-top:14px;line-height:1.6}
+  .count-box .note{font-size:13px;opacity:.62;margin-top:16px}
+
+  /* ---- 인용/고백 ---- */
+  .confess{border-left:3px solid var(--accent);background:var(--accent-tint);border-radius:0 14px 14px 0;padding:22px 22px 6px;margin:6px 0}
+  .confess p{font-size:clamp(17px,2.6vw,20px);line-height:1.8}
+  .confess .who{font-size:13px;color:var(--accent-deep);font-weight:700;margin-bottom:8px;letter-spacing:.02em}
+
+  /* ---- 하루 시간표 ---- */
+  .day{margin:8px 0 4px}
+  .day-bar{display:flex;height:54px;border-radius:12px;overflow:hidden;border:1px solid var(--line);font-size:11.5px;font-weight:700;color:#fff}
+  .day-bar > div{display:flex;align-items:center;justify-content:center;text-align:center;padding:0 4px;white-space:nowrap;overflow:hidden}
+  .seg1{background:#5C8DBE;flex:1.4}
+  .seg2{background:#4F7CA8;flex:1.1}
+  .seg3{background:#6E9BC7;flex:1.3}
+  .seg4{background:#43698F;flex:1.2}
+  .seg5{background:#7BA6CC;flex:1.1}
+  .segR{background:var(--accent);flex:.32;min-width:38px;position:relative}
+  .day-labels{display:flex;justify-content:space-between;margin-top:8px;color:var(--ink-3);font-size:12px}
+  .leak-flag{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:14px;font-weight:700;color:var(--warn)}
+
+  /* ---- 5곡선 ---- */
+  .curves{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:6px}
+  .curve{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px}
+  .curve svg{display:block;width:100%;height:auto}
+  .curve .ct{font-weight:700;font-size:15px;margin-top:8px}
+  .curve .cd{font-size:13px;color:var(--ink-3);line-height:1.55;margin-top:2px}
+  .curve.full{grid-column:1 / -1}
+  .impossible{margin-top:22px;text-align:center;font-size:clamp(19px,3.2vw,24px);font-weight:800;line-height:1.45}
+
+  /* ---- 누수 / 수도꼭지 ---- */
+  .faucet-wrap{display:flex;justify-content:center;margin:6px 0 4px}
+
+  /* ---- 면죄 ---- */
+  .absolve{text-align:center;background:var(--paper-2);border-radius:20px;padding:48px 26px}
+  .absolve .big{font-size:clamp(22px,4vw,30px);font-weight:800;line-height:1.5;letter-spacing:-.02em}
+  .absolve .small2{margin-top:16px;color:var(--ink-2);font-size:clamp(15px,2.4vw,18px)}
+
+  /* ---- 도구가 하는 일 ---- */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+  .step{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 16px;text-align:center}
+  .step .ic{width:46px;height:46px;margin:0 auto 12px;color:var(--accent)}
+  .step h3{font-size:17px;margin-bottom:6px}
+  .step p{font-size:14px;color:var(--ink-2);line-height:1.6;margin:0}
+
+  /* ---- before/after ---- */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  .ba .col{border-radius:16px;padding:20px 18px}
+  .ba .before{background:var(--warn-soft);border:1px solid #EBD8C0}
+  .ba .after{background:var(--accent-tint);border:1px solid #CDE6E1}
+  .ba h3{font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .ba ul{margin:0;padding-left:2px;list-style:none}
+  .ba li{font-size:14.5px;line-height:1.55;padding:7px 0 7px 24px;position:relative;color:var(--ink-2);border-top:1px solid rgba(0,0,0,.05)}
+  .ba li:first-child{border-top:0}
+  .ba li::before{position:absolute;left:0;top:7px;font-size:14px}
+  .ba .before li::before{content:"·";color:var(--warn);font-weight:800}
+  .ba .after li::before{content:"✓";color:var(--accent);font-weight:800}
+  .ba .after li{color:var(--ink)}
+
+  .oneclick{margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 18px}
+  .oneclick .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .chip{font-size:13px;font-weight:700;border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:8px 12px;color:var(--ink-2)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* ---- 원장 편지 ---- */
+  .letter{background:#fff;border:1px solid var(--line);border-radius:20px;padding:34px 28px;box-shadow:0 16px 44px -30px rgba(20,40,38,.4)}
+  .letter p{font-size:clamp(17px,2.5vw,19px);line-height:1.85}
+  .letter .sign{margin-top:20px;font-size:14px;color:var(--ink-3)}
+
+  /* ---- 최종 CTA ---- */
+  .cta-box{text-align:center;background:linear-gradient(180deg,var(--accent) 0%,var(--accent-deep) 100%);color:#fff;border-radius:24px;padding:54px 26px}
+  .cta-box h2{color:#fff;margin-bottom:14px}
+  .cta-box .sub{opacity:.94;font-size:clamp(16px,2.6vw,19px);margin-bottom:30px;line-height:1.7}
+  .btn{display:inline-block;background:#fff;color:var(--accent-deep);font-weight:800;font-size:clamp(17px,2.6vw,20px);text-decoration:none;border-radius:14px;padding:18px 38px;min-height:44px;box-shadow:0 12px 30px -12px rgba(0,0,0,.4);transition:transform .2s}
+  .btn:hover{transform:translateY(-2px)}
+  .reassure{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:30px;text-align:left}
+  .reassure .r{background:rgba(255,255,255,.12);border-radius:12px;padding:14px 16px}
+  .reassure .r b{color:#fff;display:block;font-size:15px;margin-bottom:3px}
+  .reassure .r span{font-size:13px;opacity:.85;line-height:1.5}
+
+  /* ---- 안전장치 ---- */
+  .safe{background:var(--accent-tint);border:1px solid #CDE6E1;border-radius:16px;padding:22px 22px 10px}
+  .safe ul{margin:8px 0 0;padding-left:20px}
+  .safe li{font-size:15px;line-height:1.7;margin-bottom:8px;color:var(--ink-2)}
+  .safe li b{color:var(--accent-deep)}
+
+  /* ---- 푸터 ---- */
+  footer{border-top:1px solid var(--line);padding:40px 0 56px;margin-top:20px}
+  footer .small{margin-bottom:8px}
+  .disc{background:var(--paper-2);border-radius:12px;padding:16px 18px;font-size:13px;color:var(--ink-3);line-height:1.7}
+
+  /* ---- 반응형 ---- */
+  @media (max-width:680px){
+    .curves{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr}
+    .ba{grid-template-columns:1fr}
+    .reassure{grid-template-columns:1fr}
+    section{padding:52px 0}
+    body{font-size:17px}
+    .qright{flex-basis:74px}
+    .qscore{font-size:18px}
+  }
+  @media (min-width:768px) and (max-width:1024px){
+    :root{--maxw:680px}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important}
+    .reveal{opacity:1;transform:none;transition:none}
+    .qcard{transition:none}
+    html{scroll-behavior:auto}
+    .live-dot{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 1. 히어로 : 살아있는 콜 큐 ============ -->
+<section class="hero">
+  <div class="wrap">
+    <p class="kicker reveal">치과 리콜 자동화 · AutoRecall</p>
+    <h1 class="reveal">지금 이 화면의 순서,<br>머리로 따라갈 수 있을까요?</h1>
+    <p class="sub reveal">환자 한 명 한 명의 ‘지금 전화할 가치’가 <b>1분마다 다시 계산</b>됩니다.<br>아래 큐는 그걸 실제로 보여주는 화면입니다. — 잠깐만 지켜봐 주세요.</p>
+
+    <div class="queue-frame reveal">
+      <div class="queue-head">
+        <span class="t"><span class="live-dot" aria-hidden="true"></span>오늘 콜 큐 · 실시간</span>
+        <span class="clock" id="clock">09:00</span>
+      </div>
+      <div id="queue" aria-label="실시간으로 순위가 바뀌는 콜 대기열"></div>
+      <p class="qcap"><b>위에서부터 누르기만</b> 하면 됩니다. 순서는 도구가 매분 다시 매깁니다.</p>
+    </div>
+
+    <p class="hero-punch reveal">사람은 한 번에 한 명과 통화합니다.<br>그동안 나머지 수십 명의 ‘부를 때’는 <mark>혼자서 계속 바뀌고</mark> 있었습니다.</p>
+
+    <p class="promise reveal" style="margin-top:36px">그래서 이 페이지가 끝까지 지킬 한 문장.</p>
+    <p class="promise reveal"><span class="u">“안 부른 게 아니라, 사람 손으론 원래 못 부르는 일이었습니다.”</span></p>
+  </div>
+</section>
+
+<!-- ============ 카운트 펀치 (B) ============ -->
+<section style="padding-top:8px">
+  <div class="wrap">
+    <div class="count-box reveal">
+      <div class="n"><span id="countN">0</span><sup>예시</sup></div>
+      <div class="cap">지금 우리 차트에, <b style="color:#fff">‘부를 때’가 이미 지난 환자</b>의 수.</div>
+      <div class="note">※ 위 숫자는 예시입니다. 실제로는 원장님 덴트웹 차트에 연결하면 그 자리에 <b style="color:#fff;opacity:1">진짜 숫자</b>가 들어갑니다. [추정·실측 교체 필요]</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. 데스크 1인칭 고백 ============ -->
+<section>
+  <div class="wrap">
+    <p class="kicker reveal">데스크의 이야기</p>
+    <h2 class="reveal">저도, 다 알고 있었어요.</h2>
+    <div class="confess reveal">
+      <p class="who">— 어느 치과 데스크 직원</p>
+      <p>“6개월 지난 스케일링 환자, 3개월 검진 놓친 분, ‘다음 달에 체크하자’던 그분…<br>머릿속엔 다 있어요. <b>안다고요.</b></p>
+      <p>그런데 전화 한 통 돌리려고 마음먹으면, 그 앞에 접수·수납·보험·예약 전화가 줄을 서요.<br>오늘 안 챙긴 그 환자는… <b>내일도, 모레도 또 맨 뒤로 밀려요.</b></p>
+      <p>잊은 게 아니에요. <mark>손이 하나라서</mark> 그래요.”</p>
+    </div>
+    <p class="lead reveal" style="margin-top:24px">유능한 데스크일수록 이 사실을 더 잘 압니다. 그래서 더 괴롭습니다.</p>
+  </div>
+</section>
+
+<!-- ============ 3. 하루의 진실 ============ -->
+<section>
+  <div class="wrap">
+    <p class="kicker reveal">하루의 진실</p>
+    <h2 class="reveal">데스크의 하루엔, 리콜이 들어갈 칸이 없습니다.</h2>
+    <p class="lead reveal">잘못이 아닙니다. 하루가 원래 이렇게 꽉 차 있을 뿐입니다.</p>
+
+    <div class="day reveal">
+      <div class="day-bar" role="img" aria-label="데스크 하루 일과: 접수·수납·보험·예약·응대로 가득 차고 리콜은 맨 끝에 눌림">
+        <div class="seg1">접수·신환 응대</div>
+        <div class="seg2">수납·결제</div>
+        <div class="seg3">보험 청구</div>
+        <div class="seg4">예약 관리</div>
+        <div class="seg5">전화 응대</div>
+        <div class="segR" title="리콜">리콜</div>
+      </div>
+      <div class="day-labels"><span>09:00</span><span>점심</span><span>18:00</span></div>
+      <span class="leak-flag">▸ 리콜은 ‘남는 시간에’ — 그런데 남는 시간은 거의 오지 않습니다.</span>
+    </div>
+
+    <p class="reveal" style="margin-top:24px">‘오늘은 꼭 리콜 돌려야지.’ 그 다짐은 매일 진심입니다.<br>하지만 눈앞의 환자가 먼저입니다. 늘 그래야 하고요. 그래서 리콜은 <b>항상 맨 뒤</b>로 갑니다.</p>
+  </div>
+</section>
+
+<!-- ============ 4. 불가능의 증명 ============ -->
+<section>
+  <div class="wrap">
+    <p class="kicker reveal">불가능의 증명</p>
+    <h2 class="reveal">설령 시간이 남아도, 머리로는 못 풉니다.</h2>
+    <p class="lead reveal">‘누구부터 거느냐’가 시간마다 달라지기 때문입니다. 콜마다 ‘가장 좋은 타이밍’의 모양이 전부 다릅니다.</p>
+
+    <div class="curves reveal">
+      <div class="curve">
+        <svg viewBox="0 0 120 46" aria-hidden="true"><polyline points="2,38 2,38" /><path d="M2,10 L26,10 C40,10 52,40 118,42" fill="none" stroke="#0F6E63" stroke-width="2.5"/><line x1="26" y1="6" x2="26" y2="44" stroke="#B9742A" stroke-width="1" stroke-dasharray="3 3"/></svg>
+        <div class="ct">부재중 전화</div>
+        <div class="cd">끊긴 직후 <b>5분(신환은 2분)</b>이 최고점. 지나면 급락합니다.</div>
+      </div>
+      <div class="curve">
+        <svg viewBox="0 0 120 46" aria-hidden="true"><path d="M2,42 L46,42 C56,42 58,10 66,10 C74,10 76,42 118,42" fill="none" stroke="#0F6E63" stroke-width="2.5"/></svg>
+        <div class="ct">내원 확인 (예약 직전)</div>
+        <div class="cd">예약 <b>앞 15분~뒤 10분</b>의 좁은 창에서만 의미가 있습니다. 지나면 노쇼.</div>
+      </div>
+      <div class="curve">
+        <svg viewBox="0 0 120 46" aria-hidden="true"><polyline points="2,36 34,30 64,22 90,15 96,8 100,8 118,30" fill="none" stroke="#0F6E63" stroke-width="2.5"/></svg>
+        <div class="ct">예약 확인 콜</div>
+        <div class="cd">예약일이 가까워질수록 차오르고, 전날 놓치면 <b>당일에 급발진</b>합니다.</div>
+      </div>
+      <div class="curve">
+        <svg viewBox="0 0 120 46" aria-hidden="true"><path d="M2,10 C20,10 28,40 118,42" fill="none" stroke="#0F6E63" stroke-width="2.5"/></svg>
+        <div class="ct">수술·발치 안부 콜</div>
+        <div class="cd"><b>다음날이 최고점.</b> 늦을수록 ‘이제 와서?’가 되고 7일 뒤 만료됩니다.</div>
+      </div>
+      <div class="curve full">
+        <svg viewBox="0 0 240 40" aria-hidden="true"><line x1="2" y1="30" x2="238" y2="22" stroke="#0F6E63" stroke-width="2.5"/></svg>
+        <div class="ct">정기검진·미수금 회수 같은 이벤트 콜</div>
+        <div class="cd">늘 잔잔하게 깔려 있다가, 급한 콜들이 비는 순간에만 위로 올라옵니다.</div>
+      </div>
+    </div>
+
+    <p class="reveal" style="margin-top:24px">이 모양들이 <b>수십 명분, 동시에, 매분</b> 움직입니다. 5분 전 1등이 지금은 4등이고, 방금 끊긴 전화가 갑자기 1등이 됩니다.</p>
+    <p class="impossible reveal">이걸 사람 머리로 동시에 계산하는 건<br><span class="accent">유능함의 문제가 아니라, 그냥 불가능한 일</span>입니다.</p>
+  </div>
+</section>
+
+<!-- ============ 5. 그래서 새는 것 ============ -->
+<section>
+  <div class="wrap">
+    <p class="kicker reveal">그래서, 새고 있습니다</p>
+    <h2 class="reveal">안 부른 환자는, 조용히 옆 치과로 갑니다.</h2>
+    <div class="faucet-wrap reveal">
+      <svg width="150" height="150" viewBox="0 0 150 150" aria-label="물이 한 방울씩 새는 수도꼭지">
+        <rect x="20" y="34" width="70" height="13" rx="6" fill="#43698F"/>
+        <rect x="84" y="34" width="13" height="40" rx="5" fill="#43698F"/>
+        <rect x="78" y="70" width="25" height="10" rx="4" fill="#5C8DBE"/>
+        <circle cx="20" cy="40" r="11" fill="#0F6E63"/>
+        <circle class="drop d1" cx="90" cy="92" r="5.5" fill="#5C8DBE"/>
+        <circle class="drop d2" cx="90" cy="92" r="4.5" fill="#7BA6CC"/>
+        <line x1="40" y1="138" x2="140" y2="138" stroke="#E7E1D6" stroke-width="2"/>
+      </svg>
+    </div>
+    <style>
+      .drop{opacity:0}
+      @keyframes fall{0%{opacity:0;transform:translateY(0)}10%{opacity:1}90%{opacity:1}100%{opacity:0;transform:translateY(46px)}}
+      .d1{animation:fall 2.4s infinite ease-in}
+      .d2{animation:fall 2.4s infinite ease-in;animation-delay:1.2s}
+      @media (prefers-reduced-motion:reduce){.drop{opacity:1}}
+    </style>
+    <p class="reveal">한 방울씩이라 티가 안 납니다. 그래서 더 위험합니다.<br>스케일링 한 번, 검진 한 번 미뤄진 환자는 큰 불만 없이 그냥 <b>발길이 뜸해지고</b>, 어느새 다른 곳에 자리 잡습니다.</p>
+    <div class="count-box reveal" style="background:var(--warn);margin-top:8px">
+      <div class="n" style="font-size:clamp(40px,11vw,72px)"><span id="leakN">0</span><sup>추정</sup><span style="font-size:.32em">만원 / 월</span></div>
+      <div class="cap">한 해 동안 ‘부를 때를 놓쳐’ 빠져나가는 매출의 추정치.</div>
+      <div class="note">※ 예시 수치입니다. 환자 수·평균 진료비를 넣으면 원장님 치과의 실제 추정으로 바뀝니다. [추정]</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. 면죄 한 줄 ============ -->
+<section style="padding-top:8px">
+  <div class="wrap">
+    <div class="absolve reveal">
+      <p class="big">직원이 게을러서가 아닙니다.<br>유능해서 <span class="accent">더 괴로웠던</span> 일입니다.</p>
+      <p class="small2">사람 탓이 아니라, 도구가 없었을 뿐입니다.<br>혼내야 할 사람은 없습니다. 보태야 할 손이 하나 있었을 뿐입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. 도구가 하는 일 ============ -->
+<section>
+  <div class="wrap">
+    <p class="kicker reveal">그래서 도구가 합니다</p>
+    <h2 class="reveal">사람이 못 하는 세 가지만, 도구가 대신합니다.</h2>
+    <p class="lead reveal">통화는 사람이 합니다. 도구는 그 ‘앞 작업’만 맡습니다.</p>
+
+    <div class="steps reveal">
+      <div class="step">
+        <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14h36M6 24h36M6 34h22"/></svg>
+        <h3>모아주기</h3>
+        <p>덴트웹 차트에서 부를 사람을 자동으로 모읍니다. 따로 입력할 게 없습니다.</p>
+      </div>
+      <div class="step">
+        <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8l-8 8 8 8M6 16h28M34 24l8 8-8 8M42 32H14"/></svg>
+        <h3>순서 매기기</h3>
+        <p>‘지금 전화할 가치’를 1분마다 다시 계산해 줄을 세웁니다. 위에서부터 누르면 됩니다.</p>
+      </div>
+      <div class="step">
+        <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 12v12l8 5"/><circle cx="24" cy="24" r="17"/></svg>
+        <h3>기억하기</h3>
+        <p>누구에게 언제 무슨 말을 했는지 잊지 않습니다. 결과는 차트에 그대로 남습니다.</p>
+      </div>
+    </div>
+
+    <div class="safe reveal" style="margin-top:22px">
+      <h3>그리고, 부르면 안 되는 사람은 자동으로 뺍니다.</h3>
+      <ul>
+        <li><b>수신 거부·번호 무효·의료 분쟁·명시적 거부·사망</b> 기록이 있는 환자는 점수와 무관하게 큐에서 먼저 제외됩니다.</li>
+        <li>‘리콜 종료’ 표시도 기계적으로 자르지 않습니다. <b>‘치료가 끝나서 종료’</b>(다시 부를 우량 환자)와 <b>‘진짜 종료’</b>를 구분합니다. — 실수로 부를 사람을 빼지 않기 위해서입니다. <span class="tag">실측 사례 기반</span></li>
+      </ul>
+      <p class="small" style="margin:6px 4px 6px">※ ‘리콜 종료’·사망 건수 등 구체 수치는 원장님 차트로 산출됩니다. [실데이터 연결 시 표기]</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. before / after ============ -->
+<section>
+  <div class="wrap">
+    <p class="kicker reveal">데스크의 하루가 이렇게 바뀝니다</p>
+    <h2 class="reveal">고민은 줄고, 통화만 남습니다.</h2>
+    <div class="ba reveal">
+      <div class="col before">
+        <h3>지금</h3>
+        <ul>
+          <li>‘오늘 누구부터 돌리지…’ 매번 고민</li>
+          <li>엑셀·메모지로 명단 따로 관리</li>
+          <li>통화 끝나면 차트에 손으로 옮겨 적기</li>
+          <li>가족이 같은 번호면 부재중이 섞임</li>
+          <li>결국 눈앞 일에 밀려 ‘다음에’</li>
+        </ul>
+      </div>
+      <div class="col after">
+        <h3>AutoRecall 이후</h3>
+        <ul>
+          <li>맨 위 환자부터 누르기만</li>
+          <li>명단은 차트에서 자동 정렬</li>
+          <li>결과 버튼 한 번 → 차트에 자동 기록</li>
+          <li>통화 상태가 데스크끼리 공유됨</li>
+          <li>틈날 때마다, 늘 ‘가장 급한 순서’</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="oneclick reveal">
+      <h3 style="font-size:16px;margin-bottom:2px">통화가 끝나면, 버튼 하나로 끝.</h3>
+      <p class="small" style="margin:0">예약·보류·거절·부재중·건너뜀 — 누른 결과가 그대로 전자차트에 저장됩니다. 따로 옮겨 적지 않습니다.</p>
+      <div class="row">
+        <span class="chip on">예약 잡힘</span>
+        <span class="chip">보류</span>
+        <span class="chip">부재중</span>
+        <span class="chip">다음에</span>
+        <span class="chip">거절</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9. 원장에게 ============ -->
+<section>
+  <div class="wrap">
+    <p class="kicker reveal">원장님께</p>
+    <h2 class="reveal">직원을 더 몰지 마세요. 손 하나를 보태 주세요.</h2>
+    <div class="letter reveal">
+      <p>원장님 데스크는 이미 충분히 잘하고 있습니다. 리콜이 안 된 건 의지가 부족해서가 아니라, <b>사람 손 하나로 감당할 수 있는 일의 범위를 넘어섰기</b> 때문입니다.</p>
+      <p>‘왜 리콜 안 했냐’고 묻는 대신, ‘부를 사람을 매분 골라 주는 손’을 하나 쥐어 주시면 됩니다. 그러면 직원은 가장 잘하는 일 — <b>환자와의 통화</b> — 에만 집중할 수 있습니다.</p>
+      <p>감시하려는 도구가 아닙니다. 실장님 화면은 누구를 닦달하기 위한 게 아니라, 오늘 큐가 어떻게 흘러가는지 <b>한눈에 보고 거들기 위한</b> 것입니다.</p>
+      <p>그리고 이 손은, <b>무료</b>입니다. 직원 손에 먼저 쥐어 주고, 정말 도움이 되는지 직접 보세요.</p>
+      <p class="sign">— AutoRecall 드림</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10. 최종 CTA ============ -->
+<section>
+  <div class="wrap">
+    <div class="cta-box reveal">
+      <h2>오늘, 직원 손에 쥐어 주세요.</h2>
+      <p class="sub">설치하고, 맨 위 환자부터 눌러 보세요.<br>리콜이 ‘남는 시간에 하는 일’에서 ‘늘 돌아가는 일’로 바뀝니다.</p>
+      <a class="btn" href="#" id="installBtn">무료로 설치하기</a>
+      <div class="reassure">
+        <div class="r"><b>쓰던 차트 그대로</b><span>덴트웹에 그대로 연결됩니다. 옮기거나 바꿀 것 없습니다.</span></div>
+        <div class="r"><b>설치형 · 가벼움</b><span>원내 PC에 까는 단일 프로그램. 별도 서버가 없습니다.</span></div>
+        <div class="r"><b>새로 배울 것 없음</b><span>위에서부터 누르고, 끝나면 버튼 한 번. 그게 전부입니다.</span></div>
+        <div class="r"><b>데이터는 원내에</b><span>환자 정보는 원장님 PC 안에 저장됩니다.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p class="small">AutoRecall · 치과 리콜 자동화 도구</p>
+    <div class="disc">
+      이 페이지의 환자 수·누수 금액·전환율 등 <b>수치는 모두 예시·추정</b>이며, 실제 값은 각 치과 차트 데이터로 산출됩니다.
+      AutoRecall은 부를 환자의 순서를 정리해 주는 도구로, <b>치료 결과나 매출 증가를 보장하지 않습니다.</b>
+      통신 상태 연동(LGU+) 등 일부 기능은 통신 환경에 따라 지연·오차가 있을 수 있습니다.
+      세부 카피와 수치는 <b>원장 검수</b>가 필요합니다.
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- reveal on scroll ---------- */
+  var reveals = document.querySelectorAll('.reveal');
+  if(reduce || !('IntersectionObserver' in window)){
+    reveals.forEach(function(el){el.classList.add('in');});
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+    },{threshold:0.12});
+    reveals.forEach(function(el){io.observe(el);});
+  }
+
+  /* ---------- 살아있는 콜 큐 ---------- */
+  // 시간곡선(shape) 함수 — 0.0~1.0
+  function shapeA(dt,g,h,fl){ return dt<=g ? 1 : Math.max(0.9*Math.exp(-(dt-g)/h), fl); }
+  function shapeB(dt,o,c){ if(dt<o) return 0; if(dt>c) return -1; return 0.85+0.15*(dt-o)/(c-o); }
+  function shapeD(dd,h,fl){ if(dd<1) return 0; return Math.max(Math.exp(-(dd-1)/h), fl); }
+  function shapeE(m){ return 0.30 + Math.min(m,24)*(0.5/24); }
+
+  // 콜 정의 (이름은 비식별 가명)
+  var items = [
+    {name:'김○○',  kind:'부재중 · 신환',      type:'A', base:98, g:2, h:15, fl:0.12, ctx:1.10, t0:-1},
+    {name:'박○○',  kind:'부재중 · 일반',      type:'A', base:90, g:5, h:30, fl:0.15, ctx:1.00, t0:-8},
+    {name:'이○○',  kind:'내원 확인 (예약 직전)', type:'B', base:88, o:-15, c:10, ctx:1.05, t0:-5},
+    {name:'정○○',  kind:'수술 안부 콜',        type:'D', base:85, h:2, fl:0.10, ctx:1.00, t0:-6},
+    {name:'최○○',  kind:'미수금 회수 · 1,500만', type:'E', base:55, ctx:1.40, t0:0},
+    {name:'한○○',  kind:'정기검진 안내',        type:'E', base:40, ctx:1.00, t0:0}
+  ];
+
+  var T = 0;                // 가상 분(分) 시계, 09:00 시작
+  var ROW_GAP = 10;
+  var queueEl = document.getElementById('queue');
+  var clockEl = document.getElementById('clock');
+
+  // 카드 DOM 생성 (노드 고정 → 부드러운 재정렬)
+  items.forEach(function(it){
+    var card = document.createElement('div');
+    card.className = 'qcard';
+    card.innerHTML =
+      '<div class="qrank">–</div>'+
+      '<div class="qbody"><div class="qname"></div><div class="qkind"></div></div>'+
+      '<div class="qright"><div class="qscore">0</div><div class="qbar"><i style="width:0%"></i></div></div>';
+    card.querySelector('.qname').textContent = it.name;
+    card.querySelector('.qkind').textContent = it.kind;
+    it.el = card;
+    it.scoreEl = card.querySelector('.qscore');
+    it.barEl = card.querySelector('.qbar > i');
+    it.rankEl = card.querySelector('.qrank');
+    queueEl.appendChild(card);
+  });
+
+  function cardH(){ return items[0].el.offsetHeight; }
+  function layout(){
+    var h = cardH();
+    queueEl.style.height = (items.length*(h+ROW_GAP)-ROW_GAP)+'px';
+  }
+
+  function compute(it){
+    var dt = T - it.t0, s = 0;
+    if(it.type==='A'){
+      s = it.base * shapeA(dt, it.g, it.h, it.fl);
+      if(dt > 55){ it.t0 = T; }              // 골든 지나 충분히 식으면 새 부재중으로 재등장
+    } else if(it.type==='B'){
+      var sb = shapeB(dt, it.o, it.c);
+      if(sb < 0){ it.t0 = T + 22; s = 0; }   // 창 닫힘 → 잠시 후 다시 예약 임박
+      else s = it.base * sb;
+    } else if(it.type==='D'){
+      var dd = (dt)/3;                        // 천천히 식어감
+      s = it.base * shapeD(dd, it.h, it.fl);
+      if(dd > 8){ it.t0 = T; }
+    } else { // E
+      var m = (T)/4;
+      s = it.base * shapeE(m);
+    }
+    it.score = Math.max(0, s * it.ctx);
+  }
+
+  function render(){
+    items.forEach(compute);
+    var sorted = items.slice().sort(function(a,b){ return b.score - a.score; });
+    var h = cardH();
+    sorted.forEach(function(it, idx){
+      it.el.style.transform = 'translateY('+(idx*(h+ROW_GAP))+'px)';
+      it.rankEl.textContent = idx+1;
+      it.el.classList.toggle('top', idx===0);
+      it.scoreEl.textContent = Math.round(Math.min(100, it.score));
+      it.barEl.style.width = Math.min(100, it.score)+'%';
+    });
+    // 시계
+    T += 1;
+    var total = 9*60 + T;
+    var hh = Math.floor(total/60)%24, mm = total%60;
+    clockEl.textContent = (hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm;
+  }
+
+  window.addEventListener('resize', layout);
+  // 초기 1회 계산(정지 상태에서도 의미 있는 큐)
+  items.forEach(compute);
+  layout();
+  // 첫 프레임은 transition 없이 자리 잡기
+  (function init(){
+    var snap = items.slice().sort(function(a,b){return b.score-a.score;});
+    var h = cardH();
+    snap.forEach(function(it,idx){
+      it.el.style.transition='none';
+      it.el.style.transform='translateY('+(idx*(h+ROW_GAP))+'px)';
+      it.rankEl.textContent=idx+1; it.el.classList.toggle('top',idx===0);
+      it.scoreEl.textContent=Math.round(Math.min(100,it.score));
+      it.barEl.style.width=Math.min(100,it.score)+'%';
+    });
+    // 다음 틱부터 transition 복구
+    requestAnimationFrame(function(){ items.forEach(function(it){ it.el.style.transition=''; }); });
+  })();
+
+  if(!reduce){ setInterval(render, 1100); }   // 데모: 약 1.1초 = 가상 1분
+
+  /* ---------- 카운트업 (예시 숫자) ---------- */
+  function countUp(el, target, dur){
+    if(!el) return;
+    if(reduce){ el.textContent = target.toLocaleString(); return; }
+    var start=null;
+    function step(ts){
+      if(!start) start=ts;
+      var p=Math.min((ts-start)/dur,1);
+      var eased = 1-Math.pow(1-p,3);
+      el.textContent = Math.round(target*eased).toLocaleString();
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  function onceVisible(el, cb){
+    if(reduce || !('IntersectionObserver' in window)){ cb(); return; }
+    var o=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){cb();o.disconnect();}});},{threshold:0.4});
+    o.observe(el);
+  }
+  var cN=document.getElementById('countN'), lN=document.getElementById('leakN');
+  if(cN) onceVisible(cN.closest('.count-box'), function(){ countUp(cN, 37, 1400); });   // [예시] 37명
+  if(lN) onceVisible(lN.closest('.count-box'), function(){ countUp(lN, 580, 1500); });  // [예시] 580만원/월
+
+  /* ---------- 설치 버튼 (데모) ---------- */
+  var ib=document.getElementById('installBtn');
+  if(ib) ib.addEventListener('click', function(e){ e.preventDefault(); alert('실제 배포 시 설치 파일 링크가 연결됩니다. (데모)'); });
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

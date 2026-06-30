@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoRecall — 하루를 따라가 보면, 왜 못 부르는지 보입니다</title>
+<style>
+  :root{
+    --bg:#FCFBF9;
+    --ink:#20242B;
+    --plum:#5A3E85;
+    --plum-tint:#EEE7F4;
+    --gray:#767A85;
+    --night-bg:#1C1726;
+    --night-ink:#EDE7F4;
+    --line:#E7E2DB;
+    --maxw:1080px;
+    --read:680px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    line-height:1.75;
+    font-size:18px;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .mono{font-family:ui-monospace,"SFMono-Regular","Menlo","Consolas","Courier New",monospace;font-variant-numeric:tabular-nums}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .read{max-width:var(--read);margin-left:auto;margin-right:auto}
+  section{position:relative;padding:96px 0;border-bottom:1px solid var(--line)}
+  h1,h2,h3{line-height:1.12;letter-spacing:-0.02em;font-weight:800}
+  h2{font-size:clamp(28px,5vw,52px);margin-bottom:24px}
+  h3{font-size:clamp(20px,3vw,30px);margin-bottom:14px}
+  p{margin-bottom:18px}
+  .lead{font-size:clamp(19px,2.4vw,24px);color:var(--ink)}
+  .muted{color:var(--gray)}
+  .accent{color:var(--plum)}
+  .eyebrow{font-size:13px;letter-spacing:0.18em;text-transform:uppercase;color:var(--plum);font-weight:700;margin-bottom:18px}
+  .tag-est{display:inline-block;font-size:12px;background:var(--plum-tint);color:var(--plum);padding:2px 8px;border-radius:999px;font-weight:700;letter-spacing:.02em;vertical-align:middle}
+
+  /* ===== sticky clock indicator ===== */
+  #clock{
+    position:fixed;top:14px;right:14px;z-index:50;
+    background:rgba(252,251,249,.86);
+    backdrop-filter:saturate(140%) blur(8px);
+    -webkit-backdrop-filter:saturate(140%) blur(8px);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:10px 14px;
+    display:flex;align-items:center;gap:10px;
+    box-shadow:0 6px 24px rgba(40,30,70,.10);
+  }
+  #clock .dial{width:34px;height:34px;flex:0 0 auto}
+  #clock .ct{display:flex;flex-direction:column;line-height:1.05}
+  #clock .ct b{font-size:18px;font-weight:800;letter-spacing:.02em}
+  #clock .ct small{font-size:10px;color:var(--gray);letter-spacing:.1em;text-transform:uppercase}
+  #clock .bar{position:absolute;left:10px;right:10px;bottom:5px;height:3px;border-radius:3px;background:var(--plum-tint);overflow:hidden}
+  #clock .bar i{display:block;height:100%;width:0%;background:var(--plum);transition:width .12s linear}
+  @media (max-width:480px){
+    #clock{top:10px;right:10px;padding:7px 10px;gap:7px}
+    #clock .dial{width:26px;height:26px}
+    #clock .ct b{font-size:15px}
+  }
+
+  /* ===== hero ===== */
+  .hero{padding-top:120px;text-align:center;border-bottom:1px solid var(--line)}
+  .hero .bigtime{font-size:clamp(72px,22vw,200px);font-weight:800;letter-spacing:-0.04em;line-height:.9;color:var(--plum)}
+  .hero .bigtime .sec{color:var(--gray);font-size:.42em;letter-spacing:0}
+  .hero h1{font-size:clamp(30px,6vw,60px);margin:26px 0 18px}
+  .hero .sub{max-width:620px;margin:0 auto 34px;color:var(--gray);font-size:clamp(17px,2.2vw,21px)}
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:14px 26px;border-radius:12px;font-weight:700;font-size:17px;text-decoration:none;border:1.5px solid transparent;cursor:pointer;transition:transform .08s ease, background .15s ease}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--plum);color:#fff}
+  .btn-primary:hover{background:#4a3270}
+  .btn-ghost{background:transparent;color:var(--plum);border-color:var(--plum)}
+  .btn-ghost:hover{background:var(--plum-tint)}
+
+  /* ===== reveal ===== */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease, transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){ .reveal{opacity:1;transform:none;transition:none} }
+
+  /* ===== confession ===== */
+  .confession{background:var(--plum-tint)}
+  .confession blockquote{font-size:clamp(22px,3.4vw,34px);font-weight:700;line-height:1.4;letter-spacing:-.01em}
+  .confession cite{display:block;margin-top:20px;font-style:normal;font-size:15px;color:var(--plum);font-weight:700;letter-spacing:.04em}
+
+  /* ===== day timeline (spine) ===== */
+  .spine{position:relative;max-width:760px;margin:0 auto;padding-left:34px}
+  .spine::before{content:"";position:absolute;left:11px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--plum),var(--plum-tint))}
+  .slot{position:relative;padding:10px 0 22px}
+  .slot::before{content:"";position:absolute;left:-28px;top:14px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:3px solid var(--plum)}
+  .slot .t{font-weight:800;font-size:15px;color:var(--plum)}
+  .slot .lab{font-size:clamp(17px,2.4vw,21px);font-weight:700}
+  .slot .d{color:var(--gray);font-size:15px}
+  .slot.gap::before{border-color:var(--gray);background:var(--plum-tint)}
+  .slot.gap .lab{color:var(--gray)}
+  .gapnote{margin-top:30px;padding:20px 22px;border:1px dashed var(--plum);border-radius:14px;background:#fff;font-weight:600}
+
+  /* ===== queue demo ===== */
+  .qdemo{max-width:840px;margin:0 auto}
+  .qtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;justify-content:center}
+  .qtab{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:9px 16px;font-weight:700;font-size:14px;color:var(--gray);cursor:pointer;min-height:44px}
+  .qtab[aria-selected="true"]{border-color:var(--plum);color:var(--plum);background:var(--plum-tint)}
+  .qlist{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .qrow{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .3s, border-color .3s}
+  .qrow .rank{font-weight:800;font-size:20px;color:var(--plum);width:26px;flex:0 0 auto;text-align:center}
+  .qrow .body{flex:1;min-width:0}
+  .qrow .nm{font-weight:700}
+  .qrow .why{font-size:13px;color:var(--gray)}
+  .qrow .tier{font-size:11px;font-weight:800;letter-spacing:.04em;padding:3px 9px;border-radius:999px;background:var(--plum-tint);color:var(--plum);flex:0 0 auto}
+  .qrow.top{border-color:var(--plum);box-shadow:0 8px 24px rgba(90,62,133,.14)}
+  @media (prefers-reduced-motion: reduce){ .qrow{transition:none} }
+  .killer{margin-top:22px;text-align:center;font-weight:700;font-size:clamp(16px,2.2vw,19px)}
+  .killer b{color:var(--plum)}
+
+  /* ===== big absolution ===== */
+  .absolution{background:var(--night-bg);color:var(--night-ink);border-bottom:none}
+  .absolution p{font-size:clamp(28px,6vw,56px);font-weight:800;line-height:1.18;letter-spacing:-.02em;text-align:center}
+  .absolution .sm{font-size:clamp(16px,2.2vw,20px);font-weight:500;color:#bcb0d0;margin-top:24px}
+
+  /* ===== three jobs ===== */
+  .jobs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:14px}
+  .job{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 22px}
+  .job .ico{width:46px;height:46px;border-radius:12px;background:var(--plum-tint);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .job h3{font-size:21px;margin-bottom:8px}
+  .job p{font-size:15px;color:var(--gray);margin:0}
+  .onejob{margin-top:26px;text-align:center;font-size:clamp(18px,2.6vw,24px);font-weight:800}
+  .safety{margin-top:24px;background:var(--plum-tint);border-radius:14px;padding:18px 20px;font-size:15px}
+  .safety b{color:var(--plum)}
+  @media (max-width:768px){ .jobs{grid-template-columns:1fr} }
+
+  /* ===== before/after ===== */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .ba .col{border-radius:18px;padding:26px 22px;border:1px solid var(--line)}
+  .ba .before{background:#fff}
+  .ba .after{background:var(--plum-tint);border-color:var(--plum)}
+  .ba h3{font-size:18px;text-transform:uppercase;letter-spacing:.08em}
+  .ba ul{list-style:none;display:flex;flex-direction:column;gap:12px;margin-top:8px}
+  .ba li{display:flex;gap:10px;font-size:16px;align-items:flex-start}
+  .ba .mk{flex:0 0 auto;font-weight:800}
+  .ba .before .mk{color:var(--gray)}
+  .ba .after .mk{color:var(--plum)}
+  @media (max-width:768px){ .ba{grid-template-columns:1fr} }
+
+  /* ===== letter ===== */
+  .letter{background:var(--plum-tint)}
+  .letter .read{font-size:clamp(18px,2.4vw,22px)}
+  .letter h2{color:var(--plum)}
+
+  /* ===== final cta ===== */
+  .final{text-align:center;background:var(--night-bg);color:var(--night-ink);border-bottom:none}
+  .final h2{color:#fff}
+  .assure{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:32px auto;max-width:880px}
+  .assure .a{background:rgba(237,231,244,.08);border:1px solid rgba(237,231,244,.18);border-radius:14px;padding:18px 14px;font-size:14px;font-weight:600;color:var(--night-ink)}
+  .assure .a b{display:block;color:#c9bce4;font-size:13px;font-weight:800;margin-bottom:6px;letter-spacing:.03em}
+  @media (max-width:768px){ .assure{grid-template-columns:1fr 1fr} }
+  @media (max-width:480px){ .assure{grid-template-columns:1fr} }
+  .disclaimer{max-width:720px;margin:26px auto 0;font-size:13px;color:#9b8fb4;line-height:1.7}
+
+  footer{padding:40px 0;text-align:center;font-size:13px;color:var(--gray)}
+
+  @media (max-width:480px){
+    section{padding:64px 0}
+    .hero{padding-top:92px}
+  }
+</style>
+</head>
+<body>
+
+<!-- sticky clock -->
+<div id="clock" role="status" aria-live="off" aria-label="현재 스크롤 위치를 하루의 시간으로 표시">
+  <svg class="dial" viewBox="0 0 100 100" aria-hidden="true">
+    <circle cx="50" cy="50" r="46" fill="none" stroke="#EEE7F4" stroke-width="6"/>
+    <circle cx="50" cy="50" r="2.6" fill="#5A3E85"/>
+    <line id="cl-hour" x1="50" y1="50" x2="50" y2="28" stroke="#5A3E85" stroke-width="5" stroke-linecap="round"/>
+    <line id="cl-min" x1="50" y1="50" x2="50" y2="18" stroke="#767A85" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+  <div class="ct">
+    <small>지금</small>
+    <b class="mono" id="cl-text">09:00</b>
+  </div>
+  <div class="bar"><i id="cl-prog"></i></div>
+</div>
+
+<!-- 1. HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="bigtime mono" id="heroTime">09:12<span class="sec">:04</span></div>
+    <h1>이걸 머리로<br>따라갈 수 있을까요?</h1>
+    <p class="sub">지금 이 순간에도 수십 명의 ‘전화할 가치’가 1분마다 바뀝니다.<br>스크롤로 하루를 따라가 보세요 — 사람 머리로는 못 따라가는 이유를 직접 보게 됩니다.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#final">무료로 시작하기</a>
+      <a class="btn btn-ghost" href="#truth">하루를 따라가 보기 ↓</a>
+    </div>
+  </div>
+</header>
+
+<!-- 2. DESK CONFESSION -->
+<section class="confession">
+  <div class="wrap read reveal">
+    <p class="eyebrow">데스크에서, 하루의 끝에</p>
+    <blockquote>“누가 언제 와야 하는지 다 알아요. 그런데 다 못 챙겨요. 안 챙긴 게 아니라, 챙길 손이 하나뿐이었어요.”</blockquote>
+    <cite>— 어느 치과 데스크의 6시 5분</cite>
+  </div>
+</section>
+
+<!-- 3. THE TRUTH OF A DAY (spine) -->
+<section id="truth">
+  <div class="wrap reveal">
+    <p class="eyebrow">하루의 진실</p>
+    <h2>꽉 찬 하루에는,<br>리콜 10분이 들어갈 빈칸이 없습니다.</h2>
+    <p class="lead muted read" style="margin-left:0">접수부터 마감까지, 손은 쉴 새 없이 움직입니다. ‘리콜 전화 10분’은 늘 ‘나중에’로 밀리고 — 그 나중은 오지 않습니다. 스크롤을 따라 하루를 내려가 보세요.</p>
+  </div>
+  <div class="wrap" style="margin-top:36px">
+    <div class="spine">
+      <div class="slot reveal"><div class="t mono">09:00</div><div class="lab">접수 · 오전 진료 시작</div><div class="d">첫 환자 안내, 차트 준비, 전화 받기</div></div>
+      <div class="slot reveal"><div class="t mono">10:30</div><div class="lab">보험 청구 · 서류 정리</div><div class="d">청구 누락 점검, 영수증, 의뢰서</div></div>
+      <div class="slot reveal"><div class="t mono">12:00</div><div class="lab">예약 전화 · 일정 조정</div><div class="d">걸려오는 전화, 변경·취소 응대</div></div>
+      <div class="slot reveal"><div class="t mono">14:00</div><div class="lab">대기 응대 · 진료 보조</div><div class="d">대기실 안내, 수술방 콜, 자료 출력</div></div>
+      <div class="slot reveal"><div class="t mono">16:30</div><div class="lab">수납 · 다음 예약 잡기</div><div class="d">결제, 비용 설명, 다음 내원 안내</div></div>
+      <div class="slot gap reveal"><div class="t mono">??:??</div><div class="lab">리콜 전화 10분 — 빈칸 없음</div><div class="d">‘이따가’, ‘좀 한가해지면’ … 그 시간은 오지 않습니다</div></div>
+      <div class="slot reveal"><div class="t mono">18:00</div><div class="lab">마감 · 정산</div><div class="d">하루 마감, 내일 준비. 리콜은 다시 내일로</div></div>
+    </div>
+    <div class="gapnote reveal read" style="margin-left:auto;margin-right:auto">
+      리콜은 ‘덜 급한 일’이라 항상 마지막입니다. 그래서 매일 가장 먼저 사라집니다.
+    </div>
+  </div>
+</section>
+
+<!-- 4. PROOF OF IMPOSSIBILITY (queue reorders by time) -->
+<section id="proof">
+  <div class="wrap reveal">
+    <p class="eyebrow">불가능의 증명</p>
+    <h2>같은 환자들인데,<br>시간대마다 ‘1번’이 바뀝니다.</h2>
+    <p class="lead muted read" style="margin-left:0">부재중 골든 5분, 신환은 2분, 확인콜은 D-7부터 차오르고, 안부콜은 시술 다음날이 최고치 — 이 수십 개의 시계가 동시에 돌아갑니다. 아래에서 시간대를 바꿔 보세요.</p>
+  </div>
+
+  <div class="wrap qdemo reveal" style="margin-top:30px">
+    <div class="qtabs" role="tablist" aria-label="시간대별 콜 큐">
+      <button class="qtab" role="tab" aria-selected="true"  data-q="am">아침 09:30</button>
+      <button class="qtab" role="tab" aria-selected="false" data-q="noon">낮 13:30</button>
+      <button class="qtab" role="tab" aria-selected="false" data-q="close">마감 17:40</button>
+    </div>
+    <ul class="qlist" id="qlist" aria-live="polite"></ul>
+    <p class="killer reveal">킬러 룰 — <b>1,500만원 회수콜도, 일상 타임어택 콜을 절대 넘지 못합니다.</b> 돈은 티어를 못 넘습니다.</p>
+  </div>
+</section>
+
+<!-- 5. WHAT LEAKS -->
+<section>
+  <div class="wrap read reveal" style="margin-left:auto;margin-right:auto">
+    <p class="eyebrow">그래서 새는 것</p>
+    <h2>안 부른 환자는,<br>조용히 옆 치과로 갑니다.</h2>
+    <p class="lead">그리고 그 빈자리는, 광고로 새 환자를 끌어와 메웁니다 — 원래 우리 환자였던 사람을, 더 비싼 돈을 들여 다시 찾는 셈입니다.</p>
+    <p class="muted">월 누수 추정: <span class="tag-est">예시·추정</span> 실제 수치는 원내 데이터로 산정하며 원장 검수가 필요합니다. (성과·매출을 보장하는 표현이 아닙니다.)</p>
+  </div>
+</section>
+
+<!-- 6. ABSOLUTION (one big line) -->
+<section class="absolution">
+  <div class="wrap reveal">
+    <p>유능해서<br>더 괴로운 일이었습니다.</p>
+    <p class="sm">사람 탓이 아니라, 도구가 없었을 뿐입니다.</p>
+  </div>
+</section>
+
+<!-- 7. WHAT THE TOOL DOES -->
+<section>
+  <div class="wrap reveal">
+    <p class="eyebrow">도구가 하는 일</p>
+    <h2>세 가지를 대신합니다.</h2>
+    <div class="jobs">
+      <div class="job reveal">
+        <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5A3E85" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h12"/></svg></div>
+        <h3>모아주기</h3>
+        <p>덴트웹(전자차트) DB에 직접 연결해 대상 환자를 자동으로 추립니다. 데스크 입력은 0.</p>
+      </div>
+      <div class="job reveal">
+        <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5A3E85" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6-6 6 6M12 3v18"/></svg></div>
+        <h3>순서 매기기</h3>
+        <p>점수 기준으로 약 1분마다 큐를 다시 계산해, 지금 가장 걸어야 할 순서대로 자동 재정렬합니다.</p>
+      </div>
+      <div class="job reveal">
+        <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5A3E85" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 6"/></svg></div>
+        <h3>기억하기</h3>
+        <p>통화 결과를 버튼 한 번으로 기록하면 차트(덴트웹)에 자동 저장됩니다. LGU+ 통화상태 연동.</p>
+      </div>
+    </div>
+    <p class="onejob reveal">데스크가 할 일은 단 하나 — <span class="accent">맨 위부터 전화.</span></p>
+    <div class="safety reveal read" style="margin-left:auto;margin-right:auto">
+      <b>안전장치 —</b> 수신거부·번호무효·의료분쟁·‘리콜 종료’·사망은 큐에서 자동으로 빠집니다. 실측: 리콜 종료 112건 · 사망 100건/5년 <span class="tag-est">[출처 확인 중]</span>.
+    </div>
+  </div>
+</section>
+
+<!-- 8. BEFORE / AFTER -->
+<section>
+  <div class="wrap reveal">
+    <p class="eyebrow">하루가 이렇게 바뀝니다</p>
+    <h2>같은 손, 다른 하루.</h2>
+    <div class="ba">
+      <div class="col before reveal">
+        <h3 class="muted">Before</h3>
+        <ul>
+          <li><span class="mk">·</span>구글 시트와 메모지를 번갈아 보며</li>
+          <li><span class="mk">·</span>‘누구부터 걸지’ 매번 고민하고</li>
+          <li><span class="mk">·</span>통화 결과는 따로 메모해 두고</li>
+          <li><span class="mk">·</span>바쁘면 결국 몇 명은 빠뜨립니다</li>
+        </ul>
+      </div>
+      <div class="col after reveal">
+        <h3 class="accent">After</h3>
+        <ul>
+          <li><span class="mk">→</span>화면에 뜬 순서대로 위에서부터 전화</li>
+          <li><span class="mk">→</span>고민은 도구가, 손은 전화만</li>
+          <li><span class="mk">→</span>결과는 버튼 한 번, 차트에 자동 저장</li>
+          <li><span class="mk">→</span>빠뜨릴 사람이 줄어듭니다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. LETTER TO THE DIRECTOR -->
+<section class="letter">
+  <div class="wrap read reveal">
+    <p class="eyebrow">원장님께</p>
+    <h2>직원을 더 몰아붙이지<br>마세요.</h2>
+    <p>대신 손 하나를 보태주세요. 데스크는 이미 누가 언제 와야 하는지 알고 있습니다. 다만 손이 하나뿐이라 다 챙기지 못했을 뿐입니다.</p>
+    <p>못 한 게 아니라, 도구가 없었습니다. AutoRecall은 직원을 감시하는 도구가 아니라, 직원의 손을 하나 더 만들어 주는 도구입니다.</p>
+    <p class="muted">실장(관제) 화면도 ‘얼마나 했나 감시’가 아니라, 어디가 막혔는지 보고 흐름을 매끄럽게 돕는 용도입니다.</p>
+  </div>
+</section>
+
+<!-- 10. FINAL CTA -->
+<section class="final" id="final">
+  <div class="wrap reveal">
+    <p class="eyebrow" style="color:#c9bce4">마지막으로</p>
+    <h2>무료로, 직원 손에<br>쥐어주세요.</h2>
+    <div class="assure">
+      <div class="a"><b>그대로</b>덴트웹(전자차트)을 그대로 쓰며 연동됩니다</div>
+      <div class="a"><b>원내에서만</b>외부·클라우드 서버 없이 원내 PC에서만 돕니다</div>
+      <div class="a"><b>배울 것 없음</b>맨 위부터 전화 — 새로 배울 게 없습니다</div>
+      <div class="a"><b>밖으로 안 나감</b>환자 정보가 병원 밖으로 나가지 않습니다</div>
+    </div>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#" onclick="return false;">무료 다운로드</a>
+    </div>
+    <p class="disclaimer">면책 — 본 페이지의 수치는 예시·추정이며, 치료 결과나 매출을 보장하지 않습니다. 임상적 진단을 단정하지 않습니다. 세부 카피와 실측 수치는 원장 검수가 필요합니다.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">AutoRecall · 무료 설치형 데스크톱 앱 · 원내 PC 전용</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- reveal on scroll ---------- */
+  var reveals = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
+  if (reduce || !("IntersectionObserver" in window)) {
+    reveals.forEach(function(el){ el.classList.add("in"); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, {threshold:0.14, rootMargin:"0px 0px -8% 0px"});
+    reveals.forEach(function(el){ io.observe(el); });
+  }
+
+  /* ---------- sticky clock mapped to scroll progress (09:00 -> 18:00) ---------- */
+  var clText = document.getElementById("cl-text");
+  var clProg = document.getElementById("cl-prog");
+  var clHour = document.getElementById("cl-hour");
+  var clMin  = document.getElementById("cl-min");
+  var START = 9*60, END = 18*60; // minutes
+
+  function pad(n){ return (n<10?"0":"")+n; }
+  function setClock(progress){
+    progress = Math.max(0, Math.min(1, progress));
+    var total = START + (END-START)*progress;
+    var h = Math.floor(total/60), m = Math.floor(total%60);
+    clText.textContent = pad(h)+":"+pad(m);
+    if (clProg) clProg.style.width = (progress*100).toFixed(1)+"%";
+    // hands: 12h clock geometry
+    var minAng = (m/60)*360;
+    var hrAng  = ((h%12)/12)*360 + (m/60)*30;
+    if (clHour) clHour.setAttribute("transform","rotate("+hrAng.toFixed(1)+" 50 50)");
+    if (clMin)  clMin.setAttribute("transform","rotate("+minAng.toFixed(1)+" 50 50)");
+  }
+
+  if (reduce){
+    setClock(0.5); // representative midday value, frozen
+  } else {
+    var ticking = false;
+    function onScroll(){
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function(){
+        var doc = document.documentElement;
+        var scrollable = (doc.scrollHeight - doc.clientHeight) || 1;
+        setClock(window.pageYOffset / scrollable);
+        ticking = false;
+      });
+    }
+    window.addEventListener("scroll", onScroll, {passive:true});
+    window.addEventListener("resize", onScroll, {passive:true});
+    setClock(0);
+  }
+
+  /* ---------- queue demo (reorders by time of day) ---------- */
+  var DATA = {
+    am: [
+      {nm:"김○○ — 오늘 오전 수술 확인", why:"당일 수술 D-day · 미확인 시 급발진", tier:"T1 타임어택"},
+      {nm:"이○○ — 신환 부재중", why:"신환 골든 2분 지남 · 빠르게 재시도", tier:"T1 타임어택"},
+      {nm:"박○○ — 내일 예약 확인콜", why:"D-1 · 확인콜 곡선 상승 구간", tier:"T2 오늘 안에"},
+      {nm:"정○○ — 임플란트 회수콜(1,500만원)", why:"고가치지만 타임어택을 못 넘음", tier:"T3 이벤트콜"}
+    ],
+    noon: [
+      {nm:"이○○ — 신환 부재중 재시도", why:"낮 픽업 확률 상승 · 지금이 적기", tier:"T1 타임어택"},
+      {nm:"한○○ — 14:00 예약 10분 지각", why:"예약창 열림(15분전~10분지각)", tier:"T1 타임어택"},
+      {nm:"박○○ — 내일 예약 확인콜", why:"오늘 안에 확인 마무리", tier:"T2 오늘 안에"},
+      {nm:"정○○ — 임플란트 회수콜(1,500만원)", why:"돈은 티어를 못 넘음", tier:"T3 이벤트콜"}
+    ],
+    close: [
+      {nm:"최○○ — 내일 아침 수술 확인", why:"마감 전 당일·익일 수술 확인 우선", tier:"T1 타임어택"},
+      {nm:"서○○ — 오늘 시술 안부콜", why:"시술 다음날 최고치 직전 · 오늘 마감 전", tier:"T2 오늘 안에"},
+      {nm:"이○○ — 신환 부재중(마지막 시도)", why:"종료 전 마지막 픽업 시도", tier:"T1 타임어택"},
+      {nm:"정○○ — 임플란트 회수콜(1,500만원)", why:"오늘도 일상콜에 밀림", tier:"T3 이벤트콜"}
+    ]
+  };
+
+  var qlist = document.getElementById("qlist");
+  function render(key){
+    var rows = DATA[key] || DATA.am;
+    qlist.innerHTML = "";
+    rows.forEach(function(r, i){
+      var li = document.createElement("li");
+      li.className = "qrow" + (i===0 ? " top" : "");
+      var rank = document.createElement("div");
+      rank.className = "rank"; rank.textContent = (i+1);
+      var body = document.createElement("div");
+      body.className = "body";
+      var nm = document.createElement("div"); nm.className="nm"; nm.textContent = r.nm;
+      var why = document.createElement("div"); why.className="why"; why.textContent = r.why;
+      body.appendChild(nm); body.appendChild(why);
+      var tier = document.createElement("div");
+      tier.className = "tier"; tier.textContent = r.tier;
+      li.appendChild(rank); li.appendChild(body); li.appendChild(tier);
+      qlist.appendChild(li);
+    });
+  }
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll(".qtab"));
+  tabs.forEach(function(t){
+    t.addEventListener("click", function(){
+      tabs.forEach(function(x){ x.setAttribute("aria-selected","false"); });
+      t.setAttribute("aria-selected","true");
+      render(t.getAttribute("data-q"));
+    });
+  });
+  render("am");
+
+  /* auto-advance queue tabs as the proof section is centered (skipped if reduced motion) */
+  if (!reduce && "IntersectionObserver" in window){
+    var order = ["am","noon","close"], autoTimer = null, idx = 0, userTouched = false;
+    tabs.forEach(function(t){ t.addEventListener("click", function(){ userTouched = true; if(autoTimer){clearInterval(autoTimer); autoTimer=null;} }); });
+    var pObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting && !userTouched && !autoTimer){
+          autoTimer = setInterval(function(){
+            idx = (idx+1) % order.length;
+            var key = order[idx];
+            tabs.forEach(function(x){ x.setAttribute("aria-selected", x.getAttribute("data-q")===key ? "true":"false"); });
+            render(key);
+          }, 2600);
+        } else if (!e.isIntersecting && autoTimer){
+          clearInterval(autoTimer); autoTimer = null;
+        }
+      });
+    }, {threshold:0.4});
+    pObs.observe(document.getElementById("proof"));
+  }
+
+  /* ---------- hero ticking seconds (subtle, stops on reduced motion) ---------- */
+  if (!reduce){
+    var ht = document.getElementById("heroTime");
+    var s = 4;
+    setInterval(function(){
+      s = (s+1)%60;
+      ht.innerHTML = '09:12<span class="sec">:'+pad(s)+'</span>';
+    }, 1000);
+  }
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

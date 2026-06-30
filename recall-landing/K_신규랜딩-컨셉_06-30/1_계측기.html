@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoRecall — 보이지 않던 가치를, 눈금으로</title>
+<style>
+  :root{
+    --paper:#F4F1EA;
+    --ink:#1A2238;
+    --amber:#B5852A;
+    --panel:#11151F;
+    --panel-text:#EDE7D6;
+    --gray:#6B6F7A;
+    --rule:#D9D3C4;
+    --paper-card:#FBF9F3;
+    --amber-soft:rgba(181,133,42,0.12);
+    --shadow:0 1px 2px rgba(26,34,56,0.06), 0 8px 24px rgba(26,34,56,0.06);
+    --mono:ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    --sans:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;max-width:100%;overflow-x:hidden;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.7;
+    font-size:17px;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px;}
+  .narrow{max-width:760px;margin:0 auto;}
+  h1,h2,h3{line-height:1.25;font-weight:800;letter-spacing:-0.01em;}
+  h2{font-size:clamp(24px,4.4vw,36px);margin:0 0 18px;}
+  h3{font-size:clamp(18px,3vw,22px);margin:0 0 10px;}
+  p{margin:0 0 16px;}
+  .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;}
+  .gray{color:var(--gray);}
+  .amber{color:var(--amber);}
+  .eyebrow{
+    font-family:var(--mono);font-size:12px;letter-spacing:0.22em;
+    text-transform:uppercase;color:var(--amber);font-weight:600;
+    display:flex;align-items:center;gap:10px;margin-bottom:14px;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--amber);display:inline-block;}
+  section{padding:64px 0;position:relative;}
+  .rule-top{border-top:1px solid var(--rule);}
+  .tag{
+    display:inline-block;font-family:var(--mono);font-size:11px;
+    letter-spacing:0.06em;padding:2px 8px;border:1px solid var(--amber);
+    color:var(--amber);border-radius:2px;background:var(--amber-soft);
+    vertical-align:middle;margin-left:6px;font-weight:600;
+  }
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    min-height:52px;padding:0 26px;border-radius:4px;font-size:16px;
+    font-weight:700;text-decoration:none;cursor:pointer;border:1.5px solid var(--ink);
+    transition:transform .15s ease, background .15s ease;
+  }
+  .btn-primary{background:var(--amber);border-color:var(--amber);color:#fff;}
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-ghost{background:transparent;color:var(--ink);}
+  .btn-ghost:hover{background:var(--amber-soft);transform:translateY(-2px);}
+  .btn-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:26px;}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:56px 0 60px;}
+  .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:center;}
+  .hero h1{font-size:clamp(30px,5.6vw,52px);margin:0 0 18px;}
+  .hero h1 .accent{color:var(--amber);}
+  .hero .sub{font-size:clamp(17px,2.4vw,20px);color:var(--ink);opacity:.9;max-width:30em;}
+
+  /* instrument panel */
+  .panel{
+    background:var(--panel);color:var(--panel-text);border-radius:10px;
+    padding:22px 22px 18px;box-shadow:0 18px 50px rgba(17,21,31,0.28);
+    position:relative;overflow:hidden;
+  }
+  .panel::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(120% 80% at 50% -10%, rgba(181,133,42,0.10), transparent 60%);
+  }
+  .panel-head{display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--mono);font-size:11px;letter-spacing:0.12em;color:#9aa0ad;
+    border-bottom:1px solid rgba(237,231,214,0.14);padding-bottom:10px;margin-bottom:14px;}
+  .led{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber);
+    display:inline-block;margin-right:6px;animation:blink 2.4s infinite;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+  .gauges{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px;}
+  .gauge{text-align:center;}
+  .gauge svg{width:100%;height:auto;display:block;}
+  .gauge .glabel{font-family:var(--mono);font-size:9.5px;letter-spacing:0.04em;color:#9aa0ad;margin-top:4px;}
+  .gauge .gscore{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--panel-text);}
+  .queue-title{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;color:#9aa0ad;margin:4px 0 8px;}
+  .queue{list-style:none;margin:0;padding:0;position:relative;}
+  .qrow{
+    display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;
+    padding:9px 10px;border-radius:6px;background:rgba(237,231,214,0.05);
+    margin-bottom:6px;transition:transform .6s cubic-bezier(.2,.8,.2,1), background .4s;
+    border-left:3px solid transparent;
+  }
+  .qrow.top{background:rgba(181,133,42,0.16);border-left-color:var(--amber);}
+  .qrank{font-family:var(--mono);font-size:12px;color:#9aa0ad;font-weight:700;}
+  .qname{font-size:13.5px;color:var(--panel-text);}
+  .qmeta{font-family:var(--mono);font-size:10px;color:#9aa0ad;display:block;margin-top:1px;}
+  .qscore{font-family:var(--mono);font-size:15px;font-weight:800;color:var(--amber);}
+  .overlay-cap{
+    margin-top:14px;font-family:var(--mono);font-size:12px;color:#cdb27a;
+    text-align:center;letter-spacing:0.04em;
+  }
+
+  /* ---------- timeline ruler (section 3) ---------- */
+  .ruler{margin:26px 0 10px;}
+  .ruler-bar{display:flex;height:46px;border:1px solid var(--rule);border-radius:6px;overflow:hidden;}
+  .ruler-seg{display:flex;align-items:center;justify-content:center;font-family:var(--mono);
+    font-size:11px;color:var(--ink);border-right:1px solid var(--rule);padding:0 4px;text-align:center;}
+  .ruler-seg:last-child{border-right:none;}
+  .ruler-seg.busy{background:repeating-linear-gradient(45deg,#e8e2d3,#e8e2d3 6px,#ded7c6 6px,#ded7c6 12px);color:var(--gray);}
+  .ruler-seg.gap{background:var(--amber-soft);color:var(--amber);font-weight:700;}
+  .ruler-ticks{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--gray);margin-top:6px;}
+
+  /* ---------- proof gauges (section 4) ---------- */
+  .proof-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:10px 0 26px;}
+  .proof-g{text-align:center;background:var(--paper-card);border:1px solid var(--rule);
+    border-radius:10px;padding:16px 8px 12px;box-shadow:var(--shadow);}
+  .proof-g svg{width:100%;max-width:120px;height:auto;}
+  .proof-g .pt{font-weight:800;font-size:13px;margin-top:6px;}
+  .proof-g .pd{font-family:var(--mono);font-size:10.5px;color:var(--gray);margin-top:2px;line-height:1.4;}
+
+  /* ---------- cards / tools ---------- */
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px;}
+  .tool{background:var(--paper-card);border:1px solid var(--rule);border-radius:12px;
+    padding:24px 22px;box-shadow:var(--shadow);}
+  .tool .num{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:700;letter-spacing:0.1em;}
+  .tool h3{margin:10px 0 8px;}
+  .tool p{font-size:15px;color:var(--ink);opacity:.92;margin:0;}
+
+  .safety{margin-top:26px;background:var(--paper-card);border:1px solid var(--rule);
+    border-left:3px solid var(--amber);border-radius:10px;padding:20px 22px;}
+  .safety h3{font-size:16px;margin-bottom:8px;}
+  .safety p{font-size:14.5px;margin:0;color:var(--gray);}
+
+  /* ---------- before/after ---------- */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px;}
+  .ba-col{border-radius:12px;padding:24px 22px;box-shadow:var(--shadow);}
+  .ba-before{background:#efe9dc;border:1px solid var(--rule);}
+  .ba-after{background:var(--panel);color:var(--panel-text);}
+  .ba-col h3{margin-bottom:14px;}
+  .ba-after h3{color:var(--panel-text);}
+  .ba-col ul{list-style:none;margin:0;padding:0;}
+  .ba-col li{padding:8px 0 8px 26px;position:relative;font-size:15px;border-bottom:1px solid rgba(0,0,0,.06);}
+  .ba-after li{border-bottom:1px solid rgba(237,231,214,.12);}
+  .ba-before li::before{content:"–";position:absolute;left:6px;color:var(--gray);font-family:var(--mono);}
+  .ba-after li::before{content:"›";position:absolute;left:6px;color:var(--amber);font-family:var(--mono);font-weight:800;}
+
+  /* ---------- big statement ---------- */
+  .statement{text-align:center;padding:78px 0;background:var(--panel);color:var(--panel-text);
+    position:relative;overflow:hidden;}
+  .statement::before{content:"";position:absolute;inset:0;
+    background:radial-gradient(90% 120% at 50% 0%, rgba(181,133,42,.14), transparent 55%);}
+  .statement .big{font-size:clamp(24px,4.6vw,40px);font-weight:800;line-height:1.4;
+    max-width:18em;margin:0 auto;position:relative;letter-spacing:-0.01em;}
+  .statement .big .amber{color:var(--amber);}
+  .statement .small{font-family:var(--mono);font-size:12px;letter-spacing:0.2em;color:#9aa0ad;
+    text-transform:uppercase;margin-bottom:24px;position:relative;}
+
+  /* ---------- letter ---------- */
+  .letter{background:var(--paper-card);border:1px solid var(--rule);border-radius:14px;
+    padding:42px 40px;box-shadow:var(--shadow);position:relative;}
+  .letter .eyebrow{margin-bottom:18px;}
+  .letter p{font-size:17px;}
+  .letter .sign{font-family:var(--mono);font-size:13px;color:var(--gray);margin-top:24px;}
+
+  /* ---------- final CTA ---------- */
+  .final{text-align:center;}
+  .assure{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:32px 0 30px;text-align:left;}
+  .assure-item{background:var(--paper-card);border:1px solid var(--rule);border-radius:10px;
+    padding:18px 16px;box-shadow:var(--shadow);}
+  .assure-item .ai{font-family:var(--mono);color:var(--amber);font-size:18px;font-weight:800;}
+  .assure-item .at{font-weight:700;font-size:14.5px;margin:8px 0 4px;}
+  .assure-item .ad{font-size:13px;color:var(--gray);}
+  .disclaimer{font-size:12.5px;color:var(--gray);max-width:46em;margin:34px auto 0;line-height:1.7;
+    border-top:1px solid var(--rule);padding-top:22px;}
+
+  footer{padding:34px 0;border-top:1px solid var(--rule);text-align:center;
+    font-family:var(--mono);font-size:11px;color:var(--gray);letter-spacing:0.1em;}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:1024px){
+    .hero-grid{gap:34px;}
+  }
+  @media (max-width:768px){
+    body{font-size:16px;}
+    section{padding:50px 0;}
+    .hero-grid{grid-template-columns:1fr;gap:30px;}
+    .panel{order:2;}
+    .three{grid-template-columns:1fr;}
+    .ba{grid-template-columns:1fr;}
+    .assure{grid-template-columns:1fr 1fr;}
+    .proof-grid{grid-template-columns:repeat(5,1fr);gap:8px;}
+    .proof-g .pd{font-size:9px;}
+    .letter{padding:32px 24px;}
+  }
+  @media (max-width:480px){
+    .wrap{padding:0 18px;}
+    .gauges{gap:5px;}
+    .gauge .glabel{font-size:8px;}
+    .proof-grid{grid-template-columns:1fr 1fr;}
+    .assure{grid-template-columns:1fr;}
+    .ruler-seg{font-size:9px;}
+    .btn{width:100%;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    .led{animation:none;}
+    .qrow{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 1. HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-copy reveal">
+        <div class="eyebrow">AutoRecall · 치과 콜 계측기</div>
+        <h1>이걸 머리로<br>따라갈 수 <span class="accent">있을까요?</span></h1>
+        <p class="sub">지금 이 순간에도 수십 명의 ‘전화할 가치’가 1분마다 바뀝니다.
+          위에서부터 누르기만 하면 되도록 — 보이지 않던 가치를 <span class="amber">눈금(scale)</span>으로 계측합니다.</p>
+        <div class="btn-row">
+          <a class="btn btn-primary" href="#cta">무료로 시작하기</a>
+          <a class="btn btn-ghost" href="#confession">1분만 더 보기 ↓</a>
+        </div>
+      </div>
+
+      <!-- LIVE INSTRUMENT PANEL -->
+      <div class="panel reveal" aria-label="실시간 콜 계측기 데모 (예시 데이터)">
+        <div class="panel-head">
+          <span><span class="led"></span>LIVE · 콜 큐 계측 중</span>
+          <span class="mono" id="clock">00:00</span>
+        </div>
+        <div class="gauges" id="gauges"><!-- gauges injected --></div>
+        <div class="queue-title">▸ 전화할 순서 <span class="gray">(점수순 자동 정렬 · 예시)</span></div>
+        <ul class="queue" id="queue"><!-- rows injected --></ul>
+        <div class="overlay-cap">— 1분마다 순위가 다시 매겨집니다 —</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 2. 데스크 1인칭 고백 ============ -->
+<section id="confession" class="rule-top">
+  <div class="wrap narrow reveal">
+    <div class="eyebrow">데스크에서, 하루의 끝에</div>
+    <h2>누가 언제 와야 하는지,<br>저는 다 알고 있었어요.</h2>
+    <p>6개월 스케일링, 3개월 검진, “다음 달에 체크 한번요” 하고 가신 분.
+      그분이 누군지, 언제 와야 하는지 — 머릿속엔 다 있어요.</p>
+    <p>그런데 다 못 챙겨요. 안 챙긴 게 아니라, <span class="amber">챙길 손이 하나뿐이었어요.</span>
+      접수하다 보면 점심이고, 정신 차리면 마감입니다. 그 사이 ‘전화 한번 드려야지’ 했던 분들은
+      조용히 다음 주로, 그 다음 주로 밀려갑니다.</p>
+  </div>
+</section>
+
+<!-- ============ 3. 하루의 진실 (눈금자) ============ -->
+<section class="rule-top">
+  <div class="wrap reveal">
+    <div class="narrow">
+      <div class="eyebrow">하루의 진실</div>
+      <h2>리콜 전화 돌릴 10분은<br>늘 ‘나중에’로 밀립니다.</h2>
+      <p>접수·수납·보험청구·예약 전화·대기 응대로 꽉 찬 하루.
+        리콜 전화 한 통 돌릴 10분의 빈칸은 좀처럼 나지 않습니다.
+        그리고 그 ‘나중’은 오지 않죠.</p>
+    </div>
+    <div class="ruler" aria-label="데스크 하루 시간표 — 리콜이 들어갈 빈칸이 없음 (예시)">
+      <div class="ruler-bar">
+        <div class="ruler-seg busy" style="flex:2">접수</div>
+        <div class="ruler-seg busy" style="flex:1.4">수납</div>
+        <div class="ruler-seg busy" style="flex:1.2">예약전화</div>
+        <div class="ruler-seg busy" style="flex:1.6">보험청구</div>
+        <div class="ruler-seg gap" style="flex:0.7">리콜?</div>
+        <div class="ruler-seg busy" style="flex:1.4">대기응대</div>
+        <div class="ruler-seg busy" style="flex:2">접수</div>
+        <div class="ruler-seg busy" style="flex:1.6">수납·마감</div>
+      </div>
+      <div class="ruler-ticks">
+        <span>09:00</span><span>12:00</span><span>15:00</span><span>18:00</span>
+      </div>
+    </div>
+    <p class="narrow gray" style="margin-top:14px;font-size:14px;">눈금 사이 좁은 황동 칸 하나 —
+      그게 리콜에 허락된 시간의 전부입니다. <span class="tag">예시</span></p>
+  </div>
+</section>
+
+<!-- ============ 4. 불가능의 증명 (계측 다이어그램) ============ -->
+<section class="rule-top">
+  <div class="wrap reveal">
+    <div class="narrow">
+      <div class="eyebrow">불가능의 증명</div>
+      <h2>같은 시각, 다섯 개의 눈금이<br>제각각 다른 곳을 가리킵니다.</h2>
+    </div>
+    <div class="proof-grid" aria-label="다섯 가지 콜의 가치 곡선이 동시에 다른 값을 가리키는 계측 다이어그램 (예시)">
+      <div class="proof-g">
+        <svg viewBox="0 0 120 80" role="img" aria-label="부재중 게이지 만점 근처"><use href="#dial" x="0"></use>
+          <g transform="translate(60,68)"><line x1="0" y1="0" x2="34" y2="-30" stroke="#B5852A" stroke-width="3.2" stroke-linecap="round"/><circle r="4" fill="#1A2238"/></g>
+        </svg>
+        <div class="pt">부재중</div><div class="pd">골든 5분<br>신환은 2분</div>
+      </div>
+      <div class="proof-g">
+        <svg viewBox="0 0 120 80" role="img" aria-label="예약창 게이지 중상"><use href="#dial"></use>
+          <g transform="translate(60,68)"><line x1="0" y1="0" x2="14" y2="-42" stroke="#B5852A" stroke-width="3.2" stroke-linecap="round"/><circle r="4" fill="#1A2238"/></g>
+        </svg>
+        <div class="pt">예약창</div><div class="pd">15분 전~<br>10분 지각만</div>
+      </div>
+      <div class="proof-g">
+        <svg viewBox="0 0 120 80" role="img" aria-label="확인콜 게이지 중간 상승"><use href="#dial"></use>
+          <g transform="translate(60,68)"><line x1="0" y1="0" x2="-6" y2="-44" stroke="#B5852A" stroke-width="3.2" stroke-linecap="round"/><circle r="4" fill="#1A2238"/></g>
+        </svg>
+        <div class="pt">확인콜</div><div class="pd">D-7부터<br>차오름</div>
+      </div>
+      <div class="proof-g">
+        <svg viewBox="0 0 120 80" role="img" aria-label="안부콜 게이지 최고점"><use href="#dial"></use>
+          <g transform="translate(60,68)"><line x1="0" y1="0" x2="-24" y2="-38" stroke="#B5852A" stroke-width="3.2" stroke-linecap="round"/><circle r="4" fill="#1A2238"/></g>
+        </svg>
+        <div class="pt">안부콜</div><div class="pd">다음날<br>최고점</div>
+      </div>
+      <div class="proof-g">
+        <svg viewBox="0 0 120 80" role="img" aria-label="이벤트콜 게이지 완만"><use href="#dial"></use>
+          <g transform="translate(60,68)"><line x1="0" y1="0" x2="-38" y2="-18" stroke="#B5852A" stroke-width="3.2" stroke-linecap="round"/><circle r="4" fill="#1A2238"/></g>
+        </svg>
+        <div class="pt">이벤트콜</div><div class="pd">완만하게<br>상승</div>
+      </div>
+    </div>
+    <div class="narrow">
+      <p>부재중은 <span class="amber">골든 5분</span>, 신환은 2분. 확인콜은 D-7부터 천천히 차오르고,
+        안부콜은 시술 다음날 최고점을 찍습니다. 예약창은 15분 전부터 10분 지각까지만 열리고,
+        지나면 노쇼로 닫힙니다.</p>
+      <p><strong>이 수십 개의 눈금을 동시에, 머리로 따라갈 수 있을까요?</strong>
+        사람은 못 합니다 — 아무리 유능해도. 이건 능력의 문제가 아니라 <span class="amber">계측의 문제</span>입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. 그래서 새는 것 ============ -->
+<section class="rule-top">
+  <div class="wrap narrow reveal">
+    <div class="eyebrow">그래서, 새는 것</div>
+    <h2>안 부른 환자는<br>조용히 옆 치과로 갑니다.</h2>
+    <p>당신이 광고로 새 환자를 채우는, 바로 그 돈으로 옆 치과는 당신이 못 부른 환자를 데려갑니다.
+      이미 우리를 알고, 우리를 신뢰했던 분들인데 말이죠.</p>
+    <div class="safety" style="border-left-color:var(--amber);">
+      <h3 class="mono" style="color:var(--amber);">월 누수 추정액 <span class="tag">추정</span></h3>
+      <p>[ ______ 원 / 월 ] — <span class="amber">원장 검수·실측 데이터로 교체 필요.</span>
+        지금 화면의 모든 숫자는 예시이며, 병원 실데이터를 넣어야 의미가 생깁니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. 면죄 한 줄 ============ -->
+<section class="statement reveal">
+  <div class="wrap">
+    <div class="small">A SINGLE LINE</div>
+    <div class="big">유능해서 더 괴로운 일이었습니다.<br>
+      <span class="amber">사람 탓이 아니라, 도구가 없었을 뿐.</span></div>
+  </div>
+</section>
+
+<!-- ============ 7. 도구가 하는 일 ============ -->
+<section class="rule-top">
+  <div class="wrap reveal">
+    <div class="narrow">
+      <div class="eyebrow">도구가 하는 일</div>
+      <h2>데스크가 할 일은 단 하나,<br>맨 위부터 전화.</h2>
+    </div>
+    <div class="three">
+      <div class="tool">
+        <div class="num">01 · 모아주기</div>
+        <h3>덴트웹에서 자동으로</h3>
+        <p>덴트웹(전자차트) 데이터베이스에 직접 연결해 환자 데이터를 자동으로 끌어옵니다.
+          데스크가 따로 입력할 것은 <span class="amber">0</span>.</p>
+      </div>
+      <div class="tool">
+        <div class="num">02 · 순서 매기기</div>
+        <h3>1분마다 재정렬</h3>
+        <p>점수 기반 콜 큐를 약 1분마다 다시 계산해 순서를 자동으로 다시 세웁니다.
+          데스크는 위에서부터 전화하면 됩니다.</p>
+      </div>
+      <div class="tool">
+        <div class="num">03 · 기억하기</div>
+        <h3>차트에 자동 기록</h3>
+        <p>1클릭으로 콜 결과를 남기면 전자차트(덴트웹)에 자동 저장됩니다.
+          LGU+ 통화상태 연동으로 기록도 손이 덜 갑니다.</p>
+      </div>
+    </div>
+
+    <div class="safety reveal">
+      <h3>자동으로 빼는 분들 — 안전장치</h3>
+      <p>수신거부·번호무효·의료분쟁·차트에 ‘리콜종료’로 표기된 분·사망 기록은
+        큐에서 <span class="amber">자동으로 제외</span>됩니다.
+        (실측 5년 기준 리콜종료 <span class="mono">112건</span> · 사망 <span class="mono">100건</span>
+        <span class="tag">출처 확인 중</span>) — 전화드리면 안 되는 분께는 전화가 가지 않도록.</p>
+    </div>
+
+    <div class="narrow" style="margin-top:24px;">
+      <p class="gray" style="font-size:14.5px;">점수는 <span class="mono">기본가치 × 시간곡선 × 맥락배수 × 시도확률</span>로 매겨지고,
+        3단 계단(타임어택 ≫ 오늘 안에 ≫ 이벤트콜)을 절대 넘지 않습니다.
+        <strong>1,500만 원 회수콜도 일상 타임어택을 못 넘습니다 — 돈은 티어를 넘지 못합니다.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. before / after ============ -->
+<section class="rule-top">
+  <div class="wrap reveal">
+    <div class="narrow">
+      <div class="eyebrow">하루가 이렇게 바뀝니다</div>
+      <h2>고민하던 자리에,<br>순서가 대신 섭니다.</h2>
+    </div>
+    <div class="ba">
+      <div class="ba-col ba-before">
+        <h3>Before</h3>
+        <ul>
+          <li>구글시트를 열어 누구부터 걸지 고민</li>
+          <li>메모는 차트 따로, 시트 따로</li>
+          <li>바쁜 날엔 통째로 빠뜨림</li>
+          <li>“했던가?” 다시 확인하느라 또 시간</li>
+        </ul>
+      </div>
+      <div class="ba-col ba-after">
+        <h3>After</h3>
+        <ul>
+          <li>뜬 순서대로 위에서부터 전화</li>
+          <li>끝나면 버튼 한 번 [예약 / 부재 / 거절]</li>
+          <li>결과가 차트에 자동 저장</li>
+          <li>빠뜨릴 걱정 없이, 다음 사람으로</li>
+        </ul>
+      </div>
+    </div>
+    <p class="narrow gray" style="margin-top:18px;font-size:14px;">실장(관제) 화면과 데스크 화면은 역할이 나뉩니다 —
+      실장 화면은 ‘감시’가 아니라 큐를 한눈에 보고 흐름을 <span class="amber">효율화</span>하기 위한 것입니다.</p>
+  </div>
+</section>
+
+<!-- ============ 9. 원장에게 ============ -->
+<section class="rule-top">
+  <div class="wrap narrow reveal">
+    <div class="letter">
+      <div class="eyebrow">원장님께</div>
+      <p>직원을 더 몰아붙이지 마세요.</p>
+      <p>리콜이 새는 건 직원이 게을러서가 아닙니다.
+        누가 언제 와야 하는지는 이미 데스크 머릿속에 다 있어요.
+        다만 그걸 다 챙길 <strong>손이 하나뿐</strong>이었을 뿐입니다.</p>
+      <p>필요한 건 더 큰 압박이 아니라, <span class="amber">손 하나</span>입니다.
+        보이지 않던 ‘전화할 가치’를 눈금으로 만들어, 데스크가 위에서부터 누르기만 하면 되게 하는 손.</p>
+      <p><strong>못 한 게 아니라, 도구가 없었을 뿐입니다.</strong></p>
+      <div class="sign">— AutoRecall 드림</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10. 최종 CTA ============ -->
+<section id="cta" class="rule-top final">
+  <div class="wrap reveal">
+    <div class="narrow">
+      <div class="eyebrow" style="justify-content:center;">마지막으로</div>
+      <h2>무료로, 직원 손에 쥐어주세요.</h2>
+      <p class="gray">설치하고, 오늘부터 위에서부터 전화. 그게 전부입니다.</p>
+    </div>
+    <div class="assure">
+      <div class="assure-item">
+        <div class="ai">✓</div>
+        <div class="at">쓰던 덴트웹 그대로</div>
+        <div class="ad">전자차트를 바꾸지 않습니다. 옆에 붙는 도구입니다.</div>
+      </div>
+      <div class="assure-item">
+        <div class="ai">✓</div>
+        <div class="at">원내 PC에서만</div>
+        <div class="ad">외부·클라우드 서버 없이 병원 안 PC에서 돕니다.</div>
+      </div>
+      <div class="assure-item">
+        <div class="ai">✓</div>
+        <div class="at">새로 배울 것 없음</div>
+        <div class="ad">위에서부터 전화, 끝나면 버튼 한 번. 그게 끝.</div>
+      </div>
+      <div class="assure-item">
+        <div class="ai">✓</div>
+        <div class="at">환자정보 병원 밖으로 안 나감</div>
+        <div class="ad">데이터가 원내에 머뭅니다. 밖으로 전송되지 않습니다.</div>
+      </div>
+    </div>
+    <a class="btn btn-primary" href="#" style="min-width:240px;">무료 다운로드</a>
+    <p class="disclaimer">본 페이지의 모든 수치(환자 수·누수액·전환율·실측 건수 등)는 예시·추정이며,
+      치료 결과나 매출을 보장하지 않습니다. AutoRecall은 임상 진단을 내리지 않으며,
+      세부 카피와 수치는 원장 검수가 필요합니다.</p>
+  </div>
+</section>
+
+<footer>
+  AUTORECALL · 보이지 않던 가치를, 눈금으로 — 무료 설치형 데스크톱 앱 (원내 PC 전용)
+</footer>
+
+<!-- shared SVG dial symbol -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="dial">
+      <path d="M14 68 A46 46 0 0 1 106 68" fill="none" stroke="#D9D3C4" stroke-width="6" stroke-linecap="round"/>
+      <path d="M14 68 A46 46 0 0 1 32 33" fill="none" stroke="#B5852A" stroke-width="6" stroke-linecap="round" opacity="0.35"/>
+      <g stroke="#6B6F7A" stroke-width="1.4">
+        <line x1="14" y1="68" x2="20" y2="65"/><line x1="60" y1="22" x2="60" y2="29"/><line x1="106" y1="68" x2="100" y2="65"/>
+      </g>
+    </g>
+  </defs>
+</svg>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- reveal on scroll ---------- */
+  var reveals = document.querySelectorAll('.reveal');
+  if (reduce || !('IntersectionObserver' in window)) {
+    reveals.forEach(function(el){ el.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:0.12});
+    reveals.forEach(function(el){ io.observe(el); });
+  }
+
+  /* ---------- instrument data ---------- */
+  var archetypes = [
+    {key:'A', label:'부재중',  base:80, speed:1.7, phase:0.0},
+    {key:'B', label:'예약창',  base:62, speed:1.1, phase:1.3},
+    {key:'C', label:'확인콜',  base:55, speed:0.7, phase:2.1},
+    {key:'D', label:'안부콜',  base:70, speed:0.9, phase:3.4},
+    {key:'E', label:'이벤트',  base:40, speed:0.4, phase:5.0}
+  ];
+
+  // pure: gauge value 0..100 from time + archetype
+  function gaugeValue(a, t){
+    var wave = Math.sin(t * a.speed + a.phase);
+    var v = a.base + wave * 18 + Math.sin(t*0.31 + a.phase)*6;
+    if (v < 4) v = 4; if (v > 99) v = 99;
+    return Math.round(v);
+  }
+
+  // build gauge DOM
+  var gaugesEl = document.getElementById('gauges');
+  var gaugeNodes = [];
+  archetypes.forEach(function(a){
+    var wrap = document.createElement('div');
+    wrap.className = 'gauge';
+    wrap.innerHTML =
+      '<svg viewBox="0 0 120 80" role="img" aria-label="'+a.label+' 게이지">'+
+        '<path d="M14 68 A46 46 0 0 1 106 68" fill="none" stroke="rgba(237,231,214,0.18)" stroke-width="6" stroke-linecap="round"/>'+
+        '<g class="needle" transform="translate(60,68)"><line x1="0" y1="0" x2="0" y2="-40" stroke="#B5852A" stroke-width="3" stroke-linecap="round"/><circle r="3.4" fill="#EDE7D6"/></g>'+
+      '</svg>'+
+      '<div class="gscore mono" aria-hidden="true">00</div>'+
+      '<div class="glabel">'+a.label+'</div>';
+    gaugesEl.appendChild(wrap);
+    gaugeNodes.push({a:a, needle:wrap.querySelector('.needle'), score:wrap.querySelector('.gscore')});
+  });
+
+  function renderGauges(t){
+    gaugeNodes.forEach(function(n){
+      var v = gaugeValue(n.a, t);
+      var ang = -90 + (v/100)*180; // -90deg(left) .. +90deg(right)
+      n.needle.setAttribute('transform','translate(60,68) rotate('+ang+')');
+      n.score.textContent = (v<10?'0':'')+v;
+    });
+  }
+
+  /* ---------- call queue ---------- */
+  var patients = [
+    {name:'김○○', meta:'부재중 · 3분전',  arche:archetypes[0]},
+    {name:'이○○', meta:'안부콜 · 시술 D+1', arche:archetypes[3]},
+    {name:'박○○', meta:'확인콜 · 예약 D-2', arche:archetypes[2]},
+    {name:'최○○', meta:'예약창 · 도착예정',  arche:archetypes[1]},
+    {name:'정○○', meta:'이벤트 · 6개월 검진', arche:archetypes[4]}
+  ];
+  patients.forEach(function(p){ p.jitter = Math.random()*8; });
+
+  var queueEl = document.getElementById('queue');
+  var rowMap = {};
+  patients.forEach(function(p){
+    var li = document.createElement('li');
+    li.className = 'qrow';
+    li.innerHTML =
+      '<span class="qrank mono">–</span>'+
+      '<span><span class="qname">'+p.name+'</span><span class="qmeta mono">'+p.meta+'</span></span>'+
+      '<span class="qscore mono">0</span>';
+    queueEl.appendChild(li);
+    rowMap[p.name] = {li:li, rank:li.querySelector('.qrank'), score:li.querySelector('.qscore')};
+  });
+
+  // Robust reorder: reposition by moving DOM nodes (FLIP for smooth motion)
+  function reorder(t){
+    patients.forEach(function(p){
+      p.score = Math.round(gaugeValue(p.arche, t) + p.jitter);
+    });
+    var sorted = patients.slice().sort(function(a,b){ return b.score - a.score; });
+
+    // FLIP-lite: record old tops
+    var olds = {};
+    sorted.forEach(function(p){ olds[p.name] = rowMap[p.name].li.getBoundingClientRect().top; });
+
+    sorted.forEach(function(p, idx){
+      var r = rowMap[p.name];
+      r.rank.textContent = (idx+1);
+      r.score.textContent = p.score;
+      if(idx===0){ r.li.classList.add('top'); } else { r.li.classList.remove('top'); }
+      queueEl.appendChild(r.li); // reorder in DOM
+    });
+
+    if(!reduce){
+      sorted.forEach(function(p){
+        var r = rowMap[p.name].li;
+        var newTop = r.getBoundingClientRect().top;
+        var dy = olds[p.name] - newTop;
+        if(dy){
+          r.style.transition = 'none';
+          r.style.transform = 'translateY('+dy+'px)';
+          requestAnimationFrame(function(){
+            r.style.transition = 'transform .6s cubic-bezier(.2,.8,.2,1)';
+            r.style.transform = '';
+          });
+        }
+      });
+    }
+  }
+
+  /* ---------- clock ---------- */
+  var clockEl = document.getElementById('clock');
+  function renderClock(sec){
+    var m = Math.floor(sec/60)%60, s = Math.floor(sec)%60;
+    clockEl.textContent = (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  }
+
+  /* ---------- run ---------- */
+  var t = 0;
+  // initial paint
+  renderGauges(t); reorder(t); renderClock(0);
+
+  if(reduce){
+    // static representative frame already painted at t=2.0 for variety
+    renderGauges(2.0); reorder(2.0); renderClock(57);
+    return;
+  }
+
+  var tick = 0;
+  setInterval(function(){
+    t += 0.55;          // compressed time
+    tick += 1;
+    renderGauges(t);
+    renderClock(tick * 5); // cosmetic clock: ~5s per tick
+    if(tick % 4 === 0){  // re-rank every ~few ticks (compresses ~1min cycle)
+      reorder(t);
+    }
+  }, 1100);
+
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

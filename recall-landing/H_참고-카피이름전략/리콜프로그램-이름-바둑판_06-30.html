@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리콜 프로그램 이름 — 바둑판 보드</title>
+<style>
+:root{
+  --bg:#FBFAF7; --bg-soft:#F4F1EA; --card:#FFFFFF; --fg:#1F1F1F; --fg-soft:#3A3A3A;
+  --muted:#6E6E6E; --rule:#E8E3D6; --accent:#1D4ED8; --warm:#B8451F; --star:#D9A400;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#1A1816; --bg-soft:#252220; --card:#221F1C; --fg:#E8E4DC; --fg-soft:#C7C2B8;
+    --muted:#9A968D; --rule:#36322C; --accent:#7AB0FF; --warm:#E89464; --star:#E8C24E;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0; background:var(--bg); color:var(--fg);
+  font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  letter-spacing:-0.012em;}
+.wrap{max-width:1240px; margin:0 auto; padding:30px 22px 90px}
+h1{font-size:24px; font-weight:800; letter-spacing:-0.028em; margin:0 0 4px}
+.sub{color:var(--muted); font-size:13.5px; margin:0 0 16px}
+.banner{background:linear-gradient(90deg,#E8F1E8,transparent 80%); border-left:3px solid #5E8C5E; border-radius:0 8px 8px 0; padding:12px 16px; font-size:13.5px; line-height:1.65; margin-bottom:18px}
+@media (prefers-color-scheme:dark){.banner{background:linear-gradient(90deg,#1E2A1E,transparent 80%)}}
+.banner b{color:var(--warm)}
+.banner .id{display:inline-block; font-weight:700; padding:1px 8px; border-radius:999px; font-size:12px; margin:2px 4px 2px 0; background:var(--bg-soft); border:1px solid var(--rule)}
+.filters{display:flex; flex-wrap:wrap; gap:7px; margin:16px 0 20px}
+.f{display:flex; align-items:center; gap:6px; padding:5px 12px; border:1px solid var(--rule); background:var(--card);
+  border-radius:999px; font-size:12.5px; font-weight:600; color:var(--fg-soft); cursor:pointer; user-select:none; transition:.12s}
+.f:hover{border-color:var(--muted)}
+.f.on{background:var(--fg); color:var(--bg); border-color:var(--fg)}
+.f .dot{width:9px; height:9px; border-radius:50%}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px}
+.card{position:relative; background:var(--card); border:1px solid var(--rule); border-left-width:4px;
+  border-radius:11px; padding:15px 13px 13px; cursor:pointer; transition:.12s; min-height:78px;
+  display:flex; flex-direction:column; justify-content:center}
+.card:hover{transform:translateY(-2px); border-color:var(--muted); box-shadow:0 4px 14px rgba(0,0,0,.07)}
+.card .nm{font-size:17px; font-weight:700; line-height:1.25}
+.card .en{font-size:11.5px; color:var(--muted); margin-top:2px; font-weight:500}
+.card .st{position:absolute; top:8px; right:9px; color:var(--star); font-size:12px}
+.card .cat{position:absolute; bottom:8px; right:10px; font-size:10px; color:var(--muted); opacity:.0; transition:.12s}
+.card:hover .cat{opacity:.8}
+.hidden{display:none !important}
+.empty{color:var(--muted); font-size:14px; padding:30px 0; text-align:center}
+.foot{margin-top:26px; padding-top:14px; border-top:1px solid var(--rule); color:var(--muted); font-size:12px; line-height:1.6}
+/* modal */
+.ov{position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; padding:22px; z-index:50}
+.ov.show{display:flex}
+.modal{background:var(--card); border-radius:16px; max-width:460px; width:100%; padding:26px 24px 22px; position:relative;
+  box-shadow:0 18px 50px rgba(0,0,0,.3); animation:pop .14s ease}
+@keyframes pop{from{transform:scale(.96); opacity:.4}to{transform:scale(1); opacity:1}}
+.modal .x{position:absolute; top:14px; right:16px; font-size:22px; color:var(--muted); cursor:pointer; line-height:1; border:none; background:none}
+.modal .pill{display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; padding:3px 11px; border-radius:999px; color:#fff}
+.modal h2{font-size:30px; font-weight:800; letter-spacing:-0.03em; margin:14px 0 2px}
+.modal .men{font-size:14px; color:var(--muted); margin:0 0 16px; font-weight:500}
+.modal .lab{font-size:11.5px; font-weight:700; letter-spacing:.04em; color:var(--muted); margin:14px 0 4px; text-transform:uppercase}
+.modal .hook{font-size:15.5px; line-height:1.65}
+.modal .red{font-size:14.5px; line-height:1.6; color:var(--fg-soft); border-left:3px solid #C0524A; background:linear-gradient(90deg,rgba(192,82,74,.1),transparent 80%); padding:9px 13px; border-radius:0 6px 6px 0}
+.modal .starnote{margin-top:16px; font-size:13px; color:var(--star); font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>리콜 프로그램 이름 — 바둑판 보드</h1>
+<p class="sub">"오토리콜" 개명 검토 · 카드 70개 · <b style="color:var(--warm)">누르면</b> 뜻·후킹·레드팀이 뜹니다</p>
+
+<div class="banner">
+이름 고르기 전 한 가지부터: <b>이 프로그램의 정체성</b>이 뭐냐에 따라 결승이 갈립니다.
+<span class="id">만족·단골·소개 → 안부</span><span class="id">빈체어→매출 → 체어필</span><span class="id">4Prism 빛 → 스펙트럼</span><span class="id">타이밍 → 제철</span>
+</div>
+
+<div class="filters" id="filters"></div>
+<div class="grid" id="grid"></div>
+<div class="empty hidden" id="empty">해당 묶음에 카드가 없습니다.</div>
+
+<div class="foot">
+⭐ = 각 묶음 추천 · 색 좌변 = 개념 묶음 · 🔴 레드팀 = "약점"을 적극적으로 찾은 항목 · 외부 의존성 0 (인터넷 없이 열림) · 2026-06-30
+</div>
+</div>
+
+<div class="ov" id="ov">
+  <div class="modal" id="modal">
+    <button class="x" id="x" aria-label="닫기">&times;</button>
+    <span class="pill" id="m-pill"></span>
+    <h2 id="m-nm"></h2>
+    <p class="men" id="m-en"></p>
+    <div class="lab">뜻 · 후킹</div>
+    <div class="hook" id="m-hook"></div>
+    <div class="lab">🔴 레드팀 (약점)</div>
+    <div class="red" id="m-red"></div>
+    <div class="starnote hidden" id="m-star">⭐ 이 묶음의 추천 후보</div>
+  </div>
+</div>
+
+<script>
+const CATS=[
+ {k:"return", l:"다시·귀환", c:"#1D9E75"},
+ {k:"fill",   l:"빈자리·채움", c:"#639922"},
+ {k:"queue",  l:"콜큐·우선순위", c:"#378ADD"},
+ {k:"money",  l:"돈·매출·회수", c:"#BA7517"},
+ {k:"timing", l:"타이밍·리듬", c:"#D85A30"},
+ {k:"relation",l:"관계·단골", c:"#D4537E"},
+ {k:"prism",  l:"빛·프리즘", c:"#7F77DD"},
+ {k:"signal", l:"신호·길잡이", c:"#2B8FB0"},
+ {k:"b2b",    l:"치과·엔진", c:"#888780"},
+ {k:"mine",   l:"캐내다·맥", c:"#9A6A33"},
+];
+const CMAP=Object.fromEntries(CATS.map(c=>[c.k,c]));
+const D=[
+ ["다시봄","Dasibom","return",1,"다시 본다 + 다시 방문 + 봄(사계절치과). 삼중의미·따뜻·환자친화","\"다시보다(영상)\" 앱 연상, 발음만으론 한 뜻만 전달"],
+ ["또봄","Ttobom","return",1,"또 봄 = 다시 봄(season)·다시 봄(seeing) 이중의미 + 사계절 결","다시봄과 거의 동일 컨셉(둘 중 택1), 구어체"],
+ ["부름","Bureum","return",0,"환자를 '부른다'의 명사. 짧고 한글, 상표성 좋음","종교·소명 뉘앙스, 검색 노이즈"],
+ ["다시콜","DasiCall","return",0,"\"다시 전화\" 직관 100%, 데스크가 바로 이해","'콜' 접미사 흔함, 브랜드 격 약함"],
+ ["다시","Dashi","return",0,"again. 단순·따뜻","식별력 0, 일본어 '다시(국물)' 동음"],
+ ["리콜리","Recally","return",0,"recall + ~ly. Calendly 톤","경쟁사가 점유한 'recall' 우물, 영어"],
+ ["리콜플로우","RecallFlow","return",0,"리콜이 멈춤 없이 흐른다. 무난한 정공법","서술적·평범, recall 충돌"],
+ ["오빗","Orbit","return",1,"환자가 궤도 따라 정기적으로 돌아온다. 짧고 각인","영어, 동명 제품 다수(브라우저 등)"],
+ ["부메랑","Boomerang","return",0,"던지면 돌아온다. 가장 직관적인 컴백","Gmail 부메랑 등 동명, 다소 장난스러움"],
+ ["앙코르","Encore","return",0,"다시 무대로. 긍정·재방문","공연 연상 강함, 의료 거리감"],
+ ["타이드","Tide","return",0,"썰물처럼 빠진 환자가 밀물처럼","세제 브랜드(P&G) 정면 충돌"],
+ ["호밍","Homing","return",0,"귀소본능, 돌아오는 신호","미사일 '호밍' 연상, 생소"],
+ ["리비짓","Revisit","return",0,"재방문 그대로, 동사로도 읽힘","서술적, 상표 식별력 약함"],
+ ["리턴리","Returnly","return",0,"return + ly","'리턴=반품' 환불 연상, 동명 커머스 SaaS"],
+ ["리큐라","Recura","return",0,"recall + cure 느낌, 부드러움","의미 불투명, 약품명 같음"],
+ ["리콜프리즘","RecallPrism","return",0,"차트 백색광 → 프리즘 → 부를 환자 1명","4음절로 길고 영어, 모브랜드 종속"],
+
+ ["체어필","ChairFill","fill",1,"빈 체어를 채운다 = 매출의 본질 그대로","영어 2개, 가구('체어') 첫인상"],
+ ["채움","Chaeum","fill",0,"빈 슬롯·미완료 치료를 채움. 순한글·긍정","일반어라 단독 상표 식별력 약함"],
+ ["풀체어","FullChair","fill",0,"진료의자가 꽉 찬 상태 = 결과 약속형","영어, 발음 시 'full' 전달 약함"],
+ ["빈슬롯","BinSlot","fill",0,"당일 빈 슬롯 필러(점수 ×3.0) 직격","'빈(empty)'이 부정 단어로 먼저 읽힘"],
+ ["메움","Meum","fill",0,"구멍(공백)을 메운다. 짧고 강함","충치 '메우다' 연상, 어감 투박"],
+
+ ["오늘콜","OneulCall","queue",1,"\"오늘 전화할 사람\" = 제품 한 줄 요약","'콜' 흔함, 영문 표기 OneulCall 난독"],
+ ["콜픽","CallPick","queue",0,"시스템이 콜을 골라준다(점수 픽)","영어 2개, '픽' 흔함"],
+ ["콜큐","CallQ","queue",0,"콜 큐 그 자체. 개발·실무 직관","Q 발음·철자 혼동(cue/queue)"],
+ ["넥스트콜","NextCall","queue",0,"\"다음 전화는 이 사람\" 흐름형","길고 평범, 영어"],
+ ["콜순","CallSun","queue",0,"콜 순서. 짧은 한글, 데스크 친화","'순' 의미 약함, 영문 Sun 오독"],
+ ["스코어콜","ScoreCall","queue",0,"점수로 줄 세운 콜 = 차별화 포인트","환자 '점수질' 등급화 거부감 자극"],
+
+ ["리캐치","Recatch","money",1,"놓친(미완료·이탈) 환자를 다시 잡는다","영어, 'catch'가 낚는 어감"],
+ ["리커라","Recurra","money",1,"반복 매출(recurring revenue) 연상. 투자자·MSO용","철자 한 번 더 설명 필요, 환자엔 무의미"],
+ ["회수콜","HoesuCall","money",0,"미완료 치료 회수 = 즉각 매출","'회수=빚 받아내기' 강한 부정 뉘앙스"],
+ ["리클레임","Reclaim","money",0,"떠난 매출을 되찾다","영어, 동명 생산성 앱 존재"],
+ ["버는콜","BeoneunCall","money",0,"돈 버는 콜. 가장 솔직한 영업 카피","노골적 돈 냄새, 환자·원장 거부 위험"],
+ ["리벤","Reven","money",0,"revenue 줄임. 추상·브랜더블","의미 0 전달, 인명 'Reven' 혼동"],
+
+ ["제철","Jecheol","timing",1,"제철 과일처럼 이 환자의 제철(부를 적기)을 알려줌. 0.1초 전달","식품·농수산 연상, 의료 톤 보강 필요"],
+ ["골든콜","GoldenCall","timing",1,"부재중 골든 5분 = 점수 최고점 순간을 잡음","'골든' 흔한 수식어, 영어"],
+ ["케이던스","Cadence","timing",1,"리콜의 박자. 고급 B2B SaaS 톤","영어 추상, 영업툴 'Salesloft Cadence' 동명"],
+ ["물때","Multtae","timing",0,"어부의 최적 조업 타이밍 — 지금이 부를 물때","바다·낚시 첫인상, 의료감 약함"],
+ ["제때","Jettae","timing",0,"제때 부른다 — 타이밍의 핵심","식별력 약함, 단독 상표 어려움"],
+ ["적시","Jeoksi","timing",0,"딱 맞는 때. 점수=시각의 함수 철학","한자 추상, '적시(즉시)' 혼동"],
+ ["때깔","Ttaekkal","timing",0,"때(타이밍)+깔(색) + \"때깔 좋다\" 삼중 중의","발음 거칠고 속어 느낌"],
+ ["타이밍콜","TimingCall","timing",0,"같은 환자도 언제 거느냐가 전부","서술적, 상표 식별력 약함"],
+ ["모멘텀","Momentum","timing",0,"리콜이 굴러가는 운동량","동명 앱·습관앱 다수, 추상"],
+ ["윈도우","Window","timing",0,"열렸다 닫히는 기회창(마감창)","MS Windows 정면 충돌"],
+ ["큐","Cue","timing",0,"전화 걸 정확한 신호. 초단어","너무 짧아 검색 불가, queue 혼동"],
+ ["템포","Tempo","timing",0,"환자 주기의 박자","동명 결제·앱 다수"],
+ ["사이클","Cycle","timing",0,"6~12개월 회귀 주기","자전거·생리주기 앱 연상, 흔함"],
+ ["시즌스","Seasons","timing",0,"사계절치과와 결 맞음","추상적, 무슨 앱인지 0"],
+
+ ["안부","安否 Anbu","relation",1,"\"파는 전화가 아니라 안부 묻는 전화\" — 만족·단골·소개를 한 단어에. 돈 냄새 0","도구·속도감 약함, 알림문자앱 오해 → 서브카피 보강 필요"],
+ ["곁","Gyeot","relation",0,"곁에 있다 = 단골·신뢰. 한 음절, 따뜻","너무 추상·짧음, 무슨 앱인지 0 전달"],
+ ["단골","Dangol","relation",0,"단골 환자 만들기 — 의미 그대로","'알아서 오는 사람'이라 리콜과 의미 반대 결"],
+ ["단골이음","Dangol-ieum","relation",0,"단골을 잇는다","4음절·합성 어색, 발음 약함"],
+ ["손길","Songil","relation",0,"챙기는 손길","마사지·뷰티 연상, 기능성 약함"],
+ ["앵커","Anchor","relation",0,"단골로 정박시킴","팟캐스트 Anchor(Spotify) 동명"],
+ ["마그넷","Magnet","relation",0,"환자를 끌어당김","흔한 마케팅어(lead magnet), 식별력 약함"],
+ ["그래비티","Gravity","relation",0,"중력처럼 다시 오게","동명 SaaS·결제 다수, 추상"],
+ ["루프","Loop","relation",0,"관계의 고리","초흔함, 동명 무수"],
+ ["풀","Pull","relation",0,"끌어옴, 1음절","의미 모호, git 'pull' 연상"],
+ ["케어루프","CareLoop","relation",0,"케어의 순환","영어 2개, 의료SW에 'care' 포화"],
+
+ ["스펙트럼","Spectrum","prism",1,"차트를 분광해 환자를 무지개 우선순위로 펼침. 4Prism + 그라데이션 동시","동명 SaaS·통신사 많음(상표 보강), 영어"],
+ ["분광","分光 Bungwang","prism",1,"\"빛을 나눈다\" — 4Prism의 한국어 화신. 격(格)","한자라 첫 청취 어려움, 광학용어 생소"],
+ ["결","Gyeol","prism",0,"빛의 결·환자마다 다른 결을 읽는다. 한국적 깊이","추상·짧아 검색 불가, 기능 0 전달"],
+ ["빛때","Bitttae","prism",0,"빛(분광) + 때(타이밍). 두 정체성 한 조어","조어라 의미 설명 필요, 발음 호불호"],
+
+ ["비콘","Beacon","signal",0,"돌아올 신호 (경쟁사 Lighthouse 회피 대체)","동명 다수(분석·교육 SW)"],
+ ["노스스타","Northstar","signal",0,"내부 '북극성' 트리거와 연결","스타트업 용어로 포화, 영어"],
+ ["컴퍼스","Compass","signal",0,"누구를 언제 콜할지 길잡이","동명 부동산·HR SW 다수"],
+ ["시그널","Signal","signal",0,"콜 신호","메신저 Signal 정면 충돌"],
+ ["핑","Ping","signal",0,"가볍게 신호 보내 돌아오게","초흔함, 네트워크 용어"],
+
+ ["덴트콜","DentCall","b2b",0,"dental + call, 업계 즉시 인지","'덴트' 접두 포화(덴트웹 등), 평범"],
+ ["리텐토","Retento","b2b",0,"retention(환자 유지) 라틴풍. 글로벌 SaaS","의미 불투명, 발음 호불호"],
+ ["콜파일럿","CallPilot","b2b",0,"콜의 자동조종(Copilot 톤). AI 느낌","Copilot 아류 인상, Nortel 'CallPilot' 동명"],
+ ["덴트리콜","DentRecall","b2b",0,"dental recall 정직한 카테고리 네이밍","recall 충돌 + 서술적, 식별력 최약"],
+
+ ["노다지","Nodaji","mine",0,"차트 속 잠든 환자 = 숨은 금맥을 캔다","환자를 '돈'으로 보는 어감 노출(원장 거부)"],
+ ["광맥 / 맥","脈 Maek","mine",0,"끊긴 환자의 '맥'을 다시 잇는다(혈맥·광맥 중의)","추상적, 한의원 연상"],
+];
+
+const grid=document.getElementById('grid');
+const filtersEl=document.getElementById('filters');
+const emptyEl=document.getElementById('empty');
+let active="all";
+
+function chip(k,l,c){
+  const d=document.createElement('div'); d.className='f'+(active===k?' on':''); d.dataset.k=k;
+  if(c){const dot=document.createElement('span'); dot.className='dot'; dot.style.background=c; d.appendChild(dot);}
+  d.appendChild(document.createTextNode(l));
+  d.onclick=()=>{active=k; render();};
+  return d;
+}
+function renderFilters(){
+  filtersEl.innerHTML='';
+  filtersEl.appendChild(chip("all","전체 "+D.length,null));
+  CATS.forEach(c=>{const n=D.filter(d=>d[2]===c.k).length; filtersEl.appendChild(chip(c.k,c.l+" "+n,c.c));});
+}
+function render(){
+  renderFilters();
+  grid.innerHTML='';
+  const list=D.filter(d=>active==="all"||d[2]===active);
+  emptyEl.classList.toggle('hidden',list.length>0);
+  list.forEach(d=>{
+    const [nm,en,cat,st,hook,red]=d; const cm=CMAP[cat];
+    const el=document.createElement('div'); el.className='card'; el.style.borderLeftColor=cm.c;
+    el.innerHTML=`${st?'<span class="st">★</span>':''}<div class="nm">${nm}</div><div class="en">${en}</div><span class="cat">${cm.l}</span>`;
+    el.onclick=()=>open(d);
+    grid.appendChild(el);
+  });
+}
+const ov=document.getElementById('ov');
+function open(d){
+  const [nm,en,cat,st,hook,red]=d; const cm=CMAP[cat];
+  const p=document.getElementById('m-pill'); p.textContent=cm.l; p.style.background=cm.c;
+  document.getElementById('m-nm').textContent=nm;
+  document.getElementById('m-en').textContent=en;
+  document.getElementById('m-hook').textContent=hook;
+  document.getElementById('m-red').textContent=red;
+  document.getElementById('m-star').classList.toggle('hidden',!st);
+  ov.classList.add('show');
+}
+function close(){ov.classList.remove('show');}
+document.getElementById('x').onclick=close;
+ov.onclick=e=>{if(e.target===ov)close();};
+document.addEventListener('keydown',e=>{if(e.key==="Escape")close();});
+render();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

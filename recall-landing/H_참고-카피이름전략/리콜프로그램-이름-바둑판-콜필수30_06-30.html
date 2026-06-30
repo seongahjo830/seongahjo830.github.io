@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리콜 프로그램 이름 — '리콜·콜' 필수 30 바둑판</title>
+<style>
+:root{
+  --bg:#FBFAF7; --bg-soft:#F4F1EA; --card:#FFFFFF; --fg:#1F1F1F; --fg-soft:#3A3A3A;
+  --muted:#6E6E6E; --rule:#E8E3D6; --accent:#1D4ED8; --warm:#B8451F; --star:#D9A400;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#1A1816; --bg-soft:#252220; --card:#221F1C; --fg:#E8E4DC; --fg-soft:#C7C2B8;
+    --muted:#9A968D; --rule:#36322C; --accent:#7AB0FF; --warm:#E89464; --star:#E8C24E;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0; background:var(--bg); color:var(--fg);
+  font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  letter-spacing:-0.012em;}
+.wrap{max-width:1240px; margin:0 auto; padding:30px 22px 90px}
+h1{font-size:24px; font-weight:800; letter-spacing:-0.028em; margin:0 0 4px}
+.sub{color:var(--muted); font-size:13.5px; margin:0 0 16px}
+.banner{background:linear-gradient(90deg,#E6EEF7,transparent 80%); border-left:3px solid #4F7FB0; border-radius:0 8px 8px 0; padding:12px 16px; font-size:13.5px; line-height:1.65; margin-bottom:18px}
+@media (prefers-color-scheme:dark){.banner{background:linear-gradient(90deg,#1E2A38,transparent 80%)}}
+.banner b{color:var(--warm)}
+.banner .id{display:inline-block; font-weight:700; padding:1px 8px; border-radius:999px; font-size:12px; margin:2px 4px 2px 0; background:var(--bg-soft); border:1px solid var(--rule)}
+.filters{display:flex; flex-wrap:wrap; gap:7px; margin:16px 0 20px}
+.f{display:flex; align-items:center; gap:6px; padding:5px 12px; border:1px solid var(--rule); background:var(--card);
+  border-radius:999px; font-size:12.5px; font-weight:600; color:var(--fg-soft); cursor:pointer; user-select:none; transition:.12s}
+.f:hover{border-color:var(--muted)}
+.f.on{background:var(--fg); color:var(--bg); border-color:var(--fg)}
+.f .dot{width:9px; height:9px; border-radius:50%}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px}
+.card{position:relative; background:var(--card); border:1px solid var(--rule); border-left-width:4px;
+  border-radius:11px; padding:15px 13px 13px; cursor:pointer; transition:.12s; min-height:78px;
+  display:flex; flex-direction:column; justify-content:center}
+.card:hover{transform:translateY(-2px); border-color:var(--muted); box-shadow:0 4px 14px rgba(0,0,0,.07)}
+.card .nm{font-size:18px; font-weight:700; line-height:1.25}
+.card .en{font-size:11.5px; color:var(--muted); margin-top:2px; font-weight:500}
+.card .st{position:absolute; top:8px; right:9px; color:var(--star); font-size:12px}
+.card .cat{position:absolute; bottom:8px; right:10px; font-size:10px; color:var(--muted); opacity:0; transition:.12s}
+.card:hover .cat{opacity:.8}
+.hidden{display:none !important}
+.empty{color:var(--muted); font-size:14px; padding:30px 0; text-align:center}
+.foot{margin-top:26px; padding-top:14px; border-top:1px solid var(--rule); color:var(--muted); font-size:12px; line-height:1.6}
+.ov{position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; padding:22px; z-index:50}
+.ov.show{display:flex}
+.modal{background:var(--card); border-radius:16px; max-width:460px; width:100%; padding:26px 24px 22px; position:relative;
+  box-shadow:0 18px 50px rgba(0,0,0,.3); animation:pop .14s ease}
+@keyframes pop{from{transform:scale(.96); opacity:.4}to{transform:scale(1); opacity:1}}
+.modal .x{position:absolute; top:14px; right:16px; font-size:22px; color:var(--muted); cursor:pointer; line-height:1; border:none; background:none}
+.modal .pill{display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; padding:3px 11px; border-radius:999px; color:#fff}
+.modal h2{font-size:30px; font-weight:800; letter-spacing:-0.03em; margin:14px 0 2px}
+.modal .men{font-size:14px; color:var(--muted); margin:0 0 16px; font-weight:500}
+.modal .lab{font-size:11.5px; font-weight:700; letter-spacing:.04em; color:var(--muted); margin:14px 0 4px; text-transform:uppercase}
+.modal .hook{font-size:15.5px; line-height:1.65}
+.modal .red{font-size:14.5px; line-height:1.6; color:var(--fg-soft); border-left:3px solid #C0524A; background:linear-gradient(90deg,rgba(192,82,74,.1),transparent 80%); padding:9px 13px; border-radius:0 6px 6px 0}
+.modal .starnote{margin-top:16px; font-size:13px; color:var(--star); font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>리콜 프로그램 이름 — '리콜·콜' 필수 120</h1>
+<p class="sub">직관 50 + <b style="color:var(--warm)">사례파생 40</b> + 콜계열 30 · 모든 이름에 리콜 또는 콜 포함 · 누르면 뜻·레드팀</p>
+
+<div class="banner">
+<b>🟡 사례파생</b> 추가 — 실제 경쟁사 작명 패턴 8개를 따서 우리 버전 5개씩.
+<span class="id">RevenueWell→리콜웰</span><span class="id">Solutionreach→콜리치</span><span class="id">Weave→콜잇기</span><span class="id">Lighthouse360→콜등대</span><span class="id">DentalIntel→콜IQ</span>
+<br style="line-height:2.2">⚠️ <b>리콜맥스</b>는 실존 경쟁사(RecallMax)와 동명 — 회피용 표시.
+</div>
+
+<div class="filters" id="filters"></div>
+<div class="grid" id="grid"></div>
+<div class="empty hidden" id="empty">해당 묶음에 카드가 없습니다.</div>
+
+<div class="foot">
+⭐ = 묶음 추천 · 색 좌변 = 묶음 · 🔴 레드팀 = 약점 적극 탐색 · 외부 의존성 0 · 2026-06-30
+</div>
+</div>
+
+<div class="ov" id="ov">
+  <div class="modal" id="modal">
+    <button class="x" id="x" aria-label="닫기">&times;</button>
+    <span class="pill" id="m-pill"></span>
+    <h2 id="m-nm"></h2>
+    <p class="men" id="m-en"></p>
+    <div class="lab">뜻 · 후킹</div>
+    <div class="hook" id="m-hook"></div>
+    <div class="lab">🔴 레드팀 (약점)</div>
+    <div class="red" id="m-red"></div>
+    <div class="starnote hidden" id="m-star">⭐ 이 묶음의 추천 후보</div>
+  </div>
+</div>
+
+<script>
+const CATS=[
+ {k:"intuit", l:"직관·바로이해", c:"#1D9E75"},
+ {k:"derive", l:"사례파생(벤치마크)", c:"#BA7517"},
+ {k:"recall", l:"리콜 계열", c:"#7F77DD"},
+ {k:"callENG",l:"콜·영어조합", c:"#378ADD"},
+ {k:"callKR", l:"한글·정체성+콜", c:"#D4537E"},
+ {k:"brand",  l:"브랜더블", c:"#888780"},
+];
+const CMAP=Object.fromEntries(CATS.map(c=>[c.k,c]));
+const D=[
+ ["스마트리콜","SmartRecall","recall",1,"점수로 똑똑하게 거는 리콜 — 현 이름(오토리콜)의 자연스러운 진화","'Smart' 접두는 SaaS 최다 클리셰, recall 우물 충돌 그대로"],
+ ["리콜파이","Recallify","recall",1,"리콜을 시스템화한다(Spotify·Shopify 톤). 동사형 브랜드","'ify' 접미 클리셰 포화, recall 충돌"],
+ ["리콜핏","RecallFit","recall",0,"적기에 딱 맞는(fit) 리콜","헬스·피트니스 연상, 영어 2개"],
+ ["리콜업","RecallUp","recall",0,"끊긴 환자를 끌어올린다(up)","'~업' 접미 흔함, 평범"],
+ ["리콜온","RecallOn","recall",0,"항상 켜져(on) 자동 가동되는 리콜","의미 약함, recall 충돌"],
+ ["리콜렌즈","RecallLens","recall",0,"차트를 들여다보는 리콜 렌즈","카메라·콘택트렌즈 연상, 영어"],
+ ["리콜메이트","RecallMate","recall",0,"데스크의 리콜 짝꿍(mate)","'mate' 흔함, recall 충돌"],
+ ["리콜허브","RecallHub","recall",0,"모든 리콜이 모이는 허브","'Hub' 흔한 접미, 평범"],
+ ["리콜리오","Recallio","recall",0,"recall을 라틴풍으로 브랜드화","의미 불투명, 조어 설명 필요"],
+
+ ["콜레이더","CallRadar","callENG",1,"부를 환자를 레이더로 포착 — 스코어링 큐의 시각화","영어 2개, 표기 길음"],
+ ["굿콜","GoodCall","callENG",1,"\"굿콜!(잘한 결정)\" + 좋은 통화 중의","영어 감탄사 의존, 동명 표현 흔함"],
+ ["콜타임","CallTime","callENG",0,"지금이 콜 타임 — 부를 시각","농구 'timeout' 연상, 평범"],
+ ["핫콜","HotCall","callENG",0,"점수 뜨거운 우선 콜","스팸콜·자극적 어감"],
+ ["콜키퍼","CallKeeper","callENG",0,"환자를 지키는(keeper) 콜","골키퍼 연상, 영어"],
+ ["콜파인더","CallFinder","callENG",0,"걸 사람을 찾아준다","서술적, 영어 2개"],
+ ["콜플로우","CallFlow","callENG",0,"콜이 끊김 없이 흐른다","평범, 영어"],
+ ["콜스타","CallStar","callENG",0,"오늘의 콜 스타(1순위)","오디션·연예 연상"],
+ ["콜온","CallOn","callENG",0,"콜이 이어진다 — \"call on(방문·요청)\" 중의","의미 약함, 짧음"],
+ ["콜잇","Callit","callENG",0,"\"그 환자 콜해\" + \"call it(결정하다)\" 중의","짧아 검색 약함, 영어"],
+
+ ["안부콜","Anbu-call","callKR",1,"안부(만족·단골·소개) 묻는 콜 — 영업이 아니라 챙김 전화","'콜'이 영업색을 살짝 도로 입힘"],
+ ["단골콜","Dangol-call","callKR",1,"단골을 만드는 콜","'단골=알아서 오는 사람'과 의미 충돌 잔존"],
+ ["제때콜","Jettae-call","callKR",1,"제때(타이밍 엔진) 거는 콜","'제때'+'콜' 둘 다 식별력 약함"],
+ ["채움콜","Chaeum-call","callKR",0,"빈자리(체어·미완료)를 채우는 콜","합성 어색, '콜' 흔함"],
+ ["제철콜","Jecheol-call","callKR",0,"이 환자의 제철에 거는 콜","식품·농수산 연상"],
+ ["봄콜","Bom-call","callKR",0,"봄(다시봄·사계절치과) + 콜","봄(spring)만 읽혀 의미 전달 약함"],
+ ["또콜","Tto-call","callKR",0,"또 거는 콜 = 재방문 유도","가벼움, 구어체"],
+ ["첫콜","Cheot-call","callKR",0,"놓치기 전 거는 첫 콜(골든 5분)","의미 범위 좁음"],
+ ["손길콜","Songil-call","callKR",0,"챙기는 손길 + 콜","4음절·합성 어색"],
+
+ ["콜리","Cally","brand",0,"call + ~ly 축약. 짧고 친근","Calendly 톤과 흡사, 식별력 약함"],
+ ["콜윈","CallWin","brand",0,"콜로 이긴다(win) — 성과형","영어, '윈' 접미 흔함"],
+
+ ["콜표","Colpyo","intuit",1,"오늘 전화할 사람 명단(표). 데스크가 0초에 이해","'표'가 단조로움, 상표 식별력 약함"],
+ ["콜리스트","CallList","intuit",1,"오늘 걸 콜 명단 — 직관 100%","영어 'list', 동명 흔함"],
+ ["콜비서","Colbiseo","intuit",1,"\"누구 걸지 알려주는 콜 비서\" — 도구 성격이 이름에","비서 메타포 흔함(AI비서 포화)"],
+ ["콕콜","Kokcall","intuit",1,"걸 사람을 콕 집어주는 콜. 직관 + 귀여움","너무 가벼워 B2B 격 약함"],
+ ["누구콜","Nugucall","intuit",1,"\"오늘 누구 콜?\" 질문이 곧 이름. 재밌고 직관","장난스러움, 상표 식별력"],
+ ["콜순서","Colsunseo","intuit",0,"누구부터 걸지 순서를 정해줌","서술적, 평범"],
+ ["콜추천","Colchucheon","intuit",0,"시스템이 걸 사람을 추천","평범, 식별력 약함"],
+ ["콜매니저","CallManager","intuit",0,"콜을 관리해주는 도구","'매니저' SaaS 흔함, Cisco CallManager 동명"],
+ ["콜알림","Colallim","intuit",0,"걸 시기를 알려준다","알림문자앱 느낌, 평범"],
+ ["콜골라","Colgolla","intuit",0,"걸 사람을 골라준다","구어체, 가벼움"],
+ ["딱콜","Ttakcall","intuit",0,"딱 맞는 타이밍에 거는 콜","구어, 가벼움"],
+ ["바로콜","Barocall","intuit",0,"지금 바로 걸 콜","평범, 식별력 약함"],
+ ["콜지기","Coljigi","intuit",0,"놓치지 않게 지키는 콜 지킴이","'지기' 약간 올드한 어감"],
+ ["콜캘린더","CallCalendar","intuit",0,"언제 누구 걸지 달력으로","영어, 길고 평범"],
+ ["리콜체크","RecallCheck","intuit",1,"정기검진 리콜 체크 — 치과 임상용어와 직결","recall 우물 충돌"],
+ ["리콜알림","Recall-allim","intuit",0,"리콜 시기를 알려준다","recall 충돌, 알림앱 느낌"],
+ ["리콜명단","Recall-list","intuit",0,"리콜할 환자 명단","서술적, recall 충돌"],
+ ["리콜타임","RecallTime","intuit",0,"리콜할 때를 알려줌","recall+time 평범"],
+ ["리콜데이","RecallDay","intuit",0,"오늘은 리콜 데이","평범, 영어, recall 충돌"],
+ ["똑콜","Ttokcall","intuit",0,"똑똑한 콜(똑+콜). 짧고 경쾌","의미 약간 모호, 가벼움"],
+
+ ["콜타깃","CallTarget","intuit",1,"오늘 걸 타깃을 띄워준다","영어, '타깃' 마케팅어 흔함"],
+ ["콜보드","CallBoard","intuit",1,"콜 현황을 한눈에 보는 보드","'보드' 흔함, 영어"],
+ ["콜1순위","Col-1sunwi","intuit",1,"오늘 콜 1순위가 누구인지","표기 애매(숫자+한글)"],
+ ["콜라인업","CallLineup","intuit",1,"오늘의 콜 라인업","영어, 스포츠 연상"],
+ ["안놓친콜","Annochin-call","intuit",1,"놓치지 않고 다 거는 콜 — 누락 0 약속","문장형이라 길고 상표 애매"],
+ ["콜대상","Coldaesang","intuit",0,"오늘 콜 대상자 명단","'대상' 딱딱, 식별력 약"],
+ ["콜현황","Colhyeonhwang","intuit",0,"콜 진행 현황판","행정 느낌, 평범"],
+ ["콜순위","Colsunwi","intuit",0,"콜 우선순위 순으로","서술적, 평범"],
+ ["콜랭킹","CallRanking","intuit",0,"콜 우선순위 랭킹","영어, 환자 줄세움 거부감"],
+ ["콜포인트","CallPoint","intuit",0,"콜 점수(포인트) 표시","적립포인트 연상"],
+ ["콜스코어","CallScore","intuit",0,"콜 점수판","환자 점수화 거부감"],
+ ["콜플랜","CallPlan","intuit",0,"오늘의 콜 계획","평범, 영어"],
+ ["콜스케줄","CallSchedule","intuit",0,"콜 일정표","평범, 길음"],
+ ["콜타이밍","CallTiming","intuit",0,"거는 타이밍을 알려줌","'타이밍콜'과 유사"],
+ ["콜찬스","CallChance","intuit",0,"놓치면 닫히는 콜 기회","영어, 가벼움"],
+ ["콜기록","Colgirok","intuit",0,"통화 결과 기록","기능 일부만 표현(로거 느낌)"],
+ ["콜로그","CallLog","intuit",0,"콜 기록(log)","개발 용어, 일반인엔 생소"],
+ ["콜노트","CallNote","intuit",0,"콜 메모","기록 측면만, 흔함"],
+ ["콜리마인더","CallReminder","intuit",0,"콜 시기 알림","길고 평범, 영어"],
+ ["콜챙김","Colchaenggim","intuit",0,"환자를 챙기는 콜","구어, 합성 어색"],
+ ["콜케어","CallCare","intuit",0,"케어하는 콜","'care' 의료SW 포화"],
+ ["콜놓침제로","Nochim-zero","intuit",0,"놓치는 콜 제로","문장형, 길음"],
+ ["콜데일리","CallDaily","intuit",0,"매일 여는 콜","오늘콜과 중복 느낌"],
+ ["오늘의리콜","Oneul-recall","intuit",0,"오늘 할 리콜","서술형, recall 충돌"],
+ ["콜대시","CallDash","intuit",0,"콜 대시보드 줄임","약어 생소"],
+ ["리콜대시","RecallDash","intuit",0,"리콜 대시보드","recall 충돌, 약어"],
+ ["리콜플래너","RecallPlanner","intuit",0,"리콜 계획표","길고 평범, recall 충돌"],
+ ["리콜큐","RecallQ","intuit",0,"리콜 대기열","Q 혼동, recall 충돌"],
+ ["콜픽업","CallPickup","intuit",0,"받을(픽업할) 환자 골라줌","픽업=배차 연상"],
+ ["콜큐레이션","CallCuration","intuit",0,"걸 사람을 골라 큐레이션","영어, 다소 멋부림"],
+
+ ["리콜웰","RecallWell","derive",1,"🏢 RevenueWell式(가치+자연) — 리콜이 마르지 않고 잘 도는","recall 우물 충돌, 영어"],
+ ["콜웰","CallWell","derive",0,"🏢 RevenueWell式 — 콜이 샘솟는 우물","의미 전달 약함"],
+ ["콜샘","Colsaem","derive",0,"🏢 RevenueWell式 — 콜이 마르지 않는 샘","'샘' 생소, 식별력"],
+ ["리콜샘","Recallsaem","derive",0,"🏢 RevenueWell式 — 리콜이 샘솟듯","발음 어색"],
+ ["콜우물","Columul","derive",0,"🏢 RevenueWell式 — 끊기지 않는 콜의 우물","옛스러운 어감"],
+
+ ["콜리치","CallReach","derive",1,"🏢 Solutionreach式(개념+닿다) — 콜이 환자에게 닿는다","영어 2개"],
+ ["리콜리치","RecallReach","derive",0,"🏢 Solutionreach式 — 리콜이 닿는다","recall 충돌, 영어"],
+ ["콜터치","CallTouch","derive",0,"🏢 Solutionreach式 — 콜로 환자를 터치","흔함, 영어"],
+ ["리콜터치","RecallTouch","derive",0,"🏢 Solutionreach式 — 리콜로 터치","recall 충돌"],
+ ["콜커넥트","CallConnect","derive",0,"🏢 Solutionreach式 — 콜로 다시 연결","평범, 영어"],
+
+ ["콜잇기","Colitgi","derive",1,"🏢 Weave式(관계 엮기) — 끊긴 환자를 콜로 잇는다","동사형이라 상표성 고민"],
+ ["리콜잇기","Recall-itgi","derive",0,"🏢 Weave式 — 리콜로 관계를 잇기","recall 충돌"],
+ ["콜엮기","Colyeokgi","derive",0,"🏢 Weave式 — 관계를 엮는 콜","발음 어려움(영문표기難)"],
+ ["콜이음","Colieum","derive",0,"🏢 Weave式 — 콜로 이음","의미 약함"],
+ ["콜매듭","Colmaedeup","derive",0,"🏢 Weave式 — 콜로 매듭짓기","의미 모호"],
+
+ ["콜등대","Coldeungdae","derive",1,"🏢 Lighthouse360式(길잡이) — 돌아올 길 밝히는 콜 등대","길음, 영문표기 難"],
+ ["리콜등대","Recall-deungdae","derive",0,"🏢 Lighthouse360式 — 리콜 등대","recall 충돌, 길음"],
+ ["콜360","Call360","derive",0,"🏢 Lighthouse360式 — 전방위 콜 관리","'360' 접미 포화"],
+ ["리콜360","Recall360","derive",0,"🏢 Lighthouse360式 — 360도 리콜","recall+숫자 진부"],
+ ["콜나침반","Colnachimban","derive",0,"🏢 Lighthouse360式 — 누구 걸지 길잡이","길고 영문표기 難"],
+
+ ["콜IQ","CallIQ","derive",1,"🏢 DentalIntelligence式(지능) — 콜의 두뇌(점수엔진)","영어, IQ 접미 흔함"],
+ ["리콜IQ","RecallIQ","derive",0,"🏢 DentalIntelligence式 — 리콜 지능","recall 충돌"],
+ ["콜인텔","CallIntel","derive",0,"🏢 DentalIntelligence式 — 콜 인텔리전스","평범, 영어"],
+ ["리콜인텔","RecallIntel","derive",0,"🏢 DentalIntelligence式 — 리콜 인텔","recall 충돌"],
+ ["콜브레인","CallBrain","derive",0,"🏢 DentalIntelligence式 — 콜의 두뇌","흔함, 영어"],
+
+ ["콜복","Colbok","derive",1,"🏢 PracticeMojo式(기운/복) — 콜이 복(福)을 부른다","의미 직관 약함"],
+ ["콜모조","CallMojo","derive",0,"🏢 PracticeMojo式 — 콜에 마법을","'mojo' 한국선 생소"],
+ ["리콜모조","RecallMojo","derive",0,"🏢 PracticeMojo式 — 리콜 모조","recall 충돌, 생소"],
+ ["콜기운","Colgiun","derive",0,"🏢 PracticeMojo式 — 콜에 기운을","모호"],
+ ["콜운","Colun","derive",0,"🏢 PracticeMojo式 — 콜운이 트인다","의미 약함"],
+
+ ["리콜로","Recallo","derive",1,"🏢 조어式(Emitrr·Adit) — recall 라틴풍 브랜드 조어","의미 불투명, 설명 필요"],
+ ["콜리아","Callia","derive",0,"🏢 조어式 — call 우아한 조어","인명·꽃이름 같음"],
+ ["리콜라","Recalla","derive",0,"🏢 조어式 — recall 변형","의미 0 전달"],
+ ["콜티보","Coltivo","derive",0,"🏢 조어式 — cultivate(가꾸다) 느낌","생소, 발음 호불호"],
+ ["콜비오","Colvio","derive",0,"🏢 조어式 — call 추상 브랜드","의미 0 전달"],
+
+ ["콜맥스","CallMax","derive",1,"🏢 RecallMax式(극대화) — 콜 효과를 극대화","'Max' 접미 흔함"],
+ ["리콜맥스","RecallMax","derive",0,"🏢 RecallMax式 — 실존 경쟁사와 동명!","⚠️ 상표 정면 충돌(실제 제품)"],
+ ["콜플러스","CallPlus","derive",0,"🏢 RecallMax式 — 콜에 플러스","'Plus' 초흔함"],
+ ["리콜플러스","RecallPlus","derive",0,"🏢 RecallMax式 — 리콜 플러스","recall 충돌, 흔함"],
+ ["콜부스트","CallBoost","derive",0,"🏢 RecallMax式 — 콜 성과 부스트","흔함, 영어"],
+];
+
+const grid=document.getElementById('grid');
+const filtersEl=document.getElementById('filters');
+const emptyEl=document.getElementById('empty');
+let active="all";
+
+function chip(k,l,c){
+  const d=document.createElement('div'); d.className='f'+(active===k?' on':''); d.dataset.k=k;
+  if(c){const dot=document.createElement('span'); dot.className='dot'; dot.style.background=c; d.appendChild(dot);}
+  d.appendChild(document.createTextNode(l));
+  d.onclick=()=>{active=k; render();};
+  return d;
+}
+function renderFilters(){
+  filtersEl.innerHTML='';
+  filtersEl.appendChild(chip("all","전체 "+D.length,null));
+  CATS.forEach(c=>{const n=D.filter(d=>d[2]===c.k).length; filtersEl.appendChild(chip(c.k,c.l+" "+n,c.c));});
+}
+function render(){
+  renderFilters();
+  grid.innerHTML='';
+  const list=D.filter(d=>active==="all"||d[2]===active);
+  emptyEl.classList.toggle('hidden',list.length>0);
+  list.forEach(d=>{
+    const [nm,en,cat,st]=d; const cm=CMAP[cat];
+    const el=document.createElement('div'); el.className='card'; el.style.borderLeftColor=cm.c;
+    el.innerHTML=`${st?'<span class="st">★</span>':''}<div class="nm">${nm}</div><div class="en">${en}</div><span class="cat">${cm.l}</span>`;
+    el.onclick=()=>open(d);
+    grid.appendChild(el);
+  });
+}
+const ov=document.getElementById('ov');
+function open(d){
+  const [nm,en,cat,st,hook,red]=d; const cm=CMAP[cat];
+  const p=document.getElementById('m-pill'); p.textContent=cm.l; p.style.background=cm.c;
+  document.getElementById('m-nm').textContent=nm;
+  document.getElementById('m-en').textContent=en;
+  document.getElementById('m-hook').textContent=hook;
+  document.getElementById('m-red').textContent=red;
+  document.getElementById('m-star').classList.toggle('hidden',!st);
+  ov.classList.add('show');
+}
+function close(){ov.classList.remove('show');}
+document.getElementById('x').onclick=close;
+ov.onclick=e=>{if(e.target===ov)close();};
+document.addEventListener('keydown',e=>{if(e.key==="Escape")close();});
+render();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
