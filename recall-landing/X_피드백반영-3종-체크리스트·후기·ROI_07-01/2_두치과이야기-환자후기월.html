@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>두 치과 이야기 — 환자는 ★를 이렇게 다르게 줍니다</title>
+<meta name="description" content="치과 재내원(리콜) 자동화 AutoRecall. 리콜을 관리하는 치과와 방치하는 치과의 환자 후기 차이, 그리고 우리 치과 자가진단.">
+<style>
+  :root{
+    --bg:#FBF7EF; --card:#fff; --ink:#1E1813; --soft:#5A5042; --faint:#6E6353;
+    --line:#EBE2D3; --green:#1E7A57; --green-d:#135C41; --green-soft:#E5F2EC;
+    --gold:#E0A82E; --loss:#C2522F; --loss-soft:#F7ECE4; --cool:#7C8AA0;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+    --maxw:920px;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.65;font-size:17px;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+  .eyebrow{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+  section{padding:54px 0}
+  h2.sec{font-size:clamp(22px,3.8vw,31px);font-weight:900;letter-spacing:-.03em;line-height:1.22}
+  .lead{color:var(--soft);font-size:16.5px;margin-top:12px;max-width:640px}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-weight:800;font-size:16px;text-decoration:none;padding:15px 24px;border-radius:13px;cursor:pointer;border:0;font-family:inherit;transition:transform .12s,box-shadow .12s,background .15s}
+  .btn.primary{background:var(--green);color:#fff;box-shadow:0 14px 32px -14px rgba(30,122,87,.6)}
+  .btn.primary:hover{transform:translateY(-2px)}
+  .btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+  .btn.ghost:hover{border-color:var(--green);color:var(--green)}
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .micro{margin-top:15px;font-size:12.5px;color:var(--faint)}
+
+  /* hero with floating review wall */
+  .hero{position:relative;padding:64px 0 44px;overflow:hidden;background:radial-gradient(820px 480px at 84% -6%,var(--green-soft),transparent 60%)}
+  .clip{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:var(--green);background:var(--green-soft);border:1px solid #CFE7DC;padding:7px 14px;border-radius:999px}
+  .hero h1{font-size:clamp(31px,6.8vw,58px);font-weight:900;letter-spacing:-.045em;line-height:1.1;margin:18px 0 0;max-width:680px}
+  .hero h1 .hl{color:var(--loss)}
+  .hero .sub{font-size:clamp(16px,2.3vw,20px);color:var(--soft);margin:18px 0 0;max-width:560px}
+  .hero .sub b{color:var(--ink)}
+  .floatwall{display:flex;gap:10px;margin-top:30px;overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+  .fw-col{display:grid;gap:10px;flex:1;min-width:0}
+  .fw{background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px 14px;box-shadow:0 10px 24px -20px rgba(0,0,0,.4)}
+  .fw .s{font-size:12px;letter-spacing:1px}
+  .fw .s.g{color:var(--gold)} .fw .s.d{color:#CFC4B4}
+  .fw p{font-size:13px;font-weight:600;margin-top:4px;line-height:1.45}
+  @media(max-width:680px){.fw-col:nth-child(3){display:none}}
+
+  /* 두 치과 비교 월 */
+  .twowall{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}
+  @media(max-width:740px){.twowall{grid-template-columns:1fr}}
+  .panel{border-radius:20px;padding:20px;border:1px solid var(--line)}
+  .panel.good{background:var(--green-soft);border-color:#CFE7DC}
+  .panel.bad{background:var(--loss-soft);border-color:#EAD9CE}
+  .panel .ph{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .panel .ph .nm{font-weight:900;font-size:16px}
+  .panel.good .ph .nm{color:var(--green-d)} .panel.bad .ph .nm{color:var(--loss)}
+  .panel .ph .avg{font-size:13px;font-weight:800;background:#fff;border:1px solid var(--line);border-radius:20px;padding:4px 11px}
+  .panel .ph .avg .star{color:var(--gold)}
+  .rc{background:#fff;border:1px solid var(--line);border-radius:13px;padding:13px 14px;margin-top:11px}
+  .rc .top{display:flex;align-items:center;gap:8px}
+  .rc .av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;flex:none}
+  .rc .av.g{background:var(--green-soft)} .rc .av.b{background:#EFE6DD}
+  .rc .s{font-size:13px;letter-spacing:1px;margin-left:auto}
+  .rc .s.g{color:var(--gold)} .rc .s.d{color:#CFC4B4}
+  .rc p{font-size:13.5px;font-weight:600;margin-top:8px}
+  .rc .who{font-size:11.5px;color:var(--faint);margin-top:6px}
+  .revnote{font-size:11.5px;color:var(--faint);margin-top:14px;text-align:center}
+  .bridge{margin-top:22px;background:var(--ink);color:#fff;border-radius:16px;padding:18px 20px;text-align:center;font-size:16px;font-weight:700}
+  .bridge b{color:#9FE3C9}
+
+  /* checklist mini */
+  .check{background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px 24px;margin-top:6px;box-shadow:0 26px 60px -45px rgba(20,40,30,.5)}
+  .check .top{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap}
+  .counter{text-align:center;background:var(--green);color:#fff;border-radius:16px;padding:12px 18px;min-width:120px}
+  .counter .big{font-size:34px;font-weight:900;line-height:1}
+  .counter .lbl{font-size:11.5px;color:#D6F0E4;margin-top:2px}
+  .meter{height:9px;border-radius:7px;background:var(--green-soft);overflow:hidden;margin-top:16px}
+  .meter i{display:block;height:100%;width:0;border-radius:7px;background:linear-gradient(90deg,var(--green),var(--gold),var(--loss));transition:width .3s}
+  .items{display:grid;gap:9px;margin-top:16px}
+  .ck{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:14px 15px;cursor:pointer;transition:.14s;text-align:left;font:inherit;color:inherit;width:100%}
+  .ck:hover{border-color:var(--green)} .ck.on{border-color:var(--green);background:var(--green-soft)}
+  .ck .bx{width:23px;height:23px;border-radius:7px;border:2.5px solid #C3CFC8;flex:none;margin-top:1px;display:grid;place-items:center;transition:.12s;font-size:13px;color:#fff;font-weight:900}
+  .ck.on .bx{background:var(--green);border-color:var(--green)}
+  .ck .bx span{opacity:0;transition:.12s}.ck.on .bx span{opacity:1}
+  .ck .q{font-size:15px;font-weight:700}
+  .ck .a{font-size:13px;color:var(--green-d);margin-top:0;max-height:0;overflow:hidden;opacity:0;visibility:hidden;transition:max-height .25s,opacity .2s,margin .2s}
+  .ck.on .a{max-height:80px;opacity:1;visibility:visible;margin-top:7px}
+  .ck .a b{color:var(--green)}
+  .verdict-box{margin-top:14px;background:var(--ink);color:#fff;border-radius:14px;padding:16px 18px;font-size:15px;font-weight:700;text-align:center}
+  .verdict-box b{color:var(--gold)}
+
+  /* data→3 */
+  .pipe{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin-top:22px}
+  @media(max-width:680px){.pipe{grid-template-columns:1fr}.pipe .arrow{transform:rotate(90deg)}}
+  .messy{background:var(--loss-soft);border:1px dashed #E2A892;border-radius:16px;padding:18px;text-align:center}
+  .messy .n{font-size:28px;font-weight:900;color:var(--loss)} .messy .t{font-size:12.5px;color:var(--soft);margin-top:4px}
+  .arrow{font-size:28px;color:var(--green);text-align:center;font-weight:900}
+  .clean{background:var(--green-soft);border:1px solid #CFE7DC;border-radius:16px;padding:14px}
+  .clean .t{font-size:12.5px;font-weight:800;color:var(--green);text-align:center;margin-bottom:8px}
+  .slot{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 11px;margin-bottom:6px}
+  .slot:last-child{margin-bottom:0}
+  .slot .rk{width:21px;height:21px;border-radius:6px;background:var(--green);color:#fff;font-size:11px;font-weight:900;display:grid;place-items:center;flex:none}
+  .slot .nm{font-size:12.5px;font-weight:700;flex:1} .slot .sc{font-size:11.5px;font-weight:800;color:var(--green)}
+
+  /* calc */
+  .calc{background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px 24px;margin-top:22px}
+  .diag-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:16px}
+  @media(max-width:680px){.diag-grid{grid-template-columns:1fr}}
+  .field{margin-top:15px}.field:first-child{margin-top:0}
+  .field label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:700}
+  .field label .val{font-size:17px;font-weight:900;color:var(--green)}
+  .field input[type=range]{width:100%;margin-top:10px;-webkit-appearance:none;height:6px;border-radius:6px;background:var(--green-soft);outline:none}
+  .field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--green);cursor:pointer;border:3px solid #fff;box-shadow:0 2px 9px rgba(30,122,87,.45)}
+  .field input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--green);cursor:pointer;border:3px solid #fff}
+  .field input[type=range]:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+  .field .hint{font-size:12px;color:var(--faint);margin-top:7px}
+  .dk{margin-top:9px}.dk button{background:var(--bg);color:var(--soft);border:1px solid var(--line);border-radius:9px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+  .dk button:hover{border-color:var(--green);color:var(--green)}
+  .orow{display:flex;justify-content:space-between;align-items:baseline;gap:6px 12px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--line)}
+  .orow:last-of-type{border-bottom:0}.orow .k{font-size:13.5px;color:var(--soft)}
+  .orow .v{font-size:clamp(19px,4vw,26px);font-weight:900}
+  .v.loss{color:var(--loss)} .v.gain{color:var(--green)} .v.neu{color:var(--ink)}
+  .fnote{font-size:11.5px;color:var(--faint);margin-top:14px;line-height:1.7}
+
+  /* big clinic + ROI band */
+  .band{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+  @media(max-width:680px){.band{grid-template-columns:1fr}}
+  .bcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
+  .bcard .ic{font-size:24px}.bcard h3{font-size:16px;font-weight:900;margin-top:8px}
+  .bcard p{font-size:13.5px;color:var(--soft);margin-top:7px}
+  .bcard.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .bcard.dark p{color:#C2CCC7}
+  .bcard.dark .hl{color:#9FE3C9}
+
+  /* install */
+  .install{background:linear-gradient(180deg,#fff,var(--green-soft));border:1.5px solid #CFE7DC;border-radius:24px;padding:38px 28px;text-align:center;margin-top:22px}
+  .install h2{font-size:clamp(23px,3.8vw,32px);font-weight:900;letter-spacing:-.03em;line-height:1.22}
+  .install h2 .hl{color:var(--green)}
+  .install p{color:var(--soft);max-width:520px;margin:13px auto 0}
+  .steps{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin:22px 0 6px}
+  .step{background:#fff;border:1px solid var(--line);border-radius:11px;padding:11px 15px;font-size:13px;font-weight:700}
+  .step b{color:var(--green)}
+  .faq{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:24px;text-align:left}
+  .faq .it{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .faq .qq{font-size:14px;font-weight:800}.faq .aa{font-size:13px;color:var(--soft);margin-top:5px}
+  @media(max-width:600px){.faq{grid-template-columns:1fr}}
+  .failsafe{margin-top:22px;font-size:16px;font-weight:900;color:var(--loss)}
+  .guard{margin-top:26px;font-size:11.5px;color:var(--faint);line-height:1.8;border-top:1px solid var(--line);padding-top:18px;text-align:left}
+  footer{padding:30px 0 64px;text-align:center;color:var(--faint);font-size:13px}
+
+  .btn:focus-visible,.dk button:focus-visible,.ck:focus-visible,a:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+  .skip{position:absolute;left:-9999px}
+  .skip:focus{position:fixed;left:8px;top:8px;z-index:999;background:#fff;color:var(--green-d);padding:10px 16px;border-radius:9px;font-weight:800;outline:3px solid var(--green)}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a href="#check" class="skip">본문(자가진단)으로 바로가기</a>
+<main>
+
+<!-- 히어로 -->
+<header class="hero">
+  <div class="wrap">
+    <span class="clip">⭐ 환자가 기억하는 차이 · AutoRecall</span>
+    <h1>안 오는 환자는 없습니다.<br><span class="hl">안 부른 환자</span>만 있을 뿐.</h1>
+    <p class="sub">먼저 불러주는 치과의 환자는 <b>★★★★★</b>를 남기고, 방치된 환자는 조용히 옆 치과로 갑니다.<br>두 치과의 차이는 ‘실력’이 아니라 — <b>리콜을 챙기느냐</b>였습니다.</p>
+    <div class="floatwall" aria-hidden="true">
+      <div class="fw-col">
+        <div class="fw"><div class="s g">★★★★★</div><p>“먼저 검진 시기라고 연락 와요”</p></div>
+        <div class="fw"><div class="s g">★★★★★</div><p>“미뤘던 임플란트, 전화 한 통에 결심”</p></div>
+        <div class="fw"><div class="s d">★★☆☆☆</div><p>“한 번 가고 연락이 없더라고요”</p></div>
+      </div>
+      <div class="fw-col">
+        <div class="fw"><div class="s g">★★★★★</div><p>“관리받는 느낌이 들어요”</p></div>
+        <div class="fw"><div class="s d">★★★☆☆</div><p>“챙겨준다는 느낌은 없었어요”</p></div>
+        <div class="fw"><div class="s g">★★★★★</div><p>“안 까먹게 챙겨주니 계속 다녀요”</p></div>
+      </div>
+      <div class="fw-col">
+        <div class="fw"><div class="s d">★★☆☆☆</div><p>“어느새 집 앞 다른 치과로”</p></div>
+        <div class="fw"><div class="s g">★★★★★</div><p>“잊지 않고 연락 줘서 고마웠어요”</p></div>
+        <div class="fw"><div class="s g">★★★★★</div><p>“여기는 확실히 달라요”</p></div>
+      </div>
+    </div>
+    <div style="font-size:11.5px;color:var(--faint);margin-top:8px">※ 위 후기는 리콜 관리의 차이를 보여주기 위한 예시(가상)입니다.</div>
+    <div class="cta-row">
+      <a class="btn primary" href="#check">▶ 우리 치과는 어느 쪽? 30초 진단</a>
+      <a class="btn ghost" href="#install">무료 설치</a>
+    </div>
+    <div class="micro">설치형 데스크톱 도구 · 차트(덴트웹)는 읽기만 · 환자정보는 원내 로컬에서만</div>
+  </div>
+</header>
+
+<!-- 두 치과 비교 월 -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">두 치과 이야기</div>
+    <h2 class="sec">같은 동네, 비슷한 실력.<br>환자 후기는 왜 이렇게 갈렸을까요?</h2>
+    <p class="lead">차이는 단 하나 — 한쪽은 떠날 때가 된 환자를 <b>먼저 불러줬고</b>, 한쪽은 환자가 알아서 오기를 기다렸습니다.</p>
+    <div class="twowall">
+      <div class="panel good">
+        <div class="ph"><span class="nm">🟢 먼저 불러주는 치과</span><span class="avg"><span class="star" aria-hidden="true">★</span> 4.8 · 후기 多</span></div>
+        <div class="rc"><div class="top"><span class="av g" aria-hidden="true">😊</span><span class="s g" aria-hidden="true">★★★★★</span></div><p>“6개월마다 먼저 ‘검진 시기예요’ 하고 연락이 와요. 안 까먹게 챙겨주니 계속 다니게 되네요.”</p><div class="who">— 정기검진 환자 후기 예시</div></div>
+        <div class="rc"><div class="top"><span class="av g" aria-hidden="true">😌</span><span class="s g" aria-hidden="true">★★★★★</span></div><p>“상담만 받고 미뤘던 임플란트, 전화 한 통에 다시 마음먹었어요. 잊지 않고 연락 줘서 고마웠어요.”</p><div class="who">— 임플란트 환자 후기 예시</div></div>
+        <div class="rc"><div class="top"><span class="av g" aria-hidden="true">🙂</span><span class="s g" aria-hidden="true">★★★★★</span></div><p>“여기는 ‘관리받는 느낌’이 들어요. 다른 데랑 확실히 달라요.”</p><div class="who">— 재내원 환자 후기 예시</div></div>
+      </div>
+      <div class="panel bad">
+        <div class="ph"><span class="nm">⚪ 기다리기만 하는 치과</span><span class="avg"><span class="star" aria-hidden="true">★</span> 3.1 · 이탈 多</span></div>
+        <div class="rc"><div class="top"><span class="av b" aria-hidden="true">😐</span><span class="s d" aria-hidden="true">★★☆☆☆</span></div><p>“한 번 가고는 그 뒤로 연락이 없더라고요. 어느새 집 앞 다른 치과로 옮겼어요.”</p><div class="who">— 이탈 환자 후기 예시</div></div>
+        <div class="rc"><div class="top"><span class="av b" aria-hidden="true">😕</span><span class="s d" aria-hidden="true">★★☆☆☆</span></div><p>“검진하라는 말은 들었는데, 아무도 다시 알려주지 않아서 그냥 잊고 살았어요.”</p><div class="who">— 미내원 환자 후기 예시</div></div>
+        <div class="rc"><div class="top"><span class="av b" aria-hidden="true">😶</span><span class="s d" aria-hidden="true">★★★☆☆</span></div><p>“나쁘진 않았는데, 챙겨준다는 느낌은 없었어요.”</p><div class="who">— 1회 내원 환자 후기 예시</div></div>
+      </div>
+    </div>
+    <div class="revnote">※ 위 후기는 리콜 관리의 차이를 보여주기 위한 <b>예시(가상)</b>이며, 특정 치과의 실제 후기가 아닙니다.</div>
+    <div class="bridge">★를 가른 건 실력이 아니라 <b>‘먼저 불러줬는가’</b>. 그리고 그 전화는 — <b>지금 우리 차트로 충분히 가능</b>합니다.</div>
+  </div>
+</section>
+
+<!-- 우리 치과는 어느 쪽? 체크리스트 -->
+<section id="check" style="padding-top:0">
+  <div class="wrap">
+    <div class="eyebrow">우리 치과는 어느 쪽?</div>
+    <h2 class="sec">★를 받는 치과가 되려면 — 몇 가지나 해당될까요?</h2>
+    <p class="lead">해당 항목을 눌러 보세요. ‘기다리기만 하는 치과’ 신호가 많을수록, 바꿀 여지도 큽니다.</p>
+    <div class="check">
+      <div class="top">
+        <div><div style="font-size:14px;font-weight:800;color:var(--soft)">‘기다리는 치과’ 신호</div><div style="font-size:13px;color:var(--faint);margin-top:2px">9개 중 몇 개나 켜지나요?</div></div>
+        <div class="counter"><div class="big"><span id="ckCount">0</span><span style="font-size:18px;color:#CFEEE0"> / 9</span></div><div class="lbl" id="ckGrade">체크 전</div></div>
+      </div>
+      <div class="meter"><i id="ckMeter"></i></div>
+      <div class="items" id="ckItems" role="group" aria-label="우리 치과 자가진단 9개 항목">
+        <button class="ck"><span class="bx" aria-hidden="true"><span>✓</span></span><span><span class="q">① 6개월 지난 정기검진 명단이 어디 있는지 모른다.</span><span class="a">→ AutoRecall이 도래 환자를 <b>자동으로 한 줄에</b> 모아줍니다.</span></span></button>
+        <button class="ck"><span class="bx" aria-hidden="true"><span>✓</span></span><span><span class="q">② 오늘 누구한테 전화할지 ‘감’으로 정한다.</span><span class="a">→ 점수순 <b>‘오늘 누를 3명’</b>으로, 감 대신 기준.</span></span></button>
+        <button class="ck"><span class="bx" aria-hidden="true"><span>✓</span></span><span><span class="q">③ 했던 사람한테 또 전화한 적이 있다.</span><span class="a">→ 결과 버튼 1번이면 <b>‘전화한 기록’</b>이 남습니다.</span></span></button>
+        <button class="ck"><span class="bx" aria-hidden="true"><span>✓</span></span><span><span class="q">④ 상담만 받고 사라진 임플란트·교정을 방치 중이다.</span><span class="a">→ <b>가장 큰 매출</b>을 우선순위 상단으로 끌어올립니다.</span></span></button>
+        <button class="ck"><span class="bx" aria-hidden="true"><span>✓</span></span><span><span class="q">⑤ 취소·노쇼로 빈 데스크 시간을 흘려보낸다.</span><span class="a">→ <b>비는 데스크 시간 = 다음 예약 기회.</b> 당일 빈 슬롯에 맞는 환자 즉시 추천.</span></span></button>
+        <button class="ck"><span class="bx" aria-hidden="true"><span>✓</span></span><span><span class="q">⑥ 리콜을 직원 손에만 맡기고 체계가 없다.</span><span class="a">→ <b>대형치과의 체계적 데스크 경영</b>을 작은 치과에도. 사람이 바뀌어도 시스템은 남습니다.</span></span></button>
+        <button class="ck"><span class="bx" aria-hidden="true"><span>✓</span></span><span><span class="q">⑦ 구환이 다른 치과로 갔는지조차 모른다.</span><span class="a">→ <b>원장님이 모르는 사이</b> 구환은 ‘먼저 전화해주는’ 옆 치과로. 끊기기 전에 먼저 부릅니다.</span></span></button>
+        <button class="ck"><span class="bx" aria-hidden="true"><span>✓</span></span><span><span class="q">⑧ 신환 마케팅비는 쓰지만 구환은 안 깨운다.</span><span class="a">→ <b>마케팅비 전에, 이미 쌓인 구환부터.</b></span></span></button>
+        <button class="ck"><span class="bx" aria-hidden="true"><span>✓</span></span><span><span class="q">⑨ 데스크는 환자 응대만으로도 이미 벅차다.</span><span class="a">→ 하고 싶어도 <b>혼자선 역부족</b>. 도구가 큐를 대신 만들어 받쳐 줍니다.</span></span></button>
+      </div>
+      <div class="verdict-box" id="ckVerdict">항목을 눌러 확인해 보세요.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 데이터 → 3명 -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="eyebrow">★를 만드는 한 통의 전화</div>
+    <h2 class="sec">수천 명 흩어진 구환을,<br>오늘 전화할 <span style="color:var(--green)">3명</span>으로.</h2>
+    <p class="lead">환자가 ★를 주는 이유는 단순합니다 — <b>잊지 않고 먼저 불러줬으니까.</b> AutoRecall은 수천 명을 점수순으로 가공해, 지금 바로 전화해서 일할 수 있는 ‘오늘 3명’으로 만들어 줍니다.</p>
+    <div class="pipe">
+      <div class="messy"><div class="n">3,000+</div><div class="t">흩어진 구환<br>(누구부터인지 모름)</div></div>
+      <div class="arrow">→</div>
+      <div class="clean">
+        <div class="t">오늘 전화할 명단</div>
+        <div class="slot"><span class="rk">1</span><span class="nm">고가 상담 후 미착수 · 11개월</span><span class="sc">96점</span></div>
+        <div class="slot"><span class="rk">2</span><span class="nm">정기검진 도래 · 당일 빈 슬롯</span><span class="sc">91점</span></div>
+        <div class="slot"><span class="rk">3</span><span class="nm">스케일링 7개월 경과</span><span class="sc">87점</span></div>
+      </div>
+    </div>
+    <p class="micro" style="text-align:center;margin-top:12px">※ 위 명단·점수는 작동 방식 <b>예시</b>입니다. 설치 시 우리 치과 실제 환자로 채워집니다.</p>
+  </div>
+</section>
+
+<!-- 정밀 진단 -->
+<section id="calc" style="padding-top:0">
+  <div class="wrap">
+    <div class="calc">
+      <div class="eyebrow">정밀 진단</div>
+      <h2 class="sec" style="margin-top:6px">★를 놓치는 동안, 얼마가 새고 있을까요?</h2>
+      <div class="diag-grid">
+        <div>
+          <div class="field"><label for="sP">전체 환자 수 <span class="val" id="vP">3,000명</span></label>
+            <input type="range" id="sP" min="500" max="20000" step="100" value="3000"><div class="hint">차트에 등록된 누적 환자 수(대략)</div></div>
+          <div class="field"><label for="sR">6개월+ 연락 끊긴 비율 <span class="val" id="vR">35%</span></label>
+            <input type="range" id="sR" min="5" max="70" step="1" value="35"><div class="hint">마지막 내원 6개월이 지나도록 연락이 끊긴 비율</div>
+            <div class="dk"><button id="dk">잘 모르겠어요 → 업계 평균(35%·예시)</button></div></div>
+          <div class="field"><label for="sF">재방문 1회 평균 진료비 <span class="val" id="vF">8만원</span></label>
+            <input type="range" id="sF" min="3" max="60" step="1" value="8"><div class="hint">다시 온 환자 1명이 1회 내원에서 쓰는 평균(만원)</div></div>
+        </div>
+        <div>
+          <div class="orow"><span class="k">잠든 환자(연락 끊김)</span><span class="v neu" id="rSleep">1,050명</span></div>
+          <div class="orow"><span class="k">지금 잃고 있는 매출(연, 추정)</span><span class="v loss" id="rLost">8,400만원</span></div>
+          <div class="orow"><span class="k">되돌릴 수 있는 매출(보수적)</span><span class="v gain" id="rBack">1,260만원</span></div>
+          <div class="orow"><span class="k">리콜 관리 점수</span><span class="v neu"><span id="rScore">65</span>점</span></div>
+          <div class="fnote">계산식 · 잠든=전체×끊김율 · 잃은매출=잠든×1회 진료비 · 되돌릴=잠든×0.15×진료비 · 점수=(1−끊김율)×100 · 모든 숫자는 <b>예시·가정값</b>이며 결과를 보장하지 않습니다. 입력값은 저장·전송 없이 이 화면 안에서만 계산됩니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 대형치과 시스템 + 마케팅 ROI -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="band">
+      <div class="bcard"><div class="ic">🏥</div><h3>대형치과의 데스크 경영을, 우리 치과로</h3><p>체계적인 리콜은 큰 병원만의 무기가 아닙니다. 사람이 바뀌어도 남는 ‘시스템’으로, 작은 치과도 같은 수준의 관리를 합니다.</p></div>
+      <div class="bcard"><div class="ic">🙋</div><h3>직원을 탓할 일이 아닙니다</h3><p>하고 싶어도, 한 사람이 수천 명을 기억하고 응대까지 하며 전화를 돌리기엔 역부족입니다. 도구가 큐를 만들어 <b>받쳐주는</b> 구조가 필요합니다.</p></div>
+      <div class="bcard"><div class="ic">🪑</div><h3>비는 데스크 시간 = 다음 예약 기회</h3><p>취소·노쇼로 빈 시간은 그냥 흘러가기 쉽습니다. 그 시간에 맞는 환자를 즉시 추천해, <b>비는 의자를 다음 예약창</b>으로 바꿉니다.</p></div>
+      <div class="bcard dark"><div class="ic">📉</div><h3 class="hl">원장님이 모르는 사이</h3><p>구환 매출은 조용히 샙니다. 그리고 그 환자는 ‘먼저 전화해주는’ 옆 치과로 갑니다. 끊기는 건 한순간, 부르는 건 전화 한 통입니다.</p></div>
+      <div class="bcard dark"><div class="ic">💸</div><h3 class="hl">마케팅비를 쓰기 전에</h3><p>새 환자를 사오기 전에, 이미 차트에 쌓인 구환부터. 신환 1명 비용으로 잠든 구환 여럿을 깨우는 게 가장 빠른 ROI입니다. <span style="font-size:12px;color:#8B948F">(효율은 예시·일반론, 치과별 상이)</span></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 설치 -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="install" id="install">
+      <div class="eyebrow" style="color:var(--green)">★ 받는 치과로</div>
+      <h2 style="margin-top:6px">이 숫자는 추정입니다.<br>진짜 <span class="hl">내 차트의 명단</span>으로 보려면.</h2>
+      <p>설치하면 슬라이더가 아니라 <b>우리 치과 실제 환자</b>로 오늘 누를 명단이 점수순으로 뜹니다. 복잡한 설정 없이, 쓰던 차트(덴트웹) 그대로.</p>
+      <div class="steps"><div class="step"><b>1</b> 설치(2분)</div><div class="step"><b>2</b> 차트 연결</div><div class="step"><b>3</b> 오늘 리콜 큐</div><div class="step"><b>4</b> 전화→결과 버튼</div></div>
+      <div class="cta-row" style="justify-content:center"><a class="btn primary" href="#" onclick="return false">▶ 무료 버전 설치하기</a></div>
+      <div class="faq">
+        <div class="it"><div class="qq">직원을 감시하나요?</div><div class="aa">아니요. 데스크를 돕는 도구입니다. 평가·감시용이 아닙니다.</div></div>
+        <div class="it"><div class="qq">통제권은 누구에게?</div><div class="aa">실장에게. 누구에게 걸지·말지는 사람이 정합니다.</div></div>
+        <div class="it"><div class="qq">수신 거부 환자는?</div><div class="aa">‘전화하지 마라’ 1번 표시 = 큐에서 영구 제외.</div></div>
+        <div class="it"><div class="qq">환자 정보가 새나요?</div><div class="aa">전부 원내 로컬. 차트는 읽기만, 절대 수정하지 않습니다.</div></div>
+      </div>
+      <div class="failsafe">안 부르면 — 그 환자의 ★는, 옆 치과가 받습니다.</div>
+      <div class="guard">※ AutoRecall은 전화 우선순위 정리를 돕는 <b>운영 도구</b>이며, 치료 효과·결과를 보장하지 않습니다. · 화면의 후기·별점·점수·금액·평균값·ROI 비교는 모두 <b>예시·가정값/가상</b>으로 원장 검수가 필요합니다. · 수신거부·동의 범위는 정보통신망법 등 규정과 각 치과 정책에 맞춰 운영됩니다. · 한글 우선 표기.</div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>AutoRecall · 치과 재내원(리콜) 자동화 · 두 치과 이야기 · 환자 후기 월 랜딩 · 2026-07-01 · 카피·수치·후기 원장 검수 전 초안</footer>
+
+<script>
+(function(){
+  var items=[].slice.call(document.querySelectorAll('#ckItems .ck'));
+  var ckCount=document.getElementById('ckCount'),ckMeter=document.getElementById('ckMeter'),ckGrade=document.getElementById('ckGrade'),ckVerdict=document.getElementById('ckVerdict');
+  function upd(){
+    var n=0; items.forEach(function(b){if(b.classList.contains('on'))n++;});
+    ckCount.textContent=n; ckMeter.style.width=Math.round(n/items.length*100)+'%';
+    var g,v;
+    if(n===0){g='체크 전';v='항목을 눌러 확인해 보세요.';}
+    else if(n<=3){g='관리형에 가까움';v='해당 <b>'+n+'개</b> — ★를 받는 치과에 가깝습니다. 빈 신호만 채우면 더 단단해집니다.';}
+    else if(n<=6){g='주의';v='해당 <b>'+n+'개</b> — ‘기다리는 치과’ 신호가 쌓이고 있습니다. 지금이 방향을 바꿀 때입니다.';}
+    else{g='기다리는 치과';v='해당 <b>'+n+'개</b> — 환자가 조용히 떠나기 쉬운 상태. 되돌릴 여지도 그만큼 큽니다.';}
+    if(n>0) v+=' 아래 <b>정밀 진단</b>에서 실제 추정 누수액을 확인하세요.';
+    ckGrade.textContent=g; ckVerdict.innerHTML=v;
+  }
+  items.forEach(function(b){b.setAttribute('role','checkbox');b.setAttribute('aria-checked','false');
+    b.addEventListener('click',function(){var on=b.classList.toggle('on');b.setAttribute('aria-checked',on?'true':'false');upd();});});
+  upd();
+
+  var P=document.getElementById('sP'),R=document.getElementById('sR'),F=document.getElementById('sF');
+  var vP=document.getElementById('vP'),vR=document.getElementById('vR'),vF=document.getElementById('vF');
+  var rSleep=document.getElementById('rSleep'),rLost=document.getElementById('rLost'),rBack=document.getElementById('rBack'),rScore=document.getElementById('rScore');
+  function won(m){if(m>=10000){var e=Math.round(m/1000)/10;return (e%1===0?e.toFixed(0):e.toFixed(1))+'억원';}return Math.round(m).toLocaleString('ko-KR')+'만원';}
+  function calc(){var patients=+P.value,rate=+R.value/100,fee=+F.value;
+    var sleep=Math.round(patients*rate),lost=sleep*fee,back=Math.round(sleep*0.15*fee),score=Math.round((1-rate)*100);
+    vP.textContent=patients.toLocaleString('ko-KR')+'명';vR.textContent=R.value+'%';vF.textContent=F.value+'만원';
+    P.setAttribute('aria-valuetext',vP.textContent);R.setAttribute('aria-valuetext',vR.textContent);F.setAttribute('aria-valuetext',vF.textContent);
+    rSleep.textContent=sleep.toLocaleString('ko-KR')+'명';rLost.textContent=won(lost);rBack.textContent=won(back);rScore.textContent=score;}
+  [P,R,F].forEach(function(el){el.addEventListener('input',calc);});
+  document.getElementById('dk').addEventListener('click',function(){R.value=35;calc();});
+  calc();
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
