@@ -118,6 +118,7 @@
   .kbhint{position:fixed;right:16px;bottom:16px;font-size:11.5px;color:#80998E;font-weight:700;background:rgba(0,0,0,.25);
      border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 10px}
   @media(max-width:560px){.bignums{grid-template-columns:1fr}.faq{grid-template-columns:1fr}.kbhint{display:none}.opt:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
@@ -207,7 +208,7 @@
         </div>
 
         <div class="bench">
-          <div class="bh">동급 치과와 비교하면</div>
+          <div class="bh">동급 치과와 비교하면 <span style="font-weight:600;color:var(--faint)">(예시 기준)</span></div>
           <div class="bar me"><div class="nm">우리 치과</div><div class="track"><div class="fill" id="bMe"></div></div><div class="sc" id="bMeS">0</div></div>
           <div class="bar avg"><div class="nm">동급 평균</div><div class="track"><div class="fill" style="width:60%"></div></div><div class="sc">60</div></div>
           <div class="bar top"><div class="nm">상위 25%</div><div class="track"><div class="fill" style="width:82%"></div></div><div class="sc">82</div></div>

@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리콜 일기예보 — 우리 치과 매출에 ‘누수 주의보’</title>
+<meta name="description" content="방송 일기예보처럼, 우리 치과 매출 날씨를 예보합니다. 강수확률(끊김율)을 올리면 폭풍이 오고 매출이 침수됩니다. 설치하면 다음 달은 맑음 — AutoRecall.">
+<style>
+  :root{
+    --sky1:#2E6BB0; --sky2:#5FA8E0; --ink:#0E2235; --soft:#41607C; --faint:#86A1B8; --line:#D6E4F0;
+    --card:#FFFFFF; --bg:#EAF3FB; --sun:#F6B53D; --rain:#3E7BC2; --storm:#37475A; --loss:#D24B3B; --good:#2E9E6B;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 18px}
+
+  /* 방송 채널 바 */
+  .chbar{display:flex;align-items:center;gap:10px;padding:9px 16px;background:var(--storm);color:#fff;font-size:12.5px;font-weight:800}
+  .chbar .logo{background:var(--sun);color:var(--storm);border-radius:6px;padding:3px 9px;font-weight:900}
+  .chbar .on{display:inline-flex;align-items:center;gap:6px;color:#FF6B6B}
+  .chbar .on i{width:8px;height:8px;border-radius:50%;background:#FF5252;display:inline-block;animation:blink 1.3s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  .chbar .right{margin-left:auto;opacity:.85;font-weight:700}
+
+  /* 방송 스튜디오(히어로) */
+  .studio{position:relative;overflow:hidden;color:#fff;background:linear-gradient(160deg,var(--sky1),var(--sky2))}
+  .studio .wrap{position:relative;z-index:2;padding:30px 18px 26px}
+    .badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.32);border-radius:999px;padding:6px 13px;font-size:12.5px;font-weight:800}
+  h1.h{font-size:clamp(26px,5.4vw,46px);font-weight:900;letter-spacing:-.03em;line-height:1.12;margin:14px 0 0;text-shadow:0 2px 14px rgba(0,0,0,.18)}
+  .h .em{display:inline-block}
+  .scene{display:grid;grid-template-columns:minmax(0,1fr) 200px;gap:20px;align-items:center;margin-top:18px}
+  @media(max-width:720px){.scene{grid-template-columns:1fr}}
+  .forecast-now{font-size:clamp(16px,2.3vw,19px);font-weight:700;opacity:.96;max-width:560px}
+  .forecast-now b{font-weight:900}
+  .bigicon{font-size:clamp(70px,16vw,120px);line-height:1;text-align:center;filter:drop-shadow(0 8px 18px rgba(0,0,0,.25))}
+  /* 비 */
+  .rain{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .5s}
+  .rain.on{opacity:.5}
+  .rain i{position:absolute;top:-12%;width:2px;height:60px;background:linear-gradient(transparent,rgba(255,255,255,.7));animation:fall linear infinite}
+  @keyframes fall{to{transform:translateY(130vh)}}
+
+  /* 예보 컨트롤 패널 */
+  .panel{background:var(--card);margin-top:-1px;border-bottom:1px solid var(--line)}
+  .panel .wrap{padding:20px 18px 22px}
+  .ptitle{font-size:12.5px;font-weight:800;letter-spacing:.04em;color:var(--soft);text-transform:uppercase}
+  .ctrl{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:13px}
+  @media(max-width:620px){.ctrl{grid-template-columns:1fr}}
+  .field label{display:flex;justify-content:space-between;font-size:13.5px;font-weight:800;color:var(--soft)}
+  .field label .val{color:var(--rain);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;margin-top:9px;-webkit-appearance:none;height:5px;border-radius:5px;background:var(--line);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--sun);border:3px solid #fff;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--sun);border:3px solid #fff;cursor:pointer}
+  .field .hint{font-size:11.5px;color:var(--faint);margin-top:6px}
+  /* 예보 스탯 카드 */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-top:18px}
+  @media(max-width:720px){.stats{grid-template-columns:1fr 1fr}}
+  .stat{background:var(--bg);border:1px solid var(--line);border-radius:13px;padding:14px 14px}
+  .stat .l{font-size:11.5px;font-weight:700;color:var(--soft)}
+  .stat .v{font-size:clamp(18px,4.4vw,25px);font-weight:900;letter-spacing:-.02em;margin-top:3px;font-variant-numeric:tabular-nums}
+  .stat.flood .v{color:var(--rain)} .stat.rainfall .v{color:var(--loss)} .stat.recover .v{color:var(--good)} .stat.feel .v{color:var(--ink)}
+  .stat .s{font-size:10.5px;color:var(--faint);margin-top:3px}
+  .formula{font-size:11.5px;color:var(--faint);line-height:1.7;border-top:1px solid var(--line);padding-top:12px;margin-top:16px}
+  .formula b{color:var(--soft)}
+
+  /* 3일 예보(오늘/이번달/설치후) */
+  .threeday{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+  @media(max-width:620px){.threeday{grid-template-columns:1fr}}
+  .day{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:18px 16px;text-align:center}
+  .day.future{border:2px solid var(--good);background:#F0FAF4}
+  .day .when{font-size:12.5px;font-weight:800;color:var(--soft)}
+  .day .ic{font-size:42px;margin:8px 0 4px}
+  .day .label{font-size:15px;font-weight:900}
+  .day.future .label{color:var(--good)}
+  .day .desc{font-size:12.5px;color:var(--soft);margin-top:6px}
+
+  /* 섹션 */
+  section{padding:42px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--rain)}
+  h2{font-size:clamp(21px,3.4vw,29px);font-weight:900;letter-spacing:-.02em;margin:8px 0 0;line-height:1.25}
+  .lead{color:var(--soft);font-size:15.5px;margin-top:10px;max-width:620px}
+  .lead b{color:var(--ink)}
+  .pains{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:20px}
+  @media(max-width:620px){.pains{grid-template-columns:1fr}}
+  .pn{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px 16px;display:flex;gap:11px}
+  .pn .ic{font-size:19px;flex:none} .pn p{font-size:14px;font-weight:600} .pn p small{display:block;color:var(--faint);font-weight:500;font-size:12.5px;margin-top:4px}
+  .amp{background:#2B3A4D;color:#fff;border-radius:16px;padding:24px 22px;text-align:center;margin-top:6px}
+  .amp .big{font-size:clamp(18px,3vw,26px);font-weight:900;line-height:1.32}
+  .amp .big .y{color:var(--sun)}
+  .amp .data{margin-top:12px;display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 15px;font-size:13.5px;color:#D7E4F0}
+  .amp .data b{color:var(--sun)}
+  .fix{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:18px}
+  @media(max-width:620px){.fix{grid-template-columns:1fr}}
+  .fc{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px 16px}
+  .fc .t{font-weight:800;font-size:14px} .fc .t .e{color:var(--rain)} .fc .d{font-size:13px;color:var(--soft);margin-top:5px}
+  .bench{display:grid;gap:11px;margin-top:16px}
+  .bar{display:grid;grid-template-columns:88px 1fr 42px;align-items:center;gap:10px}
+  .bar .nm{font-size:12.5px;font-weight:800;color:var(--soft)}
+  .bar .track{height:21px;background:#DCE8F3;border-radius:6px;overflow:hidden}
+  .bar .fill{height:100%;border-radius:6px;width:0;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+  .bar.me .fill{background:var(--rain)} .bar.avg .fill{background:#9FB6CC} .bar.top .fill{background:var(--sun)}
+  .bar .sc{font-size:13.5px;font-weight:900;text-align:right}
+  .verdict{margin-top:14px;background:#EAF6FF;border:1px solid var(--line);border-radius:11px;padding:13px 16px;font-size:15px;font-weight:800;color:var(--ink)}
+
+  .install{background:linear-gradient(170deg,#5FA8E0,#2E9E6B);color:#fff;border-radius:20px;padding:34px 24px;text-align:center;margin-top:6px}
+  .install h2{font-size:clamp(22px,3.6vw,31px);color:#fff}
+  .install h2 .hl{color:#FFF2CC}
+  .install p{color:#EAFBF1;margin:11px auto 0;max-width:500px}
+  .steps{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:20px 0 4px}
+  .steps .s{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);border-radius:9px;padding:9px 13px;font-size:12.5px;font-weight:800}
+  .steps .s b{color:#FFF2CC}
+  .cta{display:inline-flex;align-items:center;gap:9px;margin-top:16px;background:#fff;color:#1B6B4A;font-weight:900;font-size:17px;text-decoration:none;padding:15px 25px;border-radius:12px;box-shadow:0 14px 30px -14px rgba(0,0,0,.4)}
+  .cta:hover{transform:translateY(-2px)}
+  .micro{display:block;font-size:11.5px;color:#D7F0E2;margin-top:10px;font-weight:600}
+  .fail{margin-top:15px;font-size:14.5px;font-weight:900;color:#FFE08A}
+  .faq{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:24px}
+  @media(max-width:620px){.faq{grid-template-columns:1fr}}
+  .faq .it{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:11px;padding:13px 14px;text-align:left}
+  .faq .qq{font-size:13.5px;font-weight:800;color:#fff} .faq .aa{font-size:12.5px;color:#EAFBF1;margin-top:5px}
+  .guard{font-size:11.5px;color:var(--faint);line-height:1.75;border-top:1px solid var(--line);padding-top:15px;margin-top:28px}
+  .guard b{color:var(--soft)}
+  footer{padding:22px 0 66px;text-align:center;color:var(--faint);font-size:12.5px}
+  @media(prefers-reduced-motion:reduce){.rain{display:none!important}.chbar .on i{animation:none}*{transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+
+<div class="chbar">
+  <span class="logo">⛅ AR채널</span><span>AutoRecall 매출기상청</span>
+  <span class="on"><i></i>LIVE 예보</span>
+  <span class="right">2026-06-30 · 서울사계절치과(데모)</span>
+</div>
+
+<!-- 스튜디오 -->
+<header class="studio" id="studio">
+  <div class="rain" id="rain"></div>
+  <div class="wrap">
+    <span class="badge">🌦️ 오늘의 리콜 날씨 · 예보</span>
+    <h1 class="h">우리 치과 매출에<br><span class="em" id="hRisk">누수 주의보</span>가 내렸습니다.</h1>
+    <div class="scene">
+      <div class="forecast-now" id="forecastNow">안 오는 환자는 없습니다. <b>안 부른 환자</b>만 있을 뿐 — 지금 데스크 위로 <b>잠든 환자 구름</b>이 끼고 있습니다. 아래 예보판에서 강수확률을 맞춰 보세요.</div>
+      <div class="bigicon" id="bigIcon">🌧️</div>
+    </div>
+  </div>
+</header>
+
+<!-- 예보 컨트롤 패널 -->
+<div class="panel"><div class="wrap">
+  <div class="ptitle">📡 예보 입력판 — 우리 치과 기상 조건</div>
+  <div class="ctrl">
+    <div class="field">
+      <label>☔ 강수확률(6개월+ 끊김율) <span class="val" id="lR">35%</span></label>
+      <input type="range" id="sR" min="5" max="70" step="1" value="35">
+      <div class="hint">높일수록 폭우 — 환자가 더 많이 빠져나갑니다</div>
+    </div>
+    <div class="field">
+      <label>👥 유역 인구(전체 환자) <span class="val" id="lP">3,000명</span></label>
+      <input type="range" id="sP" min="500" max="20000" step="100" value="3000">
+      <div class="hint">차트에 등록된 누적 환자(대략)</div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat flood"><div class="l">💧 침수(잠든 환자)</div><div class="v" id="vFlood">1,050명</div><div class="s">= 전체 × 끊김율</div></div>
+    <div class="stat rainfall"><div class="l">🌧️ 강수량(잃는 매출/연)</div><div class="v" id="vRain">8,400만원</div><div class="s">= 잠든 × 객단가(8만 가정)</div></div>
+    <div class="stat recover"><div class="l">☀️ 갬(회수 가능)</div><div class="v" id="vRec">1,260만원</div><div class="s">= 잠든 × 15%</div></div>
+    <div class="stat feel"><div class="l">🌡️ 체감(관리 점수)</div><div class="v" id="vScore">65점</div><div class="s">= (1−끊김율)×100</div></div>
+  </div>
+  <!-- 3일 예보 -->
+  <div class="threeday">
+    <div class="day"><div class="when">오늘</div><div class="ic" id="d1ic">🌧️</div><div class="label" id="d1l">누수 주의보</div><div class="desc">잠든 환자가 옆 치과로</div></div>
+    <div class="day"><div class="when">이번 달(그대로 두면)</div><div class="ic" id="d2ic">⛈️</div><div class="label" id="d2l">폭우 지속</div><div class="desc">매출 침수 계속</div></div>
+    <div class="day future"><div class="when">설치 후</div><div class="ic">☀️</div><div class="label">맑음</div><div class="desc">오늘 누를 명단이 점수순으로</div></div>
+  </div>
+  <div class="formula">
+    <b>예보 산식(투명)</b> 침수=전체×끊김율 · 강수량=잠든×객단가 · 갬=잠든×0.15×객단가 · 체감=(1−끊김율)×100<br>
+    ※ 모든 수치는 <b>예시·가정값</b>이며 결과를 보장하지 않습니다. 입력값은 저장·전송 없이 화면 안에서만 계산됩니다.
+  </div>
+</div></div>
+
+<!-- 통증 -->
+<section><div class="wrap">
+  <div class="eyebrow">기상 개황</div>
+  <h2>구름이 끼는 건, 매출이 줄어서가 아닙니다.</h2>
+  <p class="lead"><b>줄어드는 게 안 보여서</b>입니다. 일기예보가 없으면 우산을 못 챙기듯, 리콜 예보가 없으면 빠져나가는 환자를 못 잡습니다.</p>
+  <div class="pains">
+    <div class="pn"><span class="ic">🗂️</span><p>6개월 지난 환자 명단이 어디 있는지 모른다.<small>한 화면에 모아 본 적이 없다</small></p></div>
+    <div class="pn"><span class="ic">🎯</span><p>오늘 누구한테 전화할지 “감”으로 찍는다.<small>기준이 없어 매번 다르다</small></p></div>
+    <div class="pn"><span class="ic">🔁</span><p>전화했던 사람한테 또 전화한다.<small>“기록”이 안 남는다</small></p></div>
+    <div class="pn"><span class="ic">💤</span><p>상담만 받고 사라진 임플란트 환자, 누군지 모른다.<small>가장 큰 매출이 가장 조용히 빠진다</small></p></div>
+  </div>
+</div></section>
+
+<!-- 증폭 -->
+<section><div class="wrap">
+  <div class="amp">
+    <div class="big">“좋은 콜 리스트가 있어도,<br><span class="y">걸 시간이 없으면 0원</span>입니다.”</div>
+    <div class="data">내부 차트 분석(예시): 방치된 환자의 <b>71%</b>가 치료계획 후 <b>30일 안에</b> 떠날지 말지를 정합니다.</div>
+  </div>
+</div></section>
+
+<!-- 면죄 -->
+<section><div class="wrap">
+  <div class="eyebrow">예보관의 한마디</div>
+  <h2>리콜, 안 하는 게 아니라 <span style="color:var(--rain)">못 하는</span> 겁니다.</h2>
+  <p class="lead">데스크의 1순위는 눈앞의 환자 응대입니다. 큐에 좋은 대상이 쌓여도 발신은 뒤로 밀립니다. 문제는 게으름이 아니라 <b>‘안 보인다’는 것</b> — 예보판이 없을 뿐입니다.</p>
+</div></section>
+
+<!-- 해결 -->
+<section><div class="wrap">
+  <div class="eyebrow">맑게 만드는 법</div>
+  <h2>예보가 있으면, 사람이 못 하는 셋을 잡습니다.</h2>
+  <div class="fix">
+    <div class="fc"><div class="t"><span class="e">🔥</span> 슬롯 필러</div><div class="d">빈 시간에 맞는 환자를 당일 즉시 추천(타이밍 ×3.0). 비는 의자를 매출로.</div></div>
+    <div class="fc"><div class="t"><span class="e">🎯</span> 점수제 큐</div><div class="d">(관심−부정)×가치×타이밍으로 “오늘 누를 몇 명”을 자동 정렬.</div></div>
+    <div class="fc"><div class="t"><span class="e">📅</span> 타이밍 큐</div><div class="d">6~12개월 스위트스폿 환자를 자동으로 줄 세움 — 놓치는 정기검진 0.</div></div>
+    <div class="fc"><div class="t"><span class="e">🧾</span> 결과 버튼</div><div class="d">부재중·예약완료를 한 번 누르면 다음 액션·기록 자동 정리.</div></div>
+  </div>
+</div></section>
+
+<!-- 벤치마크 -->
+<section><div class="wrap">
+  <div class="eyebrow">지역 비교 <span style="color:var(--faint)">(예시 기준)</span></div>
+  <h2>동급 치과와 비교하면?</h2>
+  <div class="bench">
+    <div class="bar me"><div class="nm">우리 치과</div><div class="track"><div class="fill" id="bMe"></div></div><div class="sc" id="bMeS">65</div></div>
+    <div class="bar avg"><div class="nm">동급 평균</div><div class="track"><div class="fill" style="width:60%"></div></div><div class="sc">60</div></div>
+    <div class="bar top"><div class="nm">상위 25%</div><div class="track"><div class="fill" style="width:82%"></div></div><div class="sc">82</div></div>
+  </div>
+  <div class="verdict" id="verdict">상위 25%(82점)까지 17점 — 이 격차가 그대로 새는 매출입니다.</div>
+</div></section>
+
+<!-- 설치 -->
+<section><div class="wrap">
+  <div class="install">
+    <div class="eyebrow" style="color:#FFF2CC">설치</div>
+    <h2>예보를 바꾸세요.<br>설치하면 <span class="hl">다음 달은 맑음.</span></h2>
+    <p>설치하면 위 예보가 데모가 아니라 <b style="color:#fff">우리 치과 실제 환자</b>로 채워지고, 오늘 누를 명단이 점수순으로 뜹니다. 쓰던 차트(덴트웹) 그대로, 읽기만.</p>
+    <div class="steps">
+      <div class="s"><b>1</b> 설치(2분)</div><div class="s"><b>2</b> 차트 연결</div><div class="s"><b>3</b> 오늘 리콜 큐</div><div class="s"><b>4</b> 전화 → 결과 버튼</div>
+    </div>
+    <a class="cta" href="#" onclick="return false">☀️ 무료로 설치하고 예보 바꾸기</a>
+    <span class="micro">차트 읽기 전용 · 환자정보 원내 로컬 · 카드 등록 없음</span>
+    <div class="fail">안 깔면 — 다음 달 예보도 ‘폭우’ 그대로입니다.</div>
+    <div class="faq">
+      <div class="it"><div class="qq">직원을 감시하나요?</div><div class="aa">아니요. 데스크를 돕는 도구. 걸지·말지는 사람이 정합니다.</div></div>
+      <div class="it"><div class="qq">차트가 바뀌나요?</div><div class="aa">읽기만 합니다. 원본은 절대 수정하지 않습니다.</div></div>
+      <div class="it"><div class="qq">수신 거부 환자는?</div><div class="aa">‘전화 금지’ 한 번이면 큐에서 영구 제외.</div></div>
+      <div class="it"><div class="qq">정보가 새나요?</div><div class="aa">전부 원내 로컬에서만 처리. 외부 전송 없음.</div></div>
+    </div>
+  </div>
+  <div class="guard">
+    ※ 화면의 날씨·수치·금액은 모두 <b>예시·가정값</b>이며 실제 결과를 보장하지 않습니다(회수율 15%·객단가·평균/상위 점수 등 가정 포함). · AutoRecall은 전화 우선순위 정리를 돕는 <b>운영 도구</b>로 치료 효과·결과를 보장하지 않습니다. · 입력값은 저장·전송 없이 화면 내 계산. · 수신거부·동의 범위는 정보통신망법 등 규정과 각 치과 정책을 따릅니다. · 한글 우선 표기.
+  </div>
+</div></section>
+
+<footer>AutoRecall · 리콜 일기예보 (방송 예보 메타포 랜딩) · 2026-06-30 · 카피·수치 원장 검수 전 초안</footer>
+
+<script>
+(function(){
+  var R=document.getElementById('sR'), P=document.getElementById('sP');
+  var lR=document.getElementById('lR'), lP=document.getElementById('lP');
+  var vFlood=document.getElementById('vFlood'), vRain=document.getElementById('vRain'), vRec=document.getElementById('vRec'), vScore=document.getElementById('vScore');
+  var bMe=document.getElementById('bMe'), bMeS=document.getElementById('bMeS'), verdict=document.getElementById('verdict');
+  var studio=document.getElementById('studio'), rain=document.getElementById('rain'), bigIcon=document.getElementById('bigIcon');
+  var hRisk=document.getElementById('hRisk'), forecastNow=document.getElementById('forecastNow');
+  var d1ic=document.getElementById('d1ic'), d1l=document.getElementById('d1l'), d2ic=document.getElementById('d2ic'), d2l=document.getElementById('d2l');
+
+  // 빗방울 생성
+  var drops=[];
+  (function(){ for(var i=0;i<46;i++){ var d=document.createElement('i');
+    var left=(i*2.17+ (i*37%9))%100; d.style.left=left+'%';
+    d.style.animationDuration=(0.5+ (i%5)*0.12)+'s'; d.style.animationDelay=((i*0.07)%1.4)+'s';
+    d.style.height=(40+(i%4)*16)+'px'; rain.appendChild(d); drops.push(d); } })();
+
+  function won(m){ if(m>=10000) return (m/10000).toFixed(m>=100000?0:1).replace(/\.0$/,'')+'억원'; return Math.round(m).toLocaleString('ko-KR')+'만원'; }
+
+  function weather(rate){
+    if(rate<0.20) return {risk:'대체로 맑음', icon:'⛅', cls:'good'};
+    if(rate<0.35) return {risk:'구름 많음', icon:'☁️', cls:'mid'};
+    if(rate<0.50) return {risk:'누수 주의보', icon:'🌧️', cls:'bad'};
+    return {risk:'폭우 경보', icon:'⛈️', cls:'storm'};
+  }
+
+  function calc(){
+    var patients=+P.value, rate=+R.value/100, fee=8;
+    var flood=Math.round(patients*rate), rainfall=flood*fee, rec=Math.round(flood*0.15*fee), score=Math.round((1-rate)*100);
+    lR.textContent=R.value+'%'; lP.textContent=patients.toLocaleString('ko-KR')+'명';
+    vFlood.textContent=flood.toLocaleString('ko-KR')+'명'; vRain.textContent=won(rainfall); vRec.textContent=won(rec); vScore.textContent=score+'점';
+    var w=weather(rate);
+    hRisk.textContent=w.risk; bigIcon.textContent=w.icon;
+    // 스튜디오 배경 + 비
+    var heavy=rate>=0.35;
+    studio.style.background = rate<0.20 ? 'linear-gradient(160deg,#3E8BCB,#7DC0EE)'
+      : rate<0.35 ? 'linear-gradient(160deg,#5683A8,#7FA6C4)'
+      : rate<0.50 ? 'linear-gradient(160deg,#3C4F66,#5B7790)'
+      : 'linear-gradient(160deg,#2A3646,#46586E)';
+    rain.classList.toggle('on', rate>=0.35);
+    // 오늘/이번달 예보 카드
+    d1ic.textContent=w.icon; d1l.textContent=w.risk;
+    if(rate<0.20){ d2ic.textContent='⛅'; d2l.textContent='가끔 구름'; }
+    else if(rate<0.35){ d2ic.textContent='🌧️'; d2l.textContent='비 자주'; }
+    else { d2ic.textContent='⛈️'; d2l.textContent='폭우 지속'; }
+    forecastNow.innerHTML = rate<0.20
+      ? '대체로 맑지만, 방심하면 구름이 낍니다. <b>지금 잠든 환자 '+flood.toLocaleString('ko-KR')+'명</b> — 시스템으로 굳히면 계속 맑음입니다.'
+      : '지금 데스크 위로 <b>잠든 환자 '+flood.toLocaleString('ko-KR')+'명</b> 구름이 끼고, 연 <b>'+won(rainfall)+'</b>이 빗물처럼 새고 있습니다.';
+    bMe.style.width=score+'%'; bMeS.textContent=score;
+    var v; if(score<60) v='동급 평균(60점)보다 '+(60-score)+'점 아래 — 되돌릴 여지가 가장 큽니다.';
+    else if(score<82) v='상위 25%(82점)까지 '+(82-score)+'점 — 이 격차가 그대로 새는 매출입니다.';
+    else v='상위권입니다. 사람 손으로 유지 중 — 이제 시스템으로 굳히세요.';
+    verdict.textContent=v;
+  }
+  R.addEventListener('input',calc); P.addEventListener('input',calc);
+  bMe.style.width='65%';
+  calc();
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;padding:11px 15px;border-radius:999px;
+   box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span></a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1}@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

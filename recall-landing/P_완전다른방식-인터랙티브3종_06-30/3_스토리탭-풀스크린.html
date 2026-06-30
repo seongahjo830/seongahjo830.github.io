@@ -124,6 +124,7 @@
      background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-weight:800;font-size:12.5px;
      border-radius:999px;padding:9px 15px;cursor:pointer;font-family:inherit;display:none}
   .replay.on{display:inline-block}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
@@ -153,7 +154,7 @@
   <section class="card c2" data-i="2"><div class="inner">
     <span class="act a-seung reveal d1">승 · 손실</span>
     <div class="med reveal d2">“좋은 콜 리스트가 있어도,<br><span class="loss">걸 시간이 없으면 0원</span>입니다.”</div>
-    <p class="sub reveal d3">내부 차트 분석 — 방치된 환자의</p>
+    <p class="sub reveal d3">내부 차트 분석(예시) — 방치된 환자의</p>
     <div class="huge-num loss reveal d4" style="margin-top:6px">71%</div>
     <p class="sub reveal d5" style="margin-top:8px">가 치료계획 후 <b>30일 안에</b> 떠날지 말지를 정합니다.<br>그 사이에도, 환자는 조용히 옆 치과로 갑니다.</p>
   </div></section>
@@ -193,7 +194,7 @@
 
   <section class="card c6" data-i="6"><div class="inner">
     <span class="act a-jeon reveal d1">전 · 비교</span>
-    <div class="med reveal d2">동급 치과와<br>비교하면?</div>
+    <div class="med reveal d2">동급 치과와<br>비교하면?</div><p class="tag reveal d2" style="margin-top:8px">※ 평균·상위 점수는 예시 기준</p>
     <div class="bench">
       <div class="bar me reveal d3"><div class="nm">우리</div><div class="track"><div class="fill" id="bMe"></div></div><div class="sc" id="bMeS">65</div></div>
       <div class="bar avg reveal d3"><div class="nm">평균</div><div class="track"><div class="fill" data-w="60"></div></div><div class="sc">60</div></div>

@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리콜_명단_최종_진짜최종.xlsx — 당신의 리콜은 엑셀에서 조용히 죽고 있습니다</title>
+<meta name="description" content="당신이 쓰는 그 엑셀 리콜 명단이 실시간으로 식어가는 걸 보여줍니다. 방치 개월을 늘리면 행이 붉게 죽고, 잠든 환자와 잃는 매출이 합계로 떨어집니다. 그리고 AutoRecall을 설치하세요.">
+<style>
+  :root{
+    --bg:#F1F3F4; --ink:#202124; --soft:#5F6368; --faint:#9AA0A6; --line:#DADCE0;
+    --excel:#107C41; --excel-d:#0B5C30; --headbg:#F8F9FA; --sel:#107C41;
+    --green:#188038; --amber:#B06000; --loss:#C5221F; --loss-bg:#FCE8E6; --amber-bg:#FEF7E0; --green-bg:#E6F4EA;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+    --mono:"SFMono-Regular",ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+
+  /* 훅 */
+  .hook{padding:30px 0 12px}
+  .kick{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;color:var(--excel-d);background:#E6F4EA;border:1px solid #B7DFC4;border-radius:999px;padding:6px 13px}
+  h1.h{font-size:clamp(25px,4.8vw,42px);font-weight:900;letter-spacing:-.03em;line-height:1.14;margin:15px 0 0}
+  h1.h .hl{color:var(--loss)}
+  .sub{color:var(--soft);font-size:clamp(15px,2.1vw,17.5px);margin:12px 0 0;max-width:620px}
+  .sub b{color:var(--ink)}
+  .try{display:inline-flex;align-items:center;gap:8px;margin:16px 0 0;font-weight:800;font-size:14px;color:var(--excel-d);background:#E6F4EA;border:1px dashed #8BCBA0;border-radius:10px;padding:10px 14px}
+
+  /* 엑셀 창 */
+  .xl{margin:22px 0 0;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 24px 60px -34px rgba(20,30,20,.45)}
+  .xl-title{display:flex;align-items:center;gap:10px;background:var(--excel);color:#fff;padding:10px 15px;font-weight:800;font-size:13.5px}
+  .xl-title .ic{width:20px;height:20px;border-radius:4px;background:#fff;color:var(--excel);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:12px}
+  .xl-title .dim{opacity:.85;font-weight:600}
+  .xl-title .x{margin-left:auto;opacity:.85;font-weight:700}
+  /* 수식줄 */
+  .fxbar{display:flex;align-items:center;gap:10px;background:var(--headbg);border-bottom:1px solid var(--line);padding:7px 12px;font-family:var(--mono);font-size:12.5px;color:var(--soft)}
+  .fxbar .cell{font-weight:800;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:5px;padding:3px 9px;min-width:42px;text-align:center}
+  .fxbar .fx{color:var(--excel)}
+  .fxbar .formula{color:var(--ink)}
+  .fxbar .formula b{color:var(--loss)}
+  /* 툴바 */
+  .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 12px;border-bottom:1px solid var(--line);background:#fff}
+  .toolbar .grp{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--soft)}
+  .toolbar .sld{display:flex;align-items:center;gap:9px}
+  .toolbar input[type=range]{width:130px;-webkit-appearance:none;height:4px;border-radius:4px;background:#D2E7D9;outline:none}
+  .toolbar input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--excel);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+  .toolbar input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--excel);cursor:pointer;border:2px solid #fff}
+  .toolbar .val{font-weight:900;color:var(--excel-d);min-width:54px}
+  .btn{font-family:inherit;font-weight:800;font-size:12.5px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:7px;padding:7px 12px;cursor:pointer}
+  .btn:hover{background:var(--headbg)}
+  .btn.on{background:var(--excel);color:#fff;border-color:var(--excel)}
+  /* 시트 */
+  .sheet-scroll{overflow-x:auto}
+  table.sheet{border-collapse:collapse;width:100%;min-width:560px;font-size:13px}
+  table.sheet th,table.sheet td{border:1px solid #E8EAED;padding:0}
+  table.sheet thead th{background:var(--headbg);color:var(--soft);font-weight:800;font-size:11.5px;padding:7px 10px;text-align:left;position:sticky;top:0}
+  table.sheet thead th.col{text-align:center;color:var(--faint);font-weight:700;width:34px}
+  table.sheet tbody .rownum{background:var(--headbg);color:var(--faint);font-weight:700;text-align:center;width:34px;font-size:11px}
+  table.sheet td.c{padding:8px 10px;white-space:nowrap;transition:background .35s,color .35s}
+  td.c .nm{font-weight:700}
+  .stbadge{display:inline-block;font-size:11px;font-weight:800;border-radius:5px;padding:2px 8px}
+  .st-live{background:var(--green-bg);color:var(--green)} .st-warn{background:var(--amber-bg);color:var(--amber)} .st-dead{background:var(--loss-bg);color:var(--loss)}
+  tr.dead td.c{color:#B9938F} tr.dead td.c .nm{text-decoration:line-through;text-decoration-color:#E0A9A4}
+  tr.dead{background:#FFF6F5}
+  td.elapsed{font-family:var(--mono);font-weight:700}
+  .pri{font-family:var(--mono);font-weight:800;text-align:right}
+  /* 합계바 */
+  .sumbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:var(--headbg);border-top:2px solid var(--excel);padding:12px 15px;font-size:13px}
+  .sumbar .s{display:flex;flex-direction:column}
+  .sumbar .s .l{font-size:11px;color:var(--soft);font-weight:700}
+  .sumbar .s .v{font-size:18px;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .sumbar .s .v.dead{color:var(--loss)} .sumbar .s .v.lost{color:var(--amber)} .sumbar .s .v.score{color:var(--excel-d)}
+  .sumbar .note{margin-left:auto;font-size:11.5px;color:var(--faint)}
+  .tabs{display:flex;gap:0;background:var(--headbg);border-top:1px solid var(--line)}
+  .tabs .tab{font-size:12px;font-weight:800;padding:8px 16px;border-right:1px solid var(--line);color:var(--soft)}
+  .tabs .tab.active{background:#fff;color:var(--excel-d);border-top:2px solid var(--excel)}
+
+  /* 설명 띠 */
+  .truth{margin:18px 0 0;background:#fff;border:1px solid var(--line);border-left:4px solid var(--loss);border-radius:12px;padding:16px 18px;font-size:15px}
+  .truth b{color:var(--loss)}
+
+  /* 섹션 */
+  section{padding:40px 0;border-top:1px solid var(--line)}
+  .eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--excel)}
+  h2{font-size:clamp(20px,3.3vw,28px);font-weight:900;letter-spacing:-.02em;margin:8px 0 0;line-height:1.26}
+  .lead{color:var(--soft);font-size:15.5px;margin-top:10px;max-width:620px}
+  .lead b{color:var(--ink)}
+  .amp{background:var(--loss-bg);border:1px solid #F3C0BC;border-radius:14px;padding:22px;text-align:center;margin-top:6px}
+  .amp .big{font-size:clamp(18px,3vw,25px);font-weight:900;color:var(--loss);line-height:1.32}
+  .amp .data{margin-top:11px;display:inline-block;background:#fff;border:1px solid #F3C0BC;border-radius:10px;padding:10px 15px;font-size:13.5px;color:var(--soft)}
+  .amp .data b{color:var(--loss)}
+  .fix{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:18px}
+  @media(max-width:620px){.fix{grid-template-columns:1fr}}
+  .fx-card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px 16px}
+  .fx-card .t{font-weight:800;font-size:14px} .fx-card .d{font-size:13px;color:var(--soft);margin-top:5px}
+  .fx-card .t .e{color:var(--excel)}
+  .bench{display:grid;gap:11px;margin-top:16px}
+  .bar{display:grid;grid-template-columns:88px 1fr 42px;align-items:center;gap:10px}
+  .bar .nm{font-size:12.5px;font-weight:800;color:var(--soft)}
+  .bar .track{height:21px;background:#E8EAED;border-radius:6px;overflow:hidden}
+  .bar .fill{height:100%;border-radius:6px;width:0;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+  .bar.me .fill{background:var(--excel)} .bar.avg .fill{background:#9AA0A6} .bar.top .fill{background:var(--amber)}
+  .bar .sc{font-size:13.5px;font-weight:900;text-align:right}
+  .verdict{margin-top:14px;background:var(--green-bg);border:1px solid #B7DFC4;border-radius:11px;padding:13px 16px;font-size:15px;font-weight:800;color:var(--excel-d)}
+
+  .install{background:linear-gradient(180deg,#fff,#E6F4EA);border:1px solid #B7DFC4;border-radius:18px;padding:32px 24px;text-align:center;margin-top:6px}
+  .install h2{font-size:clamp(21px,3.5vw,30px)}
+  .install h2 .hl{color:var(--excel)}
+  .install p{color:var(--soft);margin:11px auto 0;max-width:500px}
+  .steps{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:20px 0 4px}
+  .steps .s{background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 13px;font-size:12.5px;font-weight:800}
+  .steps .s b{color:var(--excel)}
+  .cta{display:inline-flex;align-items:center;gap:9px;margin-top:16px;background:var(--excel);color:#fff;font-weight:900;font-size:17px;text-decoration:none;padding:15px 25px;border-radius:12px;box-shadow:0 14px 30px -14px rgba(16,124,65,.6)}
+  .cta:hover{transform:translateY(-2px)}
+  .micro{display:block;font-size:11.5px;color:var(--faint);margin-top:10px;font-weight:600}
+  .fail{margin-top:15px;font-size:14.5px;font-weight:900;color:var(--loss)}
+  .faq{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:24px}
+  @media(max-width:620px){.faq{grid-template-columns:1fr}}
+  .faq .it{background:#fff;border:1px solid var(--line);border-radius:11px;padding:13px 14px;text-align:left}
+  .faq .qq{font-size:13.5px;font-weight:800} .faq .aa{font-size:12.5px;color:var(--soft);margin-top:5px}
+  .guard{font-size:11.5px;color:var(--faint);line-height:1.75;border-top:1px solid var(--line);padding-top:15px;margin-top:28px}
+  .guard b{color:var(--soft)}
+  footer{padding:22px 0 66px;text-align:center;color:var(--faint);font-size:12.5px}
+  @media(prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="hook"><div class="wrap">
+  <span class="kick">📊 당신이 쓰는 그 엑셀 · 데모</span>
+  <h1 class="h">당신의 리콜 명단은,<br><span class="hl">엑셀에서 조용히 죽고</span> 있습니다.</h1>
+  <p class="sub">안 오는 환자는 없습니다. <b>안 부른 환자</b>만 있을 뿐. 아래는 데스크 어딘가의 그 파일입니다 — <b>방치 개월을 늘려 보세요.</b> 행이 식어가고, 합계가 떨어집니다.</p>
+  <div class="try">👇 슬라이더를 오른쪽으로 — 명단이 어떻게 죽는지 보세요</div>
+
+  <!-- 엑셀 창 -->
+  <div class="xl">
+    <div class="xl-title"><span class="ic">X</span><span>리콜_명단_최종_진짜최종_v3.xlsx</span><span class="dim">— 보호되지 않음</span><span class="x">— □ ✕</span></div>
+    <div class="fxbar"><span class="cell" id="fxCell">E2</span><span class="fx">fx</span><span class="formula" id="fxFormula">=잠든환자 * 객단가 &nbsp;→&nbsp; <b id="fxResult">8,400만원</b></span></div>
+    <div class="toolbar">
+      <div class="grp sld">⏳ 방치 개월<input type="range" id="sM" min="0" max="18" step="1" value="8"><span class="val" id="lM">8개월</span></div>
+      <div class="grp sld">👥 명단 규모<input type="range" id="sP" min="500" max="20000" step="100" value="3000"><span class="val" id="lP">3,000</span></div>
+      <button class="btn" id="sortBtn">↕ 위험순 정렬</button>
+    </div>
+    <div class="sheet-scroll">
+      <table class="sheet">
+        <thead>
+          <tr><th class="col">#</th><th class="col">A</th><th class="col">B</th><th class="col">C</th><th class="col">D</th><th class="col">E</th></tr>
+          <tr><th class="rownum">1</th><th>환자</th><th>마지막 내원</th><th>경과</th><th>상태</th><th>회수가치</th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="sumbar">
+      <div class="s"><div class="l">SUM 잠든 환자</div><div class="v dead" id="sumDorm">1,050명</div></div>
+      <div class="s"><div class="l">SUM 잃는 매출/연(추정)</div><div class="v lost" id="sumLost">8,400만원</div></div>
+      <div class="s"><div class="l">회수 가능(보수적)</div><div class="v score" id="sumBack">1,260만원</div></div>
+      <div class="s"><div class="l">리콜 관리 점수</div><div class="v score" id="sumScore">65점</div></div>
+      <div class="note">자동 재계산 · 예시·가정값</div>
+    </div>
+    <div class="tabs"><span class="tab active">리콜명단</span><span class="tab">Sheet2</span><span class="tab">+</span></div>
+  </div>
+
+  <div class="truth">엑셀은 <b>경고하지 않습니다.</b> 행이 죽어도 그대로 있고, 셀은 붉어지지 않으며, 합계는 매출이 새는 걸 알려주지 않습니다. — 그게 지금, 데스크의 그 파일입니다.</div>
+</div></div>
+
+<!-- 통증 -->
+<section><div class="wrap">
+  <div class="eyebrow">왜 죽는가</div>
+  <h2>명단은 살아 있는데, 아무도 안 부릅니다.</h2>
+  <p class="lead">매출이 줄어서가 아닙니다. <b>줄어드는 게 안 보여서</b>입니다. 엑셀은 “마지막 내원 6개월”이 지나도 행을 붉히지 않고, “오늘 누구부터”를 정해 주지 않습니다.</p>
+  <div class="fix">
+    <div class="fx-card"><div class="t">🗂️ 흩어진 명단</div><div class="d">6개월 지난 환자가 어디 있는지 모른다 — 한 화면에 모아 본 적이 없다.</div></div>
+    <div class="fx-card"><div class="t">🎯 감으로 찍기</div><div class="d">오늘 누구한테 전화할지 기준이 없어, 좋은 대상이 매번 묻힌다.</div></div>
+    <div class="fx-card"><div class="t">🔁 중복 전화</div><div class="d">전화했다는 “기록”이 안 남아 같은 사람한테 또 건다.</div></div>
+    <div class="fx-card"><div class="t">💤 잠든 큰 건</div><div class="d">상담만 받고 사라진 임플란트·교정 — 가장 큰 매출이 가장 조용히 빠진다.</div></div>
+  </div>
+</div></section>
+
+<!-- 증폭 -->
+<section><div class="wrap">
+  <div class="amp">
+    <div class="big">“좋은 콜 리스트가 있어도,<br>걸 시간이 없으면 0원입니다.”</div>
+    <div class="data">내부 차트 분석(예시): 방치된 환자의 <b>71%</b>가 치료계획 후 <b>30일 안에</b> 떠날지 말지를 정합니다.</div>
+  </div>
+</div></section>
+
+<!-- 면죄 -->
+<section><div class="wrap">
+  <div class="eyebrow">당신 탓이 아닙니다</div>
+  <h2>리콜, 안 하는 게 아니라 <span style="color:var(--excel)">못 하는</span> 겁니다.</h2>
+  <p class="lead">데스크의 1순위는 눈앞의 환자 응대입니다. 큐에 좋은 대상이 쌓여도 발신은 뒤로 밀립니다. 문제는 게으름이 아니라 <b>‘안 보인다’는 것</b> — 엑셀은 그걸 보이게 해 주지 못합니다.</p>
+</div></section>
+
+<!-- 해결 -->
+<section><div class="wrap">
+  <div class="eyebrow">엑셀 → AutoRecall</div>
+  <h2>같은 명단, 이제 <span style="color:var(--excel)">스스로 깨어납니다.</span></h2>
+  <div class="fix">
+    <div class="fx-card"><div class="t"><span class="e">🔥</span> 슬롯 필러</div><div class="d">빈 시간에 맞는 환자를 당일 즉시 추천(타이밍 ×3.0). 비는 의자를 매출로.</div></div>
+    <div class="fx-card"><div class="t"><span class="e">🎯</span> 점수제 큐</div><div class="d">(관심−부정)×가치×타이밍으로 “오늘 누를 몇 명”을 자동 정렬.</div></div>
+    <div class="fx-card"><div class="t"><span class="e">📅</span> 타이밍 큐</div><div class="d">6~12개월 스위트스폿 환자를 자동으로 줄 세움 — 놓치는 정기검진 0.</div></div>
+    <div class="fx-card"><div class="t"><span class="e">🧾</span> 결과 버튼</div><div class="d">부재중·예약완료를 한 번 누르면 다음 액션·기록 자동 정리.</div></div>
+  </div>
+</div></section>
+
+<!-- 벤치마크 -->
+<section><div class="wrap">
+  <div class="eyebrow">비교 <span style="color:var(--faint)">(예시 기준)</span></div>
+  <h2>동급 치과와 비교하면?</h2>
+  <div class="bench">
+    <div class="bar me"><div class="nm">우리 치과</div><div class="track"><div class="fill" id="bMe"></div></div><div class="sc" id="bMeS">65</div></div>
+    <div class="bar avg"><div class="nm">동급 평균</div><div class="track"><div class="fill" style="width:60%"></div></div><div class="sc">60</div></div>
+    <div class="bar top"><div class="nm">상위 25%</div><div class="track"><div class="fill" style="width:82%"></div></div><div class="sc">82</div></div>
+  </div>
+  <div class="verdict" id="verdict">상위 25%(82점)까지 17점 — 이 격차가 그대로 새는 매출입니다.</div>
+</div></section>
+
+<!-- 설치 -->
+<section><div class="wrap">
+  <div class="install">
+    <div class="eyebrow" style="color:var(--excel)">설치</div>
+    <h2>엑셀은 명단을 <span style="color:var(--loss)">죽게 둡니다.</span><br>AutoRecall은 <span class="hl">깨웁니다.</span></h2>
+    <p>설치하면 위 시트가 데모가 아니라 <b style="color:var(--ink)">우리 치과 실제 환자</b>로 채워지고, 오늘 누를 명단이 점수순으로 뜹니다. 쓰던 차트(덴트웹) 그대로, 읽기만.</p>
+    <div class="steps">
+      <div class="s"><b>1</b> 설치(2분)</div><div class="s"><b>2</b> 차트 연결</div><div class="s"><b>3</b> 오늘 리콜 큐</div><div class="s"><b>4</b> 전화 → 결과 버튼</div>
+    </div>
+    <a class="cta" href="#" onclick="return false">📊 무료로 설치하고 명단 깨우기</a>
+    <span class="micro">차트 읽기 전용 · 환자정보 원내 로컬 · 카드 등록 없음</span>
+    <div class="fail">안 깔면 — 이 시트는 다음 달에도 조용히 죽어 있습니다.</div>
+    <div class="faq">
+      <div class="it"><div class="qq">직원을 감시하나요?</div><div class="aa">아니요. 데스크를 돕는 도구. 걸지·말지는 사람이 정합니다.</div></div>
+      <div class="it"><div class="qq">차트가 바뀌나요?</div><div class="aa">읽기만 합니다. 원본은 절대 수정하지 않습니다.</div></div>
+      <div class="it"><div class="qq">수신 거부 환자는?</div><div class="aa">‘전화 금지’ 한 번이면 큐에서 영구 제외.</div></div>
+      <div class="it"><div class="qq">정보가 새나요?</div><div class="aa">전부 원내 로컬에서만 처리. 외부 전송 없음.</div></div>
+    </div>
+    <div class="guard">
+      ※ 시트의 환자·경과·상태·금액은 모두 <b>데모용 가상 데이터·가정값</b>이며 실제 결과를 보장하지 않습니다(회수율 15%·평균/상위 점수 등 가정 포함). · AutoRecall은 전화 우선순위 정리를 돕는 <b>운영 도구</b>로 치료 효과·결과를 보장하지 않습니다. · 입력값은 저장·전송 없이 화면 내 계산. · 수신거부·동의 범위는 정보통신망법 등 규정과 각 치과 정책을 따릅니다. · 한글 우선 표기.
+    </div>
+  </div>
+</div></section>
+
+<footer>AutoRecall · 죽어가는 엑셀 시트 (스프레드시트 메타포 랜딩) · 2026-06-30 · 카피·수치 원장 검수 전 초안</footer>
+
+<script>
+(function(){
+  var ROWS=[
+    {nm:"김O현", tag:"임플란트 상담", base:8, val:120},
+    {nm:"이O아", tag:"정기검진", base:7, val:8},
+    {nm:"박O석", tag:"보철 상담", base:5, val:90},
+    {nm:"최O진", tag:"스케일링", base:6, val:6},
+    {nm:"정O은", tag:"치료 중단", base:11, val:30},
+    {nm:"한O우", tag:"정기검진", base:8, val:7},
+    {nm:"오O림", tag:"교정 상담", base:9, val:75},
+    {nm:"신O별", tag:"정기검진", base:4, val:9},
+    {nm:"문O서", tag:"치료 중단", base:14, val:25},
+    {nm:"배O진", tag:"스케일링", base:3, val:6},
+    {nm:"황O연", tag:"부분틀니", base:16, val:40},
+    {nm:"서O빈", tag:"정기검진", base:10, val:6}
+  ];
+  var tbody=document.getElementById('tbody');
+  var sM=document.getElementById('sM'), sP=document.getElementById('sP');
+  var lM=document.getElementById('lM'), lP=document.getElementById('lP');
+  var sumDorm=document.getElementById('sumDorm'), sumLost=document.getElementById('sumLost'), sumBack=document.getElementById('sumBack'), sumScore=document.getElementById('sumScore');
+  var bMe=document.getElementById('bMe'), bMeS=document.getElementById('bMeS'), verdict=document.getElementById('verdict');
+  var fxResult=document.getElementById('fxResult');
+  var sorted=false;
+
+  function won(m){ if(m>=10000) return (m/10000).toFixed(m>=100000?0:1).replace(/\.0$/,'')+'억원'; return Math.round(m).toLocaleString('ko-KR')+'만원'; }
+  function monthsToDate(m){ // 마지막 내원일 = 오늘(2026-06-30)에서 m개월 전 (근사)
+    var d=new Date(2026,5,30); d.setMonth(d.getMonth()-m); var y=d.getFullYear(), mo=('0'+(d.getMonth()+1)).slice(-2), da=('0'+d.getDate()).slice(-2); return y+'-'+mo+'-'+da; }
+
+  function rateOf(add){ return Math.max(0.05, Math.min(0.70, 0.12 + add*0.028)); }
+  function render(){
+    var add=+sM.value, rate=rateOf(add);
+    var list=ROWS.map(function(r,oi){ return {nm:r.nm,tag:r.tag,val:r.val,elapsed:r.base+add,base:r.base,oi:oi}; });
+    // 위험 판정: 방치 오래된 순 상위 (rate 비율)=잠듦, 다음 2행=주의 — 합계·슬라이더와 일관
+    var byRisk=list.slice().sort(function(a,b){ return b.base-a.base; });
+    var deadN=Math.round(list.length*rate);
+    byRisk.forEach(function(r,idx){ r.state = idx<deadN ? 'dead' : (idx<deadN+2 ? 'warn' : 'live'); });
+    var view = sorted ? byRisk : list.slice().sort(function(a,b){ return a.oi-b.oi; });
+    var html='';
+    view.forEach(function(r,i){
+      var dead=r.state==='dead', warn=r.state==='warn';
+      var st = dead? '<span class="stbadge st-dead">잠듦</span>' : warn? '<span class="stbadge st-warn">주의</span>' : '<span class="stbadge st-live">활성</span>';
+      var bg = dead? 'background:#FFF1F0' : warn? 'background:#FEF7E0' : '';
+      html+='<tr class="'+(dead?'dead':'')+'">'+
+        '<td class="rownum">'+(i+2)+'</td>'+
+        '<td class="c"><span class="nm">'+r.nm+'</span> <span style="color:var(--faint);font-size:11.5px">'+r.tag+'</span></td>'+
+        '<td class="c">'+monthsToDate(r.elapsed)+'</td>'+
+        '<td class="c elapsed" style="'+bg+'">'+r.elapsed+'개월</td>'+
+        '<td class="c">'+st+'</td>'+
+        '<td class="c pri">'+won(r.val)+'</td></tr>';
+    });
+    tbody.innerHTML=html;
+  }
+
+  function calc(){
+    var patients=+sP.value, add=+sM.value;
+    var rate=rateOf(add);
+    var dorm=Math.round(patients*rate), fee=8, lost=dorm*fee, back=Math.round(dorm*0.15*fee), score=Math.round((1-rate)*100);
+    lM.textContent=add+'개월'; lP.textContent=patients.toLocaleString('ko-KR');
+    sumDorm.textContent=dorm.toLocaleString('ko-KR')+'명';
+    sumLost.textContent=won(lost); sumBack.textContent=won(back); sumScore.textContent=score+'점';
+    fxResult.textContent=won(lost);
+    bMe.style.width=score+'%'; bMeS.textContent=score;
+    var v; if(score<60) v='동급 평균(60점)보다 '+(60-score)+'점 아래 — 되돌릴 여지가 가장 큽니다.';
+    else if(score<82) v='상위 25%(82점)까지 '+(82-score)+'점 — 이 격차가 그대로 새는 매출입니다.';
+    else v='상위권입니다. 사람 손으로 유지 중 — 이제 시스템으로 굳히세요.';
+    verdict.textContent=v;
+    render();
+  }
+  sM.addEventListener('input',calc); sP.addEventListener('input',calc);
+  document.getElementById('sortBtn').addEventListener('click',function(){ sorted=!sorted; this.classList.toggle('on',sorted); render(); });
+  bMe.style.width='65%';
+  calc();
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;padding:11px 15px;border-radius:999px;
+   box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span></a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1}@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
