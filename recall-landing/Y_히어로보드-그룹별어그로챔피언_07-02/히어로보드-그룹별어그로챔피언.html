@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리콜 히어로 보드 · 라운드 5 · 그룹별 어그로 챔피언 · 2026-07-02</title>
+<style>
+  :root{--bg:#F5F4F0;--card:#FFFFFF;--ink:#20241F;--sub:#5C6158;--line:#E3E1DA;
+    --green:#3E6B53;--green-d:#2C4E3C;--red:#B8503F;--red-d:#8E3B2D;--soft:#EAF1EC;--redsoft:#F6ECE9;--gold:#B8863B;
+    --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 22px rgba(0,0,0,.05)}
+  *{box-sizing:border-box}html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);line-height:1.6;
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1500px;margin:0 auto;padding:0 26px}
+  header.top{padding:46px 0 6px}
+  .kick{display:inline-block;font-size:12px;letter-spacing:.1em;color:var(--red);font-weight:700;
+    border:1px solid var(--red);border-radius:999px;padding:4px 12px}
+  h1{font-size:32px;margin:14px 0 6px;letter-spacing:-.02em}
+  .lede{color:var(--sub);font-size:15px;max-width:920px;margin:0}
+  .lede b{color:var(--ink)}
+  .banner{margin:20px 0 8px;background:var(--redsoft);border:1px solid #E7CFC9;border-left:4px solid var(--red);
+    border-radius:12px;padding:14px 18px;font-size:13.5px;color:var(--ink);line-height:1.65}
+  .banner b{color:var(--red-d)}
+
+  .secbar{display:flex;align-items:center;gap:12px;margin:44px 0 4px;flex-wrap:wrap}
+  .secbar h2{font-size:20px;margin:0;letter-spacing:-.01em}
+  .count{font-size:12px;font-weight:800;border-radius:999px;padding:3px 11px}
+  .count.pick{background:var(--soft);color:var(--green-d)}
+  .count.champ{background:var(--redsoft);color:var(--red-d)}
+  .sec-desc{font-size:13px;color:var(--sub);margin:2px 0 16px;max-width:920px}
+
+  h3.grp{font-size:15px;margin:30px 0 3px;color:var(--green-d);display:flex;align-items:center;gap:9px}
+  h3.grp .gi{background:var(--soft);color:var(--green-d);border-radius:7px;font-size:11px;font-weight:800;padding:3px 9px}
+  .grp-desc{font-size:12.5px;color:var(--sub);margin:0 0 14px}
+
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  .h{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 15px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:210px;position:relative}
+  .h.pick{border:1.5px solid var(--green);box-shadow:0 0 0 3px rgba(62,107,83,.10),var(--shadow)}
+  .h.champ{border:2px solid var(--red);box-shadow:0 0 0 4px rgba(184,80,63,.13),0 14px 34px rgba(184,80,63,.16);
+    background:linear-gradient(180deg,#FFFCFB,#FFF6F3)}
+  .h .no{font-size:11px;font-weight:800;color:#B7BBB2}
+  .h .badge{position:absolute;top:12px;right:12px;font-size:10px;font-weight:800;color:#fff;
+    background:var(--green);border-radius:999px;padding:3px 9px}
+  .h.champ .badge{background:var(--red);box-shadow:0 2px 8px rgba(184,80,63,.4)}
+  .h.champ .no{color:var(--red-d)}
+  .h .hh{font-size:15px;font-weight:800;line-height:1.36;letter-spacing:-.01em;margin:8px 0 9px}
+  .h.champ .hh{font-size:16.5px;line-height:1.34}
+  .h .hh .r{color:var(--red)}
+  .h .hs{font-size:11.8px;color:var(--sub);line-height:1.5;margin:0 0 auto}
+  .h.champ .hs{font-size:12.5px}
+  .h .hs b{color:var(--ink)}
+  .h.champ .hs b{color:var(--red-d)}
+  .h .stack{margin-top:11px;border-top:1px dashed var(--line);padding-top:8px;display:flex;flex-wrap:wrap;gap:4px}
+  .h .stack .t{font-size:9.5px;font-weight:700;color:var(--green-d);background:var(--soft);border-radius:5px;padding:2px 6px}
+  .h.champ .stack .t{color:var(--red-d);background:#F7E6E1}
+  .h.champ .combo{margin-top:7px;font-size:10px;color:var(--red-d);font-weight:700}
+
+  /* DNA 프로필 요약 */
+  .dna{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:6px 0 8px}
+  .d{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px;box-shadow:var(--shadow)}
+  .d .dh{font-size:13px;font-weight:800;color:var(--green-d)}
+  .d .dd{font-size:12px;color:var(--sub);line-height:1.5;margin-top:3px}
+  .d .dcount{float:right;font-size:11px;font-weight:800;color:#fff;background:var(--green);border-radius:999px;padding:2px 8px}
+
+  footer{margin:44px 0 40px;padding-top:18px;border-top:1px solid var(--line);color:var(--sub);font-size:12.5px}
+  footer b{color:var(--green)}
+  @media(max-width:1250px){.grid{grid-template-columns:repeat(3,1fr)}.dna{grid-template-columns:1fr}}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}h1{font-size:25px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="kick">리콜 히어로 보드 · 라운드 5</span>
+    <h1>그룹별 어그로 챔피언 <span style="color:var(--sub);font-weight:400;font-size:.56em">픽 특성 조합 · 최대 후킹 · 2026-07-02</span></h1>
+    <p class="lede">지난 새 후보(N01~N15)는 버렸습니다. 대신 각 <b>DNA 그룹(A~E)</b>마다, 원장님이 그 그룹에서 고른 픽들의 <b>특성을 합쳐</b> 어그로를 최대로 끌어올린 <b>🔥 챔피언 1개</b>를 맨 앞(빨간 네모 자리)에 세웠습니다.</p>
+    <div class="banner"><b>🔥 어그로 챔피언 = 픽들의 DNA 조합</b> — 예: 적 그룹 챔피언은 P07(옆 치과 의자에 앉음)의 장면 + P12(전화 한 통=예약 한 건)의 등가교환 + '지금 이 순간' 진행형을 한 문장에 압축. 각 챔피언 하단에 <b>어떤 픽을 섞었는지</b> 표시.</div>
+  </header>
+
+  <!-- 취향 프로필 (요약) -->
+  <div class="secbar"><h2>⭐ 원장님 취향 프로필 (요약)</h2><span class="count pick">챔피언 설계 근거</span></div>
+  <div class="dna">
+    <div class="d"><span class="dcount">9/15</span><div class="dh">적이 등장한다</div><div class="dd">'옆 치과' 뺏김 프레임이 최애. → 챔피언 B의 뼈대.</div></div>
+    <div class="d"><span class="dcount">전부</span><div class="dh">서브 두 박자 대조</div><div class="dd">'모르면/알면·3분/1년'. → 5개 챔피언 서브 전부 이 구조.</div></div>
+    <div class="d"><span class="dcount">전부</span><div class="dh">2인칭·짧은 2줄</div><div class="dd">'원장님·우리 병원' + 끊어치는 2줄. → 챔피언 리듬 고정.</div></div>
+  </div>
+
+  <!-- A -->
+  <h3 class="grp"><span class="gi">DNA-A</span> 질문형 정보격차 — 답을 캐고 싶게</h3>
+  <p class="grp-desc">🔥 챔피언 A = P01(몇 명인지 아세요) + P10(어디서 새는지) + P02(숫자)를 합쳐, 질문을 원장님께 직격.</p>
+  <div class="grid">
+    <div class="h champ"><span class="badge">🔥 어그로</span><div class="no">챔피언 A</div><div class="hh">원장님, 지금 우리 병원에서<br>몇 명이 새는지 <span class="r">대답하실 수 있으세요?</span></div><p class="hs">모르면 매달 그대로 샙니다. <b>숫자를 보면, 오늘부터 막습니다.</b></p><div class="stack"><span class="t">질문직격</span><span class="t">정보격차</span><span class="t">대조서브</span></div><div class="combo">조합: P01 × P10 × P02</div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P01</div><div class="hh">이번 달 놓친 구환,<br><span class="r">몇 명인지 아세요?</span></div><p class="hs">모르면 못 부릅니다. <b>알면 오늘 부를 수 있습니다.</b></p><div class="stack"><span class="t">질문</span><span class="t">대조서브</span></div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P02</div><div class="hh">우리 치과,<br>1년에 얼마가 <span class="r">그냥 새고 있을까요?</span></div><p class="hs">슬라이더 3번이면 <b>잠든 환자 수와 잃은 매출</b>이 보입니다.</p><div class="stack"><span class="t">질문</span><span class="t">숫자</span></div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P10</div><div class="hh">우리 병원 매출,<br>어디서 새는지 <span class="r">아세요?</span></div><p class="hs">구멍은 안 보이면 못 막고, <b>보이면 오늘 막습니다.</b></p><div class="stack"><span class="t">질문</span><span class="t">대조서브</span></div></div>
+  </div>
+
+  <!-- B -->
+  <h3 class="grp"><span class="gi">DNA-B</span> 적(옆 치과) 프레이밍 — 뺏김의 통증</h3>
+  <p class="grp-desc">🔥 챔피언 B = P07(옆 치과 의자에 앉음)의 장면 + P12(전화 한 통=예약 한 건)의 등가교환 + '지금 이 순간' 진행형.</p>
+  <div class="grid">
+    <div class="h champ"><span class="badge">🔥 어그로</span><div class="no">챔피언 B</div><div class="hh">지금 이 순간,<br>우리 환자가 <span class="r">옆 치과 의자에 앉아 있습니다.</span></div><p class="hs">우리가 안 건 전화 한 통이, <b>저쪽의 매출이 됐습니다.</b></p><div class="stack"><span class="t">적</span><span class="t">장면</span><span class="t">등가교환</span><span class="t">진행형</span></div><div class="combo">조합: P07 × P12 × P03</div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P03</div><div class="hh">옆 치과는 이미<br>우리 구환에게 <span class="r">전화하고 있습니다.</span></div><p class="hs">가만있는 하루마다, <b>명단은 저쪽으로 넘어갑니다.</b></p><div class="stack"><span class="t">적</span><span class="t">진행형</span></div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P07</div><div class="hh">우리 구환이 지금<br>옆 치과 <span class="r">신환으로 앉아 있습니다.</span></div><p class="hs">관리 안 한 사이, <b>누군가는 먼저 그 환자를 불렀습니다.</b></p><div class="stack"><span class="t">적</span><span class="t">장면시각화</span></div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P12</div><div class="hh">오늘 안 건 전화 한 통이,<br>옆 치과 <span class="r">예약 한 건입니다.</span></div><p class="hs">우리의 침묵이, <b>저쪽의 매출이 됩니다.</b></p><div class="stack"><span class="t">적</span><span class="t">등가교환</span></div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P11</div><div class="hh">그 환자는 안 떠났습니다.<br><span class="r">옮겨간 겁니다.</span></div><p class="hs">마음이 식은 게 아니라, <b>먼저 연락 온 곳이 있던 겁니다.</b></p><div class="stack"><span class="t">적</span><span class="t">반전</span></div></div>
+  </div>
+
+  <!-- C -->
+  <h3 class="grp"><span class="gi">DNA-C</span> 사각지대·은밀한 손실 — 안 보여서 안 아픈</h3>
+  <p class="grp-desc">🔥 챔피언 C = P06(원장님 모르는 사이) + P05(매달 조용히) + '이 문장을 읽는 사이' 실시간 압박.</p>
+  <div class="grid">
+    <div class="h champ"><span class="badge">🔥 어그로</span><div class="no">챔피언 C</div><div class="hh">원장님이 이 문장을 읽는 사이에도,<br>매출은 <span class="r">소리 없이 새고 있습니다.</span></div><p class="hs">안 보여서 안 아플 뿐, 멈춘 적은 없습니다. <b>확인은 3분입니다.</b></p><div class="stack"><span class="t">사각지대</span><span class="t">실시간압박</span><span class="t">즉시가치</span></div><div class="combo">조합: P06 × P05 × 진행형</div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P05</div><div class="hh">매달 조용히,<br>구환 매출이 <span class="r">빠져나갑니다.</span></div><p class="hs">티 안 나게 새서 원인도 안 보입니다. <b>설치 3분이면 그 금액이 나옵니다.</b></p><div class="stack"><span class="t">사각지대</span><span class="t">시간</span></div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P06</div><div class="hh">원장님이 모르는 사이,<br>이번 달도 구환 매출이 <span class="r">샙니다.</span></div><p class="hs">떠난 게 아니라 새는 겁니다. <b>얼마가 새는지 3분이면 숫자로 나옵니다.</b></p><div class="stack"><span class="t">사각지대</span><span class="t">2인칭</span></div></div>
+  </div>
+
+  <!-- D -->
+  <h3 class="grp"><span class="gi">DNA-D</span> 시간·악화·즉시대비 — 지금 안 하면 더</h3>
+  <p class="grp-desc">🔥 챔피언 D = P08·P14(미룰수록 악화) + P15(확인 3분/방치 1년) + 한 통→백 명 숫자 증폭.</p>
+  <div class="grid">
+    <div class="h champ"><span class="badge">🔥 어그로</span><div class="no">챔피언 D</div><div class="hh">오늘 미룬 전화 한 통이,<br>내년엔 <span class="r">잃어버린 환자 백 명이 됩니다.</span></div><p class="hs">잠든 명단은 시간이 지날수록 안 깨어납니다. <b>오늘이 가장 쌉니다.</b></p><div class="stack"><span class="t">악화증폭</span><span class="t">시간</span><span class="t">즉시대비</span></div><div class="combo">조합: P08 × P14 × P15</div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P08</div><div class="hh">오늘 안 부른 구환은,<br>다음 주엔 <span class="r">더 안 옵니다.</span></div><p class="hs">시간이 지날수록, <b>회수는 어려워집니다.</b></p><div class="stack"><span class="t">시간</span><span class="t">악화</span></div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P09</div><div class="hh">지금 안 보면,<br>내년에도 같은 금액이 <span class="r">샙니다.</span></div><p class="hs">확인은 3분, <b>방치는 1년입니다.</b></p><div class="stack"><span class="t">즉시대비</span></div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P14</div><div class="hh">지금 안 부르면,<br>다음 달엔 <span class="r">더 멀어집니다.</span></div><p class="hs">시간이 지날수록, <b>회수율은 떨어집니다.</b></p><div class="stack"><span class="t">시간</span><span class="t">악화</span></div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P15</div><div class="hh">매일매일 새고 있는 매출,<br>확인하는 데는 <span class="r">3분.</span></div><p class="hs">방치는 1년, <b>진단은 오늘.</b></p><div class="stack"><span class="t">즉시대비</span></div></div>
+  </div>
+
+  <!-- E -->
+  <h3 class="grp"><span class="gi">DNA-E</span> 재프레이밍 진단 — A가 아니라 B다</h3>
+  <p class="grp-desc">🔥 챔피언 E = P13(신환 부족 아니라 구환 방치)의 재프레이밍을 '경기 탓' 핑계를 깨는 도발로 증폭.</p>
+  <div class="grid">
+    <div class="h champ"><span class="badge">🔥 어그로</span><div class="no">챔피언 E</div><div class="hh">매출이 안 오르는 건 경기 탓이 아니라,<br><span class="r">부르지 않은 환자 탓입니다.</span></div><p class="hs">밖에서 찾을 게 아니라, <b>이미 우리 차트 안에 답이 있습니다.</b></p><div class="stack"><span class="t">재프레이밍</span><span class="t">핑계격파</span><span class="t">통제감</span></div><div class="combo">조합: P13 × 도발 증폭</div></div>
+    <div class="h pick"><span class="badge">⭐ 픽</span><div class="no">P13</div><div class="hh">문제는 신환 부족이 아니라,<br><span class="r">구환 방치입니다.</span></div><p class="hs">위가 아니라, <b>아래에서 새고 있습니다.</b></p><div class="stack"><span class="t">재프레이밍</span><span class="t">진단</span></div></div>
+  </div>
+
+  <footer>
+    <p><b>다음</b> — 🔥 챔피언 5개(A~E) 중 마음에 드는 걸 골라주세요. 고른 챔피언은 픽으로 승격하고, 그 그룹은 그 방향으로 더 밀어붙여 변주를 뽑겠습니다. "더 세게 / 더 담백하게 / B랑 D 합쳐" 같은 주문도 가능.</p>
+    <p style="margin-top:6px;color:#8A8F86">숫자 문구(챔피언 D '백 명' 등)는 <b>예시(가상)·가정값</b> · 실제는 설치 시 실데이터 계산 · 의료효과 보장 배제 · 차트 읽기만(저장·전송 없음).</p>
+  </footer>
+</div>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
