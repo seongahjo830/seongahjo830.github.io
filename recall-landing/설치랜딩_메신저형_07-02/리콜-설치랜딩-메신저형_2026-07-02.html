@@ -151,41 +151,70 @@
   .rev-stat .rs{text-align:center} .rev-stat .rs b{display:block;font-size:clamp(20px,3.4vw,26px);font-weight:860;color:var(--teal);line-height:1}
   .rev-stat .rs span{font-size:12.5px;color:var(--ink-soft);font-weight:600}
   .rev-stat .rs.acc b{color:var(--accent)}
+  /* 후기 근거 호버 툴팁 */
+  .tip{position:relative;display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--accent);
+    background:var(--accent-soft);padding:4px 10px;border-radius:99px;cursor:help;margin-top:9px;border:1px solid #CBDDF6}
+  .tip .tipbox{position:absolute;bottom:calc(100% + 9px);left:0;width:min(320px,80vw);background:var(--navy);color:#fff;
+    font-weight:500;font-size:12.5px;line-height:1.6;padding:13px 14px;border-radius:12px;box-shadow:var(--shadow);
+    opacity:0;visibility:hidden;transform:translateY(6px);transition:.18s;z-index:30;text-align:left;letter-spacing:0}
+  .tip:hover .tipbox,.tip:focus .tipbox,.tip:focus-within .tipbox{opacity:1;visibility:visible;transform:none}
+  .tip .tipbox b{color:#9FE3C6}
+  .tip .tipbox .src{display:block;margin-top:8px;color:#93A3BB;font-size:11px}
+  .tip .tipbox::after{content:'';position:absolute;top:100%;left:20px;border:7px solid transparent;border-top-color:var(--navy)}
 
   /* ── Before → After 페어(직원·실장) ── */
-  .ba{margin-top:36px;display:flex;flex-direction:column;gap:16px}
-  .ba-row{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(10px,2vw,18px);align-items:stretch}
-  @media(max-width:720px){.ba-row{grid-template-columns:1fr;gap:8px}.ba-arrow{transform:rotate(90deg);margin:2px auto}}
-  .ba-cell{border-radius:14px;padding:16px 18px;border:1.6px solid var(--line);font-size:15px;line-height:1.55;
-    transition:transform .18s ease,box-shadow .18s ease}
-  .ba-cell:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm)}
-  .ba-bad{background:#F5F3EE;border-color:#E2DDD1;color:#6E675A}
-  .ba-good{background:var(--teal-soft);border-color:#BEE3DB}
-  .ba-cell .lb{font-size:12px;font-weight:800;margin-bottom:6px}
-  .ba-bad .lb{color:var(--red)} .ba-good .lb{color:var(--teal-deep)}
-  .ba-cell p{margin:0 0 6px;font-weight:600}
-  .ba-cell .by{font-size:12px;color:var(--ink-soft);font-weight:600}
-  .ba-arrow{display:grid;place-items:center;color:var(--teal);font-weight:900;font-size:clamp(22px,3vw,28px)}
+  .ba{margin-top:34px;display:flex;flex-direction:column;gap:13px}
+  .ba-cols{--midw:132px}
+  .ba-head{display:grid;grid-template-columns:1fr var(--midw) 1fr;gap:clamp(8px,1.5vw,14px);margin-bottom:3px}
+  .ba-head .bh{text-align:center;font-weight:850;font-size:13px;padding:9px;border-radius:99px;letter-spacing:-.01em}
+  .ba-head .bh.bad{background:#EAE6DE;color:#8a7f70}
+  .ba-head .bh.good{background:var(--teal);color:#fff;box-shadow:0 6px 16px rgba(14,124,107,.28)}
+  .ba-row{display:grid;grid-template-columns:1fr var(--midw) 1fr;gap:clamp(8px,1.5vw,14px);align-items:stretch}
+  .ba-cell{border-radius:16px;padding:15px 17px;border:1.6px solid var(--line);
+    transition:transform .22s cubic-bezier(.2,.7,.2,1),box-shadow .22s,filter .22s,opacity .22s}
+  .ba-bad{background:#EFEDE7;border-color:#E2DDD1;filter:saturate(.55)}
+  .ba-good{background:linear-gradient(135deg,#E4F4F0,#F1FBF7);border-color:#9FD9C8;box-shadow:0 10px 26px rgba(14,124,107,.14)}
+  .ba-row:hover .ba-good{transform:translateY(-4px);box-shadow:0 16px 36px rgba(14,124,107,.22)}
+  .ba-row:hover .ba-bad{filter:saturate(.3);opacity:.85}
+  .ba-punch{display:flex;align-items:center;gap:8px;font-size:clamp(15px,1.9vw,18px);font-weight:850;letter-spacing:-.02em;margin-bottom:7px;line-height:1.25}
+  .ba-bad .ba-punch{color:#8a5148} .ba-good .ba-punch{color:var(--teal-deep)}
+  .ba-mk{flex:0 0 22px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900;color:#fff}
+  .ba-bad .ba-mk{background:var(--red)} .ba-good .ba-mk{background:var(--teal)}
+  .ba-q{font-size:13px;line-height:1.55;font-weight:600}
+  .ba-bad .ba-q{color:#7a7167} .ba-good .ba-q{color:#2a4640}
+  .ba-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
+  .ba-mid .cat{font-size:12.5px;font-weight:850;color:var(--ink);letter-spacing:-.02em;line-height:1.25}
+  .ba-mid .arw{width:38px;height:38px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;
+    font-size:19px;font-weight:900;box-shadow:0 5px 14px rgba(14,124,107,.34)}
+  @media(max-width:720px){
+    .ba-head{display:none}
+    .ba-row{grid-template-columns:1fr;gap:7px;padding:9px;background:#faf9f5;border-radius:16px}
+    .ba-mid{flex-direction:row;gap:9px;padding:3px 0}
+    .ba-mid .arw{transform:rotate(90deg);width:30px;height:30px;font-size:15px}
+  }
 
-  /* ── 페이월(블러 잠금) ── */
-  .paywall{position:relative;margin-top:36px;border-radius:var(--radius);overflow:hidden;border:1.6px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
+  /* ── 페이월(부분 블러 리포트 + CTA) ── */
+  .paywall{margin-top:36px;border-radius:var(--radius);overflow:hidden;border:1.6px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
   .pw-head{background:var(--navy);color:#fff;padding:15px 22px;font-weight:800;font-size:15.5px;display:flex;align-items:center;gap:9px}
   .pw-head .live{margin-left:auto;font-size:11.5px;font-weight:700;color:#9FE3C6;display:inline-flex;align-items:center;gap:6px}
   .pw-head .live i{width:8px;height:8px;border-radius:50%;background:#3EDC81;display:inline-block;animation:pulse 1.5s infinite}
-  .pw-body{position:relative}
-  .pw-rows{filter:blur(6.5px);opacity:.92;pointer-events:none;user-select:none;padding:4px 0}
-  .pw-row{display:flex;align-items:center;gap:14px;padding:16px 22px;border-bottom:1px solid var(--line)}
+  .pw-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line)}
+  @media(max-width:520px){.pw-stats{grid-template-columns:1fr}}
+  .pw-stats .ps{background:#F7FAFF;padding:14px 12px;text-align:center}
+  .pw-stats .pl{display:block;font-size:12px;color:var(--ink-soft);font-weight:600;margin-bottom:5px}
+  .pw-stats .pv{font-size:clamp(19px,3vw,23px);font-weight:860;color:var(--navy);letter-spacing:-.02em}
+  .pw-rows{padding:2px 0}
+  .pw-row{display:flex;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid var(--line)}
   .pw-row:last-child{border-bottom:0}
-  .pw-row .rk{flex:0 0 30px;width:30px;height:30px;border-radius:9px;background:var(--navy);color:#fff;font-weight:850;display:grid;place-items:center;font-size:15px}
-  .pw-row .nm{flex:1;font-weight:740;font-size:16px}
-  .pw-row .nm small{display:block;color:var(--ink-soft);font-weight:500;font-size:13px;margin-top:1px}
-  .pw-row .amt{font-weight:860;color:var(--teal);font-size:18px;white-space:nowrap}
-  .pw-lock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;
-    padding:26px 22px 30px;background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.55) 34%,rgba(255,255,255,.92) 62%,var(--card) 100%)}
-  .pw-lock .ic{font-size:38px;margin-bottom:6px}
-  .pw-lock h3{font-size:clamp(18px,3vw,23px);font-weight:850;margin-bottom:8px;letter-spacing:-.02em}
-  .pw-lock p{color:var(--ink-soft);max-width:30em;margin:0 auto 18px;font-size:14.5px;line-height:1.6}
-  .pw-lock .locknote{margin-top:14px;font-size:12.5px;color:var(--ink-soft)}
+  .pw-row .rk{flex:0 0 28px;width:28px;height:28px;border-radius:8px;background:var(--navy);color:#fff;font-weight:850;display:grid;place-items:center;font-size:14px}
+  .pw-row .rsn{flex:1;font-weight:740;font-size:15px;line-height:1.3;min-width:0}
+  .pw-row .rsn small{display:block;color:var(--ink-soft);font-weight:500;font-size:12.5px;margin-top:2px}
+  .pw-row .who{font-size:13.5px;color:var(--ink-soft);font-weight:700;min-width:46px;text-align:right}
+  .pw-row .amt{font-weight:860;color:var(--teal);font-size:16px;min-width:78px;text-align:right;white-space:nowrap}
+  .pw-blur{filter:blur(5px);-webkit-user-select:none;user-select:none;pointer-events:none}
+  .pw-cta{padding:clamp(22px,4vw,30px) 22px;text-align:center;background:linear-gradient(180deg,#EFF3FB,#E4F4F0);border-top:1.6px solid var(--line)}
+  .pw-ct{font-size:14.5px;color:var(--ink-soft);max-width:34em;margin:0 auto 18px;line-height:1.65}
+  .pw-cta .trust{margin-top:20px}
 
   /* ═══════════ 상단 메신저 형식 (.msgr 스코프) ═══════════ */
   .msgr{--accent:#1f9d6b; --accent2:#147a52; --loss:#e0533a;
@@ -246,7 +275,15 @@
     background:#fff;border:3px solid var(--accent);box-shadow:0 2px 8px rgba(20,122,82,.4);cursor:pointer}
   .msgr input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid var(--accent);cursor:pointer}
   .msgr .out{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:15px}
-  @media(max-width:430px){.msgr .out{grid-template-columns:1fr}}
+  .msgr .out.o2{grid-template-columns:1fr 1fr}
+  @media(max-width:430px){.msgr .out{grid-template-columns:1fr}.msgr .out.o2{grid-template-columns:1fr 1fr}}
+  .msgr .cstat-hero{margin-top:15px;background:linear-gradient(135deg,rgba(224,83,58,.15),rgba(224,83,58,.05));
+    border:1px solid #f0c4bb;border-radius:11px;padding:13px;text-align:center}
+  .msgr .cstat-hero .k{font-size:11.5px;color:#8a5a50;font-weight:700}
+  .msgr .cstat-hero .v{font-size:29px;font-weight:900;color:var(--loss);line-height:1.05;margin-top:3px}
+  .msgr .cstat-hero .u{font-size:11.5px;color:#a56d63;margin-top:3px}
+  .msgr .dormrec{margin-top:10px;font-size:12px;color:var(--accent2);font-weight:800;text-align:center;
+    background:#eef7f2;border:1px solid var(--bot-line);border-radius:9px;padding:8px 10px}
   .msgr .stat{background:#f4f9f6;border:1px solid var(--bot-line);border-radius:11px;padding:10px;text-align:center}
   .msgr .stat .k{font-size:11px;color:#5a6b7b} .msgr .stat .v{font-size:21px;font-weight:900;margin-top:2px}
   .msgr .stat .u{font-size:10.5px;color:#7a8a96}
@@ -337,34 +374,30 @@
       <div class="revcol good">
         <div class="ct">😊 제때·빠짐없이 챙기는 치과</div>
         <div class="rcard">
-          <div class="rc-top"><span class="av" style="background:var(--accent)">이</span><span class="rc-who">이○○ 님<small>보호자 · 정기검진</small></span><span class="rc-tag">🟢 후기 예시</span></div>
-          <div class="stars"><span class="on">★★★★★</span></div>
-          <p>“아이 영구치 충치를 ‘만 12세까지 레진이 보험 되는 시기’라며 미리 알려주셨어요. 덕분에 때 놓치지 않고 받았네요.”</p>
-        </div>
-        <div class="rcard">
-          <div class="rc-top"><span class="av" style="background:var(--teal)">박</span><span class="rc-who">박○○ 님<small>어르신 환자 · 임플란트</small></span><span class="rc-tag">🟢 후기 예시</span></div>
-          <div class="stars"><span class="on">★★★★★</span></div>
-          <p>“임플란트를 계속 미뤘는데, ‘만 65세부터 보험 적용되세요’ 하고 딱 맞춰 전화가 왔어요. 이가 없어 불편했는데 정말 고마웠어요.”</p>
-        </div>
-        <div class="rcard">
-          <div class="rc-top"><span class="av" style="background:var(--amber)">정</span><span class="rc-who">정○○ 님<small>스케일링 환자</small></span><span class="rc-tag">🟢 후기 예시</span></div>
-          <div class="stars"><span class="on">★★★★★</span></div>
-          <p>“스케일링 보험 되는 시기(1년에 한 번) 맞춰 알려주셔서, 매년 잊지 않고 받고 있어요.”</p>
-        </div>
-        <div class="rcard">
           <div class="rc-top"><span class="av" style="background:var(--accent)">김</span><span class="rc-who">김○○ 님<small>정기검진 환자</small></span><span class="rc-tag">🟢 후기 예시</span></div>
           <div class="stars"><span class="on">★★★★★</span></div>
-          <p>“6개월마다 딱 검진 시기에 맞춰 연락이 와요. 안 까먹게 챙겨주니 자연스럽게 계속 다니게 되네요.”</p>
+          <p>“여러 치과를 다녀봤는데, 여기는 항상 6개월마다 검진 시기에 딱 맞춰 연락이 와요. 안 까먹게 챙겨주니 어느새 자연스럽게 여기만 다니게 됐어요.”</p>
+        </div>
+        <div class="rcard">
+          <div class="rc-top"><span class="av" style="background:var(--amber)">한</span><span class="rc-who">한○○ 님<small>수술 후 관리 · 지인 소개</small></span><span class="rc-tag">🟢 후기 예시</span></div>
+          <div class="stars"><span class="on">★★★★★</span></div>
+          <p>“임플란트 하고 애매하게 아파서 ‘가야 하나’ 고민하던 참에, 먼저 전화 와서 괜찮은지 물어봐 주니 훨씬 안심됐어요. 마침 임플란트 궁금해하던 친구가 있어서 여기 소개해주려고요.”</p>
+          <span class="tip" tabindex="0">📊 관련 데이터<span class="tipbox">치료·사후관리를 <b>받고 있는 환자군</b>이 그렇지 않을 때보다 <b>지인 소개가 뚜렷하게 많고</b>, 소개하는 이유 상위에 <b>‘꼼꼼히 신경 써주고 관리해준다’</b>가 꼽힙니다. 수술·보철 직후의 세심한 케어가 곧 신환 소개로 이어지는 이유입니다.<span class="src">※ 업계 참고 통계·예시 (실데이터 연동 시 우리 병원 소개 전환율로 대체)</span></span></span>
         </div>
         <div class="rcard">
           <div class="rc-top"><span class="av" style="background:var(--teal)">최</span><span class="rc-who">최○○ 님<small>상담 후 재방문</small></span><span class="rc-tag">🟢 후기 예시</span></div>
           <div class="stars"><span class="on">★★★★★</span></div>
-          <p>“상담만 받고 미뤄뒀던 치료, 잊을 만하면 먼저 연락 주셔서 다시 결심했어요.”</p>
+          <p>“다른 데선 상담만 받고 흐지부지됐는데, 여기는 미뤄둔 치료를 잊을 만하면 먼저 챙겨줘요. 그러다 보니 믿음이 가서 계속 여기서 하게 되네요.”</p>
         </div>
         <div class="rcard">
-          <div class="rc-top"><span class="av" style="background:var(--amber)">한</span><span class="rc-who">한○○ 님<small>수술 후 해피콜</small></span><span class="rc-tag">🟢 후기 예시</span></div>
+          <div class="rc-top"><span class="av" style="background:var(--teal)">박</span><span class="rc-who">박○○ 님<small>어르신 환자 · 임플란트</small></span><span class="rc-tag">🟢 후기 예시</span></div>
           <div class="stars"><span class="on">★★★★★</span></div>
-          <p>“수술 다음 날 ‘불편한 데 없으세요?’ 하고 꼭 전화를 주세요. 관리받는 느낌이 확실히 달라요.”</p>
+          <p>“임플란트를 미루고 있었는데 ‘만 65세부터 보험 적용되세요’ 하고 딱 맞춰 알려주셨어요. 여러 곳 다녀봤지만 이렇게 챙겨주는 곳은 처음이라, 여기서 하기로 했어요.”</p>
+        </div>
+        <div class="rcard">
+          <div class="rc-top"><span class="av" style="background:var(--accent)">이</span><span class="rc-who">이○○ 님<small>보호자 · 자녀 치료</small></span><span class="rc-tag">🟢 후기 예시</span></div>
+          <div class="stars"><span class="on">★★★★★</span></div>
+          <p>“아이 영구치 충치를 ‘만 12세까지 레진이 보험 되는 시기’라며 미리 알려주셨어요. 덕분에 때 놓치지 않고 받았네요.”</p>
         </div>
       </div>
       <div class="revcol bad">
@@ -409,26 +442,27 @@
       게다가 엑셀 정리·사전 관리까지 <b>‘잘하는 한 사람’ 손</b>에 달려 있으면 그 사람이 빠지는 순간 멈추죠.
       AutoRecall은 이걸 <mark>개인 역량이 아니라 시스템이 챙기게</mark> 합니다.</p>
 
-    <div class="ba">
+    <div class="ba ba-cols">
+      <div class="ba-head"><span class="bh bad">설치 전 · 지금</span><span></span><span class="bh good">AutoRecall 설치 후</span></div>
       <div class="ba-row">
-        <div class="ba-cell ba-bad"><div class="lb">✕ 바쁠 땐</div><p>“바쁠 땐 눈앞 환자 응대하느라 리콜은 그냥 넘어가고,”</p><div class="by">— 데스크 직원 관점 예시</div></div>
-        <div class="ba-arrow">→</div>
-        <div class="ba-cell ba-good"><div class="lb">✓ 바빠도</div><p>“‘오늘 꼭 해야 하는 전화’가 맨 위에 떠 있어, 바빠도 시기를 안 놓쳐요.”</p><div class="by">— AutoRecall과 함께</div></div>
+        <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>그냥 넘어감</div><div class="ba-q">“바쁠 땐 눈앞 환자 응대하느라 리콜은 그냥 넘어가고,”</div></div>
+        <div class="ba-mid"><span class="cat">① 바쁠 때</span><span class="arw">→</span></div>
+        <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>맨 위에 떠서 안 놓침</div><div class="ba-q">“‘오늘 꼭 해야 하는 전화’가 맨 위에 떠 있어, 바빠도 시기를 안 놓쳐요.”</div></div>
       </div>
       <div class="ba-row">
-        <div class="ba-cell ba-bad"><div class="lb">✕ 한가할 땐</div><p>“한가할 땐 걸 시간은 있어도, 누구부터 뭘 보고 걸어야 할지 몰라 못 걸고,”</p><div class="by">— 데스크 직원 관점 예시</div></div>
-        <div class="ba-arrow">→</div>
-        <div class="ba-cell ba-good"><div class="lb">✓ 한가할 땐</div><p>“정리된 명단 순서대로 걸기만 하면 돼요. ‘누구부터?’ 고민이 사라졌어요.”</p><div class="by">— AutoRecall과 함께</div></div>
+        <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>누구부터일지 몰라 못 함</div><div class="ba-q">“한가할 땐 걸 시간은 있어도, 누구부터 뭘 보고 걸어야 할지 몰라 못 걸고,”</div></div>
+        <div class="ba-mid"><span class="cat">② 한가할 때</span><span class="arw">→</span></div>
+        <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>순서대로 걸기만</div><div class="ba-q">“정리된 명단 순서대로 걸기만 하면 돼요. ‘누구부터?’ 고민이 사라졌어요.”</div></div>
       </div>
       <div class="ba-row">
-        <div class="ba-cell ba-bad"><div class="lb">✕ 사람에 의존</div><p>“리콜 관리를 체계적으로 해주는 직원이 있어야 굴러가요, 그 사람 빠지면 멈춰요.”</p><div class="by">— 데스크 직원 관점 예시</div></div>
-        <div class="ba-arrow">→</div>
-        <div class="ba-cell ba-good"><div class="lb">✓ 사람 안 타고</div><p>“특정 직원 손을 안 타요. 누가 앉아도 오늘 할 리콜이 똑같이 보여요.”</p><div class="by">— AutoRecall과 함께</div></div>
+        <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>그 사람 빠지면 멈춤</div><div class="ba-q">“리콜 관리를 체계적으로 해주는 직원이 있어야 굴러가요, 그 사람 빠지면 멈춰요.”</div></div>
+        <div class="ba-mid"><span class="cat">③ 사람 의존</span><span class="arw">→</span></div>
+        <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>누가 앉아도 똑같이</div><div class="ba-q">“특정 직원 손을 안 타요. 누가 앉아도 오늘 할 리콜이 똑같이 보여요.”</div></div>
       </div>
       <div class="ba-row">
-        <div class="ba-cell ba-bad"><div class="lb">✕ 확인이 안 됨</div><p>“빠뜨린 게 있는지조차 확인이 안 돼서, 늘 찜찜하고요.”</p><div class="by">— 데스크 직원 관점 예시</div></div>
-        <div class="ba-arrow">→</div>
-        <div class="ba-cell ba-good"><div class="lb">✓ 빠짐 없이</div><p>“빠뜨렸는지 아닌지 화면이 알려주니, 찜찜함이 없어요.”</p><div class="by">— AutoRecall과 함께</div></div>
+        <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>빠졌는지 몰라 찜찜</div><div class="ba-q">“빠뜨린 게 있는지조차 확인이 안 돼서, 늘 찜찜하고요.”</div></div>
+        <div class="ba-mid"><span class="cat">④ 확인</span><span class="arw">→</span></div>
+        <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>화면이 알려줌</div><div class="ba-q">“빠뜨렸는지 아닌지 화면이 알려주니, 찜찜함이 없어요.”</div></div>
       </div>
     </div>
     <div class="note-inline center" style="margin-top:26px">
@@ -443,34 +477,35 @@
   <div class="wrap">
     <span class="eyebrow">STEP 3.8 · 실장이 느끼는 차이</span>
     <h2>리콜은 <span class="teal">‘시키는 것’</span>보다,<br><mark>‘끝까지 확인하는 것’</mark>이 어렵습니다.</h2>
-    <p class="lead">몰라서 안 하는 게 아닙니다. ‘전화 좀 돌리세요’ 해서 며칠 하다, 다른 일이 터지면 또 뒤로 밀리죠.
-      진료로 바쁜 원장님이 물으면 데스크는 늘 <b>‘당연히 다 하고 있어요’</b> — 하지만 그게 <mark>정말 대기업 리콜처럼 돌아가는지 확인할 길이 없어</mark>, 잘 되는 줄 알고 놓치는 경우가 많습니다.</p>
+    <p class="lead">물어보면 늘 <b>‘잘 되고 있어요.’</b> 그런데 그 대답을 <b>숫자로 본 적</b>, 있으신가요?
+      <mark>확인되지 않은 ‘잘 됨’은, 잘 되는 게 아니라 그냥 안 보이는 것</mark>입니다. 리콜은 시키고 다그치는 일이 아니라 — <b>‘보이게 만드는 일’</b>이어야 합니다.</p>
 
-    <div class="ba">
+    <div class="ba ba-cols">
+      <div class="ba-head"><span class="bh bad">설치 전 · 지금</span><span></span><span class="bh good">AutoRecall 설치 후</span></div>
       <div class="ba-row">
-        <div class="ba-cell ba-bad"><div class="lb">✕ 시켜서 며칠뿐</div><p>“‘전화 좀 돌리세요’ 해서 며칠 하다가, 다른 일 터지면 또 딴 걸 시키고… 루틴이 되기 전엔 계속 원점이에요.”</p><div class="by">— 실장(중간관리자) 관점 예시</div></div>
-        <div class="ba-arrow">→</div>
-        <div class="ba-cell ba-good"><div class="lb">✓ 루틴으로 굴러감</div><p>“매일 걸 리스트가 알아서 떠요. 매번 시키지 않아도 그냥 루틴으로 돌아가요.”</p><div class="by">— AutoRecall과 함께</div></div>
+        <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>며칠 하다 원점</div><div class="ba-q">“‘전화 좀 돌리세요’ 해서 며칠 하다가, 다른 일 터지면 또 딴 걸 시키고… 루틴이 되기 전엔 계속 원점이에요.”</div></div>
+        <div class="ba-mid"><span class="cat">① 시켜서</span><span class="arw">→</span></div>
+        <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>매일 알아서 루틴</div><div class="ba-q">“매일 걸 리스트가 알아서 떠요. 매번 시키지 않아도 그냥 루틴으로 돌아가요.”</div></div>
       </div>
       <div class="ba-row">
-        <div class="ba-cell ba-bad"><div class="lb">✕ ‘잘하고 있는 줄’</div><p>“진료 보느라 바빠서 물어보면 ‘당연히 다 걸고 있어요’—근데 진짜 그런지 확인이 안 되니, 잘 되는 줄로만 알아요.”</p><div class="by">— 대표원장 관점 예시</div></div>
-        <div class="ba-arrow">→</div>
-        <div class="ba-cell ba-good"><div class="lb">✓ 사실로 확인</div><p>“누가 며칠에 몇 통, 결과가 뭔지 숫자로 딱 떠요. ‘잘 되는 줄 알았다’가 아니라 사실로 봐요.”</p><div class="by">— AutoRecall과 함께</div></div>
+        <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>확인 안 돼 착각</div><div class="ba-q">“물어보면 ‘당연히 다 걸고 있어요’—근데 진짜 그런지 확인이 안 되니, 잘 되는 줄로만 알아요.”</div></div>
+        <div class="ba-mid"><span class="cat">② 잘하는 줄</span><span class="arw">→</span></div>
+        <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>숫자로 사실 확인</div><div class="ba-q">“누가 며칠에 몇 통, 결과가 뭔지 숫자로 딱 떠요. ‘잘 되는 줄 알았다’가 아니라 사실로 봐요.”</div></div>
       </div>
       <div class="ba-row">
-        <div class="ba-cell ba-bad"><div class="lb">✕ 통화 확인 불가</div><p>“‘전화했어요’ 하는데, 실제로 연결은 됐는지 하나하나 확인할 방법이 없어요.”</p><div class="by">— 실장(중간관리자) 관점 예시</div></div>
-        <div class="ba-arrow">→</div>
-        <div class="ba-cell ba-good"><div class="lb">✓ 통화 상태가 남음</div><p>“실제 통화 여부·상태가 리스트에 그대로 남아요. ‘했다’는 말에 기대지 않아도 돼요.”</p><div class="by">— AutoRecall과 함께</div></div>
+        <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>연결됐는지 모름</div><div class="ba-q">“‘전화했어요’ 하는데, 실제로 연결은 됐는지 하나하나 확인할 방법이 없어요.”</div></div>
+        <div class="ba-mid"><span class="cat">③ 통화 확인</span><span class="arw">→</span></div>
+        <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>상태가 그대로 남음</div><div class="ba-q">“실제 통화 여부·상태가 리스트에 그대로 남아요. ‘했다’는 말에 기대지 않아도 돼요.”</div></div>
       </div>
       <div class="ba-row">
-        <div class="ba-cell ba-bad"><div class="lb">✕ 보고가 또 일</div><p>“결과를 남기라 하면 따로 보고서를 써야 해서, 그게 또 하나의 일이 돼버리고요.”</p><div class="by">— 실장(중간관리자) 관점 예시</div></div>
-        <div class="ba-arrow">→</div>
-        <div class="ba-cell ba-good"><div class="lb">✓ 보고서 자동 생성</div><p>“결과 보고서가 자동으로 만들어져서, 따로 쓰라고 할 필요가 없어요.”</p><div class="by">— AutoRecall과 함께</div></div>
+        <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>보고서가 또 일</div><div class="ba-q">“결과를 남기라 하면 따로 보고서를 써야 해서, 그게 또 하나의 일이 돼버리고요.”</div></div>
+        <div class="ba-mid"><span class="cat">④ 보고</span><span class="arw">→</span></div>
+        <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>자동으로 생성</div><div class="ba-q">“결과 보고서가 자동으로 만들어져서, 따로 쓰라고 할 필요가 없어요.”</div></div>
       </div>
       <div class="ba-row">
-        <div class="ba-cell ba-bad"><div class="lb">✕ 대기업처럼은 무리</div><p>“대기업이 리콜 관리하듯 꼼꼼히 하면 좋은데, 챙길 게 너무 많아 바쁜 치과에선 현실적으로 무리예요.”</p><div class="by">— 실장(중간관리자) 관점 예시</div></div>
-        <div class="ba-arrow">→</div>
-        <div class="ba-cell ba-good"><div class="lb">✓ 그냥 굴러감</div><p>“모니터링·통계·리스트 갱신을 프로그램이 대신해, 대기업식 관리가 ‘알아서 굴러가는’ 일이 돼요.”</p><div class="by">— AutoRecall과 함께</div></div>
+        <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>챙길 게 많아 무리</div><div class="ba-q">“대기업이 리콜 관리하듯 꼼꼼히 하면 좋은데, 챙길 게 너무 많아 바쁜 치과에선 현실적으로 무리예요.”</div></div>
+        <div class="ba-mid"><span class="cat">⑤ 대기업처럼</span><span class="arw">→</span></div>
+        <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>알아서 굴러감</div><div class="ba-q">“모니터링·통계·리스트 갱신을 프로그램이 대신해, 대기업식 관리가 ‘알아서 굴러가는’ 일이 돼요.”</div></div>
       </div>
     </div>
     <div class="note-inline center" style="margin-top:26px">
@@ -527,37 +562,29 @@
       🔒 <b>이 간이 추정은 가정값입니다.</b> 설치하면 우리 덴트웹 차트를 <b>읽기만</b> 해서(저장·전송 없음) 위 숫자를 <b>실제 환자 이름</b>으로 바꿔 보여드립니다.
     </div>
 
-    <!-- 설치 CTA -->
-    <div class="installbox" id="installbox">
-      <div class="kw">지금 바로 설치해서, 우리 병원 진짜 숫자 보기</div>
-      <p class="sub">회원가입·상담 예약 없이 <b>3분이면 설치 완료.</b> 오늘 전화할 환자 명단이 우리 치과 데이터로 바로 채워집니다.</p>
-      <a href="#" class="cta big teal" onclick="installClick(event)">⬇️ 지금 바로 설치해서 진단받기</a>
-      <div class="trust">
-        <span class="badge">✅ <b>무료</b>로 시작</span>
-        <span class="badge">🔒 차트는 <b>읽기만</b> · 저장·전송 없음</span>
-        <span class="badge">🖥️ 덴트웹 연동 · <b>설치 3분</b></span>
-      </div>
-    </div>
-
-    <!-- 페이월 · 블러 잠금 미리보기 -->
+    <!-- 페이월 · 부분 블러 리포트 + 설치 CTA -->
     <div class="paywall">
       <div class="pw-head">📋 우리 병원 실제 리콜 리포트 · 상위 명단<span class="live"><i></i>설치 시 실시간</span></div>
-      <div class="pw-body">
-        <div class="pw-rows">
-          <div class="pw-row"><span class="rk">1</span><span class="nm">김●● 님 · 010-●●●●-4821<small>임플란트 상담 후 11개월 · 마지막 내원 2025-08-03</small></span><span class="amt">회수 예상 320만원</span></div>
-          <div class="pw-row"><span class="rk">2</span><span class="nm">이●● 님 · 010-●●●●-7135<small>정기검진 도래 · 당일 오후 3시 빈 슬롯 매칭</small></span><span class="amt">회수 예상 210만원</span></div>
-          <div class="pw-row"><span class="rk">3</span><span class="nm">박●● 님 · 010-●●●●-0642<small>스케일링 7개월 경과 · 보험 적용 시점</small></span><span class="amt">회수 예상 180만원</span></div>
-          <div class="pw-row"><span class="rk">4</span><span class="nm">최●● 님 · 010-●●●●-9927<small>크라운 상담 후 미착수 · 6개월 경과</small></span><span class="amt">회수 예상 260만원</span></div>
-          <div class="pw-row"><span class="rk">5</span><span class="nm">정●● 님 · 010-●●●●-3318<small>보철 재점검 도래 · 이탈 위험 높음</small></span><span class="amt">회수 예상 150만원</span></div>
-          <div class="pw-row"><span class="rk">6</span><span class="nm">한●● 님 · 010-●●●●-5504<small>임플란트 보험(만 65세) 적용 시점 도래</small></span><span class="amt">회수 예상 240만원</span></div>
-        </div>
-        <div class="pw-lock">
-          <div class="ic">🔒</div>
-          <h3>우리 병원 진짜 명단은, 여기서부터 잠겨 있습니다</h3>
-          <p>흐릿한 이 자리에 <b>실제 환자 이름·연락처·마지막 내원일·회수 예상액</b>이 채워집니다.
-            지금 보이는 건 <b>상위 6명</b>뿐 — 설치하면 <b>전체 명단</b>이 열립니다.</p>
-          <a href="#" class="cta big teal" onclick="installClick(event)">🔓 설치하고 우리 병원 전체 명단 잠금 해제 →</a>
-          <div class="locknote">무료로 시작 · 회원가입 없이 3분 · 차트는 읽기만 (저장·전송 없음)</div>
+      <div class="pw-stats">
+        <div class="ps"><span class="pl">이번 달 리콜 대상</span><span class="pv"><span class="pw-blur">248</span>명</span></div>
+        <div class="ps"><span class="pl">회수 가능 합계</span><span class="pv"><span class="pw-blur">3,120</span>만원</span></div>
+        <div class="ps"><span class="pl">잠든 구환(누적)</span><span class="pv"><span class="pw-blur">810</span>명</span></div>
+      </div>
+      <div class="pw-rows">
+        <div class="pw-row"><span class="rk">1</span><span class="rsn">고가 상담 후 미착수<small>임플란트 상담 · 11개월 경과</small></span><span class="who pw-blur">김○○</span><span class="amt"><span class="pw-blur">320</span>만원</span></div>
+        <div class="pw-row"><span class="rk">2</span><span class="rsn">정기검진 도래 · 당일 빈 슬롯<small>오후 3시 취소 자리 매칭</small></span><span class="who pw-blur">이○○</span><span class="amt"><span class="pw-blur">210</span>만원</span></div>
+        <div class="pw-row"><span class="rk">3</span><span class="rsn">치료 중단 · 미완결<small>신경치료 3회 후 크라운 미착수</small></span><span class="who pw-blur">박○○</span><span class="amt"><span class="pw-blur">260</span>만원</span></div>
+        <div class="pw-row"><span class="rk">4</span><span class="rsn">보철 재점검 도래<small>이탈 위험 높음 · 6개월 경과</small></span><span class="who pw-blur">최○○</span><span class="amt"><span class="pw-blur">150</span>만원</span></div>
+        <div class="pw-row"><span class="rk">5</span><span class="rsn">임플란트 보험 적용 시점<small>만 65세 도래</small></span><span class="who pw-blur">정○○</span><span class="amt"><span class="pw-blur">240</span>만원</span></div>
+      </div>
+      <div class="pw-cta">
+        <div class="pw-ct">🔒 사유·명단 구조는 다 보이죠? <b>가려진 건 이름·연락처·금액뿐</b>입니다.
+          설치하면 이 흐릿한 자리가 <b>우리 병원 실제 환자 이름과 금액</b>으로 전부 열립니다. <b>지금 보이는 건 상위 5명 · 전체는 설치 후.</b></div>
+        <a href="#" class="cta big teal" onclick="installClick(event)">🔓 지금 설치하고 우리 병원 전체 명단·금액 열기 →</a>
+        <div class="trust">
+          <span class="badge">✅ <b>무료</b>로 시작</span>
+          <span class="badge">🔒 차트는 <b>읽기만</b> · 저장·전송 없음</span>
+          <span class="badge">🖥️ 덴트웹 연동 · <b>설치 3분</b></span>
         </div>
       </div>
     </div>
@@ -661,54 +688,55 @@
     var c=document.createElement('div'); c.className='card';
     c.innerHTML=''
       +'<h3>🩺 30초 자가진단 · 이번 달 새는 구환 매출</h3>'
-      +'<div class="field"><div class="lab"><span>전체 구환 수</span><b id="vP">3,000명</b></div>'
-      +'<input type="range" id="rP" min="500" max="20000" step="100" value="3000"></div>'
-      +'<div class="field"><div class="lab"><span>6개월+ 안 온 비율</span><b id="vR">35%</b></div>'
-      +'<input type="range" id="rR" min="10" max="60" step="1" value="35"></div>'
-      +'<div class="field"><div class="lab"><span>1인 평균 진료가치 <span style="color:#8a98a4">(가정)</span></span><b id="vV">25만원</b></div>'
-      +'<input type="range" id="rV" min="5" max="80" step="1" value="25"></div>'
-      +'<div class="out">'
-      +'<div class="stat s"><div class="k">잠든 구환</div><div class="v" id="oS">1,050</div><div class="u">명(추정)</div></div>'
-      +'<div class="stat l"><div class="k">새는 매출</div><div class="v" id="oL">2.6억</div><div class="u">원(추정)</div></div>'
-      +'<div class="stat r"><div class="k">회수 가능</div><div class="v" id="oR">3,937</div><div class="u">만원·15%</div></div>'
+      +'<div class="field"><div class="lab"><span>평균 월매출</span><b id="cRev">5,000만원</b></div>'
+      +'<input type="range" id="cRevR" min="1000" max="40000" step="500" value="5000"></div>'
+      +'<div class="field"><div class="lab"><span>전체 구환 수 <span style="color:#8a98a4">(온 적 있는 환자)</span></span><b id="cPat">3,000명</b></div>'
+      +'<input type="range" id="cPatR" min="500" max="15000" step="100" value="3000"></div>'
+      +'<div class="field"><div class="lab"><span>신환 비율 <span style="color:#8a98a4">(월 환자 중)</span></span><b id="cNew">30%</b></div>'
+      +'<input type="range" id="cNewR" min="5" max="70" step="5" value="30"></div>'
+      +'<div class="field"><div class="lab"><span>개원 연차</span><b id="cYr">5년차</b></div>'
+      +'<input type="range" id="cYrR" min="1" max="20" step="1" value="5"></div>'
+      +'<div class="cstat-hero"><div class="k">한 달 미루면 사라지는 돈</div><div class="v" id="cLoss">60만원</div><div class="u" id="cLossPct">월매출의 약 1.2%</div></div>'
+      +'<div class="out o2">'
+      +'<div class="stat s"><div class="k">이번 달 리콜 대상</div><div class="v" id="cTgt">250</div><div class="u">명(추정)</div></div>'
+      +'<div class="stat r"><div class="k">구환 1인 연 가치</div><div class="v" id="cVal">14</div><div class="u">만원(추정)</div></div>'
+      +'<div class="stat l"><div class="k">2년 방치 총 증발</div><div class="v" id="cY2">840만원</div><div class="u">누적(추정)</div></div>'
+      +'<div class="stat s"><div class="k">이미 잠든 구환</div><div class="v" id="cDorm">810</div><div class="u">명(누적)</div></div>'
       +'</div>'
-      +'<div class="score"><div class="top"><span style="font-size:12px;color:#5a6b7b">리콜 건강점수</span>'
-      +'<span class="sc"><span id="oSc">45</span><span style="font-size:14px;color:#7a8a96"> / 100</span></span></div>'
-      +'<div class="bm">'
-      +'<div class="r me"><span style="color:#147a52;font-weight:700">우리 치과</span><span class="tr"><i class="f" id="bmMe" style="width:45%"></i></span><span id="bmMeN" style="color:#147a52;font-weight:800">45</span></div>'
-      +'<div class="r av"><span>동네 평균</span><span class="tr"><i class="f" style="width:60%"></i></span><span>60</span></div>'
-      +'<div class="r tp"><span style="color:#2a8f6a">상위 10%</span><span class="tr"><i class="f" style="width:82%"></i></span><span style="color:#2a8f6a">82</span></div>'
-      +'</div>'
-      +'<div class="verdict" id="vd">동네 평균보다 <b>아래</b>예요. 잠든 구환이 매달 더 쌓이는 구간이라, 가장 먼저 손대면 효과가 큰 자리예요.</div>'
-      +'</div>'
-      +'<div class="note">📐 계산식 공개 · 잠든=구환×미내원율 · 새는매출=잠든×진료가치(가정) · 회수=새는매출×15% · 점수=100−미내원율×1.55. 모두 <b>예시·가정값</b>이며 의료 효과를 보장하지 않습니다. 입력값은 화면 안에서만 계산, <b>저장·전송 안 함</b>.</div>';
+      +'<div class="dormrec" id="cDormRec">지금 깨우면 1,701만원 회수 가능</div>'
+      +'<div class="note">📐 계산식 공개 · 구환 1인 연가치=월매출×12×(1−신환비율)÷구환수 · 리콜 대상=구환수÷12 · 한 달 손실=대상×연가치×1.7% · 잠든 구환=구환수×(12%+연차×3%). 모두 <b>예시·가정값</b>이며 의료 효과를 보장하지 않습니다. 입력값은 화면 안에서만 계산, <b>저장·전송 안 함</b>.</div>';
     thread.appendChild(c); reveal(c); wireCard(); cardBuilt=true;
     setTimeout(next, fast?20:820);
   }
   function fmt(n){return Math.round(n).toLocaleString();}
   function setBg(el){ el.style.setProperty('--p',((el.value-el.min)/(el.max-el.min)*100)+'%'); }
   function wireCard(){
-    var rP=document.getElementById('rP'),rR=document.getElementById('rR'),rV=document.getElementById('rV');
+    var rev=document.getElementById('cRevR'),pat=document.getElementById('cPatR'),
+        nw=document.getElementById('cNewR'),yr=document.getElementById('cYrR');
     function calc(){
-      [rP,rR,rV].forEach(setBg);
-      var P=+rP.value,R=+rR.value,V=+rV.value;
-      document.getElementById('vP').textContent=fmt(P)+'명';
-      document.getElementById('vR').textContent=R+'%';
-      document.getElementById('vV').textContent=V+'만원';
-      var s=Math.round(P*R/100), lost=s*V, rec=Math.round(lost*0.15);
-      document.getElementById('oS').textContent=fmt(s);
-      document.getElementById('oL').textContent= lost>=10000?(lost/10000).toFixed(1)+'억':fmt(lost)+'만';
-      document.getElementById('oR').textContent= rec>=10000?(rec/10000).toFixed(1)+'억':fmt(rec);
-      var sc=Math.max(5,Math.min(99,Math.round(100-R*1.55)));
-      document.getElementById('oSc').textContent=sc;
-      document.getElementById('bmMe').style.width=sc+'%';
-      document.getElementById('bmMeN').textContent=sc;
-      var vd=document.getElementById('vd');
-      if(sc>=82) vd.innerHTML='상위 10% 수준이에요! 남은 <b>'+fmt(s)+'명</b>만 더 줄이면 거의 완벽해요.';
-      else if(sc>=60) vd.innerHTML='동네 평균 이상이에요. 그래도 잠든 <b>'+fmt(s)+'명</b>은 매달 매출이 새는 자리예요.';
-      else vd.innerHTML='동네 평균보다 <b>아래</b>예요. 잠든 <b>'+fmt(s)+'명</b>이 매달 쌓이는 구간이라, 먼저 손대면 효과가 큰 자리예요.';
+      [rev,pat,nw,yr].forEach(setBg);
+      var revMan=+rev.value, revWon=revMan*10000, P=+pat.value, N=(+nw.value)/100, Y=+yr.value;
+      document.getElementById('cRev').textContent=manFmt(revMan);
+      document.getElementById('cPat').textContent=P.toLocaleString('ko-KR')+'명';
+      document.getElementById('cNew').textContent=(+nw.value)+'%';
+      document.getElementById('cYr').textContent=Y+'년차';
+      var tgt=Math.round(P/12);
+      var val=Math.round(revWon*12*(1-N)/P);
+      var loss=Math.round(tgt*val*0.017);
+      var lossPct=(loss/revWon*100);
+      var y2=Math.round(loss*14.1);
+      var dormRate=Math.min(0.45,0.12+Y*0.03);
+      var dorm=Math.round(P*dormRate);
+      var recover=Math.round(dorm*val*0.15);
+      document.getElementById('cLoss').textContent=eok(loss);
+      document.getElementById('cLossPct').textContent='월매출의 약 '+lossPct.toFixed(1)+'%';
+      document.getElementById('cTgt').textContent=tgt.toLocaleString('ko-KR');
+      document.getElementById('cVal').textContent=Math.round(val/10000).toLocaleString('ko-KR');
+      document.getElementById('cY2').textContent=eok(y2);
+      document.getElementById('cDorm').textContent=dorm.toLocaleString('ko-KR');
+      document.getElementById('cDormRec').textContent='지금 깨우면 '+eok(recover)+' 회수 가능';
     }
-    [rP,rR,rV].forEach(function(el){el.addEventListener('input',calc);});
+    [rev,pat,nw,yr].forEach(function(el){el.addEventListener('input',calc);});
     calc();
   }
 
@@ -805,15 +833,7 @@ function installClick(e){
 })();
 </script>
 <!--recall-fab-->
-<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
-   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
-   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
-   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
-   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
-   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
-  <span style="font-size:15px">📋</span><span>후보 목록</span>
-</a>
-<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
-@media print{#recallFab{display:none!important}}</style>
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기" style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);font-family:Pretendard,-apple-system,BlinkMacSystemFont,Segoe UI,Malgun Gothic,sans-serif;transition:transform .12s ease;opacity:.94;"><span style="font-size:15px">📋</span><span>후보 목록</span></a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1}@media print{#recallFab{display:none!important}}</style>
 </body>
 </html>
