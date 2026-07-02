@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리콜해야 하는 이유 — 이번 달도 새는 구환 매출</title>
+<style>
+  :root{
+    --bg:#FBFAF7; --ink:#1A1D22; --sub:#5A626E; --line:#E7E3DA;
+    --accent:#0E7C7B; --accent-ink:#0A5E5D; --accent-soft:#E6F2F1;
+    --warn:#B4531F; --warn-soft:#FBEDE3; --good:#1F7A3D; --card:#FFFFFF;
+    --measure:720px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    font-size:18px; line-height:1.85; letter-spacing:-0.01em;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--measure); margin:0 auto; padding:0 22px;}
+  h1,h2,h3{line-height:1.3; letter-spacing:-0.02em; font-weight:800;}
+  h2{font-size:1.6rem; margin:0 0 .5em;}
+  h3{font-size:1.15rem; margin:1.4em 0 .3em;}
+  p{margin:.7em 0;}
+  .accent{color:var(--accent-ink);}
+  .muted{color:var(--sub);}
+  b,strong{font-weight:700;}
+  .eyebrow{font-size:.8rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--accent-ink);}
+
+  /* HERO */
+  .hero{background:linear-gradient(180deg,#F1F6F5 0%,var(--bg) 100%); border-bottom:1px solid var(--line); padding:64px 0 52px;}
+  .hero h1{font-size:2.55rem; margin:.15em 0 .35em;}
+  .hero .sub{font-size:1.2rem; color:var(--sub); max-width:600px;}
+  @media(max-width:560px){ .hero h1{font-size:1.95rem;} body{font-size:17px;} }
+
+  /* BUTTONS */
+  .cta{
+    display:inline-block; background:var(--accent); color:#fff!important; text-decoration:none;
+    font-weight:800; font-size:1.08rem; padding:16px 30px; border-radius:14px; margin-top:14px;
+    box-shadow:0 6px 20px rgba(14,124,123,.28); transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .cta:hover{transform:translateY(-2px); box-shadow:0 10px 26px rgba(14,124,123,.34);}
+  .cta.big{font-size:1.25rem; padding:20px 40px;}
+  .cta-note{display:block; margin-top:10px; font-size:.9rem; color:var(--sub);}
+
+  /* SECTIONS */
+  section{padding:52px 0; border-bottom:1px solid var(--line);}
+  .lead{font-size:1.28rem; font-weight:700; color:var(--ink);}
+
+  /* STAT CARDS */
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:26px 0;}
+  @media(max-width:560px){ .stats{grid-template-columns:1fr;} }
+  .stat{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px 20px;}
+  .stat .num{font-size:2.1rem; font-weight:800; color:var(--accent-ink); line-height:1.1;}
+  .stat .lab{font-size:.95rem; color:var(--sub); margin-top:6px;}
+
+  /* TABLE */
+  table{width:100%; border-collapse:collapse; margin:22px 0; background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden;}
+  th,td{padding:14px 18px; text-align:left; border-bottom:1px solid var(--line);}
+  th{background:var(--warn-soft); font-weight:700; color:var(--warn);}
+  tr:last-child td{border-bottom:none;}
+  .danger td{background:var(--warn-soft); font-weight:800; color:var(--warn);}
+
+  /* CALLOUT */
+  .call{border-left:4px solid var(--accent); background:var(--accent-soft); padding:18px 22px; border-radius:0 14px 14px 0; margin:22px 0;}
+  .call.warn{border-color:var(--warn); background:var(--warn-soft);}
+  .call.plain{border-color:var(--line); background:#F5F3EE;}
+  .call h3{margin:.1em 0 .4em;}
+
+  /* BEFORE / AFTER */
+  .ba{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0;}
+  @media(max-width:560px){ .ba{grid-template-columns:1fr;} }
+  .ba .box{border:1px solid var(--line); border-radius:16px; padding:22px; background:var(--card);}
+  .ba .before{border-style:dashed; color:var(--sub);}
+  .ba .after{border-color:var(--accent); background:var(--accent-soft);}
+  .ba .tag{font-weight:800; font-size:.85rem; letter-spacing:.08em; text-transform:uppercase;}
+  .ba .before .tag{color:var(--warn);}
+  .ba .after .tag{color:var(--accent-ink);}
+
+  /* BADGE */
+  .badge{display:inline-block; font-size:.72rem; font-weight:700; padding:1px 7px; border-radius:6px; vertical-align:middle; margin-left:2px;}
+  .b-a{background:#E4F3E9; color:var(--good);}
+  .b-c{background:#EEF1F5; color:#556;}
+
+  /* FAQ */
+  details{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:2px 20px; margin:12px 0;}
+  details[open]{border-color:var(--accent);}
+  summary{cursor:pointer; font-weight:700; padding:16px 0; list-style:none; font-size:1.05rem;}
+  summary::-webkit-details-marker{display:none;}
+  summary::after{content:"+"; float:right; color:var(--accent-ink); font-weight:800;}
+  details[open] summary::after{content:"–";}
+  details p{margin:0 0 16px; color:var(--sub);}
+
+  /* FINAL CTA */
+  .final{background:linear-gradient(160deg,#0E7C7B 0%,#0A5E5D 100%); color:#fff; text-align:center; border:none;}
+  .final h2,.final p{color:#fff;}
+  .final .cta{background:#fff; color:var(--accent-ink)!important; box-shadow:0 8px 30px rgba(0,0,0,.25);}
+  .final .quiet{color:#CFE7E6; font-size:.95rem;}
+
+  /* FOOTNOTE */
+  footer{padding:34px 0 60px; color:var(--sub); font-size:.86rem; line-height:1.7;}
+  footer h4{font-size:.8rem; letter-spacing:.1em; text-transform:uppercase; color:var(--sub); margin:0 0 8px;}
+  .legend span{margin-right:16px;}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">치과 리콜 · 왜 중요한가</div>
+    <h1>원장님이 모르는 사이,<br>이번 달도 구환 매출이 샙니다.</h1>
+    <p class="sub"><b>떠난 게 아니라, 새는</b> 겁니다. 얼마가 새는지 <b>3분이면 숫자로</b> 나옵니다.</p>
+    <a class="cta" href="#install">우리 치과, 얼마 새는지 지금 진단받기 →</a>
+    <span class="cta-note">설치가 곧 진단입니다. 3분이면 우리 치과 현황이 나옵니다.</span>
+  </div>
+</header>
+
+<!-- 1. PROBLEM -->
+<section>
+  <div class="wrap">
+    <h2>신환만 쫓다, 구환은 샙니다</h2>
+    <p class="lead">대부분의 치과는 새 환자를 데려오는 데 광고비를 쏟습니다. 그런데 정작 이미 우리를 아는 환자는 조용히 빠져나갑니다.</p>
+    <div class="stats">
+      <div class="stat"><div class="num">4<span style="font-size:1.1rem">/10명</span></div><div class="lab">일반 치과가 첫 내원 후 계속 유지하는 환자 비율 <span class="badge b-a">근거 A</span></div></div>
+      <div class="stat"><div class="num">20–30%</div><div class="lab">관리 안 하면 18개월 안에 비활성으로 이탈 <span class="badge b-c">업계 C</span></div></div>
+      <div class="stat"><div class="num">5–15배</div><div class="lab">신환 획득이 잠든 구환 재방문보다 비싼 정도 <span class="badge b-c">업계 C</span></div></div>
+    </div>
+    <p>한 번 온 환자를 단골로 만드는 것 — 이것이 가장 정직하고, 가장 싼 성장입니다.</p>
+  </div>
+</section>
+
+<!-- 2. AGITATE -->
+<section>
+  <div class="wrap">
+    <h2>늦을수록, 절벽처럼 사라집니다</h2>
+    <p class="lead">리콜은 “언젠가 하면 되는 일”이 아닙니다. 시간이 지날수록 되돌릴 확률이 급격히 떨어집니다.</p>
+    <table>
+      <thead><tr><th>마지막 내원 후</th><th>다시 오게 할 확률</th></tr></thead>
+      <tbody>
+        <tr><td>6 ~ 12개월</td><td>25 ~ 35%</td></tr>
+        <tr><td>12 ~ 18개월</td><td>15 ~ 25%</td></tr>
+        <tr><td>18 ~ 24개월</td><td>10 ~ 15%</td></tr>
+        <tr class="danger"><td>24개월 넘음</td><td>8% 미만</td></tr>
+      </tbody>
+    </table>
+    <p class="muted" style="font-size:.9rem">휴면 기간별 재활성화 성공률 <span class="badge b-c">업계 C</span></p>
+
+    <h3>그래서, 미루면 실제로 얼마가 사라질까요?</h3>
+    <p>이번 달 리콜 대상 <b>100명</b>이 있다고 해봅시다. <b>지금(적기)</b> 부르면 30%인 30명이 돌아옵니다. 그런데 “다음 달에, 다다음 달에…” 미루면, 같은 100명의 회수 가능 매출이 이렇게 녹습니다.</p>
+    <table>
+      <thead><tr><th>미룬 기간</th><th>돌아올 사람</th><th>회수 가능 매출</th><th>지금 대비 사라진 것</th></tr></thead>
+      <tbody>
+        <tr><td><b>지금 (적기)</b></td><td>30명</td><td><b>900만원</b></td><td>—</td></tr>
+        <tr><td>6개월 뒤</td><td>20명</td><td>600만원</td><td>−300만원</td></tr>
+        <tr><td>1년 뒤</td><td>12~13명</td><td>375만원</td><td>−525만원</td></tr>
+        <tr class="danger"><td>2년 뒤</td><td>6명</td><td>180만원</td><td>−720만원</td></tr>
+      </tbody>
+    </table>
+    <p class="muted" style="font-size:.88rem">예시 가정: 대상 100명 · 환자 1인 가치 30만원(보수적). 재활성화율은 업계 벤치마크 <span class="badge b-c">업계 C</span>. 실제 숫자는 설치 후 우리 치과 차트로 계산됩니다.</p>
+
+    <div class="call warn">
+      <h3>핵심은 이겁니다</h3>
+      <p style="font-size:1.15rem; font-weight:700; margin:.2em 0;">이번 달 대상을 지금 안 부르면 → 결국 <span style="color:var(--warn)">720만원</span>이 사라집니다. (돌아왔을 매출의 80%)</p>
+      <p style="margin:.4em 0 0;">딱 <b>한 달만 미뤄도</b> 그 100명에서 약 <b>51만원</b>이 그 달에 영영 소실됩니다. 게다가 이들을 광고로 대체하려면 신환 획득비(재활성화의 <b>5~15배</b>)가 또 듭니다.</p>
+    </div>
+    <p class="muted" style="font-size:.9rem">※ “자주 오면 건강해진다”는 얘기가 아닙니다. <b>미완료·고위험·잠든 환자를 적기에 놓치지 않는 것</b>의 매출 가치입니다.</p>
+  </div>
+</section>
+
+<!-- 3. WHY WELL -->
+<section>
+  <div class="wrap">
+    <h2>그런데 — 아무 문자나 뿌리면 역효과</h2>
+    <p class="lead">오해 하나를 바로잡아야 합니다. <b>“무조건 6개월마다 다 부르기”는 근거가 약합니다.</b></p>
+    <div class="call">
+      <h3>임상 근거 <span class="badge b-a">근거 A</span></h3>
+      성인 2,372명을 4년간 추적한 대규모 임상시험(INTERVAL)과 세계 최고 권위의 근거종합(Cochrane): <b>6개월 고정이든, 위험도에 맞춘 개별 주기든 구강건강 결과에 차이가 거의 없었습니다.</b> 그래서 영국 보건당국(NICE)의 공식 권고는 “환자 위험도에 맞춰 주기를 <b>개별화</b>하라”입니다.
+    </div>
+    <p class="lead accent">중요한 건 횟수가 아니라 “누구를, 언제, 어떤 톤으로”입니다.</p>
+    <h3>잘하는 리콜의 조건</h3>
+    <table>
+      <tbody>
+        <tr><td>떠나기 전 <b>다음 예약</b>을 잡은 환자</td><td><b>80–90%</b> 재방문 <span class="badge b-c">C</span></td></tr>
+        <tr><td>다음 예약 없이 보낸 환자</td><td>35–45% 재방문 <span class="badge b-c">C</span></td></tr>
+        <tr><td>여러 번 나눠 접촉(멀티터치)</td><td>단발보다 <b>3–5배</b> 효과 <span class="badge b-c">C</span></td></tr>
+        <tr><td>문자 리마인더</td><td>노쇼 <b>약 38%↓</b> <span class="badge b-a">A</span></td></tr>
+      </tbody>
+    </table>
+    <p>반대로, 아무에게나 똑같은 문자를 뿌리면 스팸이 되어 <b>신뢰만 깎입니다.</b> 그래서 “잘” 관리하는 것이 중요합니다.</p>
+  </div>
+</section>
+
+<!-- 4. REALITY -->
+<section>
+  <div class="wrap">
+    <h2>원리는 알겠는데 — 손으로는 불가능합니다</h2>
+    <div class="ba">
+      <div class="box before">
+        <div class="tag">Before</div>
+        <p>차트 수천 명 중 <b>오늘 누구에게</b> 전화할지 감으로 고름. 고가치 환자는 놓치고, 헛콜만 쌓임. “전화했다”는 말은 있는데 기록·결과는 안 남음.</p>
+      </div>
+      <div class="box after">
+        <div class="tag">After</div>
+        <p>오늘 부를 소수가 <b>점수순으로</b> 자동으로 떠 있음. 누르면 통화, 결과는 자동 기록. 다음엔 더 똑똑해짐.</p>
+      </div>
+    </div>
+    <p class="muted">위험도·타이밍·빈 슬롯을 사람이 매번 계산하는 건 불가능합니다. 그래서 도구가 필요합니다.</p>
+  </div>
+</section>
+
+<!-- 5. SOLUTION -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">해법</div>
+    <h2>차트에서, 자동으로.</h2>
+    <p class="lead">우리 리콜 프로그램은 <b>덴트웹 차트를 읽어</b> 위의 모든 걸 자동으로 합니다.</p>
+    <div class="call">
+      <ul style="margin:0; padding-left:20px;">
+        <li>잠든 환자·미완료 치료·고위험군을 <b>오늘치만</b> 골라 줄 세웁니다.</li>
+        <li>환자별 <b>가치 × 타이밍</b>으로 우선순위를 매겨, 실장이 절대 못 하는 계산을 대신합니다.</li>
+        <li>통화 결과를 버튼 한 번으로 기록 → 데이터가 쌓일수록 정확해집니다.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 6. FINAL CTA -->
+<section class="final" id="install">
+  <div class="wrap">
+    <h2>설치가 곧 진단입니다</h2>
+    <p>설명은 여기까지입니다. <b>우리 치과가 실제로 얼마나 새고 있는지</b>는, 우리 차트를 봐야 압니다.<br>설치하면 그 자리에서 <b>잠든 환자 수 · 묻힌 매출 · 오늘 부를 명단</b>을 진단해 드립니다.</p>
+    <a class="cta big" href="#" onclick="return false;">설치하고 우리 치과 진단받기 →</a>
+    <p class="quiet">설치 = 진단 · 차트는 원내에만, 외부 전송 없음</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section>
+  <div class="wrap">
+    <h2>자주 묻는 질문</h2>
+    <details><summary>우리 차트(덴트웹)에서 되나요?</summary><p>네. 덴트웹 차트를 그대로 읽습니다. (연동 범위는 상담 시 안내)</p></details>
+    <details><summary>어렵지 않나요?</summary><p>설치하면 오늘 부를 명단이 바로 뜹니다. 실장이 누르기만 하면 됩니다.</p></details>
+    <details><summary>환자 정보가 밖으로 나가나요?</summary><p>아니요. 진단·연산은 원내에서 이루어집니다.</p></details>
+    <details><summary>비싸지 않나요?</summary><p>잠든 구환 몇 명만 돌아와도 회수됩니다. 신환을 새로 데려오는 비용의 5~15분의 1이면 됩니다.</p></details>
+  </div>
+</section>
+
+<!-- FOOTNOTE -->
+<footer>
+  <div class="wrap">
+    <h4>근거 표기</h4>
+    <p class="legend">
+      <span><span class="badge b-a">근거 A</span> 임상시험·체계적리뷰·협회 공식 (JADA, INTERVAL RCT, Cochrane, NICE, ADA)</span>
+      <span><span class="badge b-c">업계 C</span> 업계 벤치마크 통계 (재활성화·채널 효과 등, 범위값)</span>
+    </p>
+    <p style="margin-top:14px">
+      숫자는 업계 벤치마크·임상 근거를 인용한 것으로, 치과별 상황에 따라 달라집니다. “묻힌 매출” 등 금액 예시는 설치 후 우리 치과 실제 차트 기준으로 계산됩니다. 리콜 주기·빈도 자체가 평균 구강건강을 바꾼다는 주장이 아니라, <b>미완료·고위험·잠든 환자를 놓치지 않는 것</b>의 가치를 말합니다.
+    </p>
+  </div>
+</footer>
+
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
