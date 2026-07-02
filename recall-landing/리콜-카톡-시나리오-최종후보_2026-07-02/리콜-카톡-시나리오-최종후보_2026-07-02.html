@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>카톡 스토리라인 최종 후보 5안 · AutoRecall</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  :root{--ink:#141618;--soft:#5B6360;--line:#E5E1D8;--teal:#0E7C6B;--teal-d:#0A5E51;--red:#C0392B;
+    --me:#fee500;--you:#fff;--accent:#1D4ED8}
+  *{box-sizing:border-box;margin:0}
+  body{font-family:"Pretendard",-apple-system,"Malgun Gothic",sans-serif;background:#eef1f6;color:var(--ink);
+    -webkit-font-smoothing:antialiased;line-height:1.6;padding:26px 16px 60px}
+  .top{max-width:1160px;margin:0 auto 22px;text-align:center}
+  .top .k{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--accent)}
+  .top h1{font-size:clamp(22px,4vw,30px);font-weight:900;letter-spacing:-.03em;margin:8px 0 10px}
+  .top p{color:var(--soft);font-size:14.5px;max-width:50em;margin:0 auto}
+  .top .rule{max-width:50em;margin:12px auto 0;font-size:12.5px;color:#6b7280;background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 15px;text-align:left;line-height:1.6}
+  .top .rule b{color:var(--teal-d)}
+  .grid{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1.6px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 8px 24px rgba(20,30,50,.08);display:flex;flex-direction:column}
+  .ch{padding:15px 18px;border-bottom:1px solid var(--line)}
+  .ch .tag{display:inline-block;font-size:11px;font-weight:800;color:var(--teal-d);background:#E4F4F0;padding:3px 10px;border-radius:99px;margin-bottom:8px}
+  .ch h2{font-size:17.5px;font-weight:850;letter-spacing:-.02em;line-height:1.3}
+  .ch .why{font-size:12.5px;color:var(--soft);margin-top:5px}
+  .thread{background:linear-gradient(160deg,#9fb8d4,#7d9cbf);padding:14px 12px;display:flex;flex-direction:column;gap:7px;flex:1}
+  .day{align-self:center;font-size:10px;color:#33465a;background:rgba(255,255,255,.55);padding:2px 9px;border-radius:99px;margin-bottom:2px}
+  .row{display:flex;flex-direction:column}
+  .row.me{align-items:flex-end}.row.you{align-items:flex-start}
+  .nm{font-size:10px;color:#2f4358;margin:0 0 2px 6px}
+  .b{max-width:85%;padding:8px 11px;border-radius:14px;font-size:13px;line-height:1.5;word-break:break-word}
+  .you .b{background:var(--you);border-top-left-radius:5px}
+  .me .b{background:var(--me);border-top-right-radius:5px;font-weight:600}
+  .b .r{color:var(--red);font-weight:800}.b .g{color:var(--teal-d);font-weight:800}
+  .sys{align-self:center;text-align:center;font-size:11px;color:#22333f;background:rgba(255,255,255,.66);border-radius:11px;padding:7px 12px;max-width:95%;line-height:1.5}
+  .sys b{color:var(--teal-d)}
+  .hand{align-self:center;font-size:10.5px;color:#3a4b5b;background:rgba(255,255,255,.4);border:1px dashed rgba(255,255,255,.7);border-radius:9px;padding:5px 10px;margin-top:2px}
+  .cf{padding:12px 15px;background:#F7FAFF;border-top:1px solid var(--line);font-size:11.5px;color:var(--soft);line-height:1.6}
+  .cf b{color:var(--ink)}.cf span{color:var(--accent);font-weight:700}
+  .note{max-width:1160px;margin:22px auto 0;font-size:12px;color:#8a8f98;text-align:center;line-height:1.7}
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="k">AUTORECALL · 카톡 스토리라인 최종 후보</div>
+    <h1>각각 완성본 — 5안 중 골라주세요</h1>
+    <p>말씀하신 요소를 <b>전부</b> 녹여, 하나하나 그대로 본 랜딩에 붙일 수 있게 완성했습니다. 트리거·환자유형·심리 장치를 서로 다르게 했으니, 제일 “내 얘기” 같은 걸 골라 주세요(조합도 가능).</p>
+    <div class="rule">✔ 공통 원칙 — ① 문제는 <b>우연·외부로만 새어나옴</b>(내부에선 안 보임 → “이번 달 몇 명” 같은 이미-아는 척 대사 금지) ② <b>딱 한 명</b> 구체적 이야기 → “더 있을 텐데 못 찾겠다” ③ <b>사람 손은 한계·우연에 기대면 나머진 다 놓침</b> ④ 원장 자존심 안 건드림(잘못이 아니라 안 보이는 것)</div>
+  </div>
+
+  <div class="grid">
+
+    <!-- 1 -->
+    <div class="card">
+      <div class="ch"><span class="tag">1 · 원장 역지사지</span><h2>“나도 당해보니 알겠더라”</h2><div class="why">원장이 스스로 깨달아 자존심 안 상함. 가장 자연스러운 도입.</div></div>
+      <div class="thread">
+        <div class="day">월요일 아침 9:04</div>
+        <div class="row me"><div class="b">나 주말에 무릎 아파서 정형외과 갔었잖아. “재활 꼭 받으셔야 해요” 하더니, 그 뒤로 연락 한 통이 없더라.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">ㅋㅋ 원장님도 서운하셨구나.</div></div>
+        <div class="row me"><div class="b">서운한 건 아닌데… 솔직히 좀 그렇더라고. 챙겨준다더니.</div></div>
+        <div class="row me"><div class="b">근데 문득, 우리 환자들도 나한테 이러고 있는 거 아냐?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">…원장님 그 말 들으니까, 딱 한 분 떠올라요. 작년에 임플란트 상담까지 받고 “생각해볼게요” 하고 안 오신 분.</div></div>
+        <div class="row me"><div class="b">그런 분이 그 한 분뿐일까.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그게 무서운 거예요. 더 있는 게 뻔한데, <span class="r">누가 그런 분인지 찾을 수가 없어요.</span></div></div>
+        <div class="sys">💡 사람이 일일이 기억하는 덴 한계가 있어요. 우연히 떠오른 한 명 뒤에, 안 떠오른 수십 명이 있을 뿐.</div>
+        <div class="row me"><div class="b">그런 분들, 대체 몇이나 될까?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그것부터 한번 볼까요? 3분이면 대략 나온대요 👀</div></div>
+        <div class="hand">→ 여기서 30초 자가진단 / 설치로 이어짐</div>
+      </div>
+      <div class="cf"><b>트리거</b> 원장 본인 병원 경험 · <b>환자유형</b> 고가 상담 후 잠수 · <span>심리: 자기참조·역지사지 (자존심 보호 최상)</span></div>
+    </div>
+
+    <!-- 2 -->
+    <div class="card">
+      <div class="ch"><span class="tag">2 · 실장 역지사지</span><h2>“손님 돼보니 확 다르더라고요”</h2><div class="why">30·40대 실장이 피부과 여러 곳 다녀본 경험으로 자연스럽게 훅.</div></div>
+      <div class="thread">
+        <div class="day">오늘 점심 12:48</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">원장님, 저 요즘 피부과 여기저기 다녀봤는데요. 확실히 다르더라고요.</div></div>
+        <div class="row me"><div class="b">뭐가?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">어떤 덴 “이맘때 관리 받으실 때예요” 하고 <b>먼저</b> 딱 연락이 와요. 어떤 덴 시술만 하고 감감무소식이고요.</div></div>
+        <div class="row me"><div class="b">넌 어디 계속 가?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">당연히 먼저 챙겨주는 데죠. 손님 입장 되니까 확 알겠더라고요.</div></div>
+        <div class="row me"><div class="b">…그럼 우리 환자들한텐, 우리가 어느 쪽일까?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그게 딱 걸리는 거예요. 우리도 먼저 챙겨야 할 분들 분명 있는데—</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b"><span class="r">누가 그분들인지, 지금 우리 손으론 안 보여요.</span></div></div>
+        <div class="sys">💡 못하는 게 아니라 안 보이는 것. 사람 손으로 매번 그걸 골라내는 건 원래 무리예요.</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">우리 그런 분이 몇이나 되는지, 한번 대략만 볼까요?</div></div>
+        <div class="hand">→ 여기서 30초 자가진단 / 설치로 이어짐</div>
+      </div>
+      <div class="cf"><b>트리거</b> 실장의 소비자 경험 · <b>환자유형</b> 정기관리 구환 · <span>심리: 역지사지·비교대조 (읽는 맛 좋음)</span></div>
+    </div>
+
+    <!-- 3 -->
+    <div class="card">
+      <div class="ch"><span class="tag">3 · 우연히 걸린 한 명</span><h2>“차트가 우연히 눈에 안 띄었으면…”</h2><div class="why">치료 중단 케이스 + 임상 리스크. ‘우연 아니면 몰랐다’가 핵심.</div></div>
+      <div class="thread">
+        <div class="day">오늘 저녁 6:52</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">원장님, 오늘 좀 뜨끔한 일이 있었어요.</div></div>
+        <div class="row me"><div class="b">왜?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">접수하다 우연히 봤는데, 김○○님 <b>신경치료 세 번 받고 크라운 직전에</b> 끊긴 지 반 년 됐더라고요.</div></div>
+        <div class="row me"><div class="b">그거 오래 두면 이 쪼개질 수도 있는데. 왜 몰랐지?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그냥… 차트가 우연히 눈에 띈 거예요. <span class="r">안 띄었으면 계속 몰랐을 거고요.</span></div></div>
+        <div class="row me"><div class="b">그럼 이렇게 하다 만 분들, 더 있겠네.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그게 문제예요. 더 있는 건 아는데, <b>누군지 찾을 수가 없어요.</b> 우연히 걸려야 알게 되니까.</div></div>
+        <div class="sys">💡 우연에 기대면 대부분은 영영 안 걸려요. 다 훑으려면 사람 손으론 거기까지가 한계.</div>
+        <div class="row me"><div class="b">우연 말고, 한 번에 다 볼 방법 없어?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">있어요. 우선 몇 분이나 되는지부터 볼까요?</div></div>
+        <div class="hand">→ 여기서 30초 자가진단 / 설치로 이어짐</div>
+      </div>
+      <div class="cf"><b>트리거</b> 우연한 차트 발견(사고) · <b>환자유형</b> 치료 중단(미완결) · <span>심리: 자이가르닉·손실회피·임상 명분</span></div>
+    </div>
+
+    <!-- 4 -->
+    <div class="card">
+      <div class="ch"><span class="tag">4 · 뼈아픈 리뷰</span><h2>“우리 환자가, 옆 치과를 극찬했다”</h2><div class="why">방치한 환자가 다른 곳 칭찬+친구 추천까지. 소개 상실이 눈앞에.</div></div>
+      <div class="thread">
+        <div class="day">오늘 오후 3:31</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">원장님… 이거 보시면 좀 속상하실 수도 있어요.</div></div>
+        <div class="row me"><div class="b">뭔데?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">우리 예전 환자분이 <b>다른 치과 후기</b>를 이렇게 남기셨더라고요. “때 되면 먼저 연락 주고 챙겨줘서 너무 좋다”고.</div></div>
+        <div class="row me"><div class="b">…그분, 우리한테도 오시던 분 아냐?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">맞아요. 근데 더 있어요. <span class="r">“친구들한테도 다 여기 추천했다”</span>고요.</div></div>
+        <div class="row me"><div class="b">소개까지 통째로 넘어간 거네.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">우리가 못 챙긴 사이에요. 관리받은 느낌이 결국 소개로 가더라고요.</div></div>
+        <div class="row me"><div class="b">우리한테도 그렇게 챙기면 소개해줄 분들, 분명 있을 텐데.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">있죠. 근데 <b>누가 그분들인지 우린 아직 안 보여요.</b></div></div>
+        <div class="sys">💡 잘 챙긴 한 명은 친구를 데려오고, 놓친 한 명은 친구까지 데려갑니다. 차이는 ‘먼저 보이느냐’.</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">우리 그런 분들부터 한번 추려볼까요?</div></div>
+        <div class="hand">→ 여기서 30초 자가진단 / 설치로 이어짐</div>
+      </div>
+      <div class="cf"><b>트리거</b> 우리 환자의 경쟁치과 극찬 리뷰 · <b>환자유형</b> 관리 잘 됐으면 소개했을 분 · <span>심리: 사회적 증거·호혜·손실</span></div>
+    </div>
+
+    <!-- 5 -->
+    <div class="card">
+      <div class="ch"><span class="tag">5 · 우연에 기대고 있었다</span><h2>“챙긴 게 아니라, 운이 좋았던 거네”</h2><div class="why">“우린 잘하는 편”을 인정하며 시작 → 자존심 안 건드리는 반전.</div></div>
+      <div class="thread">
+        <div class="day">오늘 오후 7:10</div>
+        <div class="row me"><div class="b">그래도 우린 챙기는 편이잖아. 데스크가 신경 많이 쓰고.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">맞아요. 그래서 더 아까운 거예요, 원장님.</div></div>
+        <div class="row me"><div class="b">무슨 말이야?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">오늘 한 분 우연히 챙겨서 다시 오셨거든요. 근데 생각해보니… <span class="r">그 우연이 없었으면 그분도 놓쳤을 거예요.</span></div></div>
+        <div class="row me"><div class="b">…챙긴 게 아니라, 운이 좋았던 거네.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">우리가 못해서가 아니라, 사람 손으론 매번 다 붙잡는 게 원래 불가능해서요.</div></div>
+        <div class="row me"><div class="b">우연 말고, 매번 다 걸리게 하려면?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그게 핵심이에요. 우선 지금 <b>우연에 맡겨둔 분</b>이 몇이나 되는지, 대략 볼까요?</div></div>
+        <div class="sys">💡 좋은 치과일수록 더 아깝습니다 — 잘하는데도 우연에 기대고 있으니. 체계가 그걸 ‘매번’으로 바꿔요.</div>
+        <div class="hand">→ 여기서 30초 자가진단 / 설치로 이어짐</div>
+      </div>
+      <div class="cf"><b>트리거</b> 우연히 되살린 한 명 · <b>환자유형</b> 전반(우연 의존) · <span>심리: 반전·자존심 보호(“잘하니 더 아깝다”)</span></div>
+    </div>
+
+  </div>
+
+  <p class="note">※ 5안 모두 <b>그대로 최종본</b>으로 쓸 수 있게 완성했습니다(이름·설정은 예시). 고르시면 본 랜딩 카톡 파트를 그 하나로 교체합니다.<br>
+  추천: 자존심·개연성 둘 다 안전한 <b>1·5</b> / 어그로 강함 <b>4</b> / 임상 명분 <b>3</b> / 읽는 맛 <b>2</b>. 하이브리드도 가능(예: 1로 열고 3의 ‘우연히 걸림’을 본문에).</p>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

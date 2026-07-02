@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>카톡 스토리라인 4안 비교 · AutoRecall</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  :root{--ink:#141618;--soft:#5B6360;--line:#E5E1D8;--teal:#0E7C6B;--teal-d:#0A5E51;--red:#C0392B;
+    --me:#fee500;--you:#fff;--phone:#b2c7de;--accent:#1D4ED8}
+  *{box-sizing:border-box;margin:0}
+  body{font-family:"Pretendard",-apple-system,"Malgun Gothic",sans-serif;background:#eef1f6;color:var(--ink);
+    -webkit-font-smoothing:antialiased;line-height:1.6;padding:26px 16px 60px}
+  .top{max-width:1080px;margin:0 auto 24px;text-align:center}
+  .top .k{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--accent)}
+  .top h1{font-size:clamp(22px,4vw,30px);font-weight:900;letter-spacing:-.03em;margin:8px 0 10px}
+  .top p{color:var(--soft);font-size:15px;max-width:44em;margin:0 auto}
+  .grid{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1.6px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 8px 26px rgba(20,30,50,.08);display:flex;flex-direction:column}
+  .ch{padding:16px 18px;border-bottom:1px solid var(--line)}
+  .ch .tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.03em;color:var(--teal-d);background:#E4F4F0;padding:3px 10px;border-radius:99px;margin-bottom:8px}
+  .ch h2{font-size:18px;font-weight:850;letter-spacing:-.02em}
+  .ch .why{font-size:13px;color:var(--soft);margin-top:5px}
+  .thread{background:linear-gradient(160deg,#9fb8d4,#7d9cbf);padding:15px 13px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .day{align-self:center;font-size:10.5px;color:#33465a;background:rgba(255,255,255,.55);padding:2px 10px;border-radius:99px;margin-bottom:2px}
+  .row{display:flex;flex-direction:column}
+  .row.me{align-items:flex-end}.row.you{align-items:flex-start}
+  .nm{font-size:10.5px;color:#2f4358;margin:0 0 2px 6px}
+  .b{max-width:82%;padding:9px 12px;border-radius:15px;font-size:13.5px;line-height:1.5;word-break:break-word}
+  .you .b{background:var(--you);border-top-left-radius:5px}
+  .me .b{background:var(--me);border-top-right-radius:5px;font-weight:600}
+  .b .r{color:var(--red);font-weight:800}.b .g{color:var(--teal-d);font-weight:800}
+  .sys{align-self:center;text-align:center;font-size:11.5px;color:#22333f;background:rgba(255,255,255,.62);border-radius:11px;padding:7px 12px;max-width:94%;line-height:1.5}
+  .sys b{color:var(--teal-d)}
+  .cf{padding:13px 16px;background:#F7FAFF;border-top:1px solid var(--line);font-size:12.5px;color:var(--soft)}
+  .cf b{color:var(--ink)}
+  .cf .dev{color:var(--accent);font-weight:700}
+  .note{max-width:1080px;margin:22px auto 0;font-size:12px;color:#8a8f98;text-align:center;line-height:1.7}
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="k">AUTORECALL · 카톡 스토리라인 후보</div>
+    <h1>어떤 대화로 갈까요? — 4가지 시나리오</h1>
+    <p>공통 원칙: <b>‘새 치과 가서 했다’ 같은 억지 이탈은 뺐습니다.</b> (그건 보통 가격·불만 때문이지 리콜 탓이 아니니까요.)
+    대신 <b>우리 환자였는데 ‘안 불러서’ 진짜로 놓친</b> 상황 4가지 — 대표원장이 읽으면 “어… 내 얘기네” 하도록 짰습니다. 마음에 드는 안을 골라 주세요.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- A -->
+    <div class="card">
+      <div class="ch">
+        <span class="tag">A · 치료하다 만 환자</span>
+        <h2>“신경치료만 하고 크라운은 안 씌운 채…”</h2>
+        <div class="why">가장 흔하고 뜨끔한 케이스. 임상 리스크까지 걸려 방어 논리가 강함.</div>
+      </div>
+      <div class="thread">
+        <div class="day">오늘 오후 6:41</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">원장님, 김○○님 기억나세요? 어금니 <b>신경치료 3번 받고 크라운 직전에</b> 안 오신 분요.</div></div>
+        <div class="row me"><div class="b">아… 그 마무리 안 하고 만 분.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">벌써 <span class="r">5개월째</span>예요. 크라운 안 씌운 채로 방치… 그 사이 저희가 연락 한 번을 못 드렸어요 ㅠㅠ</div></div>
+        <div class="row me"><div class="b">그거 오래 두면 이 쪼개질 수도 있는데.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">문제는 이렇게 <b>‘하다 만’ 분들</b>이 명단으로 안 잡혀서, 누가 언제 멈췄는지를 몰라요.</div></div>
+        <div class="sys">💡 시작한 일은 끝맺고 싶은 <b>미완결 효과</b> — 환자도 치과도 마찬가지. 문제는 ‘멈춘 사람’이 안 보인다는 것.</div>
+      </div>
+      <div class="cf"><b>연결:</b> AutoRecall이 <b>치료 중단 지점을 자동 감지</b>해 ‘오늘 부를 미완결 환자’로 올림. <span class="dev">심리: 미완결(자이가르닉)·손실회피·임상 명분</span></div>
+    </div>
+
+    <!-- B -->
+    <div class="card">
+      <div class="ch">
+        <span class="tag">B · 조용히 사라진 단골</span>
+        <h2>“잘 오시던 분이, 어느새 안 오세요”</h2>
+        <div class="why">경쟁사 탓이 아니라 ‘그냥 까먹고’ 이탈 — 가장 현실적이고 광범위.</div>
+      </div>
+      <div class="thread">
+        <div class="day">오늘 오전 10:12</div>
+        <div class="row me"><div class="b">요새 예전 단골분들이 좀 뜸하지 않아?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">맞아요. <b>6개월마다 딱딱 오시던 분들</b>이 언제부턴가 안 보이세요.</div></div>
+        <div class="row me"><div class="b">딴 데로 옮긴 건가?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그게 아니라… 대부분 <span class="r">그냥 잊고</span> 안 오시는 거예요. 검진 시기 리콜을 저희가 못 돌린 사이에.</div></div>
+        <div class="row me"><div class="b">알려만 줬어도 오셨을 분들이네.</div></div>
+        <div class="sys">💡 환자는 ‘옮긴’ 게 아니라 <b>관성으로 흘러간</b> 것. 한 번의 알림이 있고 없고의 차이.</div>
+      </div>
+      <div class="cf"><b>연결:</b> 검진·정기 도래 환자를 <b>시기 맞춰 자동으로</b> 오늘 명단에 올림. <span class="dev">심리: 현상유지 편향·단순노출·“내 단골” 손실감</span></div>
+    </div>
+
+    <!-- C -->
+    <div class="card">
+      <div class="ch">
+        <span class="tag">C · 상담만 받고 조용</span>
+        <h2>“견적까지 냈는데 ‘생각해볼게요’”</h2>
+        <div class="why">고가치료(임플란트·교정) 매출 직결. 결정 골든타임 놓침이 핵심.</div>
+      </div>
+      <div class="thread">
+        <div class="day">오늘 오후 2:05</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">원장님, 이번 달 <b>임플란트 상담·견적</b> 나간 분이 8명인데요.</div></div>
+        <div class="row me"><div class="b">그중 몇 분 진행하셨어?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">…<span class="r">2명</span>이요. 나머지는 ‘생각해볼게요’ 하고 조용하세요.</div></div>
+        <div class="row me"><div class="b">전화라도 한번 드려보지 그랬어.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">누가 언제 상담만 받고 갔는지 <b>따로 정리가 안 돼서</b>, 결국 놓쳐요. 상담은 우리가 다 했는데…</div></div>
+        <div class="sys">💡 견적을 받은 순간 이미 <b>마음의 소유(보유효과)</b>가 생김. 결정 2~4주 안 전화 한 통이 전환을 가름.</div>
+      </div>
+      <div class="cf"><b>연결:</b> <b>상담 후 미결정 환자</b>를 결정 골든타임에 맞춰 팔로업 큐로. <span class="dev">심리: 보유효과·결정 골든타임·“상담은 우리가”</span></div>
+    </div>
+
+    <!-- D -->
+    <div class="card">
+      <div class="ch">
+        <span class="tag">D · 수술 후 무소식 → 소개 증발</span>
+        <h2>“수술하고 연락 한 번 없더라”</h2>
+        <div class="why">해피콜 누락이 불만·저평가·소개 상실로. 긍정 통계와 연결됨.</div>
+      </div>
+      <div class="thread">
+        <div class="day">오늘 오후 5:20</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">원장님, 지난달 임플란트 하신 분 후기에 <span class="r">“수술하고 연락 한 번 없더라”</span>고 남기셨어요.</div></div>
+        <div class="row me"><div class="b">어… 그분 해피콜 안 나갔나?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그 주에 바빠서 몇 분은 못 돌렸어요. 근데 <b>관리받은 느낌이 소개로 이어지는 거라…</b></div></div>
+        <div class="row me"><div class="b">그 한 통이 결국 신환 한 명인데.</div></div>
+        <div class="sys">💡 치료·관리받는 중인 환자가 <b>지인 소개를 더 많이</b> 함. 이유 상위가 “꼼꼼히 챙겨준다”. 해피콜 한 통 = 소개 씨앗.</div>
+      </div>
+      <div class="cf"><b>연결:</b> 수술·보철 직후 <b>해피콜 대상 자동 알림</b> → 불만 조기 차단 + 소개 유도. <span class="dev">심리: 호혜성·사회적 증거·피크엔드</span></div>
+    </div>
+
+  </div>
+
+  <p class="note">※ 4안 모두 정식 시안이 아니라 <b>방향 선택용 초안</b>입니다. 이름·수치는 예시. 고르시면 그 톤으로 본 랜딩(카톡 파트)에 이어붙이겠습니다.<br>추천 조합: <b>도입=A(뜨끔) → 본문에서 B·C로 확장</b>, 또는 단일 강하게 가려면 <b>A</b>. D는 STEP3 소개 통계와 세트로 강력.</p>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
