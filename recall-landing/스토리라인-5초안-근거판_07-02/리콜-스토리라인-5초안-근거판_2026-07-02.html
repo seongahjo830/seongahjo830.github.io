@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리콜 랜딩 스토리라인 5초안 · 이론 근거판</title>
+<style>
+  :root{
+    --bg:#FBFAF7;--ink:#1B1E24;--sub:#5B636E;--line:#E9E5DC;
+    --accent:#1D4ED8;--soft:#EAF0FE;--warn:#B4531F;--warnsoft:#FDECE0;
+    --card:#fff;--good:#1E7A54;--goodsoft:#E4F3EC;
+  }
+  *{box-sizing:border-box;margin:0;}
+  body{background:var(--bg);color:var(--ink);font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;line-height:1.8;font-size:17px;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px;}
+
+  .hero{text-align:center;padding:66px 0 42px;background:linear-gradient(180deg,#F1F6F5,var(--bg));border-bottom:1px solid var(--line);}
+  .hero .eyebrow{font-size:.78rem;font-weight:800;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;}
+  .hero h1{font-size:2.35rem;font-weight:800;letter-spacing:-.03em;line-height:1.28;margin:14px 0 12px;}
+  .hero p{font-size:1.15rem;color:var(--sub);}
+  .hero .lock{display:inline-block;margin-top:16px;font-size:.78rem;font-weight:700;color:var(--warn);background:var(--warnsoft);padding:5px 12px;border-radius:20px;}
+
+  .lead{color:var(--sub);margin:36px auto 6px;max-width:700px;text-align:center;}
+  .lead b{color:var(--ink);}
+
+  h2.sec{font-size:1.05rem;font-weight:800;letter-spacing:.02em;color:var(--accent);margin:44px 0 6px;padding-bottom:6px;border-bottom:2px solid var(--soft);}
+
+  /* 공통 이론 토대 */
+  .found{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin:14px 0;box-shadow:0 8px 24px -20px rgba(40,30,15,.4);}
+  .found h3{font-size:1.02rem;font-weight:800;margin-bottom:4px;}
+  .found .kv{font-size:.92rem;color:var(--sub);}
+  .found .kv b{color:var(--ink);}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:620px){.grid2{grid-template-columns:1fr;}}
+
+  /* 스토리라인 카드 */
+  section.sl{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin:20px 0;box-shadow:0 10px 28px -22px rgba(40,30,15,.5);}
+  section.sl.rec{border:2px solid var(--accent);}
+  .h{display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
+  .no{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-weight:800;font-size:1rem;}
+  .h h2{font-size:1.42rem;font-weight:800;letter-spacing:-.02em;}
+  .tag{font-size:.72rem;font-weight:800;color:var(--accent);background:var(--soft);padding:4px 10px;border-radius:20px;}
+  .tag.rec{color:#fff;background:var(--accent);}
+  .concept{color:var(--sub);margin:10px 0 4px;font-size:1rem;}
+
+  .lbl{font-size:.72rem;font-weight:800;letter-spacing:.06em;color:var(--sub);text-transform:uppercase;margin:18px 0 7px;}
+
+  /* flow */
+  .flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .step{background:var(--soft);color:#173a9e;font-size:.82rem;font-weight:700;padding:6px 11px;border-radius:8px;}
+  .step.hero{background:var(--warnsoft);color:var(--warn);}
+  .step.cta{background:var(--accent);color:#fff;}
+  .arw{color:#B9C2D6;font-weight:800;}
+
+  /* 이론 척추 */
+  ul.theory{list-style:none;padding:0;margin:0;}
+  ul.theory li{font-size:.94rem;padding:6px 0 6px 0;border-bottom:1px dashed var(--line);}
+  ul.theory li:last-child{border-bottom:none;}
+  ul.theory b{color:var(--accent);}
+
+  /* 감정 아크 */
+  .arc{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px;}
+  @media(max-width:620px){.arc{grid-template-columns:1fr 1fr;}}
+  .arc .a{background:linear-gradient(180deg,#fff,#FAF8F3);border:1px solid var(--line);border-radius:10px;padding:9px 11px;}
+  .arc .a .t{font-size:.68rem;font-weight:800;color:var(--warn);letter-spacing:.04em;}
+  .arc .a .d{font-size:.85rem;color:var(--ink);margin-top:2px;line-height:1.5;}
+
+  .why{background:#FAF8F3;border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:12px 16px;margin-top:6px;font-size:.95rem;}
+  .why b{color:var(--accent);}
+
+  .stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+  .stat{font-size:.8rem;font-weight:700;color:var(--good);background:var(--goodsoft);padding:5px 11px;border-radius:8px;}
+
+  .risk{border-left:3px solid var(--warn);background:var(--warnsoft);border-radius:0 10px 10px 0;padding:10px 15px;margin-top:12px;font-size:.9rem;}
+  .risk b{color:var(--warn);}
+
+  .rectop{background:var(--soft);border:1px solid #D3E0FB;border-radius:14px;padding:18px 22px;margin:14px 0 8px;font-size:.97rem;}
+  .rectop b{color:var(--accent);}
+
+  table.map{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:8px;}
+  table.map th,table.map td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+  table.map th{background:var(--soft);color:#173a9e;font-weight:800;}
+
+  footer{text-align:center;color:var(--sub);font-size:.82rem;padding:28px 0 64px;line-height:1.7;border-top:1px solid var(--line);margin-top:40px;}
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow">리콜 랜딩 · 히어로 고정 · 스토리라인 5초안 (이론 근거판)</div>
+      <h1>우리 구환이 지금<br>옆 치과 신환으로 앉아 있습니다.</h1>
+      <p>관리 안 한 사이, 누군가는 먼저 그 환자를 불렀습니다.</p>
+      <span class="lock">🔒 이 히어로 문구는 고정 · 아래는 "그다음을 어떻게 풀지" 5가지</span>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <p class="lead">히어로는 <b>손실 프레이밍(Kahneman)</b>으로 이미 심장을 잡았습니다. 문제는 <b>그 긴장을 어떤 서사로 끌고 가 "설치=진단"까지 데려가느냐.</b> 아래 5안은 <b>주된 이론적 척추가 서로 다릅니다</b> — 감정↔이성, 스토리↔체험 축에서 골고루 뽑았습니다. 모두 같은 히어로에서 출발해 <b>자가진단으로 "내 숫자" 착지 → 설치=진단</b>으로 끝납니다.</p>
+
+    <!-- 공통 이론 토대 -->
+    <h2 class="sec">■ 먼저 — 5안 전부가 딛고 선 공통 토대 (왜 이 순서인가)</h2>
+    <div class="grid2">
+      <div class="found">
+        <h3>① 인지 단계: 대부분은 "무자각" 60%</h3>
+        <p class="kv"><b>Schwartz 5단계 인지 모델.</b> 시장의 60%는 문제 자체를 모릅니다(Unaware). "이 제품 좋아요"(4단계 메시지)를 1단계 사람에게 하면 안 먹힘. <b>랜딩의 진짜 일 = 무자각 → 문제자각으로 끌어올리기.</b> 그래서 5안 모두 "당신 차트의 내 숫자"를 어느 지점에선가 반드시 들이댑니다.</p>
+      </div>
+      <div class="found">
+        <h3>② 감정: 손실 &gt; 이득 (2.5배)</h3>
+        <p class="kv"><b>Prospect Theory(Kahneman·Tversky).</b> 손실의 고통 = 이득 기쁨의 2.5배. "매출 올리세요"보다 "지금 새고 있습니다"가 강함. 히어로가 이미 손실 프레이밍 → 본문은 그 손실을 <b>구체적 숫자·얼굴·시간</b>으로 만져지게 만들면 몰입이 유지됨.</p>
+      </div>
+      <div class="found">
+        <h3>③ 신뢰: 의사는 "훈련된 회의론자"</h3>
+        <p class="kv"><b>의사심리 7특성.</b> 팔려들면 즉시 광고로 경계 → 신뢰 붕괴(bait-switch). 잘못을 인정 안 함 → "당신이 못한다"는 3자 프레이밍으로. <b>권위 = 관대함(지식 공개)</b>이지 우월감이 아님. 후기·또래 사례가 어떤 기능 나열보다 강함.</p>
+      </div>
+      <div class="found">
+        <h3>④ 전환: 상호작용 · 즉시가치 · 가치형 CTA</h3>
+        <p class="kv">인터랙티브 자가진단 <b>전환 40%</b>(정적 폼의 수 배). 후기 사회증거 <b>+340%</b>. 즉시가치 3분 이내 <b>전환 7배</b>. 가치형 CTA(<b>+202%</b>): "설치=진단" &gt; "더 알아보기". 그래서 CTA는 매번 <b>"내 숫자를 지금"</b>로.</p>
+      </div>
+    </div>
+
+    <h2 class="sec">■ 스토리라인 5안 — 각각 어떤 이론으로, 왜 이렇게, 왜 먹히나</h2>
+
+    <!-- 1 진단서형 -->
+    <section class="sl">
+      <div class="h"><span class="no">1</span><h2>진단서</h2><span class="tag">Schwartz · 감정아크 · 자기각인</span></div>
+      <p class="concept">"당신은 지금 몇 단계?"로 무자각을 깨우고, 당신 차트를 그 자리에서 진단해 <b>충격→공감→신뢰→희망→행동</b>의 5막을 태움.</p>
+
+      <div class="lbl">흐름</div>
+      <div class="flow">
+        <span class="step hero">히어로</span><span class="arw">→</span>
+        <span class="step">"안 오는 게 아니라 안 부른 것"(1단계 각성)</span><span class="arw">→</span>
+        <span class="step">당신 차트 즉석 진단(충격 숫자)</span><span class="arw">→</span>
+        <span class="step">근데 절반은 유령부채(정직=신뢰)</span><span class="arw">→</span>
+        <span class="step">진짜 회수가능액(희망)</span><span class="arw">→</span>
+        <span class="step cta">설치=60초 정밀진단</span>
+      </div>
+
+      <div class="lbl">이론 척추</div>
+      <ul class="theory">
+        <li><b>Schwartz 무자각→문제자각</b> — "안 부른 것뿐"이 1단계 자물쇠를 여는 열쇠 문장.</li>
+        <li><b>무료진단리포트 감정아크</b> — 충격(내 숫자)→공감(어디서 새나)→신뢰(유령부채 먼저 걸러줌)→희망(회수가능)→행동(60초).</li>
+        <li><b>자기참조 효과 + 구체성</b> — 업계 평균이 아닌 "당신 347명·8,200만원"이 몰입을 10배로. 정확한 숫자가 신뢰를 만듦.</li>
+        <li><b>Cialdini 상호성/정직</b> — 쓰레기(유령부채)를 먼저 공개 → 나머지 숫자를 믿게 됨.</li>
+      </ul>
+
+      <div class="lbl">감정 아크</div>
+      <div class="arc">
+        <div class="a"><div class="t">도입 · 충격</div><div class="d">"내 차트에 이 숫자가?"</div></div>
+        <div class="a"><div class="t">중반 · 안도</div><div class="d">"과장 안 하네, 유령부채 걸러주네"</div></div>
+        <div class="a"><div class="t">절정 · 희망</div><div class="d">"이건 진짜 되찾을 수 있는 돈"</div></div>
+        <div class="a"><div class="t">착지 · 행동</div><div class="d">"60초? 손해 볼 게 없다"</div></div>
+      </div>
+
+      <div class="why">
+        <b>왜 다운로드까지 가나</b> — 자기 숫자를 본 순간 <b>뇌가 스스로 판다.</b> 판매자가 "당신 못한다" 말할 필요가 없음(3자 프레이밍 자동 충족). 정직 구간(유령부채)이 회의론자의 방어를 무장해제 → 희망 구간에서 "그럼 정밀하게?" 하는 순간 <b>설치가 곧 진단</b>이라 마찰이 0(Fogg: 능력↑·트리거 즉시).
+      </div>
+      <div class="stats"><span class="stat">자기참조 몰입 10×</span><span class="stat">즉시가치 3분내 전환 7×</span><span class="stat">손실 프레이밍</span></div>
+      <div class="risk"><b>리스크</b> — 충격 숫자가 가정값이면 신뢰 붕괴. 반드시 계산식·"예시/보수적 추정" 라벨. 공포만 주고 희망 구간 약하면 회피(마비) 유발 → 회수가능 구간을 시각적으로 크게.</div>
+    </section>
+
+    <!-- 2 교육형 초대장 -->
+    <section class="sl rec">
+      <div class="h"><span class="no">2</span><h2>안 파는 교육 (초대장)</h2><span class="tag rec">⭐ 추천 · StoryBrand · Challenger</span></div>
+      <p class="concept">"리콜은 원래 이렇게 작동합니다"를 <b>제품 언급 없이</b> 관대하게 가르치고, 손해결책들을 정직하게 비교 → 독자가 스스로 결론 내리게 → 마지막에 "그 자동 큐가 이겁니다"라고 <b>초대</b>.</p>
+
+      <div class="lbl">흐름</div>
+      <div class="flow">
+        <span class="step hero">히어로</span><span class="arw">→</span>
+        <span class="step">리콜의 원리(기억주기·큐·우선순위) 무료 공개</span><span class="arw">→</span>
+        <span class="step">왜 손으로는 구조적으로 불가능한가</span><span class="arw">→</span>
+        <span class="step">해결책 정직 비교(엽서/문자/막콜/점수큐)</span><span class="arw">→</span>
+        <span class="step">당신은 몇 개 하고 있나(자가진단)</span><span class="arw">→</span>
+        <span class="step cta">설치=그 점수큐를 내 차트로</span>
+      </div>
+
+      <div class="lbl">이론 척추</div>
+      <ul class="theory">
+        <li><b>StoryBrand 역할 반전</b> — 환자·원장이 영웅, 우리는 길잡이(가이드). 브랜드가 주인공이면 반감, 원장이 주인공이면 몰입.</li>
+        <li><b>Challenger Sale: Teach</b> — 새 관점을 가르쳐 "어 우리가 뒤처졌네"를 <b>원장이 스스로</b> 말하게. 우리가 말하면 방어, 자기가 말하면 각성.</li>
+        <li><b>교육형 안티-미끼(Multiview)</b> — 중간에 제품으로 급선회 = 신뢰 붕괴. 여러 해결책 정직 비교 → 독자가 스스로 설득 → 자기결정이라 저항 0.</li>
+        <li><b>권위=관대함</b> — 지식을 공짜로 다 줄수록 "이 사람들 진짜 아네" 신뢰↑. CTA는 pivot이 아니라 <b>초대</b>.</li>
+      </ul>
+
+      <div class="lbl">감정 아크</div>
+      <div class="arc">
+        <div class="a"><div class="t">도입 · 호기심</div><div class="d">"오 리콜에 이런 원리가"</div></div>
+        <div class="a"><div class="t">중반 · 자각</div><div class="d">"손으론 안 되는 게 당연했네"</div></div>
+        <div class="a"><div class="t">절정 · 자기결론</div><div class="d">"점수 큐가 정답이구나"(내가 내린 결론)</div></div>
+        <div class="a"><div class="t">착지 · 수락</div><div class="d">"그게 이거면 써봐야지"</div></div>
+      </div>
+
+      <div class="why">
+        <b>왜 다운로드까지 가나</b> — 의사는 팔리는 걸 극도로 경계하는 회의론자. 이 서사는 <b>끝까지 안 파는 척하며 판다.</b> 독자가 "점수 큐가 답"이라는 결론을 <b>스스로</b> 내리므로, 마지막 초대는 강매가 아니라 이미 내린 결정의 실행. 히어로의 손실 → 원리 교육 → 자기결론 → 설치가 하나의 자연스러운 사고의 흐름이라 이탈 지점이 없음.
+      </div>
+      <div class="stats"><span class="stat">회의론자 방어 우회</span><span class="stat">가치형 CTA +202%</span><span class="stat">자기결정 저항0</span></div>
+      <div class="risk"><b>리스크</b> — 교육이 길면 늘어짐 → 각 스크롤 1메시지·L0 요약 상단 고정. "여러 해결책 비교"에서 우리 제품만 유리하게 조작하면 정직성 무너짐 → 진짜 트레이드오프를 인정할 것.</div>
+    </section>
+
+    <!-- 3 게임화 체험형 -->
+    <section class="sl">
+      <div class="h"><span class="no">3</span><h2>오늘 부를 3명 — 만져보기</h2><span class="tag">Product-led · 도파민 9기법</span></div>
+      <p class="concept">공감은 짧게. "누구한테 전화?"의 답을 <b>실제로 만져보는 데모</b>로 즉시 보여줌 — 점수순 큐를 스크롤·클릭하며 "오 이게 되네" 도파민을 랜딩에서 미리 맛보게.</p>
+
+      <div class="lbl">흐름</div>
+      <div class="flow">
+        <span class="step hero">히어로</span><span class="arw">→</span>
+        <span class="step">데스크 현실(감으로 찍는 콜) 1문장</span><span class="arw">→</span>
+        <span class="step">라이브 데모: 점수순 "오늘 3명" 큐 조작</span><span class="arw">→</span>
+        <span class="step">놓치면 얼마(자가진단 임베드)</span><span class="arw">→</span>
+        <span class="step cta">설치=내 차트로 이 큐 생성</span>
+      </div>
+
+      <div class="lbl">이론 척추</div>
+      <ul class="theory">
+        <li><b>Loewenstein 큐리오시티 갭</b> — "⚠️ 위험 2건(클릭해 누구인지)" 부분정보가 클릭을 강제.</li>
+        <li><b>Amabile 진행 원리 + Zeigarnik</b> — 처리 안 된 카드가 반쯤 보이며 "끝내고 싶다"를 자극, 처리하면 사라지는 쾌감.</li>
+        <li><b>Berridge 기대 도파민 + 니어미스(Clark)</b> — "1명만 더 부르면 목표" 같은 근접완료가 몰입 유발. 보상 전 기대가 최고조.</li>
+        <li><b>Product-led(체험=설득)</b> — 기능 설명 대신 손으로 만지면 "오 되네" 즉각 신뢰. 즉시가치 3분내 전환 7배와 정합.</li>
+      </ul>
+
+      <div class="lbl">감정 아크</div>
+      <div class="arc">
+        <div class="a"><div class="t">도입 · 공감</div><div class="d">"맞아 감으로 찍었지"</div></div>
+        <div class="a"><div class="t">중반 · 놀람</div><div class="d">"어 진짜 순서가 나오네"</div></div>
+        <div class="a"><div class="t">절정 · 재미</div><div class="d">카드 넘기는 손맛·완료 쾌감</div></div>
+        <div class="a"><div class="t">착지 · 소유욕</div><div class="d">"이걸 내 환자로 보고 싶다"</div></div>
+      </div>
+
+      <div class="why">
+        <b>왜 다운로드까지 가나</b> — 말로 "좋습니다"가 아니라 <b>손으로 이미 써봤기 때문에</b> 신뢰가 논증이 아닌 체험으로 박힘. 데모는 <b>가상 데이터</b>라 아쉬움이 남고("내 진짜 환자로 보고 싶다"), 그 소유욕의 유일한 해소가 설치 → 설치가 데모의 완성이 됨(Zeigarnik: 미완의 종결 욕구).
+      </div>
+      <div class="stats"><span class="stat">체험=신뢰</span><span class="stat">즉시가치 전환 7×</span><span class="stat">Zeigarnik 종결욕구</span></div>
+      <div class="risk"><b>리스크</b> — 제품을 너무 일찍 꺼내면 "광고" 경계 → 데스크 공감 1문장 선행 필수. 데모가 무거우면 로딩·모바일 깨짐 → 가벼운 인터랙션으로. 실환자 오인 방지 "예시 데이터" 라벨.</div>
+    </section>
+
+    <!-- 4 또래 브리핑형 -->
+    <section class="sl">
+      <div class="h"><span class="no">4</span><h2>옆 원장이 보내온 것</h2><span class="tag">또래심리 · 사회증거 +340%</span></div>
+      <p class="concept">히어로의 "옆 치과"를 <b>실제 또래 원장의 자랑카드·후기벽</b>으로 재현. "우리도 6개월 해봤어"라는 동료 한마디가 어떤 기능 나열보다 강함(예시·가상 라벨).</p>
+
+      <div class="lbl">흐름</div>
+      <div class="flow">
+        <span class="step hero">히어로</span><span class="arw">→</span>
+        <span class="step">동료 원장 자랑카드("6개월, 회수 ○○·직원이 더 좋아함")</span><span class="arw">→</span>
+        <span class="step">관리 치과 vs 방치 치과 후기벽 대조</span><span class="arw">→</span>
+        <span class="step">당신 치과는 몇 개 해당(자가진단)</span><span class="arw">→</span>
+        <span class="step cta">설치=나도 이 카드 받기</span>
+      </div>
+
+      <div class="lbl">이론 척추</div>
+      <ul class="theory">
+        <li><b>또래 의견 &gt; 광고(의사심리)</b> — 좁은 커뮤니티(2~3다리면 다 앎)에서 동료 성공담이 최강 채널.</li>
+        <li><b>Cialdini 사회적 증거</b> — 후기·얼굴·직함·숫자가 전환 +340%. "나만 안 하나" 동조 압력.</li>
+        <li><b>자랑카드(자기홍보의 자연화)</b> — 원장이 파는 게 아니라 자기 성과를 공유 → 친구가 "어떻게?" → 자연 레퍼럴. 랜딩에 그 카드를 미리 보여줌.</li>
+        <li><b>손실회피 + 비교</b> — 관리 vs 방치 후기벽이 "안 하면 저쪽에 뺏긴다"를 눈앞에서 재현(히어로 회수).</li>
+      </ul>
+
+      <div class="lbl">감정 아크</div>
+      <div class="arc">
+        <div class="a"><div class="t">도입 · 관심</div><div class="d">"옆 원장이 실제로 했다고?"</div></div>
+        <div class="a"><div class="t">중반 · 비교불안</div><div class="d">"우린 방치 쪽에 가깝네"</div></div>
+        <div class="a"><div class="t">절정 · 동조</div><div class="d">"다들 하는구나, 나만 뒤처짐"</div></div>
+        <div class="a"><div class="t">착지 · 욕망</div><div class="d">"나도 저 카드 받고 싶다"</div></div>
+      </div>
+
+      <div class="why">
+        <b>왜 다운로드까지 가나</b> — 의심 많은 원장도 <b>또래의 실제 경험</b> 앞에선 방어를 내림("영업이 아니라 동료가 한 말"). 후기벽이 "관리해주는 치과에 별이 더 많다"를 시각적으로 각인 → 히어로의 손실("옆 치과로 간다")이 추상에서 <b>구체적 증거</b>로 확정. 설치가 "나도 저 성공 카드를 받는 입장이 되는 것"으로 프레이밍되어 욕망이 됨.
+      </div>
+      <div class="stats"><span class="stat">사회증거 +340%</span><span class="stat">또래채널 최강</span><span class="stat">동조 압력</span></div>
+      <div class="risk"><b>리스크</b> — 실제 후기 사칭은 금지·법적 위험. 반드시 <b>"예시(가상)" 라벨</b>. 경쟁 자극이 과하면 반감 → 동료 톤은 "쉽게 됐다·직원이 좋아한다"로 위협 아닌 초대.</div>
+    </section>
+
+    <!-- 5 경영 ROI 이성형 -->
+    <section class="sl">
+      <div class="h"><span class="no">5</span><h2>조용히 새는 돈 (경영 브리핑)</h2><span class="tag">손실 프레이밍 · 앵커링 · 이성형</span></div>
+      <p class="concept">감정 대신 숫자. <b>신환 광고비 vs 구환 재호출비(5~15배)</b>를 대조하고 "새는 양동이"를 팩트로 각인 → 의심 많은 이성형·CFO형 원장을 논리로 함락.</p>
+
+      <div class="lbl">흐름</div>
+      <div class="flow">
+        <span class="step hero">히어로</span><span class="arw">→</span>
+        <span class="step">신환 CAC vs 구환 재호출비 대조(앵커)</span><span class="arw">→</span>
+        <span class="step">새는 양동이(첫 방문 후 유지율 근거)</span><span class="arw">→</span>
+        <span class="step">우리 치과 월 얼마 새나(자가진단·ROI)</span><span class="arw">→</span>
+        <span class="step cta">설치=정밀 ROI 진단</span>
+      </div>
+
+      <div class="lbl">이론 척추</div>
+      <ul class="theory">
+        <li><b>손실 프레이밍(Kahneman)</b> — "매출 늘리기"가 아니라 "지금 새는 돈"으로. 이성형에게도 손실이 더 아픔.</li>
+        <li><b>앵커링(Tversky·Kahneman)</b> — "구환 재호출은 신환 유치의 1/5~1/15" 큰 숫자 대조가 판단 기준점을 심음.</li>
+        <li><b>마케팅비 전에 구환 먼저(원장 검증 메시지 9번)</b> — "이미 쌓인 자산부터"라는 팩트 프레이밍이 이성형 방어를 뚫음.</li>
+        <li><b>Buffett식 계산 가능성</b> — 계산식·출처·보수적 추정을 다 보여주면 회의론자가 스스로 검산 → 신뢰.</li>
+      </ul>
+
+      <div class="lbl">감정 아크</div>
+      <div class="arc">
+        <div class="a"><div class="t">도입 · 이성적 관심</div><div class="d">"광고비보다 싸다고?"</div></div>
+        <div class="a"><div class="t">중반 · 납득</div><div class="d">"유지율 근거가 있네"</div></div>
+        <div class="a"><div class="t">절정 · 자기검산</div><div class="d">"우리 월 ○○ 새는 게 계산되네"</div></div>
+        <div class="a"><div class="t">착지 · 결정</div><div class="d">"ROI가 명확하면 해야지"</div></div>
+      </div>
+
+      <div class="why">
+        <b>왜 다운로드까지 가나</b> — 감정 서사가 안 먹히는 <b>의심 많은 이성형</b>을 위한 안전판. 앵커(5~15배)가 "구환 회수가 압도적으로 싸다"를 판단 기준으로 심고, 자기 검산이 가능한 계산기가 "이건 광고가 아니라 산수"라는 신뢰를 줌. ROI가 스스로 계산되는 순간, 설치는 감정이 아니라 <b>합리적 의사결정</b>이 됨.
+      </div>
+      <div class="stats"><span class="stat">이성형·CFO형 강함</span><span class="stat">앵커링</span><span class="stat">검산가능=신뢰</span></div>
+      <div class="risk"><b>리스크</b> — 밋밋해 몰입이 약함 → <b>감정 히어로가 도입을 데워주는 하이브리드</b>로. 모든 배수·유지율은 출처 등급 + "예시·가정" 라벨 필수(과장 시 회의론자에게 역효과).</div>
+    </section>
+
+    <!-- 추천 -->
+    <h2 class="sec">■ 추천 조합</h2>
+    <div class="rectop">
+      <b>2번(안 파는 교육/초대장)을 뼈대</b>로 하고, <b>3번의 "만져보는 데모"</b>를 "해결책 비교" 자리에 임베드, <b>1번의 진단 감정아크</b>로 착지시키는 하이브리드를 권장합니다.<br><br>
+      이유 — 의사는 회의론자라 <b>안 파는 척(2번)</b>이 방어를 뚫고, <b>손으로 만져본 체험(3번)</b>이 논증 아닌 경험으로 신뢰를 박고, <b>내 숫자 진단(1번)</b>이 무자각을 깨워 설치를 "구매"가 아닌 "진단 실행"으로 바꿉니다. 이성형 원장 세그먼트가 크다면 <b>5번의 ROI 계산기</b>를 자가진단 자리에 옵션으로 병치하세요.<br><br>
+      <b>공통 필수(원장 검증)</b> — 후기는 "예시(가상)" 라벨 / 모든 수치 계산식+가정 라벨 / 저장·전송 안 함·차트 읽기만 / 의료효과 보장 금지.
+    </div>
+
+    <h2 class="sec">■ 한눈 매핑 — 어떤 원장에게 어떤 안</h2>
+    <table class="map">
+      <tr><th>안</th><th>주 이론</th><th>겨냥 원장</th><th>핵심 감정 트리거</th></tr>
+      <tr><td><b>1 진단서</b></td><td>Schwartz + 감정아크</td><td>무자각(60%) 다수</td><td>충격→희망(내 숫자)</td></tr>
+      <tr><td><b>2 안 파는 교육 ⭐</b></td><td>StoryBrand + Challenger</td><td>의심 많은 회의론자</td><td>자기결론(저항 0)</td></tr>
+      <tr><td><b>3 만져보기</b></td><td>Product-led + 도파민</td><td>실용·얼리어답터</td><td>체험 재미·소유욕</td></tr>
+      <tr><td><b>4 옆 원장</b></td><td>또래심리 + 사회증거</td><td>커뮤니티 동조형</td><td>비교불안·동조</td></tr>
+      <tr><td><b>5 새는 돈</b></td><td>손실 + 앵커링</td><td>이성·CFO형</td><td>합리적 검산</td></tr>
+    </table>
+  </div>
+
+  <footer>
+    리콜 랜딩 스토리라인 5초안 · 이론 근거판 · 2026-07-02<br>
+    근거 출처 = vault 연구노트(리콜중요성-랜딩페이지-기법 · 영업전략 3종 · 게임화-심리기법 · 무료진단리포트-템플릿 · 원장 검증 9메시지)<br>
+    문구 속 숫자·후기는 전부 예시·가정값 · 의료효과 보장 아님 · 저장·전송 없음, 차트 읽기만
+  </footer>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
