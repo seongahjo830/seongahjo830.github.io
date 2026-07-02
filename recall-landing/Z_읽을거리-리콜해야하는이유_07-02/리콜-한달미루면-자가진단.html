@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>한 달 미루면 얼마? — 리콜 지연 손해 자가진단</title>
+<style>
+  :root{
+    --bg:#FBFAF7; --ink:#1B1E24; --sub:#5B636E; --line:#E9E5DC;
+    --accent:#1D4ED8; --accent-soft:#EAF0FE; --warn:#B4531F; --warn-soft:#FBEDE3;
+    --good:#1F7A3D; --card:#FFFFFF; --measure:720px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    font-size:18px; line-height:1.8; letter-spacing:-0.01em; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:var(--measure); margin:0 auto; padding:0 22px;}
+  .art{padding:56px 0 30px;}
+  .eyebrow{font-size:.8rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--accent);}
+  h1{font-size:2.25rem; line-height:1.25; letter-spacing:-0.03em; font-weight:800; margin:.25em 0 .3em;}
+  .dek{font-size:1.18rem; color:var(--sub); margin:0 0 1em;}
+  h2{font-size:1.5rem; font-weight:800; letter-spacing:-0.02em; margin:1.6em 0 .4em;}
+  h3{font-size:1.08rem; font-weight:700; margin:1.1em 0 .2em;}
+  p{margin:.8em 0;}
+  b,strong{font-weight:700;}
+  mark{background:linear-gradient(180deg,transparent 55%,#FCE7A0 55%); padding:0 1px;}
+  a{color:var(--accent);}
+  .muted{color:var(--sub); font-size:.92rem;}
+  @media(max-width:560px){ h1{font-size:1.8rem;} body{font-size:17px;} }
+
+  .call{border-left:4px solid var(--accent); background:var(--accent-soft); padding:16px 20px; border-radius:0 12px 12px 0; margin:20px 0;}
+  .call.warn{border-color:var(--warn); background:var(--warn-soft);}
+  table{width:100%; border-collapse:collapse; margin:18px 0; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; font-size:.96rem;}
+  th,td{padding:11px 15px; text-align:left; border-bottom:1px solid var(--line);}
+  th{background:var(--warn-soft); color:var(--warn); font-weight:700;}
+  tr:last-child td{border-bottom:none;}
+  .danger td{background:var(--warn-soft); color:var(--warn); font-weight:800;}
+  .badge{display:inline-block; font-size:.72rem; font-weight:700; padding:1px 7px; border-radius:6px;}
+  .b-a{background:#E4F3E9; color:var(--good);} .b-c{background:#EEF1F5; color:#556;}
+
+  /* tabs */
+  .tabs{display:flex; gap:8px; margin:8px 0 0; flex-wrap:wrap;}
+  .tab{flex:1; min-width:220px; text-align:left; cursor:pointer; border:1px solid var(--line); background:var(--card);
+    border-radius:14px 14px 0 0; padding:14px 18px; font-weight:800; font-size:1.02rem; color:var(--sub); transition:.15s;}
+  .tab .s{display:block; font-size:.82rem; font-weight:600; color:var(--sub); margin-top:3px;}
+  .tab[aria-selected="true"]{color:var(--accent); border-color:var(--accent); border-bottom-color:var(--card); background:var(--card);}
+  .panel{border:1px solid var(--accent); border-radius:0 14px 14px 14px; background:var(--card); padding:22px; margin-top:-1px;}
+  .panel[hidden]{display:none;}
+
+  /* sliders */
+  .ctrl{margin:16px 0;}
+  .ctrl .top{display:flex; justify-content:space-between; align-items:baseline; gap:10px;}
+  .ctrl label{font-weight:700; font-size:.98rem;}
+  .ctrl .val{font-weight:800; color:var(--accent); font-size:1.02rem; white-space:nowrap;}
+  .ctrl .hint{font-size:.8rem; color:var(--sub); font-weight:500;}
+  input[type=range]{width:100%; margin:8px 0 0; accent-color:var(--accent); height:26px;}
+
+  /* results */
+  .out{margin:22px 0 0; background:linear-gradient(160deg,#0E1B3D 0%,#12296B 100%); color:#fff; border-radius:16px; padding:22px;}
+  .out h3{color:#fff; margin:0 0 12px; font-size:1.05rem;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:520px){ .grid{grid-template-columns:1fr;} }
+  .kpi{background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:14px 16px;}
+  .kpi .l{font-size:.82rem; color:#C9D4F0;}
+  .kpi .n{font-size:1.7rem; font-weight:800; line-height:1.15; margin-top:3px;}
+  .kpi.big{grid-column:1/-1; background:rgba(255,120,60,.16); border-color:rgba(255,140,80,.4);}
+  .kpi.big .n{color:#FFD9B0; font-size:2.1rem;}
+  .kpi .sub{font-size:.8rem; color:#AFC0E8; margin-top:4px;}
+  .assump{font-size:.82rem; color:var(--sub); margin-top:14px; line-height:1.6; background:#F5F3EE; border-radius:10px; padding:12px 14px;}
+  .cta{display:inline-block; background:var(--accent); color:#fff!important; text-decoration:none; font-weight:800; padding:14px 26px; border-radius:12px; margin:8px 8px 0 0;}
+  .related{margin:34px 0 0; padding:20px; background:var(--card); border:1px solid var(--line); border-radius:16px;}
+  footer{border-top:1px solid var(--line); margin-top:30px; padding:24px 0 80px; color:var(--sub); font-size:.84rem; line-height:1.7;}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+<article class="art">
+  <div class="wrap">
+    <div class="eyebrow">리콜 프로그램 · 읽을거리 · 자가진단</div>
+    <h1>한 달 미루면 얼마일까?</h1>
+    <p class="dek">리콜을 미루는 것 자체가 손실입니다. 왜 “한 달에 약 50만원”이 나오는지 계산 논리를 먼저 보고, 아래에서 <b>직접 슬라이더로</b> 우리 치과 숫자를 넣어 보세요.</p>
+
+    <h2>먼저, 이 숫자가 나온 논리</h2>
+    <p>전제는 <b>“이번 달 리콜 대상 100명 · 환자 1인당 가치 30만원(보수적)”</b>입니다. 시간이 지날수록 “다시 오게 할 확률”이 절벽처럼 떨어지기 때문에, 미루는 것 자체가 손실이 됩니다.</p>
+    <table>
+      <thead><tr><th>시점</th><th>돌아올 사람</th><th>회수 가능 매출</th><th>지금 대비 손실</th></tr></thead>
+      <tbody>
+        <tr><td><b>지금(적기)</b></td><td>30명</td><td><b>900만원</b></td><td>—</td></tr>
+        <tr><td>6개월 뒤</td><td>20명</td><td>600만원</td><td>−300만원</td></tr>
+        <tr><td>1년 뒤</td><td>12~13명</td><td>375만원</td><td>−525만원</td></tr>
+        <tr class="danger"><td>2년 뒤</td><td>6명</td><td>180만원</td><td>−720만원</td></tr>
+      </tbody>
+    </table>
+    <div class="call warn">
+      <p style="margin:0"><b>지금 부르면 900만원 회수 → 2년 방치하면 180만원</b>밖에 못 건집니다 = 총 <b>720만원 증발</b>(돌아왔을 매출의 80%). 이걸 한 달 단위로 쪼갠 근사치가 <b>약 51만원/월</b>입니다.</p>
+    </div>
+    <p class="muted">⚠️ 이 51만원·720만원은 업계 벤치마크로 만든 <b>가정값</b>이지 우리 치과 실제 숫자가 아닙니다. 대상 수·1인 가치가 다르면 금액은 비례해 바뀌고, 여기엔 <b>떠난 환자를 광고로 새로 채우는 비용(신환 획득 = 재활성화의 5~15배)</b>이 빠져 있어 실제 체감 손실은 더 큽니다. <span class="badge b-a">근거 A</span> <span class="badge b-c">업계 C</span></p>
+
+    <h2>직접 해보기 — 2가지 자가진단</h2>
+    <div class="tabs" role="tablist">
+      <button class="tab" id="tab1" role="tab" aria-selected="true" aria-controls="p1" onclick="showTab(1)">
+        ① 설치 없이 간이 진단<span class="s">지금 원장이 아는 값만으로 대략 확인</span>
+      </button>
+      <button class="tab" id="tab2" role="tab" aria-selected="false" aria-controls="p2" onclick="showTab(2)">
+        ② 설치 후 정밀 진단<span class="s">차트 연동 후 실제 값으로 정확히</span>
+      </button>
+    </div>
+
+    <!-- PANEL 1 -->
+    <section class="panel" id="p1" role="tabpanel" aria-labelledby="tab1">
+      <p class="muted" style="margin-top:0">원장님이 지금 바로 아는 값 4가지만 넣으면, 벤치마크 가정으로 <b>대략의 누수</b>를 보여줍니다.</p>
+
+      <div class="ctrl">
+        <div class="top"><label for="s1_m">평균 월매출</label><span class="val" id="v1_m"></span></div>
+        <input type="range" id="s1_m" min="1000" max="30000" step="500" value="5000" aria-label="평균 월매출(만원)">
+      </div>
+      <div class="ctrl">
+        <div class="top"><label for="s1_p">전체 구환 수 <span class="hint">(우리 병원에 온 적 있는 환자)</span></label><span class="val" id="v1_p"></span></div>
+        <input type="range" id="s1_p" min="200" max="12000" step="100" value="3000" aria-label="전체 구환 수(명)">
+      </div>
+      <div class="ctrl">
+        <div class="top"><label for="s1_r">신환 비율 <span class="hint">(월 환자 중 신환 %)</span></label><span class="val" id="v1_r"></span></div>
+        <input type="range" id="s1_r" min="0" max="60" step="1" value="30" aria-label="신환 비율(%)">
+      </div>
+      <div class="ctrl">
+        <div class="top"><label for="s1_y">개원 연차</label><span class="val" id="v1_y"></span></div>
+        <input type="range" id="s1_y" min="1" max="30" step="1" value="5" aria-label="개원 연차(년)">
+      </div>
+
+      <div class="out" aria-live="polite">
+        <h3>📉 우리 치과 대략 누수 (간이 추정)</h3>
+        <div class="grid">
+          <div class="kpi"><div class="l">이번 달 리콜 대상(추정)</div><div class="n" id="o1_n"></div><div class="sub">전체 구환의 월 도래분</div></div>
+          <div class="kpi"><div class="l">구환 1인 연 가치(추정)</div><div class="n" id="o1_v"></div><div class="sub">월매출·구환수로 역산</div></div>
+          <div class="kpi big"><div class="l">한 달 미루면 사라지는 돈</div><div class="n" id="o1_month"></div><div class="sub" id="o1_pct"></div></div>
+          <div class="kpi"><div class="l">2년 방치 시 총 증발</div><div class="n" id="o1_two"></div></div>
+          <div class="kpi"><div class="l">이미 잠든 구환(누적 추정)</div><div class="n" id="o1_dorm"></div><div class="sub" id="o1_dormw"></div></div>
+        </div>
+        <div class="assump" id="o1_assump"></div>
+      </div>
+    </section>
+
+    <!-- PANEL 2 -->
+    <section class="panel" id="p2" role="tabpanel" aria-labelledby="tab2" hidden>
+      <div class="call"><p style="margin:0">이 값들은 <b>설치=진단</b> 후 차트에서 자동으로 채워집니다. 지금은 예시로 움직여 보세요 — 설치하면 <b>추측이 아니라 우리 치과의 실제 숫자</b>가 들어갑니다.</p></div>
+
+      <div class="ctrl">
+        <div class="top"><label for="s2_c">환자 평균 객단가</label><span class="val" id="v2_c"></span></div>
+        <input type="range" id="s2_c" min="3" max="120" step="1" value="20" aria-label="평균 객단가(만원)">
+      </div>
+      <div class="ctrl">
+        <div class="top"><label for="s2_n">이번 달 리콜 대상 수</label><span class="val" id="v2_n"></span></div>
+        <input type="range" id="s2_n" min="20" max="1200" step="10" value="150" aria-label="이번 달 리콜 대상 수(명)">
+      </div>
+      <div class="ctrl">
+        <div class="top"><label for="s2_p">적기 재활성화율 <span class="hint">(적기 연락 시 복귀 %)</span></label><span class="val" id="v2_p"></span></div>
+        <input type="range" id="s2_p" min="10" max="50" step="1" value="30" aria-label="적기 재활성화율(%)">
+      </div>
+      <div class="ctrl">
+        <div class="top"><label for="s2_k">전화 연결(픽업)률</label><span class="val" id="v2_k"></span></div>
+        <input type="range" id="s2_k" min="30" max="95" step="1" value="60" aria-label="전화 연결률(%)">
+      </div>
+      <div class="ctrl">
+        <div class="top"><label for="s2_q">재방문 시 추가치료 발생률 <span class="hint">(검진서 추가치료 발견 %)</span></label><span class="val" id="v2_q"></span></div>
+        <input type="range" id="s2_q" min="20" max="70" step="1" value="45" aria-label="추가치료 발생률(%)">
+      </div>
+      <div class="ctrl">
+        <div class="top"><label for="s2_t">추가치료 평균 단가</label><span class="val" id="v2_t"></span></div>
+        <input type="range" id="s2_t" min="20" max="400" step="10" value="80" aria-label="추가치료 평균 단가(만원)">
+      </div>
+      <div class="ctrl">
+        <div class="top"><label for="s2_d">전화금지(DNC) 비율 <span class="hint">(연락 불가·거부 %)</span></label><span class="val" id="v2_d"></span></div>
+        <input type="range" id="s2_d" min="0" max="25" step="1" value="5" aria-label="전화금지 비율(%)">
+      </div>
+      <div class="ctrl">
+        <div class="top"><label for="s2_a">신환 1명 획득 비용 <span class="hint">(광고로 대체 시)</span></label><span class="val" id="v2_a"></span></div>
+        <input type="range" id="s2_a" min="5" max="60" step="1" value="20" aria-label="신환 획득 비용(만원)">
+      </div>
+
+      <div class="out" aria-live="polite">
+        <h3>📊 우리 치과 정밀 누수 (실제 값 기반)</h3>
+        <div class="grid">
+          <div class="kpi"><div class="l">리콜 대상 1인 기대가치</div><div class="n" id="o2_v"></div><div class="sub">객단가 + 추가치료 기대</div></div>
+          <div class="kpi"><div class="l">지금 부르면 회수 가능</div><div class="n" id="o2_now"></div><div class="sub">이번 달 대상 기준</div></div>
+          <div class="kpi big"><div class="l">한 달 미루면 사라지는 돈</div><div class="n" id="o2_month"></div></div>
+          <div class="kpi"><div class="l">2년 방치 시 총 증발</div><div class="n" id="o2_two"></div></div>
+          <div class="kpi"><div class="l">+ 광고로 대체하는 비용</div><div class="n" id="o2_ad"></div><div class="sub">떠난 만큼 신환으로 메우면</div></div>
+          <div class="kpi big"><div class="l">실제 체감 손실(2년, 광고비 포함)</div><div class="n" id="o2_real"></div></div>
+        </div>
+        <div class="assump" id="o2_assump"></div>
+      </div>
+
+      <div style="margin-top:18px">
+        <a class="cta" href="리콜해야-하는-이유.html">설치하고 우리 치과 진단받기 →</a>
+      </div>
+    </section>
+
+    <div class="related">
+      <h3 style="margin-top:0">함께 보기</h3>
+      <a class="cta" href="리콜-왜-중요한가_근거정리.html">데이터로 보는 「리콜, 왜 중요한가」 →</a>
+      <a class="cta" style="background:#fff;color:var(--accent)!important;border:1px solid var(--accent)" href="리콜해야-하는-이유.html">이번 달 얼마 새는지 →</a>
+    </div>
+  </div>
+</article>
+
+<footer>
+  <div class="wrap">
+    <p><b>계산 근거</b> — 적기 재활성화율 30%, 월 감쇠 약 1.7%p, 24개월+ 6%, 재방문 추가치료 발생 40~55%, 신환 획득비 = 재활성화의 5~15배 등은 <span class="badge b-a">근거 A</span> 임상·<span class="badge b-c">업계 C</span> 벤치마크에서 가져온 값입니다. 버전①은 <b>가정 기반 간이 추정</b>, 버전②는 <b>설치 후 실제 값 입력</b>을 전제로 합니다.</p>
+    <p class="muted">모든 금액은 예시이며 결과를 보장하지 않습니다. 정확한 액수는 “설치=진단”으로 우리 차트를 실제로 돌려봐야 나옵니다. “자주 오면 건강해진다”는 주장이 아니라, 미완료·고위험·잠든 환자를 적기에 놓치지 않는 것의 매출 가치를 다룹니다.</p>
+  </div>
+</footer>
+
+<script>
+  function won(m){
+    m = Math.round(m);
+    if (m < 0) m = 0;
+    if (m >= 10000){
+      var eok = Math.floor(m/10000), rest = m % 10000;
+      return eok + '억' + (rest ? ' ' + rest.toLocaleString() + '만원' : '원');
+    }
+    return m.toLocaleString() + '만원';
+  }
+  function num(n){ return Math.round(n).toLocaleString(); }
+  function clamp(x,a,b){ return Math.max(a, Math.min(b, x)); }
+  function showTab(n){
+    document.getElementById('tab1').setAttribute('aria-selected', n===1);
+    document.getElementById('tab2').setAttribute('aria-selected', n===2);
+    document.getElementById('p1').hidden = n!==1;
+    document.getElementById('p2').hidden = n!==2;
+  }
+
+  // ---- 공통 상수(벤치마크) ----
+  var P_NOW = 0.30;      // 적기 재활성화율 기본
+  var P_FLOOR = 0.06;    // 24개월+ 재활성화율
+  var DECAY_M = 0.017;   // 월 감쇠(%p)
+
+  // ---- 버전 1: 간이 ----
+  var s1 = ['s1_m','s1_p','s1_r','s1_y'].map(function(id){return document.getElementById(id);});
+  function calc1(){
+    var M = +s1[0].value;     // 월매출(만)
+    var P = +s1[1].value;     // 전체 구환수
+    var r = +s1[2].value/100; // 신환비율
+    var Y = +s1[3].value;     // 개원연차
+
+    document.getElementById('v1_m').textContent = won(M);
+    document.getElementById('v1_p').textContent = num(P) + '명';
+    document.getElementById('v1_r').textContent = (r*100) + '%';
+    document.getElementById('v1_y').textContent = Y + '년차';
+
+    var V = (M * 12 * (1 - r)) / P;   // 구환 1인 연가치(만) = 구환기여 연매출 / 구환수
+    var N = P / 12;                   // 이번 달 리콜 도래(연1회 기준)
+    var month = N * DECAY_M * V;      // 한 달 미루면
+    var two = N * (P_NOW - P_FLOOR) * V; // 2년 총 증발
+    var pct = M>0 ? (month / M * 100) : 0;
+    var dormRate = clamp(0.15 + 0.03*(Y-1), 0.15, 0.5);
+    var D = P * dormRate;             // 누적 잠든 구환
+    var dormWon = D * 0.15 * V;       // 지금 깨우면(중간 재활성화율 15%)
+
+    document.getElementById('o1_n').textContent = num(N) + '명';
+    document.getElementById('o1_v').textContent = won(V) + '/년';
+    document.getElementById('o1_month').textContent = won(month);
+    document.getElementById('o1_pct').textContent = '월매출의 약 ' + pct.toFixed(1) + '%';
+    document.getElementById('o1_two').textContent = won(two);
+    document.getElementById('o1_dorm').textContent = num(D) + '명';
+    document.getElementById('o1_dormw').textContent = '지금 깨우면 ' + won(dormWon) + ' 회수 가능';
+    document.getElementById('o1_assump').innerHTML =
+      '가정 — 구환 1인 연가치 = 월매출×12×(1−신환비율)÷구환수 = <b>'+won(V)+'</b> · 이번 달 대상 = 구환수÷12 = <b>'+num(N)+'명</b> · 적기 재활성화 30%, 월 감쇠 1.7%p · 잠든 구환 = 구환수×'+(dormRate*100).toFixed(0)+'%(개원연차 반영). 모두 벤치마크 가정값.';
+  }
+  s1.forEach(function(el){ el.addEventListener('input', calc1); });
+
+  // ---- 버전 2: 정밀 ----
+  var s2 = ['s2_c','s2_n','s2_p','s2_k','s2_q','s2_t','s2_d','s2_a'].map(function(id){return document.getElementById(id);});
+  function calc2(){
+    var C = +s2[0].value;      // 객단가(만)
+    var N = +s2[1].value;      // 이번 달 대상
+    var p = +s2[2].value/100;  // 적기 재활성화율
+    var k = +s2[3].value/100;  // 픽업률
+    var q = +s2[4].value/100;  // 추가치료 발생률
+    var T = +s2[5].value;      // 추가치료 단가(만)
+    var d = +s2[6].value/100;  // DNC
+    var A = +s2[7].value;      // 신환 획득비(만)
+
+    document.getElementById('v2_c').textContent = won(C);
+    document.getElementById('v2_n').textContent = num(N) + '명';
+    document.getElementById('v2_p').textContent = (p*100).toFixed(0) + '%';
+    document.getElementById('v2_k').textContent = (k*100).toFixed(0) + '%';
+    document.getElementById('v2_q').textContent = (q*100).toFixed(0) + '%';
+    document.getElementById('v2_t').textContent = won(T);
+    document.getElementById('v2_d').textContent = (d*100).toFixed(0) + '%';
+    document.getElementById('v2_a').textContent = won(A);
+
+    var Neff = N * (1 - d);        // 연락 가능 대상
+    var V = C + q * T;             // 1인 기대가치(만)
+    var now = Neff * p * k * V;    // 지금 부르면 회수
+    var month = Neff * DECAY_M * k * V;         // 한 달 미루면
+    var lostPeople = Neff * (p - P_FLOOR) * k;  // 2년간 사라질 복귀자
+    var two = lostPeople * V;      // 2년 총 증발
+    var ad = lostPeople * A;       // 광고 대체비
+    var real = two + ad;           // 실제 체감
+
+    document.getElementById('o2_v').textContent = won(V);
+    document.getElementById('o2_now').textContent = won(now);
+    document.getElementById('o2_month').textContent = won(month);
+    document.getElementById('o2_two').textContent = won(two);
+    document.getElementById('o2_ad').textContent = won(ad);
+    document.getElementById('o2_real').textContent = won(real);
+    document.getElementById('o2_assump').innerHTML =
+      '계산 — 연락 가능 대상 = 대상×(1−DNC) = <b>'+num(Neff)+'명</b> · 1인 기대가치 = 객단가+추가치료율×단가 = <b>'+won(V)+'</b> · 한 달 손실 = 대상×1.7%×픽업률×가치 · 2년 증발 = 대상×(재활성화율−6%)×픽업률×가치 · 광고 대체비 = 사라질 복귀자×신환획득비.';
+  }
+  s2.forEach(function(el){ el.addEventListener('input', calc2); });
+
+  calc1(); calc2();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
