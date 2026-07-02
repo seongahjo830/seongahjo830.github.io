@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>카톡 스토리라인 · 전환형 5안 · AutoRecall</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  :root{--ink:#141618;--soft:#5B6360;--line:#E5E1D8;--teal:#0E7C6B;--teal-d:#0A5E51;--red:#C0392B;--loss:#e0533a;
+    --me:#fee500;--you:#fff;--accent:#1D4ED8;--navy:#0C1B33}
+  *{box-sizing:border-box;margin:0}
+  body{font-family:"Pretendard",-apple-system,"Malgun Gothic",sans-serif;background:#eef1f6;color:var(--ink);
+    -webkit-font-smoothing:antialiased;line-height:1.6;padding:26px 16px 60px}
+  .top{max-width:1160px;margin:0 auto 20px;text-align:center}
+  .top .k{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--accent)}
+  .top h1{font-size:clamp(22px,4vw,30px);font-weight:900;letter-spacing:-.03em;margin:8px 0 10px}
+  .redbox{max-width:60em;margin:0 auto;background:#fff;border:1.6px solid var(--line);border-radius:14px;padding:14px 18px;text-align:left;font-size:13px;color:var(--soft);line-height:1.65}
+  .redbox b{color:var(--ink)}.redbox .t{font-weight:800;color:var(--red);font-size:12.5px;letter-spacing:.02em}
+  .grid{max-width:1160px;margin:22px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1.6px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 8px 24px rgba(20,30,50,.08);display:flex;flex-direction:column}
+  .ch{padding:14px 18px;border-bottom:1px solid var(--line)}
+  .ch .tag{display:inline-block;font-size:11px;font-weight:800;color:#0a7d63;background:#dff3ec;padding:3px 10px;border-radius:99px;margin-bottom:7px}
+  .ch h2{font-size:16.5px;font-weight:850;letter-spacing:-.02em;line-height:1.3}
+  .ch .why{font-size:12px;color:var(--soft);margin-top:5px}
+  .thread{background:linear-gradient(160deg,#9fb8d4,#7d9cbf);padding:14px 12px;display:flex;flex-direction:column;gap:7px;flex:1}
+  .day{align-self:center;font-size:10px;color:#33465a;background:rgba(255,255,255,.6);padding:2px 10px;border-radius:99px;margin:2px 0 1px;font-weight:600}
+  .row{display:flex;flex-direction:column}
+  .row.me{align-items:flex-end}.row.you{align-items:flex-start}
+  .nm{font-size:10px;color:#2f4358;margin:0 0 2px 6px}
+  .b{max-width:86%;padding:8px 11px;border-radius:14px;font-size:13px;line-height:1.5;word-break:break-word}
+  .you .b{background:var(--you);border-top-left-radius:5px}
+  .me .b{background:var(--me);border-top-right-radius:5px;font-weight:600}
+  .b .r{color:var(--red);font-weight:800}.b .g{color:var(--teal-d);font-weight:800}
+  /* 진단 결과 미니카드 */
+  .res{align-self:flex-start;background:var(--navy);color:#fff;border-radius:14px;border-top-left-radius:5px;padding:12px 13px;max-width:88%}
+  .res .rh{font-size:11px;font-weight:700;color:#9FC0FF;margin-bottom:9px}
+  .res .rg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .res .rc{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:8px 9px;text-align:center}
+  .res .rc b{display:block;font-size:19px;font-weight:900;letter-spacing:-.02em}
+  .res .rc b.lo{color:#FF9B6E}
+  .res .rc span{font-size:10px;color:#B9C6DB}
+  /* 리뷰 캡처 */
+  .rvwrap{align-self:flex-start;max-width:90%}
+  .rvcap-lbl{font-size:9.5px;color:#2f4358;margin:0 0 3px 4px}
+  .rvcap{background:#fff;border:1px solid #e3e6ea;border-radius:12px;padding:11px 12px;box-shadow:0 3px 10px rgba(20,30,50,.14)}
+  .rvcap .rt{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+  .rvcap .av{width:26px;height:26px;border-radius:50%;background:#93a3bb;color:#fff;display:grid;place-items:center;font-weight:800;font-size:11px}
+  .rvcap .who{flex:1;font-size:11px;font-weight:800;line-height:1.2}
+  .rvcap .who small{display:block;color:#8a949e;font-weight:500;font-size:9.5px;margin-top:1px}
+  .rvcap .plc{color:#e0533a;font-weight:800}
+  .rvcap .star{color:#f5a623;font-size:11px;letter-spacing:1px}
+  .rvcap .txt{font-size:11.5px;line-height:1.55;color:#2a3138}
+  .rvcap .txt .hl{background:#fff3c4;font-weight:700;padding:0 2px;border-radius:2px}
+  .cta-b{align-self:center;margin-top:4px;background:var(--teal);color:#fff;font-weight:800;font-size:12.5px;padding:9px 16px;border-radius:99px;box-shadow:0 5px 14px rgba(14,124,107,.3)}
+  .hand{align-self:center;font-size:10px;color:#3a4b5b;margin-top:2px}
+  .cf{padding:11px 15px;background:#f2fbf8;border-top:1px solid var(--line);font-size:11.5px;color:var(--soft);line-height:1.6}
+  .cf b{color:var(--ink)}.cf .lv{color:#0a7d63;font-weight:800}.cf .rt2{color:var(--red);font-weight:700}
+  .note{max-width:1160px;margin:22px auto 0;font-size:12px;color:#8a8f98;text-align:center;line-height:1.7}
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="k">AUTORECALL · 전환(설치)까지 가는 대화</div>
+    <h1>레드팀 통과 · 전환형 5안</h1>
+    <div class="redbox">
+      <span class="t">🚨 이전 안들이 ‘별로’였던 이유(레드팀)</span><br>
+      ① 다 <b>‘문제 인식’에서 끝남</b> — 설치를 유발하는 장치 없이 매번 “몇 명인지 볼까요?”로 밋밋하게 닫힘 · ② 실장이 “누구부터인지 안 보여요” 같은 <b>광고문구를 대사로</b> 읊어 몰입이 깨짐 · ③ <b>페이오프(설치하면 뭐가 좋은지)가 안 보임</b> — 문제만 있고 보상이 없음.<br>
+      <span class="t">✅ 이번 5개에 심은 전환 레버</span> — 각각 <b>동료 추천 / 실제 숫자 충격 / 감정+즉시 해결 / 집단 FOMO / 반복 후회 끊기</b>로 “보다가 → 지금 깔게” 되도록 설계.
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <!-- 1 동료 추천 -->
+    <div class="card">
+      <div class="ch"><span class="tag">1 · 동료 원장 추천</span><h2>“그냥 깔아봐, 후회 안 해”</h2><div class="why">전환 레버: <b>또래 신뢰(입소문)</b> — 광고 아닌 친구의 실전 후기라 방어막이 내려감.</div></div>
+      <div class="thread">
+        <div class="day">박원장 (개원 동기) 💬</div>
+        <div class="row you"><div class="nm">박원장</div><div class="b">야 너 아직도 구환 리콜 손으로 하냐?</div></div>
+        <div class="row me"><div class="b">ㅇㅇ 데스크가 알아서 하지 뭐.</div></div>
+        <div class="row you"><div class="nm">박원장</div><div class="b">나도 그랬는데 ㅋㅋ 이번 달에 잠자던 구환 회수한 거 계산해보고 놀랐잖아.</div></div>
+        <div class="row me"><div class="b">얼만데?</div></div>
+        <div class="row you"><div class="nm">박원장</div><div class="b">말하면 배 아플걸 ㅋㅋ <b>3분이면 너네 병원 숫자도 바로 나와.</b> 차트 읽기만 하는 거라 부담도 없고.</div></div>
+        <div class="row me"><div class="b">진짜 그렇게 차이나?</div></div>
+        <div class="row you"><div class="nm">박원장</div><div class="b">우리 환자 옆 치과 안 뺏기는 것만 해도 어디야. 고민할 시간에 <span class="g">숫자부터 봐.</span> 나도 그거 보고 바로 결심함.</div></div>
+        <div class="row me"><div class="b">…하긴 우리도 잠든 구환 많긴 하지. 링크 줘봐.</div></div>
+        <div class="cta-b">🔓 지금 3분, 우리 병원 숫자 보기</div>
+        <div class="hand">→ 원장이 직접 설치/진단</div>
+      </div>
+      <div class="cf"><span class="lv">전환</span> 또래의 “그냥 깔아봐” = 낮은 저항 · <b>레드팀:</b> 실장 광고멘트 0(친구가 말함), 원장이 스스로 링크 요청으로 마감 → 자연스러운 행동 유발</div>
+    </div>
+
+    <!-- 2 실제 숫자 충격 -->
+    <div class="card">
+      <div class="ch"><span class="tag">2 · 내 숫자로 한 방</span><h2>“812명?? 우리 환자가?”</h2><div class="why">전환 레버: <b>페이오프 미리보기</b> — 문제가 아니라 ‘설치하면 볼 것’을 먼저 보여줌.</div></div>
+      <div class="thread">
+        <div class="day">오늘 오후 2:40</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">원장님, 그 진단 3분이면 된다길래 우리 병원 값으로 한번 돌려봤어요. 이거 보세요 ㄷㄷ</div></div>
+        <div class="res"><div class="rh">🩺 3분 자가진단 결과 (추정)</div><div class="rg">
+          <div class="rc"><b>812</b><span>잠든 구환(명)</span></div>
+          <div class="rc"><b class="lo">3,120만원</b><span>회수 가능(추정)</span></div>
+        </div></div>
+        <div class="row me"><div class="b">812명?? 우리한테 왔던 사람이 그렇게 안 오고 있다고?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">네… 이게 다 <b>이름 있는 실제 분들</b>이에요. 설치하면 누구누구인지 딱 떠요.</div></div>
+        <div class="row me"><div class="b">이 숫자 실화면, 지금 바로 봐야겠는데.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그래서 제가 먼저 깔아보자고 한 거예요. 회원가입도 없어요.</div></div>
+        <div class="cta-b">🔓 설치하고 실제 명단 보기</div>
+        <div class="hand">→ 설치 (추정 → 실제 이름)</div>
+      </div>
+      <div class="cf"><span class="lv">전환</span> 큰 숫자 충격 → “내 실제 이름 보고 싶다” · <b>레드팀:</b> 문제만 있던 이전과 달리 <b>보상(숫자)</b>을 먼저 보여줘 설치 이유가 생김. 독자(원장)가 자기 숫자를 넣고 싶게 만듦</div>
+    </div>
+
+    <!-- 3 뼈아픈 리뷰 -->
+    <div class="card">
+      <div class="ch"><span class="tag">3 · 뼈아픈 리뷰(개선)</span><h2>“다음 리뷰가 또 옆 치과에 달리기 전에”</h2><div class="why">전환 레버: <b>감정 + 즉시 해결 + 긴급성</b>. 아픔 뒤 바로 ‘막을 수 있다’로 전환.</div></div>
+      <div class="thread">
+        <div class="day">오늘 오후 3:31</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">원장님, 이거 우리 환자분이 옆 치과에 남긴 리뷰예요.</div></div>
+        <div class="rvwrap"><div class="rvcap-lbl">📷 김실장님이 사진을 보냈습니다</div><div class="rvcap"><div class="rt"><span class="av">ㅂ</span><span class="who">ㅂㅅㅎ<small><span class="plc">○○치과</span> · 방문 리뷰</small></span><span class="star">★★★★★</span></div><div class="txt">“상담만 받고 미뤘던 임플란트, <span class="hl">먼저 전화 주셔서</span> 결국 여기서 했어요. 챙겨주는 게 확실히 다름. <span class="hl">친구들한테도 다 추천</span>!”</div></div></div>
+        <div class="row me"><div class="b">…상담까지 우리가 해드린 분인데.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">우리가 조용한 사이 저긴 먼저 연락했고, 친구들까지 데려갔어요.</div></div>
+        <div class="row me"><div class="b">하… 이런 분 또 있겠지.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">있죠. 근데 원장님, 이거 <span class="g">막는 거 안 어렵대요.</span> 3분이면 우리도 이런 분들 누군지 다 떠요.</div></div>
+        <div class="row me"><div class="b">…진작 할걸. 해보자.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">지금요. <b>다음 리뷰가 또 옆 치과에 달리기 전에.</b></div></div>
+        <div class="cta-b">🔓 3분, 우리 명단부터 확인</div>
+        <div class="hand">→ 설치</div>
+      </div>
+      <div class="cf"><span class="lv">전환</span> 아픔 → “안 어렵다/3분” 안도 → “다음 리뷰 전에” 긴급 · <b>레드팀:</b> 이전의 덤덤함을 <b>해결+시간압박</b>으로 보완</div>
+    </div>
+
+    <!-- 4 집단 FOMO -->
+    <div class="card">
+      <div class="ch"><span class="tag">4 · 원장 단톡 FOMO(개선)</span><h2>“우리만 아직 손으로 하네”</h2><div class="why">전환 레버: <b>집단 증거 + 낮은 마찰</b>. 여럿이 이미 함 → 나도 따라 깜.</div></div>
+      <div class="thread">
+        <div class="day">개원 동기 단톡방 💬</div>
+        <div class="row you"><div class="nm">이원장</div><div class="b">이번 달 리콜로 회수한 거 보고 소름 ㅋㅋ 진작 깔걸</div></div>
+        <div class="row you"><div class="nm">최원장</div><div class="b">ㄹㅇ 데스크도 편해지고 구환 매출 올라감. 나도 원장님들 따라 깐 거임 ㅋㅋ</div></div>
+        <div class="row me"><div class="b">(읽기만…)</div></div>
+        <div class="row me"><div class="b">…우리만 아직 손으로 하네.</div></div>
+        <div class="day">우리 병원 단톡방</div>
+        <div class="row me"><div class="b">우리도 그거 한번 보자. 3분이면 된다며.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">안 그래도 궁금했어요. 우리 숫자부터 볼까요?</div></div>
+        <div class="cta-b">🔓 우리 병원 숫자 3분 확인</div>
+        <div class="hand">→ 설치</div>
+      </div>
+      <div class="cf"><span class="lv">전환</span> “다들 이미 함” + “따라 깔면 끝” · <b>레드팀:</b> 원장이 <b>스스로</b> “보자”고 시작 → 남이 파는 게 아니라 내가 결정한 느낌</div>
+    </div>
+
+    <!-- 5 반복 후회 끊기 -->
+    <div class="card">
+      <div class="ch"><span class="tag">5 · 반복 후회 끊기</span><h2>“이 대화, 지난달에도 했잖아요”</h2><div class="why">전환 레버: <b>미루기 루프 자각 + 긴급</b>. ‘나중에’를 정면으로 깨서 지금 행동.</div></div>
+      <div class="thread">
+        <div class="day">오늘 오후 6:20</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">원장님, 이 대화 어디서 많이 하지 않았어요?</div></div>
+        <div class="row me"><div class="b">무슨 소리야.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">지난달에도, 지지난달에도 “구환 좀 챙기자” 하고 넘어갔잖아요 ㅎㅎ</div></div>
+        <div class="row me"><div class="b">…그러네. 매번 말만 했지.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그 사이에도 계속 새고 있었던 거고요. 이번에도 넘기면 <span class="r">다음 달에 또 똑같은 얘기</span> 할 거예요.</div></div>
+        <div class="row me"><div class="b">이번엔 진짜 해보자. 뭐부터 하면 돼?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">딱 3분이면 돼요. 우리 새는 숫자부터 눈으로 봐요.</div></div>
+        <div class="cta-b">🔓 지금 3분, 미루기 끊기</div>
+        <div class="hand">→ 설치</div>
+      </div>
+      <div class="cf"><span class="lv">전환</span> ‘나중에’ 루프를 이름 붙여 깸 → 지금 · <b>레드팀:</b> 결심 대사(“이번엔 진짜”)를 원장이 하게 해 미루기 차단</div>
+    </div>
+
+  </div>
+
+  <p class="note">※ 5개 모두 그대로 최종본. 개연성(우연/외부·한 명→다수·사람 손 한계)·자존심 보호 유지 + <b>설치까지 가는 전환 레버</b>를 각각 다르게 넣었습니다.<br>
+  전환력 예상: <b>2(내 숫자 충격) ≈ 1(동료 추천) &gt; 4(FOMO) &gt; 3(리뷰) &gt; 5(루프끊기)</b>. 강력 조합 추천: <b>3(리뷰로 감정)로 열고 → 2(내 숫자)로 닫기</b>. 번호나 조합 주세요.</p>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기" style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35);font-family:Pretendard,sans-serif;opacity:.94;"><span style="font-size:15px">📋</span><span>후보 목록</span></a>
+<style>#recallFab:hover{opacity:1}@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
