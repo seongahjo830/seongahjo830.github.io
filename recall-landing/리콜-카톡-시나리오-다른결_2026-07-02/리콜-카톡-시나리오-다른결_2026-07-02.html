@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>카톡 스토리라인 · 다른 결 5안 · AutoRecall</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  :root{--ink:#141618;--soft:#5B6360;--line:#E5E1D8;--teal:#0E7C6B;--teal-d:#0A5E51;--red:#C0392B;
+    --me:#fee500;--you:#fff;--accent:#1D4ED8}
+  *{box-sizing:border-box;margin:0}
+  body{font-family:"Pretendard",-apple-system,"Malgun Gothic",sans-serif;background:#eef1f6;color:var(--ink);
+    -webkit-font-smoothing:antialiased;line-height:1.6;padding:26px 16px 60px}
+  .top{max-width:1160px;margin:0 auto 22px;text-align:center}
+  .top .k{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--accent)}
+  .top h1{font-size:clamp(22px,4vw,30px);font-weight:900;letter-spacing:-.03em;margin:8px 0 10px}
+  .top p{color:var(--soft);font-size:14.5px;max-width:48em;margin:0 auto}
+  .grid{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1.6px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 8px 24px rgba(20,30,50,.08);display:flex;flex-direction:column}
+  .ch{padding:15px 18px;border-bottom:1px solid var(--line)}
+  .ch .tag{display:inline-block;font-size:11px;font-weight:800;color:#7c3aed;background:#f0e9ff;padding:3px 10px;border-radius:99px;margin-bottom:8px}
+  .ch h2{font-size:17.5px;font-weight:850;letter-spacing:-.02em;line-height:1.3}
+  .ch .why{font-size:12.5px;color:var(--soft);margin-top:5px}
+  .thread{background:linear-gradient(160deg,#9fb8d4,#7d9cbf);padding:14px 12px;display:flex;flex-direction:column;gap:7px;flex:1}
+  .day{align-self:center;font-size:10px;color:#33465a;background:rgba(255,255,255,.6);padding:3px 11px;border-radius:99px;margin:3px 0 1px;font-weight:600}
+  .row{display:flex;flex-direction:column}
+  .row.me{align-items:flex-end}.row.you{align-items:flex-start}
+  .nm{font-size:10px;color:#2f4358;margin:0 0 2px 6px}
+  .b{max-width:86%;padding:8px 11px;border-radius:14px;font-size:13px;line-height:1.5;word-break:break-word}
+  .you .b{background:var(--you);border-top-left-radius:5px}
+  .me .b{background:var(--me);border-top-right-radius:5px;font-weight:600}
+  .b.pt{background:#dbe7f5;font-style:italic}
+  .b .r{color:var(--red);font-weight:800}.b .g{color:var(--teal-d);font-weight:800}
+  .sys{align-self:center;text-align:center;font-size:11px;color:#22333f;background:rgba(255,255,255,.66);border-radius:11px;padding:7px 12px;max-width:95%;line-height:1.5}
+  .sys b{color:var(--teal-d)}
+  .hand{align-self:center;font-size:10.5px;color:#3a4b5b;background:rgba(255,255,255,.4);border:1px dashed rgba(255,255,255,.7);border-radius:9px;padding:5px 10px;margin-top:2px}
+  .cf{padding:12px 15px;background:#faf7ff;border-top:1px solid var(--line);font-size:11.5px;color:var(--soft);line-height:1.6}
+  .cf b{color:var(--ink)}.cf span{color:#7c3aed;font-weight:700}
+  .note{max-width:1160px;margin:22px auto 0;font-size:12px;color:#8a8f98;text-align:center;line-height:1.7}
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="k">AUTORECALL · 완전히 다른 결</div>
+    <h1>뼈대부터 바꾼 5안</h1>
+    <p>지난 안들이 다 비슷했던 건, 뼈대가 같아서예요. 이번엔 <b>시점·화자·톤을 통째로</b> 바꿨습니다 — 환자가 먼저 톡 / 블랙유머 / 미스터리 떡밥 / 원장 단톡 / 반전. <b>어떤 ‘결’이 당기는지</b>만 짚어주시면 그 방향으로 더 팝니다.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- A · POV 플립 -->
+    <div class="card">
+      <div class="ch"><span class="tag">A · 환자가 먼저 톡</span><h2>“여기가 생각나서 연락드려요”</h2><div class="why">시점을 환자로 뒤집음. 먼저 온 한 명이 ‘조용히 떠난 다수’를 증명.</div></div>
+      <div class="thread">
+        <div class="day">오늘 오전 11:20 · 우리 병원 단톡방</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">원장님, 방금 병원 문자로 이런 게 왔어요 📩</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b pt">“안녕하세요, 재작년에 임플란트 상담받았던 사람인데요. 그때 견적 아직 되나요? 딴 데 가려다 그래도 여기가 생각나서요.”</div></div>
+        <div class="row me"><div class="b">오, 이런 분이 먼저 연락을? 신기하네.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그쵸. 근데 이렇게 먼저 톡 주는 분, 진짜 드물어요.</div></div>
+        <div class="row me"><div class="b">무슨 뜻이야.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">이런 분 대부분은 <span class="r">말없이 그냥 딴 데로 가요.</span> 이분은 어쩌다 우리 생각이 난 거고요.</div></div>
+        <div class="row me"><div class="b">…먼저 안 물어봐서 놓친 사람이 훨씬 많겠네.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그게 핵심이에요. 먼저 연락 온 이 한 명이, <b>조용히 사라진 여럿을 증명</b>하는 거죠.</div></div>
+        <div class="sys">💡 우리가 먼저 안 부르면, 오는 건 ‘운 좋은 몇 명’뿐. 나머진 소리 없이 떠납니다.</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">이분 말고, 먼저 챙겼어야 할 분들 몇이나 될까요? 한번 볼까요? 👀</div></div>
+        <div class="hand">→ 30초 자가진단 / 설치로 이어짐</div>
+      </div>
+      <div class="cf"><b>결</b> 시점 뒤집기(환자 발신) · <b>훅</b> “먼저 온 1명 = 사라진 100명의 증거” · <span>신선함 최상</span></div>
+    </div>
+
+    <!-- B · 블랙유머 -->
+    <div class="card">
+      <div class="ch"><span class="tag">B · 블랙유머 어그로</span><h2>“우리 병원, 소리 없이 새는 소리 안 들려요?”</h2><div class="why">농담처럼 열고 진담으로 회수. 가볍게 읽히는데 뼈아픔.</div></div>
+      <div class="thread">
+        <div class="day">오늘 오후 4:02</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">원장님, 혹시 우리 병원에서 나는 이상한 소리 못 들으셨어요?</div></div>
+        <div class="row me"><div class="b">무슨 소리? 유닛 또 고장났어?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">아뇨 ㅋㅋ 매달 구환들이 <b>소리 없이 증발하는 소리</b>요.</div></div>
+        <div class="row me"><div class="b">ㅋㅋㅋ 뭐야 무섭게.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">농담인데… 농담이 아니라서 문제예요 😇 오늘도 옛날 환자 한 분 우연히 알았는데, 끊긴 지 한참이더라고요.</div></div>
+        <div class="row me"><div class="b">그런 분 또 있겠지?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그게 무서운 거예요. 있는 건 아는데 <span class="r">누군지 손으론 못 찾아요.</span></div></div>
+        <div class="sys">💡 티 안 나게 새는 게 제일 무섭죠. 안 아프니까 — 그래서 아무도 안 부릅니다.</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">우리 얼마나 새는지, 3분이면 대략 나와요. 보실래요?</div></div>
+        <div class="hand">→ 30초 자가진단 / 설치로 이어짐</div>
+      </div>
+      <div class="cf"><b>결</b> 블랙유머→진담 · <b>훅</b> “증발하는 소리” 비유 · <span>가볍게 읽히는 재미</span></div>
+    </div>
+
+    <!-- C · 미스터리 떡밥 -->
+    <div class="card">
+      <div class="ch"><span class="tag">C · 미스터리 떡밥</span><h2>“놀라지 말고 들으세요, 소름 돋는 거 발견했어요”</h2><div class="why">열린 고리 연쇄로 끝까지 읽게. ‘살린 게 사실 운이었다’ 반전.</div></div>
+      <div class="thread">
+        <div class="day">오늘 밤 10:31</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">원장님, 놀라지 말고 들으세요. 저 방금 좀 소름 돋는 거 발견했어요.</div></div>
+        <div class="row me"><div class="b">뭔데 갑자기.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">지난달에 우리가 ‘살린’ 환자분 있잖아요. 다시 오신 분.</div></div>
+        <div class="row me"><div class="b">어 그분. 잘 돌아오셨지.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그게… <span class="r">우리가 부른 게 아니었어요.</span> 우연히 근처 지나다 들르신 거예요.</div></div>
+        <div class="row me"><div class="b">어? 난 우리가 리콜한 줄 알았는데.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그래서 소름이에요. 우리가 ‘챙겼다’고 믿은 게, 사실 <b>운</b>이었던 거잖아요.</div></div>
+        <div class="row me"><div class="b">…그럼 운 안 따른 분들은?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">지금도 조용히 사라지는 중이고, 누군지 우린 몰라요.</div></div>
+        <div class="sys">💡 우연히 돌아온 한 명에 가려, 조용히 떠난 여럿이 안 보입니다.</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그 여럿, 몇이나 되는지 한번 볼까요?</div></div>
+        <div class="hand">→ 30초 자가진단 / 설치로 이어짐</div>
+      </div>
+      <div class="cf"><b>결</b> 떡밥·열린고리 · <b>훅</b> “살린 게 사실 운이었다” 반전 · <span>몰입·끝까지 읽힘</span></div>
+    </div>
+
+    <!-- D · 원장 단톡 FOMO -->
+    <div class="card">
+      <div class="ch"><span class="tag">D · 원장 단톡방</span><h2>“다들 하는데, 우린 아직 감으로…”</h2><div class="why">동료 원장들 대화에 낀 소외감(FOMO). 경쟁 이탈 아닌 ‘나만 뒤처짐’.</div></div>
+      <div class="thread">
+        <div class="day">개원 동기 원장 모임 💬</div>
+        <div class="row you"><div class="nm">이원장</div><div class="b">요즘 리콜 자동으로 돌리니까 데스크가 살 것 같대 ㅋㅋ</div></div>
+        <div class="row you"><div class="nm">박원장</div><div class="b">우리도 그거 쓰고 구환 매출 확 올랐음. 진작 할걸 ㅋㅋ</div></div>
+        <div class="row me"><div class="b">(읽기만…)</div></div>
+        <div class="day">우리 병원 단톡방</div>
+        <div class="row me"><div class="b">우리도 옛날 환자 리스트 같은 거 있나?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">리스트요…? 딱 정리된 게 없어서, 매번 <span class="r">감으로 몇 분</span> 돌려요.</div></div>
+        <div class="row me"><div class="b">다들 시스템으로 하는 사이, 우린 감이었네.</div></div>
+        <div class="sys">💡 남들 다 하는 사이 ‘감’으로 버티면, 격차는 매달 조용히 벌어집니다.</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">우리도 명단부터요. 몇 명인지 3분이면 봬요.</div></div>
+        <div class="hand">→ 30초 자가진단 / 설치로 이어짐</div>
+      </div>
+      <div class="cf"><b>결</b> 동료 단톡 FOMO · <b>훅</b> ‘나만 감으로’ 소외감 · <span>경쟁의식 자극</span></div>
+    </div>
+
+    <!-- E · 반전 -->
+    <div class="card">
+      <div class="ch"><span class="tag">E · 좋은 소식인 줄</span><h2>“이탈 환자 다시 왔어요!” … 근데</h2><div class="why">기쁜 소식으로 열고 한 방 반전. 자존심 안 건드리는 결.</div></div>
+      <div class="thread">
+        <div class="day">오늘 오후 6:15</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">원장님 좋은 소식! 이탈했던 환자분 오늘 다시 오셨어요 🎉</div></div>
+        <div class="row me"><div class="b">오 잘됐다. 거봐, 우리 관리 되잖아.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">그게… 어떻게 오셨는지 아세요?</div></div>
+        <div class="row me"><div class="b">리콜 문자 보고 오신 거 아냐?</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">아뇨. 우연히 앞을 지나다 “아 맞다” 하고 들르신 거예요.</div></div>
+        <div class="row me"><div class="b">…우리가 부른 게 아니네.</div></div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">이번엔 <span class="r">운이 좋았는데</span>, 다음 분도 그러란 보장이 없어서요.</div></div>
+        <div class="sys">💡 되돌아온 한 명은 기쁘지만, 그게 ‘운’이면 나머진 매번 놓칩니다. (우리가 못해서가 아니라, 사람 손의 한계예요.)</div>
+        <div class="row you"><div class="nm">김실장</div><div class="b">운 말고 매번 부르려면 — 우선 대상이 몇인지부터 볼까요?</div></div>
+        <div class="hand">→ 30초 자가진단 / 설치로 이어짐</div>
+      </div>
+      <div class="cf"><b>결</b> 기쁜 소식→반전 · <b>훅</b> “챙긴 게 아니라 운이었다” · <span>자존심 보호</span></div>
+    </div>
+
+  </div>
+
+  <p class="note">※ 다 별로면, <b>어디가 걸리는지</b>만 한 줄 주셔도 됩니다 — 훅이 약한지 / 너무 진지한지 / 실장·원장 구도가 질리는지 / 더 짧아야 하는지.<br>
+  “A의 시점 뒤집기는 좋은데 톤은 B로” 처럼 <b>결끼리 섞어</b> 달라고 하셔도 그렇게 조립합니다.</p>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기" style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35);font-family:Pretendard,sans-serif;opacity:.94;"><span style="font-size:15px">📋</span><span>후보 목록</span></a>
+<style>#recallFab:hover{opacity:1}@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
