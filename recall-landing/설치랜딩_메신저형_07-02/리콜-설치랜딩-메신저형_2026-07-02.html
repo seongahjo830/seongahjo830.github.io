@@ -165,6 +165,34 @@
   .obox.hero-loss .ov{color:#FF9B6E;font-size:clamp(30px,7vw,46px)}
   .obox .os{color:#93A3BB;font-size:12px;margin-top:5px}
   .assump{font-size:12px;color:#8497B0;line-height:1.6;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12)}
+  /* 계산 실행 버튼 */
+  .calc-run{margin-top:30px;width:100%;border:0;cursor:pointer;font:inherit;text-align:center;
+    background:linear-gradient(135deg,var(--accent),#3E63E8);color:#fff;border-radius:14px;padding:16px 20px;
+    box-shadow:0 10px 24px -10px rgba(37,72,224,.65);transition:transform .15s ease,box-shadow .15s ease}
+  .calc-run:hover{transform:translateY(-2px);box-shadow:0 14px 30px -10px rgba(37,72,224,.75)}
+  .calc-run:active{transform:translateY(0)}
+  .calc-run .rn-main{display:block;font-weight:820;font-size:17px;letter-spacing:-.01em}
+  .calc-run .rn-sub{display:block;font-weight:600;font-size:12.5px;opacity:.82;margin-top:4px}
+  /* 결과 미노출 안내 */
+  .calc-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    min-height:240px;gap:12px;padding:10px}
+  .calc-empty .ce-ico{font-size:34px;opacity:.55}
+  .calc-empty .ce-t{font-size:14.5px;line-height:1.65;color:#B9C6DB;font-weight:600;max-width:22em}
+  .calc-empty .ce-t b{color:#fff}
+  .calc-empty.nudge{animation:ceNudge .5s ease}
+  @keyframes ceNudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  /* 미실행 상태: 결과 숨김 · 안내만 / 실행 후: 안내 숨김 */
+  .calc-out:not(.staged) .out-grid,.calc-out:not(.staged) .assump{display:none}
+  .calc-out.staged .calc-empty{display:none}
+  /* 결과 순차 등장 */
+  .calc-out.staged .obox{opacity:0;transform:translateY(14px) scale(.98);
+    transition:opacity .5s cubic-bezier(.2,.7,.2,1),transform .5s cubic-bezier(.2,.7,.2,1)}
+  .calc-out.staged .obox.pop{opacity:1;transform:none}
+  .calc-out.staged .assump{opacity:0;transition:opacity .5s ease}
+  .calc-out.staged .assump.pop{opacity:1}
+  @media(prefers-reduced-motion:reduce){
+    .calc-out.staged .obox,.calc-out.staged .assump{opacity:1!important;transform:none!important;transition:none!important}
+    .calc-empty.nudge{animation:none}}
 
   .installbox{margin-top:40px;background:linear-gradient(135deg,#EAF1FE,#E4F4F0);border:1.6px solid #CBDDF6;
     border-radius:var(--radius);padding:clamp(28px,5vw,44px);text-align:center}
@@ -639,11 +667,19 @@
           <div class="frow"><label>개원 연차</label><span class="val" id="vYr">5년차</span></div>
           <input type="range" id="yr" min="1" max="20" step="1" value="5">
         </div>
+        <button type="button" class="calc-run" id="calcRun">
+          <span class="rn-main">💸 우리 병원 누수 계산하기</span>
+          <span class="rn-sub">값을 넣고 눌러 보세요 · 오른쪽에 하나씩 나타납니다</span>
+        </button>
       </div>
 
       <!-- outputs -->
-      <div class="calc-out">
+      <div class="calc-out" id="calcOut">
         <div style="font-weight:800;font-size:15px;color:#B9C6DB;margin-bottom:14px">💸 우리 치과 대략 누수 (간이 추정)</div>
+        <div class="calc-empty" id="calcEmpty">
+          <div class="ce-ico">👈</div>
+          <div class="ce-t">왼쪽 값 4가지를 맞추고 <b>계산하기</b>를 누르면<br>여기에 결과가 <b>하나씩</b> 나타납니다.</div>
+        </div>
         <div class="out-grid">
           <div class="obox"><div class="ol">이번 달 리콜 대상(추정)</div><div class="ov" id="oTgt">250명</div><div class="os">전체 구환의 월 도래분</div></div>
           <div class="obox"><div class="ol">구환 1인 연 가치(추정)</div><div class="ov" id="oVal">14만원</div><div class="os">월매출·구환수로 역산</div></div>
@@ -903,14 +939,18 @@ function manFmt(man){ // 만원 단위 → "3억 2,000만원" 형식
   }
   return man.toLocaleString('ko-KR')+'만원';
 }
-function calc(){
+var reduceMo = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* 슬라이더 라벨만 실시간 반영 (결과는 버튼 눌러야) */
+function syncLabels(){
+  R('vRev').textContent=manFmt(+els.rev.value);
+  R('vPat').textContent=(+els.pat.value).toLocaleString('ko-KR')+'명';
+  R('vNew').textContent=(+els.new.value)+'%';
+  R('vYr').textContent=(+els.yr.value)+'년차';
+}
+/* 결과 계산 후 각 칸에 값 채우기 (아직 화면엔 숨김) */
+function compute(){
   const revMan=+els.rev.value, revWon=revMan*10000;
   const pat=+els.pat.value, nw=(+els.new.value)/100, yr=+els.yr.value;
-  R('vRev').textContent=manFmt(revMan);
-  R('vPat').textContent=pat.toLocaleString('ko-KR')+'명';
-  R('vNew').textContent=(+els.new.value)+'%';
-  R('vYr').textContent=yr+'년차';
-
   const tgt=Math.round(pat/12);
   const val=Math.round(revWon*12*(1-nw)/pat);
   const loss=Math.round(tgt*val*0.017);
@@ -919,7 +959,6 @@ function calc(){
   const dormRate=Math.min(0.45,0.12+yr*0.03);
   const dorm=Math.round(pat*dormRate);
   const recover=Math.round(dorm*val*0.15);
-
   R('oTgt').textContent=tgt.toLocaleString('ko-KR')+'명';
   R('oVal').textContent=Math.round(val/10000).toLocaleString('ko-KR')+'만원';
   R('oLoss').textContent=eok(loss);
@@ -927,9 +966,62 @@ function calc(){
   R('o2y').textContent=eok(y2);
   R('oDorm').textContent=dorm.toLocaleString('ko-KR')+'명';
   R('oDormRec').textContent='지금 깨우면 '+eok(recover)+' 회수 가능';
+  return {loss:loss};
 }
-Object.values(els).forEach(e=>e.addEventListener('input',calc));
-calc();
+/* 하이라이트 칸(한 달 손실) 카운트업 */
+function countHero(target){
+  const el=R('oLoss');
+  if(reduceMo||!window.requestAnimationFrame){el.textContent=eok(target);return;}
+  var start=null,dur=680;
+  function frame(ts){
+    if(start===null)start=ts;
+    var p=Math.min(1,(ts-start)/dur), e=1-Math.pow(1-p,3);
+    el.textContent=eok(Math.round(target*e));
+    if(p<1)requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+const calcOut=R('calcOut'), calcEmpty=R('calcEmpty'), runBtn=R('calcRun');
+const runMain=runBtn.querySelector('.rn-main');
+const oboxes=Array.prototype.slice.call(calcOut.querySelectorAll('.obox'));
+const assumpEl=calcOut.querySelector('.assump');
+let revealTimers=[];
+function clearReveal(){ revealTimers.forEach(clearTimeout); revealTimers=[]; }
+
+/* 버튼 클릭 → 계산 후 결과가 하나씩 등장 */
+function run(){
+  clearReveal();
+  const c=compute();
+  oboxes.forEach(b=>b.classList.remove('pop'));
+  if(assumpEl) assumpEl.classList.remove('pop');
+  calcOut.classList.add('staged');
+  runMain.textContent='🔁 다시 계산하기';
+  const step=reduceMo?0:260;
+  oboxes.forEach((b,i)=>{
+    revealTimers.push(setTimeout(function(){
+      b.classList.add('pop');
+      if(b.classList.contains('hero-loss')) countHero(c.loss);
+    }, i*step));
+  });
+  if(assumpEl) revealTimers.push(setTimeout(function(){assumpEl.classList.add('pop');}, oboxes.length*step));
+}
+
+/* 슬라이더를 다시 움직이면 결과를 접고 재계산 유도 */
+function onSlide(){
+  syncLabels();
+  if(!calcOut.classList.contains('staged')) return;
+  clearReveal();
+  calcOut.classList.remove('staged');
+  oboxes.forEach(b=>b.classList.remove('pop'));
+  if(assumpEl) assumpEl.classList.remove('pop');
+  runMain.textContent='🔁 바뀐 값으로 다시 계산하기';
+  calcEmpty.classList.remove('nudge'); void calcEmpty.offsetWidth; calcEmpty.classList.add('nudge');
+}
+
+syncLabels();
+Object.values(els).forEach(e=>e.addEventListener('input',onSlide));
+runBtn.addEventListener('click',run);
 
 function installClick(e){
   e.preventDefault();
@@ -953,7 +1045,7 @@ function installClick(e){
   var ar=document.querySelector('#step2 .arrow'); if(ar){ ar.classList.add('reveal','sc'); io.observe(ar); }
 
   // 스태거 그룹(카드/셀이 순차 등장)
-  document.querySelectorAll('.rev-grid .revcol, .out-grid, .trust, .ba').forEach(function(el){ el.classList.add('stag'); io.observe(el); });
+  document.querySelectorAll('.rev-grid .revcol, .trust, .ba').forEach(function(el){ el.classList.add('stag'); io.observe(el); });
 })();
 </script>
 <!--recall-fab-->

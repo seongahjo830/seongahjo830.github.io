@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>치과 리콜 누수 계산기 · 미니멀</title>
+<style>
+:root{
+  --bg:#FBFAF7;
+  --ink:#1A1A1A;
+  --gray:#6B7280;
+  --line:#E7E4DD;
+  --accent:#1D4ED8;
+  --accent-tint:#F2F5FD;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{padding:64px 24px 96px;line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto}
+
+/* 상단 카피 */
+.eyebrow{font-size:13px;letter-spacing:.02em;color:var(--accent);font-weight:600;margin-bottom:16px}
+.title{font-size:clamp(26px,3.4vw,38px);font-weight:700;line-height:1.28;letter-spacing:-.01em;max-width:760px}
+.lead{margin-top:18px;font-size:16px;color:var(--gray);max-width:640px;font-weight:400}
+
+/* 레이아웃 */
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:56px;align-items:start}
+@media(max-width:840px){
+  body{padding:40px 18px 72px}
+  .calc{grid-template-columns:1fr;gap:40px}
+}
+
+/* 왼쪽 패널 */
+.calc-panel{border:1px solid var(--line);border-radius:14px;background:#fff;padding:32px 30px}
+.panel-head{font-size:13px;color:var(--gray);font-weight:500;margin-bottom:26px}
+.field{padding:20px 0;border-top:1px solid var(--line)}
+.field:first-of-type{border-top:none;padding-top:4px}
+.field-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.field-label{font-size:14px;color:var(--ink);font-weight:500}
+.field-val{font-size:16px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+
+/* 얇은 슬라이더 */
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;
+  background:var(--line);border-radius:999px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+  width:16px;height:16px;border-radius:50%;background:var(--accent);
+  border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;
+  background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}
+
+/* 버튼 */
+#calcRun{margin-top:30px;width:100%;border:none;cursor:pointer;
+  background:var(--accent);color:#fff;font-family:inherit;
+  font-size:15px;font-weight:600;padding:15px 20px;border-radius:10px;
+  transition:background .16s ease,transform .06s ease}
+#calcRun:hover{background:#1743c4}
+#calcRun:active{transform:translateY(1px)}
+.rn-main{display:block}
+
+/* 오른쪽 결과 */
+.calc-out{}
+.out-head{font-size:13px;color:var(--gray);font-weight:500;margin-bottom:22px}
+
+.calc-empty{border:1px dashed var(--line);border-radius:14px;
+  padding:44px 28px;text-align:center;color:var(--gray)}
+.calc-empty .ce-big{font-size:32px;margin-bottom:14px;opacity:.6}
+.calc-empty .ce-t{font-size:15px;color:var(--ink);font-weight:500;margin-bottom:6px}
+.calc-empty .ce-s{font-size:13.5px;color:var(--gray)}
+
+/* 결과 5칸 = 헤어라인으로 나뉜 행 */
+.out-grid{border-top:1px solid var(--line)}
+.obox{display:flex;flex-direction:column;gap:5px;
+  padding:20px 4px 20px;border-bottom:1px solid var(--line);position:relative}
+.ol{font-size:13px;color:var(--gray);font-weight:500;order:2}
+.ov{font-size:26px;font-weight:700;letter-spacing:-.01em;color:var(--ink);
+  font-variant-numeric:tabular-nums;order:1;line-height:1.15}
+.osub{font-size:13px;color:var(--gray);font-weight:400;order:3}
+
+/* hero-loss만 옅은 강조 */
+.obox.hero-loss{background:var(--accent-tint);border-radius:10px;
+  padding:22px 20px 22px 22px;margin:6px 0;border-bottom:1px solid var(--line)}
+.obox.hero-loss::before{content:"";position:absolute;left:0;top:12px;bottom:12px;
+  width:3px;border-radius:999px;background:var(--accent)}
+.obox.hero-loss .ov{color:var(--accent);font-size:32px}
+.obox.hero-loss .osub{color:#4b62b8;font-weight:500}
+
+.assump{margin-top:22px;font-size:12.5px;line-height:1.7;color:var(--gray)}
+
+/* 순차 등장 (spec 규칙) */
+.calc-out:not(.staged) .out-grid,.calc-out:not(.staged) .assump{display:none}
+.calc-out.staged .calc-empty{display:none}
+.calc-out.staged .obox{opacity:0;transform:translateY(14px) scale(.98);
+  transition:opacity .5s cubic-bezier(.2,.7,.2,1),transform .5s cubic-bezier(.2,.7,.2,1)}
+.calc-out.staged .obox.pop{opacity:1;transform:none}
+.calc-out.staged .assump{opacity:0;transition:opacity .5s ease}
+.calc-out.staged .assump.pop{opacity:1}
+.calc-empty.nudge{animation:ceNudge .5s ease}
+@keyframes ceNudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media(prefers-reduced-motion:reduce){
+  .calc-out.staged .obox,.calc-out.staged .assump{opacity:1!important;transform:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">설치 직전 · 우리 병원 숫자 미리보기</div>
+  <h1 class="title">원장님이 지금 아는 값 4가지만 넣으면, 대략의 누수가 바로 보입니다.</h1>
+  <p class="lead">아래는 설치 없이 해보는 간이 추정입니다. 슬라이더를 맞추고 버튼을 누르면 결과가 하나씩 나타납니다.</p>
+
+  <div class="calc">
+    <!-- 왼쪽 입력 -->
+    <div class="calc-panel">
+      <div class="panel-head">우리 병원 값 4가지</div>
+
+      <div class="field">
+        <div class="field-top">
+          <span class="field-label">월 매출</span>
+          <span class="field-val" id="vRev">5,000만원</span>
+        </div>
+        <input type="range" id="rev" min="1000" max="40000" step="500" value="5000">
+      </div>
+
+      <div class="field">
+        <div class="field-top">
+          <span class="field-label">구환 수(등록된 기존 환자)</span>
+          <span class="field-val" id="vPat">3,000명</span>
+        </div>
+        <input type="range" id="pat" min="500" max="15000" step="100" value="3000">
+      </div>
+
+      <div class="field">
+        <div class="field-top">
+          <span class="field-label">신환 비율</span>
+          <span class="field-val" id="vNew">30%</span>
+        </div>
+        <input type="range" id="new" min="5" max="70" step="5" value="30">
+      </div>
+
+      <div class="field">
+        <div class="field-top">
+          <span class="field-label">개원 연차</span>
+          <span class="field-val" id="vYr">5년차</span>
+        </div>
+        <input type="range" id="yr" min="1" max="20" step="1" value="5">
+      </div>
+
+      <button id="calcRun"><span class="rn-main">누수 계산하기</span></button>
+    </div>
+
+    <!-- 오른쪽 결과 -->
+    <div class="calc-out" id="calcOut">
+      <div class="out-head">추정 결과</div>
+
+      <div class="calc-empty" id="calcEmpty">
+        <div class="ce-big">↖</div>
+        <div class="ce-t">값을 맞추고 버튼을 눌러 주세요.</div>
+        <div class="ce-s">결과가 위에서부터 하나씩 나타납니다.</div>
+      </div>
+
+      <div class="out-grid">
+        <div class="obox">
+          <div class="ov" id="oTgt">250명</div>
+          <div class="ol">이번 달 리콜 대상(추정)</div>
+          <div class="osub">전체 구환의 월 도래분</div>
+        </div>
+
+        <div class="obox">
+          <div class="ov" id="oVal">14만원</div>
+          <div class="ol">구환 1인 연 가치(추정)</div>
+          <div class="osub">월매출·구환수로 역산</div>
+        </div>
+
+        <div class="obox hero-loss">
+          <div class="ov" id="oLoss">60만원</div>
+          <div class="ol">한 달 미루면 사라지는 돈</div>
+          <div class="osub" id="oLossPct">월매출의 약 1.2%</div>
+        </div>
+
+        <div class="obox">
+          <div class="ov" id="o2y">840만원</div>
+          <div class="ol">2년 방치 시 총 증발</div>
+          <div class="osub">누적 감쇠 반영</div>
+        </div>
+
+        <div class="obox">
+          <div class="ov" id="oDorm">810명</div>
+          <div class="ol">이미 잠든 구환(누적)</div>
+          <div class="osub" id="oDormRec">지금 깨우면 1,701만원 회수 가능</div>
+        </div>
+      </div>
+
+      <div class="assump">가정 — 구환 1인 연가치 = 월매출×12×(1−신환비율)÷구환수 · 이번 달 리콜 대상 = 구환수÷12 · 한 달 손실 = 대상×연가치×월감쇠(1.7%) · 잠든 구환 = 구환수×(12%+연차×3%). 모두 벤치마크 가정값이며, 의료·매출 효과를 보장하지 않습니다.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const R=id=>document.getElementById(id);
+  const els={rev:R('rev'),pat:R('pat'),new:R('new'),yr:R('yr')};
+  const reduceMo=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function eok(n){if(n>=100000000)return (Math.round(n/1000000)/100).toLocaleString('ko-KR')+'억원';return Math.round(n/10000).toLocaleString('ko-KR')+'만원';}
+  function manFmt(man){if(man>=10000){var e=Math.floor(man/10000),r=man%10000;return e+'억'+(r?' '+r.toLocaleString('ko-KR')+'만원':'');}return man.toLocaleString('ko-KR')+'만원';}
+  function syncLabels(){R('vRev').textContent=manFmt(+els.rev.value);R('vPat').textContent=(+els.pat.value).toLocaleString('ko-KR')+'명';R('vNew').textContent=(+els.new.value)+'%';R('vYr').textContent=(+els.yr.value)+'년차';}
+  function compute(){
+    const revMan=+els.rev.value,revWon=revMan*10000;
+    const pat=+els.pat.value,nw=(+els.new.value)/100,yr=+els.yr.value;
+    const tgt=Math.round(pat/12);
+    const val=Math.round(revWon*12*(1-nw)/pat);
+    const loss=Math.round(tgt*val*0.017);
+    const lossPct=(loss/revWon*100);
+    const y2=Math.round(loss*14.1);
+    const dormRate=Math.min(0.45,0.12+yr*0.03);
+    const dorm=Math.round(pat*dormRate);
+    const recover=Math.round(dorm*val*0.15);
+    R('oTgt').textContent=tgt.toLocaleString('ko-KR')+'명';
+    R('oVal').textContent=Math.round(val/10000).toLocaleString('ko-KR')+'만원';
+    R('oLoss').textContent=eok(loss);
+    R('oLossPct').textContent='월매출의 약 '+lossPct.toFixed(1)+'%';
+    R('o2y').textContent=eok(y2);
+    R('oDorm').textContent=dorm.toLocaleString('ko-KR')+'명';
+    R('oDormRec').textContent='지금 깨우면 '+eok(recover)+' 회수 가능';
+    return {loss:loss};
+  }
+  function countHero(target){var el=R('oLoss');if(reduceMo||!window.requestAnimationFrame){el.textContent=eok(target);return;}var s=null,d=680;function f(ts){if(s===null)s=ts;var p=Math.min(1,(ts-s)/d),e=1-Math.pow(1-p,3);el.textContent=eok(Math.round(target*e));if(p<1)requestAnimationFrame(f);}requestAnimationFrame(f);}
+  const calcOut=R('calcOut'),calcEmpty=R('calcEmpty'),runBtn=R('calcRun'),runMain=runBtn.querySelector('.rn-main');
+  const oboxes=Array.prototype.slice.call(calcOut.querySelectorAll('.obox'));
+  const assumpEl=calcOut.querySelector('.assump');
+  let timers=[];function clearR(){timers.forEach(clearTimeout);timers=[];}
+  function run(){clearR();var c=compute();oboxes.forEach(b=>b.classList.remove('pop'));if(assumpEl)assumpEl.classList.remove('pop');calcOut.classList.add('staged');runMain.textContent='🔁 다시 계산하기';var step=reduceMo?0:260;oboxes.forEach((b,i)=>{timers.push(setTimeout(function(){b.classList.add('pop');if(b.classList.contains('hero-loss'))countHero(c.loss);},i*step));});if(assumpEl)timers.push(setTimeout(function(){assumpEl.classList.add('pop');},oboxes.length*step));}
+  function onSlide(){syncLabels();if(!calcOut.classList.contains('staged'))return;clearR();calcOut.classList.remove('staged');oboxes.forEach(b=>b.classList.remove('pop'));if(assumpEl)assumpEl.classList.remove('pop');runMain.textContent='🔁 바뀐 값으로 다시 계산';if(calcEmpty){calcEmpty.classList.remove('nudge');void calcEmpty.offsetWidth;calcEmpty.classList.add('nudge');}}
+  syncLabels();
+  Object.values(els).forEach(e=>e.addEventListener('input',onSlide));
+  runBtn.addEventListener('click',run);
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

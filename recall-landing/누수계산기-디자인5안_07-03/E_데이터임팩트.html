@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>치과 리콜 누수 계산기 — 데이터/임팩트</title>
+<style>
+  :root{
+    --ink:#0B1220;
+    --panel:#111A2E;
+    --bg:#0A0F1C;
+    --line:#25324A;
+    --line-2:#1A2337;
+    --muted:#8A9AB8;
+    --text:#EAF0FA;
+    --accent:#2563EB;
+    --accent-2:#F97316;
+    --danger:#F97316;
+    --grid-cell:#0F1728;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  .mono{
+    font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+    font-variant-numeric:tabular-nums;
+    letter-spacing:-.01em;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:34px 22px 70px}
+
+  /* ── 헤더 ── */
+  .eyebrow{
+    display:inline-block;
+    font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--bg);background:var(--accent-2);
+    padding:6px 12px;border-radius:2px;
+  }
+  h1.headline{
+    margin:16px 0 10px;
+    font-size:clamp(26px,4.4vw,44px);
+    font-weight:900;line-height:1.12;letter-spacing:-.02em;
+  }
+  .lead{color:var(--muted);font-size:16px;max-width:640px;margin:0 0 30px}
+
+  /* ── 2단 그리드 ── */
+  .split{
+    display:grid;
+    grid-template-columns:minmax(0,0.9fr) minmax(0,1.1fr);
+    gap:20px;
+    align-items:start;
+  }
+  @media(max-width:860px){.split{grid-template-columns:1fr}}
+
+  /* ── 입력 패널 ── */
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:22px 22px 26px;
+  }
+  .panel-tag{
+    font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent-2);margin:0 0 18px;
+  }
+  .field{margin-bottom:22px}
+  .field:last-of-type{margin-bottom:26px}
+  .field-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-bottom:10px;gap:12px;
+  }
+  .field-name{font-size:14px;font-weight:700;color:var(--text)}
+  .field-val{
+    font-size:20px;font-weight:900;color:var(--accent-2);
+    font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    font-variant-numeric:tabular-nums;letter-spacing:-.01em;
+  }
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;
+    width:100%;height:4px;border-radius:0;
+    background:var(--line);outline:none;cursor:pointer;margin:0;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;
+    width:18px;height:18px;border-radius:2px;
+    background:var(--accent);border:2px solid var(--text);
+    box-shadow:0 0 0 3px rgba(37,99,235,.25);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:16px;height:16px;border-radius:2px;
+    background:var(--accent);border:2px solid var(--text);
+  }
+
+  /* ── 실행 버튼 ── */
+  #calcRun{
+    width:100%;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:16px 18px;
+    background:var(--accent);
+    color:#fff;
+    border:none;border-radius:4px;
+    font-size:15px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;
+    cursor:pointer;
+    box-shadow:0 6px 0 #1741a8;
+    transition:transform .06s ease, box-shadow .06s ease, background .12s ease;
+  }
+  #calcRun:hover{background:#1d55d1}
+  #calcRun:active{transform:translateY(4px);box-shadow:0 2px 0 #1741a8}
+  .rn-sub{font-size:11px;font-weight:700;letter-spacing:.05em;opacity:.85}
+
+  /* ── 결과 영역 ── */
+  .calc-out{min-height:100%}
+  .calc-empty{
+    border:2px dashed var(--line);
+    border-radius:6px;
+    padding:48px 26px;text-align:center;color:var(--muted);
+    background:linear-gradient(180deg,rgba(37,99,235,.05),transparent);
+  }
+  .calc-empty .ce-num{
+    font-size:52px;font-weight:900;color:var(--line);
+    font-family:ui-monospace,Menlo,Consolas,monospace;line-height:1;
+    margin-bottom:14px;
+  }
+  .calc-empty .ce-t{font-size:15px;font-weight:700;color:var(--text)}
+  .calc-empty .ce-s{font-size:13px;margin-top:6px}
+
+  /* 순차등장 규칙(스펙 고정) */
+  .calc-out:not(.staged) .out-grid,
+  .calc-out:not(.staged) .assump{display:none}
+  .calc-out.staged .calc-empty{display:none}
+  .calc-out.staged .obox{opacity:0;transform:translateY(14px) scale(.98);transition:opacity .5s cubic-bezier(.2,.7,.2,1),transform .5s cubic-bezier(.2,.7,.2,1)}
+  .calc-out.staged .obox.pop{opacity:1;transform:none}
+  .calc-out.staged .assump{opacity:0;transition:opacity .5s ease}
+  .calc-out.staged .assump.pop{opacity:1}
+  .calc-empty.nudge{animation:ceNudge .5s ease}
+  @keyframes ceNudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  @media(prefers-reduced-motion:reduce){
+    .calc-out.staged .obox,.calc-out.staged .assump{opacity:1!important;transform:none!important}
+  }
+
+  /* ── 결과 격자 ── */
+  .out-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .obox{
+    background:var(--grid-cell);
+    padding:20px 20px 22px;
+    display:flex;flex-direction:column;gap:8px;
+    min-width:0;
+  }
+  .ob-label{
+    font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);
+  }
+  .ob-val{
+    font-size:clamp(30px,5vw,42px);font-weight:900;line-height:1;letter-spacing:-.02em;
+    font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+    color:var(--text);
+  }
+  .ob-cap{font-size:13px;color:var(--muted);line-height:1.45}
+
+  /* 미니 막대 장식 */
+  .ob-bar{height:6px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:2px}
+  .ob-bar > i{display:block;height:100%;background:var(--accent)}
+
+  /* hero-loss = 풀폭 거대 배너 */
+  .obox.hero-loss{
+    grid-column:1 / -1;
+    background:var(--accent-2);
+    color:var(--bg);
+    padding:30px 26px 34px;
+    position:relative;
+    overflow:hidden;
+  }
+  .obox.hero-loss::after{
+    content:"";position:absolute;right:-40px;top:-40px;
+    width:200px;height:200px;border:26px solid rgba(0,0,0,.06);border-radius:50%;
+    pointer-events:none;
+  }
+  .obox.hero-loss .ob-label{color:rgba(11,18,32,.72)}
+  .obox.hero-loss .ob-val{
+    color:var(--bg);
+    font-size:clamp(52px,11vw,96px);
+    line-height:.92;letter-spacing:-.03em;
+    position:relative;z-index:1;
+  }
+  .obox.hero-loss .ob-cap{
+    color:var(--bg);font-weight:800;font-size:15px;
+    display:inline-block;background:rgba(11,18,32,.14);
+    padding:4px 10px;border-radius:3px;align-self:flex-start;
+    position:relative;z-index:1;
+  }
+
+  /* 각주 */
+  .assump{
+    margin-top:14px;
+    font-size:11.5px;line-height:1.6;color:var(--muted);
+    border-left:3px solid var(--line);
+    padding:10px 14px;background:var(--panel);border-radius:0 4px 4px 0;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="eyebrow">설치 직전 · 우리 병원 숫자 미리보기</span>
+  <h1 class="headline">원장님이 지금 아는 값 4가지만 넣으면, 대략의 누수가 바로 보입니다.</h1>
+  <p class="lead">아래는 설치 없이 해보는 간이 추정입니다. 슬라이더를 맞추고 버튼을 누르면 결과가 하나씩 나타납니다.</p>
+
+  <div class="split">
+
+    <!-- 입력 -->
+    <div class="panel">
+      <p class="panel-tag">입력 · 4개 값</p>
+
+      <div class="field">
+        <div class="field-head">
+          <span class="field-name">월 매출</span>
+          <span class="field-val" id="vRev">5,000만원</span>
+        </div>
+        <input type="range" id="rev" min="1000" max="40000" step="500" value="5000">
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <span class="field-name">구환 수</span>
+          <span class="field-val" id="vPat">3,000명</span>
+        </div>
+        <input type="range" id="pat" min="500" max="15000" step="100" value="3000">
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <span class="field-name">신환 비율</span>
+          <span class="field-val" id="vNew">30%</span>
+        </div>
+        <input type="range" id="new" min="5" max="70" step="5" value="30">
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <span class="field-name">개원 연차</span>
+          <span class="field-val" id="vYr">5년차</span>
+        </div>
+        <input type="range" id="yr" min="1" max="20" step="1" value="5">
+      </div>
+
+      <button id="calcRun">
+        <span class="rn-main">📊 누수 계산하기</span>
+        <span class="rn-sub">RESULT</span>
+      </button>
+    </div>
+
+    <!-- 결과 -->
+    <div class="calc-out" id="calcOut">
+
+      <div class="calc-empty" id="calcEmpty">
+        <div class="ce-num mono">???</div>
+        <div class="ce-t">아직 계산 전입니다</div>
+        <div class="ce-s">왼쪽 값을 맞추고 <b>누수 계산하기</b>를 누르세요</div>
+      </div>
+
+      <div class="out-grid">
+
+        <div class="obox">
+          <span class="ob-label">이번 달 리콜 대상(추정)</span>
+          <span class="ob-val mono" id="oTgt">250명</span>
+          <span class="ob-cap">전체 구환의 월 도래분</span>
+        </div>
+
+        <div class="obox">
+          <span class="ob-label">구환 1인 연 가치(추정)</span>
+          <span class="ob-val mono" id="oVal">14만원</span>
+          <span class="ob-cap">월매출·구환수로 역산</span>
+        </div>
+
+        <div class="obox hero-loss">
+          <span class="ob-label">한 달 미루면 사라지는 돈</span>
+          <span class="ob-val mono" id="oLoss">60만원</span>
+          <span class="ob-cap" id="oLossPct">월매출의 약 1.2%</span>
+        </div>
+
+        <div class="obox">
+          <span class="ob-label">2년 방치 시 총 증발</span>
+          <span class="ob-val mono" id="o2y">840만원</span>
+          <span class="ob-cap">누적 감쇠 반영</span>
+          <span class="ob-bar"><i style="width:82%"></i></span>
+        </div>
+
+        <div class="obox">
+          <span class="ob-label">이미 잠든 구환(누적)</span>
+          <span class="ob-val mono" id="oDorm">810명</span>
+          <span class="ob-cap" id="oDormRec">지금 깨우면 1,701만원 회수 가능</span>
+        </div>
+
+      </div>
+
+      <p class="assump">가정 — 구환 1인 연가치 = 월매출×12×(1−신환비율)÷구환수 · 이번 달 리콜 대상 = 구환수÷12 · 한 달 손실 = 대상×연가치×월감쇠(1.7%) · 잠든 구환 = 구환수×(12%+연차×3%). 모두 벤치마크 가정값이며, 의료·매출 효과를 보장하지 않습니다.</p>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  const R=id=>document.getElementById(id);
+  const els={rev:R('rev'),pat:R('pat'),new:R('new'),yr:R('yr')};
+  const reduceMo=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function eok(n){if(n>=100000000)return (Math.round(n/1000000)/100).toLocaleString('ko-KR')+'억원';return Math.round(n/10000).toLocaleString('ko-KR')+'만원';}
+  function manFmt(man){if(man>=10000){var e=Math.floor(man/10000),r=man%10000;return e+'억'+(r?' '+r.toLocaleString('ko-KR')+'만원':'');}return man.toLocaleString('ko-KR')+'만원';}
+  function syncLabels(){R('vRev').textContent=manFmt(+els.rev.value);R('vPat').textContent=(+els.pat.value).toLocaleString('ko-KR')+'명';R('vNew').textContent=(+els.new.value)+'%';R('vYr').textContent=(+els.yr.value)+'년차';}
+  function compute(){
+    const revMan=+els.rev.value,revWon=revMan*10000;
+    const pat=+els.pat.value,nw=(+els.new.value)/100,yr=+els.yr.value;
+    const tgt=Math.round(pat/12);
+    const val=Math.round(revWon*12*(1-nw)/pat);
+    const loss=Math.round(tgt*val*0.017);
+    const lossPct=(loss/revWon*100);
+    const y2=Math.round(loss*14.1);
+    const dormRate=Math.min(0.45,0.12+yr*0.03);
+    const dorm=Math.round(pat*dormRate);
+    const recover=Math.round(dorm*val*0.15);
+    R('oTgt').textContent=tgt.toLocaleString('ko-KR')+'명';
+    R('oVal').textContent=Math.round(val/10000).toLocaleString('ko-KR')+'만원';
+    R('oLoss').textContent=eok(loss);
+    R('oLossPct').textContent='월매출의 약 '+lossPct.toFixed(1)+'%';
+    R('o2y').textContent=eok(y2);
+    R('oDorm').textContent=dorm.toLocaleString('ko-KR')+'명';
+    R('oDormRec').textContent='지금 깨우면 '+eok(recover)+' 회수 가능';
+    return {loss:loss};
+  }
+  function countHero(target){var el=R('oLoss');if(reduceMo||!window.requestAnimationFrame){el.textContent=eok(target);return;}var s=null,d=680;function f(ts){if(s===null)s=ts;var p=Math.min(1,(ts-s)/d),e=1-Math.pow(1-p,3);el.textContent=eok(Math.round(target*e));if(p<1)requestAnimationFrame(f);}requestAnimationFrame(f);}
+  const calcOut=R('calcOut'),calcEmpty=R('calcEmpty'),runBtn=R('calcRun'),runMain=runBtn.querySelector('.rn-main');
+  const oboxes=Array.prototype.slice.call(calcOut.querySelectorAll('.obox'));
+  const assumpEl=calcOut.querySelector('.assump');
+  let timers=[];function clearR(){timers.forEach(clearTimeout);timers=[];}
+  function run(){clearR();var c=compute();oboxes.forEach(b=>b.classList.remove('pop'));if(assumpEl)assumpEl.classList.remove('pop');calcOut.classList.add('staged');runMain.textContent='🔁 다시 계산하기';var step=reduceMo?0:260;oboxes.forEach((b,i)=>{timers.push(setTimeout(function(){b.classList.add('pop');if(b.classList.contains('hero-loss'))countHero(c.loss);},i*step));});if(assumpEl)timers.push(setTimeout(function(){assumpEl.classList.add('pop');},oboxes.length*step));}
+  function onSlide(){syncLabels();if(!calcOut.classList.contains('staged'))return;clearR();calcOut.classList.remove('staged');oboxes.forEach(b=>b.classList.remove('pop'));if(assumpEl)assumpEl.classList.remove('pop');runMain.textContent='🔁 바뀐 값으로 다시 계산';if(calcEmpty){calcEmpty.classList.remove('nudge');void calcEmpty.offsetWidth;calcEmpty.classList.add('nudge');}}
+  syncLabels();
+  Object.values(els).forEach(e=>e.addEventListener('input',onSlide));
+  runBtn.addEventListener('click',run);
+})();
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
