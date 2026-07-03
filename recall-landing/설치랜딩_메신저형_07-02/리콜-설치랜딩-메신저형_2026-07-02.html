@@ -15,6 +15,8 @@
     --accent:#1D4ED8; --accent-soft:#E8EFFE; --accent-deep:#163FB0;
     --teal:#0E7C6B; --teal-soft:#E4F4F0; --teal-deep:#0A5E51;
     --navy:#0C1B33; --navy-2:#132745;
+    /* 계산기 전용 — 로열블루가 페이지에서 혼자 튀어 차분한 steel-navy로 통일(자연스럽게 스며들게) */
+    --calc-accent:#33507F; --calc-accent-deep:#26406A; --calc-accent-soft:#ECEFF5; --calc-accent-line:#C9D3E4;
     --gold:#B08400; --red:#C0392B; --red-soft:#FCEEEC; --amber:#B45309;
     --green:#1E7A4D; --green-soft:#E7F4ED;
     --radius:18px; --radius-sm:12px;
@@ -233,11 +235,11 @@
   .field .frow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
   .field label{font-weight:740;font-size:16px}
   .field label small{color:var(--ink-soft);font-weight:500;font-size:13px}
-  .field .val{font-weight:850;font-size:20px;color:var(--accent)}
-  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:99px;background:#E2E6EE;outline:0}
+  .field .val{font-weight:850;font-size:20px;color:var(--calc-accent)}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:99px;background:#E4E5E1;outline:0}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;
-    background:var(--accent);border:4px solid #fff;box-shadow:0 2px 8px rgba(29,78,216,.4);cursor:pointer}
-  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);border:4px solid #fff;cursor:pointer}
+    background:var(--calc-accent);border:4px solid #fff;box-shadow:0 2px 7px rgba(38,64,106,.28);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--calc-accent);border:4px solid #fff;cursor:pointer}
   /* 결과 패널 — 입력 카드·paywall과 같은 라이트 카드 언어로 통일(다크 navy 제거) */
   .calc-out{background:var(--card);color:var(--ink);border:1.6px solid var(--line);border-radius:var(--radius);padding:clamp(22px,3.5vw,30px);box-shadow:var(--shadow-sm)}
   .out-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
@@ -252,9 +254,9 @@
   .assump{font-size:12px;color:var(--ink-soft);line-height:1.6;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
   /* 계산 실행 버튼 — 페이지 공통 .cta 톤과 통일(따로 튀지 않게) */
   .calc-run{margin-top:30px;width:100%;border:0;cursor:pointer;font:inherit;text-align:center;
-    background:var(--accent);color:#fff;border-radius:14px;padding:17px 20px;
+    background:var(--calc-accent);color:#fff;border-radius:14px;padding:17px 20px;
     box-shadow:var(--shadow-sm);transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
-  .calc-run:hover{background:var(--accent-deep);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .calc-run:hover{background:var(--calc-accent-deep);transform:translateY(-2px);box-shadow:var(--shadow)}
   .calc-run:active{transform:translateY(0)}
   .calc-run .rn-main{display:block;font-weight:820;font-size:17px;letter-spacing:-.01em}
   .calc-run .rn-sub{display:block;font-weight:600;font-size:12.5px;opacity:.8;margin-top:4px}
@@ -263,7 +265,7 @@
     min-height:300px;gap:14px;padding:14px}
   /* ① idle : 물음표 플레이스홀더 */
   .calc-q .qmark{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;font-size:40px;font-weight:900;
-    color:var(--accent);background:var(--accent-soft);border:2px dashed rgba(29,78,216,.34);animation:qFloat 3s ease-in-out infinite}
+    color:var(--calc-accent);background:var(--calc-accent-soft);border:2px dashed rgba(51,80,127,.32);animation:qFloat 3s ease-in-out infinite}
   @keyframes qFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
   .calc-q .qt{font-size:14.5px;line-height:1.65;color:var(--ink);font-weight:600;max-width:22em}
   .calc-q .qt b{color:var(--ink)}
@@ -272,7 +274,7 @@
   @keyframes ceNudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
   /* ② analyzing : 분석중 */
   .calc-loading .ring{width:54px;height:54px;border-radius:50%;border:4px solid var(--line);
-    border-top-color:var(--accent);animation:calcspin .8s linear infinite}
+    border-top-color:var(--calc-accent);animation:calcspin 1.1s linear infinite}
   @keyframes calcspin{to{transform:rotate(360deg)}}
   @keyframes calcpulse{0%,100%{opacity:1}50%{opacity:.32}}
   .calc-loading .lt{font-size:15.5px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
@@ -284,14 +286,14 @@
   .calc-out:not(.staged) .out-grid,.calc-out:not(.staged) .assump{display:none}
   /* ③ staged : 결과 하나씩 등장 */
   .calc-out.staged .obox{opacity:0;transform:translateY(14px) scale(.98);
-    transition:opacity .5s cubic-bezier(.2,.7,.2,1),transform .5s cubic-bezier(.2,.7,.2,1)}
+    transition:opacity .72s cubic-bezier(.2,.7,.2,1),transform .72s cubic-bezier(.2,.7,.2,1)}
   .calc-out.staged .obox.pop{opacity:1;transform:none}
   .calc-out.staged .assump{opacity:0;transition:opacity .5s ease}
   .calc-out.staged .assump.pop{opacity:1}
   /* reduced-motion: 이동·회전은 빼되 순차 opacity 페이드는 유지(통째로 즉시 붕괴 방지) */
   @media(prefers-reduced-motion:reduce){
-    .calc-out.staged .obox{transform:none!important;transition:opacity .4s ease!important}
-    .calc-out.staged .assump{transition:opacity .4s ease!important}
+    .calc-out.staged .obox{transform:none!important;transition:opacity .6s ease!important}
+    .calc-out.staged .assump{transition:opacity .6s ease!important}
     .calc-q .qmark,.calc-q.nudge{animation:none!important}
     .calc-loading .ring{animation:calcpulse 1.1s ease-in-out infinite!important}}
 
@@ -1063,7 +1065,7 @@
         <div class="calc-q" id="calcQ">
           <div class="qmark">?</div>
           <div class="qt">아직 계산 전이에요.<br>왼쪽 값 4가지를 맞추고 <b>계산하기</b>를 누르면</div>
-          <div class="qhint">우리 병원 누수를 <b style="color:var(--accent)">하나씩</b> 분석해 보여드립니다</div>
+          <div class="qhint">우리 병원 누수를 <b style="color:var(--calc-accent)">하나씩</b> 분석해 보여드립니다</div>
         </div>
         <div class="calc-loading" id="calcLoading">
           <div class="ring"></div>
@@ -1534,7 +1536,7 @@ function compute(){
 function countHero(target){
   const el=R('oLoss');
   if(reduceMo||!window.requestAnimationFrame){el.textContent=eok(target);return;}
-  var start=null,dur=680;
+  var start=null,dur=1300;
   function frame(ts){
     if(start===null)start=ts;
     var p=Math.min(1,(ts-start)/dur), e=1-Math.pow(1-p,3);
@@ -1559,24 +1561,24 @@ function run(){
   if(assumpEl) assumpEl.classList.remove('pop');
   runMain.textContent='🔁 다시 계산하기';
 
-  // ① 분석중 상태 — 약 2초, 분석 문구가 순서대로 바뀌며 "지금 계산 중"이 느껴지게
+  // ① 분석중 상태 — 약 4초, 분석 문구가 순서대로 바뀌며 "지금 계산 중"이 느껴지게
   calcOut.classList.remove('idle','staged');
   calcOut.classList.add('analyzing');
   const LS=['우리 차트 패턴 읽는 중…','구환 도래 시점 계산 중…','휴면·미착수 구환 추리는 중…','한 달 누수 추정 중…'];
   let si=0; if(calcLs) calcLs.textContent=LS[0];
-  // 분석 문구 회전 — reduced-motion에서도 유지(텍스트 전환은 전정계 자극이 아님), 살짝 느리게
-  const lsIv=reduceMo?720:520;
+  // 분석 문구 회전 — 4문구가 4초 로딩 동안 한 번씩 읽히게 약 1초 간격(reduced-motion도 동일)
+  const lsIv=reduceMo?950:950;
   lsTimer=setInterval(function(){ si=(si+1)%LS.length; if(calcLs) calcLs.textContent=LS[si]; }, lsIv);
 
-  // ② 분석 끝(약 2초, reduced-motion도 최소 0.9초는 "분석 중"을 보여줌) → 결과를 한 칸씩, 읽을 틈을 두고 등장
-  const wait=reduceMo?900:2000;
+  // ② 분석 끝(약 4초, reduced-motion도 넉넉히 "분석 중"을 보여줌) → 결과를 한 칸씩, 사람이 읽을 만큼 천천히 등장
+  const wait=reduceMo?3600:4000;
   revealTimers.push(setTimeout(function(){
     if(lsTimer){clearInterval(lsTimer);lsTimer=null;}
     calcOut.classList.remove('analyzing');
     calcOut.classList.add('staged');
-    // 칸과 칸 사이 간격 — 하나씩 눈에 들어오게. reduced-motion도 0으로 붕괴시키지 않음
-    const step=reduceMo?320:680;
-    const base=reduceMo?280:560; // 로딩이 사라진 뒤 첫 칸이 한 박자 뒤 등장(우르르 방지)
+    // 칸과 칸 사이 간격 — 실제로 그 칸을 읽을 시간(사람 읽기 속도)만큼 천천히. reduced-motion도 0으로 붕괴시키지 않음
+    const step=reduceMo?1350:1500;
+    const base=reduceMo?650:750; // 로딩이 사라진 뒤 첫 칸이 한 박자 뒤 등장(우르르 방지)
     // base(≥280ms) 뒤 첫 칸 등장 — staged의 opacity:0 초기상태가 먼저 그려질 시간이 충분(rAF 불필요·숨김탭에서도 동작)
     oboxes.forEach(function(b,i){
       revealTimers.push(setTimeout(function(){
