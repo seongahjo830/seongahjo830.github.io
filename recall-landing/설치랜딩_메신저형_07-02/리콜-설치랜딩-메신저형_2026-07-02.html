@@ -955,10 +955,8 @@
   .tag-doc{color:var(--accent);background:var(--accent-soft)}
   .tag-mgr{color:var(--teal-deep);background:var(--teal-soft)}
   .tag-desk{color:#9A5B08;background:#FBEBCF}
-  @media (prefers-reduced-motion:reduce){
-    .rv-marq{overflow-x:auto;-webkit-mask:none;mask:none}
-    .rv-row{animation:none!important;transform:none!important}
-  }
+  /* 자동 흐름은 항상 켜둠 — 손으로 드래그 스크롤하는 방식은 쓰지 않는다(요청).
+     rv-marq는 스크롤 컨테이너가 아니라 마스크만 씌운 오버플로 hidden 박스. */
   @media (max-width:560px){.rv-card{flex-basis:290px;width:290px}}
 </style>
 <section id="reviews">
@@ -1616,16 +1614,20 @@ function installClick(e){
 (function(){
   var marq=document.querySelector('.rv-marq'); if(!marq) return;
   var rows=[].slice.call(marq.querySelectorAll('.rv-row'));
-  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  if(reduce||!rows.length) return;               // 모션 최소화 사용자는 CSS로 수동 스크롤
-  var BASE=[-34,30];                              // px/초 (a열 왼쪽 · b열 오른쪽)
+  if(!rows.length) return;
+  // 자동 흐름은 항상 켠다(모션 최소화여도 손 드래그 스크롤은 쓰지 않음 — 요청).
+  var BASE=[-42,36];                              // px/초 (a열 왼쪽 · b열 오른쪽) — 느긋하되 확실히 흐름
   var S=rows.map(function(row,i){
     var cards=[].slice.call(row.querySelectorAll('.rv-card'));
     var half=cards.length/2;
     // 원본→복제 첫 카드까지의 실측 간격 = 한 세트 폭(gap 정산오차 0, 점프 없음)
     var setW=cards[half].offsetLeft-cards[0].offsetLeft;
+    // 카드 피치(카드폭+gap) — 아래줄을 반 칸 어긋나게(벽돌쌓기) 만드는 위상 오프셋
+    var pitch=cards.length>1?(cards[1].offsetLeft-cards[0].offsetLeft):setW;
     var base=BASE[i]||-30;
-    var s={row:row,setW:setW,base:base,cur:base,target:base,x:base<0?0:-setW};
+    var phase=(i===1)?pitch*0.5:0;                // b열만 반 칸 어긋남
+    var x0=base<0?0:-setW;
+    var s={row:row,setW:setW,base:base,cur:base,target:base,x:x0+phase};
     cards.forEach(function(card){
       card.addEventListener('mouseenter',function(){ s.target=0; card.classList.add('rv-hot'); });
       card.addEventListener('mouseleave',function(){ s.target=s.base; card.classList.remove('rv-hot'); });
