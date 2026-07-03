@@ -928,8 +928,14 @@
             mask:linear-gradient(90deg,transparent 0,#000 13%,#000 87%,transparent 100%);
     scrollbar-width:none;-ms-overflow-style:none}
   .rv-marq::-webkit-scrollbar{display:none;height:0;width:0}
-  .rv-row{display:flex;gap:20px;width:max-content;will-change:transform;transform:translateZ(0)}
+  /* 흐름은 CSS 애니메이션이 구동(rAF 억제·백그라운드·reduce-motion 무관하게 항상 흐름).
+     --x0/--x1/--dur 은 JS가 실측 세트폭으로 채움 → 이음새 0. */
+  @keyframes rvflow{from{transform:translateX(var(--x0,0px))}to{transform:translateX(var(--x1,-50%))}}
+  .rv-row{display:flex;gap:20px;width:max-content;will-change:transform;
+    animation:rvflow var(--dur,55s) linear infinite}
   .rv-row.b{margin-top:20px}
+  /* 커서가 리뷰 영역에 닿으면 흐름 정지(그 카드는 아래 :hover 로 스르르 확대) */
+  .rv-marq:hover .rv-row{animation-play-state:paused}
   .rv-card{flex:0 0 352px;width:352px;box-sizing:border-box;overflow:hidden;
     background:var(--card);border:1.5px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
     padding:30px 24px 18px;display:flex;flex-direction:column;gap:15px;position:relative;
@@ -939,10 +945,11 @@
   .rv-card::after{content:"";position:absolute;top:0;left:0;right:0;height:4px;
     background:var(--accent);opacity:.85;z-index:2}
   .rv-card.mgr::after{background:var(--teal)} .rv-card.desk::after{background:#C77E12}
-  .rv-card.rv-hot{transform:scale(1.055);box-shadow:0 20px 44px -14px rgba(20,40,80,.30);
-    border-color:var(--accent);z-index:3}
-  .rv-card.mgr.rv-hot{border-color:var(--teal)} .rv-card.desk.rv-hot{border-color:#C77E12}
-  .rv-card.rv-hot::after{opacity:1;height:5px}
+  .rv-card.rv-hot,.rv-card:hover{transform:scale(1.06);box-shadow:0 22px 46px -14px rgba(20,40,80,.32);
+    border-color:var(--accent);z-index:5}
+  .rv-card.mgr.rv-hot,.rv-card.mgr:hover{border-color:var(--teal)}
+  .rv-card.desk.rv-hot,.rv-card.desk:hover{border-color:#C77E12}
+  .rv-card.rv-hot::after,.rv-card:hover::after{opacity:1;height:5px}
   /* 여는 인용부호 — 좌상단, 은은하게(떠다니는 느낌 제거) */
   .rv-card::before{content:"\201C";position:absolute;top:16px;left:18px;
     font-family:Georgia,serif;font-size:52px;line-height:1;color:var(--accent-soft);font-weight:800;z-index:0;opacity:.9}
@@ -1621,47 +1628,33 @@ function installClick(e){
 <!--recall-fab-->
 <a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기" style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);font-family:Pretendard,-apple-system,BlinkMacSystemFont,Segoe UI,Malgun Gothic,sans-serif;transition:transform .12s ease;opacity:.94;"><span style="font-size:15px">📋</span><span>후보 목록</span></a>
 <style>#recallFab:hover{transform:translateY(-2px);opacity:1}@media print{#recallFab{display:none!important}}</style>
-<!-- 후기 마퀴: 완전 무한 흐름 + 커서 근접 시 부드러운 감속 정지 + 해당 카드 스르르 확대 -->
+<!-- 후기 마퀴: CSS 애니메이션이 흐름 구동(항상 흐름) · JS는 세트폭 실측→CSS변수만 채움(이음새 0)
+     커서 올리면 CSS로 흐름 정지 + 그 카드 :hover 로 스르르 확대. rAF 미사용=백그라운드/모션최소화 무관. -->
 <script>
 (function(){
   var marq=document.querySelector('.rv-marq'); if(!marq) return;
   var rows=[].slice.call(marq.querySelectorAll('.rv-row'));
   if(!rows.length) return;
-  // 자동 흐름은 항상 켠다(모션 최소화여도 손 드래그 스크롤은 쓰지 않음 — 요청).
-  var BASE=[-42,36];                              // px/초 (a열 왼쪽 · b열 오른쪽) — 느긋하되 확실히 흐름
-  var S=rows.map(function(row,i){
-    var cards=[].slice.call(row.querySelectorAll('.rv-card'));
-    var half=cards.length/2;
-    // 원본→복제 첫 카드까지의 실측 간격 = 한 세트 폭(gap 정산오차 0, 점프 없음)
-    var setW=cards[half].offsetLeft-cards[0].offsetLeft;
-    // 카드 피치(카드폭+gap) — 아래줄을 반 칸 어긋나게(벽돌쌓기) 만드는 위상 오프셋
-    var pitch=cards.length>1?(cards[1].offsetLeft-cards[0].offsetLeft):setW;
-    var base=BASE[i]||-30;
-    var phase=(i===1)?pitch*0.5:0;                // b열만 반 칸 어긋남
-    var x0=base<0?0:-setW;
-    var s={row:row,setW:setW,base:base,cur:base,target:base,x:x0+phase};
-    cards.forEach(function(card){
-      card.addEventListener('mouseenter',function(){ s.target=0; card.classList.add('rv-hot'); });
-      card.addEventListener('mouseleave',function(){ s.target=s.base; card.classList.remove('rv-hot'); });
+  var SPEED=[42,34];                               // px/초 (a열 왼쪽·b열 오른쪽) — 느긋 + 서로 달라 컬럼 안 맞음
+  function layout(){
+    rows.forEach(function(row,i){
+      var cards=[].slice.call(row.querySelectorAll('.rv-card'));
+      if(cards.length<2) return;
+      var half=cards.length/2;
+      var setW=cards[half].offsetLeft-cards[0].offsetLeft; // 원본→복제 첫 카드 간격 = 한 세트 폭(gap 오차 0)
+      var pitch=cards[1].offsetLeft-cards[0].offsetLeft;   // 카드 피치(카드폭+gap)
+      var speed=SPEED[i]||38;
+      var dur=(setW/speed).toFixed(2)+'s';
+      var x0,x1;
+      if(i===0){ x0=0; x1=-setW; }                         // 왼쪽으로 흐름
+      else { var off=pitch*0.5; x0=-setW-off; x1=-off; }   // 오른쪽으로 흐름 + 반 칸 어긋남(벽돌쌓기)
+      row.style.setProperty('--x0', x0+'px');
+      row.style.setProperty('--x1', x1+'px');
+      row.style.setProperty('--dur', dur);
     });
-    row.style.transform='translateX('+s.x+'px)';
-    return s;
-  });
-  var last=null;
-  function frame(t){
-    if(last===null) last=t;
-    var dt=Math.min(0.05,(t-last)/1000); last=t;
-    var k=1-Math.pow(0.0025,dt);                  // 속도가 목표로 스르르 수렴(감속·가속 동일 곡선)
-    S.forEach(function(s){
-      s.cur+=(s.target-s.cur)*k;
-      s.x+=s.cur*dt;
-      if(s.x<=-s.setW) s.x+=s.setW;               // 왼쪽 흐름 되감기(무한)
-      else if(s.x>0)   s.x-=s.setW;               // 오른쪽 흐름 되감기(무한)
-      s.row.style.transform='translateX('+s.x+'px)';
-    });
-    requestAnimationFrame(frame);
   }
-  requestAnimationFrame(frame);
+  layout();
+  var rt; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(layout,180); });
 })();
 </script>
 </body>
