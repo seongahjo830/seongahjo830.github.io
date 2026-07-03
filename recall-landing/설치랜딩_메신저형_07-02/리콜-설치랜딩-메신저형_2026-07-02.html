@@ -256,15 +256,24 @@
   .ba-bad .ba-mk{background:var(--red)} .ba-good .ba-mk{background:var(--teal)}
   .ba-q{font-size:13px;line-height:1.55;font-weight:600}
   .ba-bad .ba-q{color:#7a7167} .ba-good .ba-q{color:#2a4640}
-  .ba-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
-  .ba-mid .cat{font-size:12.5px;font-weight:850;color:var(--ink);letter-spacing:-.02em;line-height:1.25}
-  .ba-mid .arw{width:38px;height:38px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;
-    font-size:19px;font-weight:900;box-shadow:0 5px 14px rgba(14,124,107,.34)}
+  /* 가운데 = 그 줄의 '상황(축)' 라벨. 방향성 화살표 제거(방향은 상단 열 헤더가 전달) */
+  .ba-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .ba-mid .cat{font-size:12.5px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.3;
+    background:#fff;border:1.5px solid var(--line);border-radius:11px;padding:8px 12px;box-shadow:var(--shadow-sm)}
+  .ba-mid .cat i{display:block;font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.04em;
+    color:var(--ink-soft);margin-bottom:2px;opacity:.85}
   @media(max-width:720px){
     .ba-head{display:none}
-    .ba-row{grid-template-columns:1fr;gap:7px;padding:9px;background:#faf9f5;border-radius:16px}
-    .ba-mid{flex-direction:row;gap:9px;padding:3px 0}
-    .ba-mid .arw{transform:rotate(90deg);width:30px;height:30px;font-size:15px}
+    .ba-row{grid-template-columns:1fr;gap:8px;padding:11px;background:#faf9f5;border-radius:16px}
+    /* 상황 라벨을 줄 맨 위로 올려 '주제 → 설치 전 → 설치 후'로 자연스럽게 읽히게 */
+    .ba-mid{order:-1;flex-direction:row;justify-content:flex-start;padding:0 2px 2px}
+    .ba-mid .cat{width:100%;text-align:left;background:transparent;border:0;box-shadow:none;padding:0;
+      font-size:13.5px;color:var(--ink)}
+    .ba-mid .cat i{display:inline;margin:0 5px 0 0;font-size:11px;color:var(--teal-deep)}
+    /* 열 헤더가 숨으니 각 칸에 방향 라벨을 직접 표시 */
+    .ba-bad::before,.ba-good::before{display:block;font-size:10.5px;font-weight:800;letter-spacing:.01em;margin-bottom:6px}
+    .ba-bad::before{content:"✕ 설치 전 · 지금";color:#a06a5f}
+    .ba-good::before{content:"✓ AutoRecall 설치 후";color:var(--teal-deep)}
   }
 
   /* ── 페이월(부분 블러 리포트 + CTA) ── */
@@ -538,22 +547,22 @@
       <div class="ba-head"><span class="bh bad">설치 전 · 지금</span><span></span><span class="bh good">AutoRecall 설치 후</span></div>
       <div class="ba-row">
         <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>그냥 넘어감</div><div class="ba-q">“바쁠 땐 눈앞 환자 응대하느라 리콜은 그냥 넘어가고,”</div></div>
-        <div class="ba-mid"><span class="cat">① 바쁠 때</span><span class="arw">→</span></div>
+        <div class="ba-mid"><span class="cat"><i>상황 ①</i>바쁠 때</span></div>
         <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>맨 위에 떠서 안 놓침</div><div class="ba-q">“‘오늘 꼭 해야 하는 전화’가 맨 위에 떠 있어, 바빠도 시기를 안 놓쳐요.”</div></div>
       </div>
       <div class="ba-row">
         <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>누구부터일지 몰라 못 함</div><div class="ba-q">“한가할 땐 걸 시간은 있어도, 누구부터 뭘 보고 걸어야 할지 몰라 못 걸고,”</div></div>
-        <div class="ba-mid"><span class="cat">② 한가할 때</span><span class="arw">→</span></div>
+        <div class="ba-mid"><span class="cat"><i>상황 ②</i>한가할 때</span></div>
         <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>순서대로 걸기만</div><div class="ba-q">“정리된 명단 순서대로 걸기만 하면 돼요. ‘누구부터?’ 고민이 사라졌어요.”</div></div>
       </div>
       <div class="ba-row">
         <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>그 사람 빠지면 멈춤</div><div class="ba-q">“리콜 관리를 체계적으로 해주는 직원이 있어야 굴러가요, 그 사람 빠지면 멈춰요.”</div></div>
-        <div class="ba-mid"><span class="cat">③ 사람 의존</span><span class="arw">→</span></div>
+        <div class="ba-mid"><span class="cat"><i>상황 ③</i>사람 의존</span></div>
         <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>누가 앉아도 똑같이</div><div class="ba-q">“특정 직원 손을 안 타요. 누가 앉아도 오늘 할 리콜이 똑같이 보여요.”</div></div>
       </div>
       <div class="ba-row">
         <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>빠졌는지 몰라 찜찜</div><div class="ba-q">“빠뜨린 게 있는지조차 확인이 안 돼서, 늘 찜찜하고요.”</div></div>
-        <div class="ba-mid"><span class="cat">④ 확인</span><span class="arw">→</span></div>
+        <div class="ba-mid"><span class="cat"><i>상황 ④</i>확인 여부</span></div>
         <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>화면이 알려줌</div><div class="ba-q">“빠뜨렸는지 아닌지 화면이 알려주니, 찜찜함이 없어요.”</div></div>
       </div>
     </div>
@@ -576,27 +585,27 @@
       <div class="ba-head"><span class="bh bad">설치 전 · 지금</span><span></span><span class="bh good">AutoRecall 설치 후</span></div>
       <div class="ba-row">
         <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>며칠 하다 원점</div><div class="ba-q">“‘전화 좀 돌리세요’ 해서 며칠 하다가, 다른 일 터지면 또 딴 걸 시키고… 루틴이 되기 전엔 계속 원점이에요.”</div></div>
-        <div class="ba-mid"><span class="cat">① 시켜서</span><span class="arw">→</span></div>
+        <div class="ba-mid"><span class="cat">① 시켜서</span></div>
         <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>매일 알아서 루틴</div><div class="ba-q">“매일 걸 리스트가 알아서 떠요. 매번 시키지 않아도 그냥 루틴으로 돌아가요.”</div></div>
       </div>
       <div class="ba-row">
         <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>확인 안 돼 착각</div><div class="ba-q">“물어보면 ‘당연히 다 걸고 있어요’—근데 진짜 그런지 확인이 안 되니, 잘 되는 줄로만 알아요.”</div></div>
-        <div class="ba-mid"><span class="cat">② 잘하는 줄</span><span class="arw">→</span></div>
+        <div class="ba-mid"><span class="cat">② 잘하는 줄</span></div>
         <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>숫자로 사실 확인</div><div class="ba-q">“누가 며칠에 몇 통, 결과가 뭔지 숫자로 딱 떠요. ‘잘 되는 줄 알았다’가 아니라 사실로 봐요.”</div></div>
       </div>
       <div class="ba-row">
         <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>연결됐는지 모름</div><div class="ba-q">“‘전화했어요’ 하는데, 실제로 연결은 됐는지 하나하나 확인할 방법이 없어요.”</div></div>
-        <div class="ba-mid"><span class="cat">③ 통화 확인</span><span class="arw">→</span></div>
+        <div class="ba-mid"><span class="cat">③ 통화 확인</span></div>
         <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>상태가 그대로 남음</div><div class="ba-q">“실제 통화 여부·상태가 리스트에 그대로 남아요. ‘했다’는 말에 기대지 않아도 돼요.”</div></div>
       </div>
       <div class="ba-row">
         <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>보고서가 또 일</div><div class="ba-q">“결과를 남기라 하면 따로 보고서를 써야 해서, 그게 또 하나의 일이 돼버리고요.”</div></div>
-        <div class="ba-mid"><span class="cat">④ 보고</span><span class="arw">→</span></div>
+        <div class="ba-mid"><span class="cat">④ 보고</span></div>
         <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>자동으로 생성</div><div class="ba-q">“결과 보고서가 자동으로 만들어져서, 따로 쓰라고 할 필요가 없어요.”</div></div>
       </div>
       <div class="ba-row">
         <div class="ba-cell ba-bad"><div class="ba-punch"><span class="ba-mk">✕</span>챙길 게 많아 무리</div><div class="ba-q">“대기업이 리콜 관리하듯 꼼꼼히 하면 좋은데, 챙길 게 너무 많아 바쁜 치과에선 현실적으로 무리예요.”</div></div>
-        <div class="ba-mid"><span class="cat">⑤ 대기업처럼</span><span class="arw">→</span></div>
+        <div class="ba-mid"><span class="cat">⑤ 대기업처럼</span></div>
         <div class="ba-cell ba-good"><div class="ba-punch"><span class="ba-mk">✓</span>알아서 굴러감</div><div class="ba-q">“모니터링·통계·리스트 갱신을 프로그램이 대신해, 대기업식 관리가 ‘알아서 굴러가는’ 일이 돼요.”</div></div>
       </div>
     </div>
