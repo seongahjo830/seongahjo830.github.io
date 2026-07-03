@@ -129,7 +129,7 @@
 
   /* ── STEP reviews ── */
   .rev-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:38px}
-  @media(max-width:760px){.rev-grid{grid-template-columns:1fr}}
+  @media(max-width:900px){.rev-grid{grid-template-columns:1fr;gap:16px}}
   .revcol{border-radius:var(--radius);padding:clamp(20px,3vw,28px);border:1.6px solid var(--line)}
   .revcol.good{background:var(--teal-soft);border-color:#BEE3DB}
   .revcol.bad{background:#F5F3EE;border-color:#E2DDD1}
@@ -217,6 +217,24 @@
   .tip .tipbox b{color:#9FE3C6}
   .tip .tipbox .src{display:block;margin-top:8px;color:#93A3BB;font-size:11px}
   .tip .tipbox::after{content:'';position:absolute;top:100%;left:20px;border:7px solid transparent;border-top-color:var(--navy)}
+  /* STEP3 모바일 반응형 — 카드 여백 축소 + 툴팁을 아래로 펼치는 아코디언(화면 밖 잘림·터치 문제 해결) */
+  @media(max-width:640px){
+    .rev-grid{margin-top:26px}
+    .revcol{padding:18px 15px}
+    .revcol .ct{font-size:16px;margin-bottom:13px}
+    .rcard{padding:14px 15px;margin-bottom:11px}
+    .rcard p{font-size:14.5px}
+    .rc-top .rc-tag{font-size:10.5px;padding:2px 8px}
+    .rev-stat{gap:10px 16px;padding:14px}
+    .rev-stat .rs{flex:1 1 42%}
+    .tip{display:block;width:100%;background:transparent;border:0;padding:0;border-radius:0;
+      color:var(--accent);text-decoration:underline;text-underline-offset:3px;margin-top:10px}
+    .tip .tipbox{display:block;position:static;width:100%;box-sizing:border-box;left:auto;bottom:auto;margin-top:0;
+      transform:none;text-decoration:none;visibility:visible;opacity:0;max-height:0;overflow:hidden;
+      padding:0 14px;transition:max-height .28s ease,opacity .2s,padding .28s ease}
+    .tip:hover .tipbox,.tip:focus .tipbox,.tip:focus-within .tipbox{opacity:1;max-height:1200px;padding:12px 14px;margin-top:8px}
+    .tip .tipbox::after{display:none}
+  }
 
   /* ── Before → After 페어(직원·실장) ── */
   .ba{margin-top:34px;display:flex;flex-direction:column;gap:13px}
