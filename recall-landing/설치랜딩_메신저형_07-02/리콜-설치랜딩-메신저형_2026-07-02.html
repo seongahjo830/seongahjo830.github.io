@@ -238,15 +238,18 @@
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;
     background:var(--accent);border:4px solid #fff;box-shadow:0 2px 8px rgba(29,78,216,.4);cursor:pointer}
   input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);border:4px solid #fff;cursor:pointer}
-  .calc-out{background:var(--navy);color:#fff;border-radius:var(--radius);padding:clamp(22px,3.5vw,30px);box-shadow:var(--shadow)}
+  /* 결과 패널 — 입력 카드·paywall과 같은 라이트 카드 언어로 통일(다크 navy 제거) */
+  .calc-out{background:var(--card);color:var(--ink);border:1.6px solid var(--line);border-radius:var(--radius);padding:clamp(22px,3.5vw,30px);box-shadow:var(--shadow-sm)}
   .out-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-  .obox{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:16px 17px}
-  .obox.hero-loss{grid-column:1/-1;background:linear-gradient(135deg,rgba(192,57,43,.28),rgba(240,102,59,.18));border-color:rgba(255,138,91,.35)}
-  .obox .ol{color:#B9C6DB;font-size:13px;font-weight:600;margin-bottom:6px}
-  .obox .ov{font-size:clamp(22px,4.4vw,32px);font-weight:860;letter-spacing:-.03em;line-height:1.05}
-  .obox.hero-loss .ov{color:#FF9B6E;font-size:clamp(30px,7vw,46px)}
-  .obox .os{color:#93A3BB;font-size:12px;margin-top:5px}
-  .assump{font-size:12px;color:#8497B0;line-height:1.6;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12)}
+  .obox{background:var(--bg-soft);border:1px solid var(--line);border-radius:13px;padding:16px 17px}
+  .obox.hero-loss{grid-column:1/-1;background:linear-gradient(135deg,#FFF1EA,#FFE3D3);border-color:#F4C4AB}
+  .obox .ol{color:var(--ink-soft);font-size:13px;font-weight:640;margin-bottom:6px}
+  .obox .ov{font-size:clamp(22px,4.4vw,32px);font-weight:860;letter-spacing:-.03em;line-height:1.05;color:var(--ink)}
+  .obox.hero-loss .ol{color:#B4471F}
+  .obox.hero-loss .ov{color:#C0392B;font-size:clamp(30px,7vw,46px)}
+  .obox.hero-loss .os{color:#B4471F}
+  .obox .os{color:var(--ink-soft);font-size:12px;margin-top:5px}
+  .assump{font-size:12px;color:var(--ink-soft);line-height:1.6;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
   /* 계산 실행 버튼 — 페이지 공통 .cta 톤과 통일(따로 튀지 않게) */
   .calc-run{margin-top:30px;width:100%;border:0;cursor:pointer;font:inherit;text-align:center;
     background:var(--accent);color:#fff;border-radius:14px;padding:17px 20px;
@@ -260,19 +263,20 @@
     min-height:300px;gap:14px;padding:14px}
   /* ① idle : 물음표 플레이스홀더 */
   .calc-q .qmark{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;font-size:40px;font-weight:900;
-    color:#9CBBFF;background:rgba(143,176,255,.1);border:2px dashed rgba(143,176,255,.42);animation:qFloat 3s ease-in-out infinite}
+    color:var(--accent);background:var(--accent-soft);border:2px dashed rgba(29,78,216,.34);animation:qFloat 3s ease-in-out infinite}
   @keyframes qFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-  .calc-q .qt{font-size:14.5px;line-height:1.65;color:#C7D3E6;font-weight:600;max-width:22em}
-  .calc-q .qt b{color:#fff}
-  .calc-q .qhint{font-size:12px;color:#7E90AC;font-weight:600}
+  .calc-q .qt{font-size:14.5px;line-height:1.65;color:var(--ink);font-weight:600;max-width:22em}
+  .calc-q .qt b{color:var(--ink)}
+  .calc-q .qhint{font-size:12px;color:var(--ink-soft);font-weight:600}
   .calc-q.nudge{animation:ceNudge .5s ease}
   @keyframes ceNudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
   /* ② analyzing : 분석중 */
-  .calc-loading .ring{width:54px;height:54px;border-radius:50%;border:4px solid rgba(255,255,255,.14);
-    border-top-color:#7FE6C0;animation:calcspin .8s linear infinite}
+  .calc-loading .ring{width:54px;height:54px;border-radius:50%;border:4px solid var(--line);
+    border-top-color:var(--accent);animation:calcspin .8s linear infinite}
   @keyframes calcspin{to{transform:rotate(360deg)}}
-  .calc-loading .lt{font-size:15.5px;font-weight:800;color:#EAF1FE;letter-spacing:-.01em}
-  .calc-loading .ls{font-size:12.5px;color:#93A3BB;font-weight:600;min-height:1.3em;transition:opacity .2s}
+  @keyframes calcpulse{0%,100%{opacity:1}50%{opacity:.32}}
+  .calc-loading .lt{font-size:15.5px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+  .calc-loading .ls{font-size:12.5px;color:var(--ink-soft);font-weight:600;min-height:1.3em;transition:opacity .2s}
   /* 상태별 노출 */
   .calc-out .calc-q,.calc-out .calc-loading{display:none}
   .calc-out.idle .calc-q{display:flex}
@@ -284,9 +288,12 @@
   .calc-out.staged .obox.pop{opacity:1;transform:none}
   .calc-out.staged .assump{opacity:0;transition:opacity .5s ease}
   .calc-out.staged .assump.pop{opacity:1}
+  /* reduced-motion: 이동·회전은 빼되 순차 opacity 페이드는 유지(통째로 즉시 붕괴 방지) */
   @media(prefers-reduced-motion:reduce){
-    .calc-out.staged .obox,.calc-out.staged .assump{opacity:1!important;transform:none!important;transition:none!important}
-    .calc-q .qmark,.calc-loading .ring,.calc-q.nudge{animation:none!important}}
+    .calc-out.staged .obox{transform:none!important;transition:opacity .4s ease!important}
+    .calc-out.staged .assump{transition:opacity .4s ease!important}
+    .calc-q .qmark,.calc-q.nudge{animation:none!important}
+    .calc-loading .ring{animation:calcpulse 1.1s ease-in-out infinite!important}}
 
   .installbox{margin-top:40px;background:linear-gradient(135deg,#EAF1FE,#E4F4F0);border:1.6px solid #CBDDF6;
     border-radius:var(--radius);padding:clamp(28px,5vw,44px);text-align:center}
@@ -1045,11 +1052,11 @@
 
       <!-- outputs -->
       <div class="calc-out idle" id="calcOut">
-        <div style="font-weight:800;font-size:15px;color:#B9C6DB;margin-bottom:14px">💸 우리 치과 대략 누수 (간이 추정)</div>
+        <div style="font-weight:800;font-size:15px;color:var(--ink-soft);margin-bottom:14px">💸 우리 치과 대략 누수 (간이 추정)</div>
         <div class="calc-q" id="calcQ">
           <div class="qmark">?</div>
           <div class="qt">아직 계산 전이에요.<br>왼쪽 값 4가지를 맞추고 <b>계산하기</b>를 누르면</div>
-          <div class="qhint">우리 병원 누수를 <b style="color:#C7D3E6">하나씩</b> 분석해 보여드립니다</div>
+          <div class="qhint">우리 병원 누수를 <b style="color:var(--accent)">하나씩</b> 분석해 보여드립니다</div>
         </div>
         <div class="calc-loading" id="calcLoading">
           <div class="ring"></div>
@@ -1438,7 +1445,7 @@
 
   /* ---- 높이 관리(슬라이드마다 높이가 달라 컨테이너 높이를 활성 슬라이드에 맞춤) ---- */
   function activeSlide(){ return slides.find(function(s){return s.classList.contains('active');})||slides[0]; }
-  function setH(){ rot.style.height=activeSlide().offsetHeight+'px'; }
+  function setH(){ rot.style.height=Math.max.apply(null,slides.map(function(s){return s.offsetHeight;}))+'px'; }
   window.addEventListener('resize',function(){clearTimeout(rot._rt);rot._rt=setTimeout(setH,180);});
 
   /* ---- 순환 ---- */
@@ -1550,22 +1557,27 @@ function run(){
   calcOut.classList.add('analyzing');
   const LS=['우리 차트 패턴 읽는 중…','구환 도래 시점 계산 중…','휴면·미착수 구환 추리는 중…','한 달 누수 추정 중…'];
   let si=0; if(calcLs) calcLs.textContent=LS[0];
-  if(!reduceMo){ lsTimer=setInterval(function(){ si++; if(calcLs&&LS[si]) calcLs.textContent=LS[si]; }, 500); }
+  // 분석 문구 회전 — reduced-motion에서도 유지(텍스트 전환은 전정계 자극이 아님), 살짝 느리게
+  const lsIv=reduceMo?720:520;
+  lsTimer=setInterval(function(){ si=(si+1)%LS.length; if(calcLs) calcLs.textContent=LS[si]; }, lsIv);
 
-  // ② 분석 끝(약 2초) → 결과를 한 칸씩, 읽을 틈을 두고 등장
-  const wait=reduceMo?0:2000;
+  // ② 분석 끝(약 2초, reduced-motion도 최소 0.9초는 "분석 중"을 보여줌) → 결과를 한 칸씩, 읽을 틈을 두고 등장
+  const wait=reduceMo?900:2000;
   revealTimers.push(setTimeout(function(){
     if(lsTimer){clearInterval(lsTimer);lsTimer=null;}
     calcOut.classList.remove('analyzing');
     calcOut.classList.add('staged');
-    const step=reduceMo?0:620; // 칸과 칸 사이 간격 — 하나씩 눈에 들어오게
+    // 칸과 칸 사이 간격 — 하나씩 눈에 들어오게. reduced-motion도 0으로 붕괴시키지 않음
+    const step=reduceMo?320:680;
+    const base=reduceMo?280:560; // 로딩이 사라진 뒤 첫 칸이 한 박자 뒤 등장(우르르 방지)
+    // base(≥280ms) 뒤 첫 칸 등장 — staged의 opacity:0 초기상태가 먼저 그려질 시간이 충분(rAF 불필요·숨김탭에서도 동작)
     oboxes.forEach(function(b,i){
       revealTimers.push(setTimeout(function(){
         b.classList.add('pop');
         if(b.classList.contains('hero-loss')) countHero(c.loss);
-      }, i*step));
+      }, base + i*step));
     });
-    if(assumpEl) revealTimers.push(setTimeout(function(){assumpEl.classList.add('pop');}, oboxes.length*step));
+    if(assumpEl) revealTimers.push(setTimeout(function(){assumpEl.classList.add('pop');}, base + oboxes.length*step));
   }, wait));
 }
 
