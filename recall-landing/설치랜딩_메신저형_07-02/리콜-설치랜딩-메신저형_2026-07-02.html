@@ -1079,11 +1079,24 @@
           <div class="obox"><div class="ol">이미 잠든 구환(누적)</div><div class="ov" id="oDorm">810명</div><div class="os" id="oDormRec">지금 깨우면 1,701만원 회수 가능</div></div>
         </div>
         <p class="assump">가정 — 구환 1인 연가치 = 월매출×12×(1−신환비율)÷구환수 · 이번 달 리콜 대상 = 구환수÷12 · 한 달 손실 = 대상×연가치×월감쇠(1.7%) · 잠든 구환 = 구환수×(12%+연차×3%). <b>모두 벤치마크 가정값이며, 의료·매출 효과를 보장하지 않습니다.</b></p>
+        <a class="calc-next" href="#" onclick="window.__s1go&&window.__s1go(event)">여기까지는 가정값 — <b>진짜 숫자</b>는 우리 차트에 있습니다 <span class="cn-dn">↓</span></a>
       </div>
     </div>
 
     <div class="note-inline center">
       🔒 <b>이 간이 추정은 가정값입니다.</b> 설치하면 우리 덴트웹 차트를 <b>읽기만</b> 해서(저장·전송 없음) 위 숫자를 <b>실제 환자 이름</b>으로 바꿔 보여드립니다.
+    </div>
+
+    <!-- 계산기 → 실제 명단(S1) 스토리 브릿지 (2026-07-04) -->
+    <div class="s1bridge" id="s1bridge" onclick="window.__s1go&&window.__s1go(event)" title="아래에서 계속">
+      <div class="sb-steps">
+        <span class="sb-step done"><i>✓</i>우리 병원 간이 진단</span>
+        <span class="sb-sep">›</span>
+        <span class="sb-step now"><i>2</i>실제 명단 확인 · 설치 3분</span>
+      </div>
+      <div class="sb-copy">여기까지는 <b>계산기</b>였습니다.<br>지금부터는 <b>우리 차트</b>가 답합니다.</div>
+      <div class="sb-line"></div>
+      <div class="sb-arrow">↓</div>
     </div>
 
 
@@ -1287,6 +1300,44 @@
   @keyframes punchGlow{0%,100%{box-shadow:0 10px 24px rgba(14,124,107,.28)}50%{box-shadow:0 16px 38px rgba(14,124,107,.55)}}
   #s1x .opens.in .punch .dn{animation:dnBob 1.3s ease-in-out infinite}
   @keyframes dnBob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+  /* ══ 계산기→S1 브릿지 장치 (2026-07-04) ══ */
+  .calc-next{display:none;margin-top:18px;text-decoration:none;cursor:pointer;
+    align-items:center;justify-content:center;gap:8px;text-align:center;
+    background:var(--teal);color:#fff;font-weight:820;font-size:15.5px;line-height:1.4;
+    padding:15px 18px;border-radius:13px;box-shadow:0 8px 20px rgba(14,124,107,.26);transition:background .15s}
+  .calc-next b{color:#FFE39C}
+  .calc-next:hover{background:var(--teal-deep)}
+  .calc-out.staged .calc-next{display:flex;animation:cnIn .6s cubic-bezier(.2,.7,.2,1) 2.4s both,cnPulse 2s ease-in-out 3.4s infinite}
+  .calc-next .cn-dn{display:inline-block;animation:sbBob 1.2s ease-in-out infinite}
+  @keyframes cnIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes cnPulse{0%,100%{box-shadow:0 8px 20px rgba(14,124,107,.26)}50%{box-shadow:0 14px 32px rgba(14,124,107,.5)}}
+  .s1bridge{max-width:560px;margin:46px auto 0;text-align:center;cursor:pointer}
+  .s1bridge .sb-steps{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+  .s1bridge .sb-step{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;
+    border-radius:99px;padding:7px 13px;background:#fff;border:1.4px solid var(--line);color:var(--ink-soft)}
+  .s1bridge .sb-step i{font-style:normal;width:17px;height:17px;border-radius:50%;display:grid;place-items:center;
+    font-size:10px;font-weight:900;background:var(--line);color:#fff}
+  .s1bridge .sb-step.done{color:var(--teal-deep);border-color:#BEE3DB;background:var(--teal-soft)}
+  .s1bridge .sb-step.done i{background:var(--teal)}
+  .s1bridge .sb-step.now{color:#fff;background:var(--teal);border-color:var(--teal);box-shadow:0 6px 16px rgba(14,124,107,.3)}
+  .s1bridge .sb-step.now i{background:rgba(255,255,255,.25)}
+  .s1bridge .sb-sep{color:#C9C3B6;font-weight:900}
+  .s1bridge .sb-copy{margin-top:16px;font-size:clamp(15px,3.2vw,18px);font-weight:840;color:var(--ink);letter-spacing:-.02em;line-height:1.45}
+  .s1bridge .sb-copy b{color:var(--teal-deep)}
+  .s1bridge .sb-line{position:relative;width:2px;height:44px;margin:14px auto 0;
+    background:linear-gradient(180deg,var(--teal),rgba(14,124,107,.15));border-radius:2px;transform-origin:top}
+  .s1bridge .sb-line::after{content:"";position:absolute;left:50%;bottom:-4px;width:9px;height:9px;border-radius:50%;
+    background:var(--teal);transform:translateX(-50%);box-shadow:0 0 0 4px rgba(14,124,107,.15)}
+  .s1bridge .sb-arrow{margin-top:7px;font-size:19px;color:var(--teal);font-weight:900;animation:sbBob 1.3s ease-in-out infinite}
+  @keyframes sbBob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+  .s1bridge:not(.in) .sb-step,.s1bridge:not(.in) .sb-copy,.s1bridge:not(.in) .sb-arrow{opacity:0}
+  .s1bridge:not(.in) .sb-line{transform:scaleY(0)}
+  .s1bridge.in .sb-step:nth-child(1){animation:cnIn .5s cubic-bezier(.2,.7,.2,1) both}
+  .s1bridge.in .sb-step:nth-child(3){animation:cnIn .5s cubic-bezier(.2,.7,.2,1) .18s both}
+  .s1bridge.in .sb-copy{animation:cnIn .6s cubic-bezier(.2,.7,.2,1) .38s both}
+  .s1bridge.in .sb-line{animation:sbGrow .7s cubic-bezier(.2,.7,.2,1) .62s both}
+  .s1bridge.in .sb-arrow{animation:cnIn .5s cubic-bezier(.2,.7,.2,1) 1.05s both,sbBob 1.3s ease-in-out 1.6s infinite}
+  @keyframes sbGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
 </style>
 <!-- ── 맨 위 : 우리가 찾아내는 리콜 대상 (좌우 대비 패널) ── -->
@@ -1479,6 +1530,42 @@
   /* IO 미발동 환경 폴백: 스크롤로 화면 90% 안에 들어오면 발동 */
   var onScroll=function(){ if(s.classList.contains('in')){window.removeEventListener('scroll',onScroll);return;} var vh=window.innerHeight||document.documentElement.clientHeight||800; var r=s.getBoundingClientRect(); if(r.top < vh*0.9){ fire(); window.removeEventListener('scroll',onScroll); } };
   window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+})();
+
+/* ══ 계산기→S1 브릿지 (2026-07-04) ══ */
+window.__s1go=function(e){ if(e){e.preventDefault();}
+  if(window.__smoothTo){window.__smoothTo('#opens',900);}
+  else{var o=document.getElementById('opens'); if(o)o.scrollIntoView({behavior:'smooth'});}
+};
+/* 브릿지 밴드 등장 모션 */
+(function(){
+  var b=document.getElementById('s1bridge'); if(!b)return;
+  var fire=function(){b.classList.add('in')};
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){fire();io.disconnect();}})},{threshold:.35});
+    io.observe(b);
+  } else { fire(); }
+  var vf=function(){var vh=window.innerHeight||document.documentElement.clientHeight||800;
+    var r=b.getBoundingClientRect(); if(r.top<vh*0.92){fire();window.removeEventListener('scroll',vf);}};
+  window.addEventListener('scroll',vf,{passive:true}); vf();
+})();
+/* 개인화 승계: 계산기를 돌렸으면 S1 히어로 숫자 = 방금 계산한 '내 숫자'(블러 해제·선명하게) */
+(function(){
+  function carry(){
+    var out=document.getElementById('calcOut');
+    if(!out||!out.classList.contains('staged'))return;
+    var src=document.getElementById('oLoss'); if(!src)return;
+    var txt=(src.textContent||'').trim(); if(!txt)return;
+    var num=document.querySelector('#s1x .amt .num'); if(!num)return;
+    var bb=num.querySelector('.bb')||num.firstElementChild, won=num.querySelector('.won');
+    if(/만원/.test(txt)){ bb.textContent=txt.replace(/만원[\s\S]*$/,''); if(won)won.textContent='만원 / 월'; }
+    else { bb.textContent=txt; if(won)won.textContent='/ 월'; }
+    bb.classList.remove('bb'); /* 내 숫자는 가리지 않는다 */
+    var tag=document.querySelector('#s1x .amt .tag'); if(tag) tag.textContent='📊 방금 계산하신 값 · 간이 추정';
+    var sub=document.querySelector('#s1x .amt .sub'); if(sub) sub.textContent='설치하면 이 숫자가 실제 환자 이름 명단으로 바뀝니다.';
+    var lab=document.querySelector('#s1x .amt .lab'); if(lab) lab.textContent='우리 병원, 한 달 미루면 사라지는 돈';
+  }
+  window.addEventListener('scroll',carry,{passive:true}); carry();
 })();
 </script>
 </div>
