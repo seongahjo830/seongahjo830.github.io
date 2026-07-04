@@ -1086,45 +1086,402 @@
       🔒 <b>이 간이 추정은 가정값입니다.</b> 설치하면 우리 덴트웹 차트를 <b>읽기만</b> 해서(저장·전송 없음) 위 숫자를 <b>실제 환자 이름</b>으로 바꿔 보여드립니다.
     </div>
 
-    <!-- 리포트 미리보기 · 예시(설치 후 우리 병원 값으로 채워짐) -->
-    <div class="paywall">
-      <div class="pw-head"><span class="ic">📋</span>우리 병원 리콜 리포트 <span style="color:var(--ink-soft);font-weight:700">(미리보기)</span><span class="demo">예시 · 설치 후 우리 병원 값</span></div>
-      <div class="pw-stats">
-        <div class="ps"><span class="pl">이번 달 리콜 대상</span><span class="pv"><span class="pw-skel n"></span> 명</span><span class="pt">설치 후 실제 값</span></div>
-        <div class="ps loss"><span class="pl">회수 가능 합계</span><span class="pv"><span class="pw-skel amt"></span> 만원</span><span class="pt">못 보는 동안 새는 돈</span></div>
-        <div class="ps"><span class="pl">잠든 구환(누적)</span><span class="pv"><span class="pw-skel n"></span> 명</span><span class="pt">설치 후 실제 값</span></div>
-      </div>
-      <div class="pw-rows">
-        <div class="pw-row c-red"><span class="rk">1</span><span class="rsn">고가 상담 후 미착수<span class="tag">임상·고가치</span><small>임플란트 상담 · 11개월 경과</small></span><span class="who">김○○<span class="pw-lock">🔒</span></span><span class="amt">약 320만원</span></div>
-        <div class="pw-row c-teal"><span class="rk">2</span><span class="rsn">정기검진 도래 · 당일 빈 슬롯<span class="tag">슬롯 매칭</span><small>오후 3시 취소 자리 매칭</small></span><span class="who">이○○<span class="pw-lock">🔒</span></span><span class="amt">약 210만원</span></div>
-        <div class="pw-row c-blue"><span class="rk">3</span><span class="rsn">치료 중단 · 미완결<span class="tag">고가치</span><small>신경치료 3회 후 크라운 미착수</small></span><span class="who">박○○<span class="pw-lock">🔒</span></span><span class="amt">약 260만원</span></div>
-        <div class="pw-row c-teal"><span class="rk">4</span><span class="rsn">보철 재점검 도래<span class="tag">이탈 위험</span><small>이탈 위험 높음 · 6개월 경과</small></span><span class="who">최○○<span class="pw-lock">🔒</span></span><span class="amt">약 150만원</span></div>
-        <div class="pw-row c-blue"><span class="rk">5</span><span class="rsn">임플란트 보험 적용 시점<span class="tag">타이밍</span><small>만 65세 도래</small></span><span class="who">정○○<span class="pw-lock">🔒</span></span><span class="amt">약 240만원</span></div>
-      </div>
-      <div class="pw-cta">
-        <div class="pw-ct">이 리포트는 <b>예시</b>입니다. 판단하는 방식(사유·순서)은 지금 보이는 그대로예요. 비어 있는 자리는 <b>우리 병원 차트가 있어야 채워지는 것</b>(실제 이름·금액)뿐입니다.
-          덴트웹을 <b>읽기 전용</b>으로 연결하면, 이 빈칸이 <b>우리 병원 실제 환자와 금액</b>으로 바뀝니다. 상위 5명은 미리, 전체 명단은 연결 직후.</div>
-        <div class="pw-steps">
-          <span class="pstep done"><span class="b">✓</span>우리 병원 값 입력</span>
-          <span class="psep">›</span>
-          <span class="pstep now"><span class="b">2</span>차트 읽기 연결 <b style="font-weight:800">· 마지막</b></span>
-          <span class="psep">›</span>
-          <span class="pstep"><span class="b">3</span>실제 명단 공개</span>
-        </div>
-        <a href="#" class="cta big teal" onclick="installClick(event)">🔓 우리 병원 값으로 채우기 · 무료·읽기만 →</a>
-        <div class="trust">
-          <span class="badge">✅ <b>무료</b>로 시작</span>
-          <span class="badge">🔒 차트는 <b>읽기만</b> · 저장·전송 없음</span>
-          <span class="badge">🖥️ 덴트웹 연동 · <b>3분</b></span>
-        </div>
-      </div>
-    </div>
 
-    <p class="muted center" style="font-size:14px;margin-top:22px">
-      마케팅비를 쓰기 전에, <mark>이미 쌓인 구환부터</mark>. 신환 한 명 데려오는 비용보다, 잠든 구환 한 명 깨우는 게 훨씬 쌉니다.
-    </p>
   </div>
 </section>
+
+
+<!-- ══════════ S1 · 우리가 찾아내는 리콜 대상 → 새는 금액 → 실전 카드 (클로징, 2026-07-04 이식) ══════════ -->
+<div id="s1x">
+<style>
+
+  #s1x{--soft:#5B6360;--acc:#0E7C6B;--acc-soft:#E4F4F0;--acc-deep:#0A5E51;--loss:#C0392B;
+    --tag-ink:#0A5E51;--tag-bg:#E4F4F0;font-size:16px;line-height:1.5;letter-spacing:-.02em}
+  #s1x .reveal,#s1x .reveal.rin{opacity:1;transform:none;transition:none}
+  #s1x .trust{display:block}
+  #s1x section{padding-left:0;padding-right:0}
+
+  #s1x .b{filter:blur(6px);-webkit-user-select:none;user-select:none;white-space:nowrap}
+  #s1x .bb{filter:blur(10px);opacity:.82;-webkit-user-select:none;user-select:none}
+
+  #s1x /* ── 히어로 ── */
+  .hero{display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:clamp(38px,7vw,60px) 26px;text-align:center}
+  #s1x .eye{font-size:13px;font-weight:800;letter-spacing:.1em;color:var(--soft);margin-bottom:16px}
+  #s1x .eye b{color:var(--teal)}
+  #s1x .hero h1{font-size:clamp(24px,6vw,38px);font-weight:850;line-height:1.28;margin-bottom:22px}
+  #s1x .hero h1 .r{color:var(--red)}
+  #s1x .amt{background:var(--card);border:1.6px solid var(--line);border-radius:22px;
+    box-shadow:0 1px 2px rgba(20,20,20,.05),0 18px 44px rgba(20,20,20,.10);
+    padding:24px 30px;max-width:440px;width:100%;margin-bottom:12px}
+  #s1x .amt .lab{font-size:14px;font-weight:700;color:var(--soft);margin-bottom:10px}
+  #s1x .amt .num{font-size:clamp(40px,12vw,66px);font-weight:880;color:var(--loss);line-height:1;
+    letter-spacing:-.04em;display:flex;align-items:baseline;justify-content:center;gap:6px}
+  #s1x .amt .num .won{font-size:.42em;font-weight:800;color:var(--soft);filter:none}
+  #s1x .amt .sub{font-size:12.5px;color:#9AA096;margin-top:12px}
+  #s1x .amt .tag{display:inline-block;font-size:11.5px;font-weight:800;color:var(--acc-deep);background:var(--acc-soft);
+    padding:4px 11px;border-radius:99px;margin-top:9px}
+  #s1x /* CTA — 통일 톤 + 살아있게 움직여 클릭 유도(퍼지는 링 + 위아래 부양 + 화살표 밀림) */
+  .cta{position:relative;margin-top:20px;display:inline-flex;align-items:center;gap:10px;
+    background:var(--acc);color:#fff;font-weight:850;font-size:clamp(17px,4.5vw,21px);
+    padding:19px 34px;border-radius:16px;text-decoration:none;cursor:pointer;
+    box-shadow:0 10px 26px rgba(14,124,107,.30);
+    animation:ctaBob 2.2s ease-in-out infinite;transition:background .16s}
+  #s1x .cta::before{content:"";position:absolute;inset:0;border-radius:16px;pointer-events:none;
+    box-shadow:0 0 0 0 rgba(14,124,107,.5);animation:ctaRing 2.2s ease-out infinite}
+  #s1x .cta:hover{background:var(--acc-deep)}
+  #s1x .cta .arw{animation:arwNudge 1.3s ease-in-out infinite}
+  @keyframes ctaBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @keyframes ctaRing{0%{box-shadow:0 0 0 0 rgba(14,124,107,.45)}70%,100%{box-shadow:0 0 0 18px rgba(14,124,107,0)}}
+  @keyframes arwNudge{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+  #s1x /* reduced-motion 이어도 '클릭 촉구'는 살려둔다 — 이동은 빼고 은은한 링만 */
+  @media(prefers-reduced-motion:reduce){
+    .cta{animation:none}
+    .cta::before{animation:ctaRing 2.4s ease-out infinite}
+    .cta .arw{animation:none}}
+  #s1x .trust{margin-top:14px;font-size:13px;color:var(--soft);font-weight:600}
+  #s1x .trust b{color:var(--ink)}
+  #s1x .scrollhint{margin-top:20px;font-size:20px;color:var(--soft);opacity:.6;animation:bob 2s infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+  #s1x /* ── 3단계 밴드 ── */
+  .steps{background:var(--bg-soft);padding:20px 22px;border-top:1px solid var(--line);text-align:center}
+  #s1x .steps .row{display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
+  #s1x .steps .st{display:inline-flex;align-items:center;gap:9px;background:var(--card);border:1.6px solid var(--line);
+    border-radius:14px;padding:12px 18px;font-weight:800;font-size:15px;box-shadow:0 4px 12px rgba(20,20,20,.05)}
+  #s1x .steps .st .no{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;
+    display:grid;place-items:center;font-weight:850}
+  #s1x .steps .st.last{border-color:var(--teal)} #s1x .steps .st.last .no{background:var(--teal)}
+  #s1x .steps .ar{color:var(--soft);font-weight:900;font-size:18px}
+  #s1x .steps .tm{display:block;margin-top:12px;font-size:13.5px;font-weight:750;color:var(--soft)}
+  #s1x .steps .tm .pop{color:var(--acc-deep);font-weight:880;font-size:16px;letter-spacing:-.01em;
+    background:linear-gradient(180deg,transparent 56%,#BFE6DD 56%);padding:0 3px;border-radius:2px}
+  @media(max-width:560px){#s1x .steps .row{flex-direction:column}#s1x .steps .ar{transform:rotate(90deg)}}
+
+  #s1x /* ── 흐르는 스트립 ── */
+  .flow{padding:clamp(24px,4.5vw,42px) 0 clamp(22px,4vw,38px);border-top:1px solid var(--line);background:var(--bg-soft)}
+  #s1x .marquee{position:relative;overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+  #s1x .strk{display:flex;width:max-content;padding:12px 0;animation:flow 42s linear infinite;will-change:transform}
+  #s1x .marquee:hover .strk{animation-play-state:paused}
+  @keyframes flow{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  #s1x .foot{text-align:center;margin-top:16px;padding:0 22px;font-size:12px;color:#9AA096;line-height:1.6}
+
+  #s1x /* ── 카드(그 페이지 .todaycard/.call 톤) ── */
+  .sc{flex:0 0 296px;width:296px;margin-right:16px;background:var(--card);border:1.6px solid var(--line);
+    border-left:5px solid var(--line);border-radius:16px;padding:18px 18px 16px;
+    box-shadow:0 1px 2px rgba(20,20,20,.05),0 10px 26px rgba(20,20,20,.06);
+    display:flex;flex-direction:column;transition:transform .34s cubic-bezier(.2,.7,.2,1),box-shadow .34s;will-change:transform}
+  #s1x .sc:hover{transform:scale(1.045);box-shadow:0 18px 40px rgba(20,20,20,.15);position:relative;z-index:3}
+  #s1x /* 카드별 색 구분 폐지 — 전부 하나의 차분한 accent로 통일 */
+  .sc.k-red,#s1x .sc.k-blue,#s1x .sc.k-amber,#s1x .sc.k-teal{border-left-color:var(--acc)}
+  #s1x .sc .tp{display:flex;align-items:center;gap:8px;justify-content:space-between}
+  #s1x .sc .cat{font-size:16px;font-weight:850;color:var(--ink);letter-spacing:-.02em}
+  #s1x .sc .tag{font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;white-space:nowrap}
+  #s1x .sc .tag{color:var(--tag-ink);background:var(--tag-bg)}
+  #s1x .sc .big{font-size:19px;font-weight:820;color:var(--ink);margin-top:6px;letter-spacing:-.02em}
+  #s1x .sc .desc{font-size:12px;color:var(--soft);margin-top:6px;line-height:1.5}
+  #s1x /* 환자 행 */
+  .plist{margin-top:13px}
+  #s1x .pr{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--line)}
+  #s1x .pr:last-child{border-bottom:0}
+  #s1x .pr .dot{flex:0 0 7px;width:7px;height:7px;border-radius:50%;background:var(--line)}
+  #s1x .sc .pr .dot{background:var(--acc)}
+  #s1x .pr .who{flex:1;font-size:13px;font-weight:750;min-width:0}
+  #s1x .pr .who small{display:block;color:var(--soft);font-weight:500;font-size:11px;margin-top:1px}
+  #s1x .pr .ago{font-size:11.5px;color:var(--soft);font-weight:600;white-space:nowrap}
+  #s1x .more{font-size:11.5px;color:var(--soft);font-weight:700;text-align:center;padding:9px 0 2px}
+  #s1x /* 금액(조용히) */
+  .amtline{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+  #s1x .amtline .l{font-size:11.5px;color:var(--soft);font-weight:600}
+  #s1x .amtline .v{font-weight:850;font-size:18px;color:var(--ink)}
+  #s1x /* 훅 카드(191) */
+  .sc.hook .huge{text-align:center;margin:6px 0 2px}
+  #s1x .sc.hook .huge .n{font-size:42px;font-weight:880;color:var(--loss);letter-spacing:-.03em}
+  #s1x .sc.hook .huge .u{font-size:18px;font-weight:800;color:var(--ink)}
+  #s1x /* 합계 카드 */
+  .sum{margin-top:4px}
+  #s1x .sum .sr{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+  #s1x .sum .sr .l{color:var(--ink);font-weight:600} #s1x .sum .sr .v{font-weight:800;color:var(--soft)}
+  #s1x .sum .tot{display:flex;justify-content:space-between;align-items:baseline;margin-top:11px;padding-top:11px;border-top:2px solid var(--line)}
+  #s1x .sum .tot .l{font-weight:850;font-size:13.5px} #s1x .sum .tot .v{font-weight:880;font-size:22px;color:var(--loss)}
+  #s1x .permo{text-align:center;font-size:12px;font-weight:750;color:var(--loss);margin-top:11px}
+  #s1x /* 해결 카드 */
+  .sc.final{border-color:#CFE0DA;border-left-color:var(--acc);background:linear-gradient(180deg,#F5F9F7,#fff)}
+  #s1x .sc.final .cat{color:var(--acc-deep)}
+  #s1x .chk{list-style:none;margin:12px 0 0;display:flex;flex-direction:column;gap:8px}
+  #s1x .chk li{display:flex;gap:8px;font-size:12px;line-height:1.45;color:#37433f}
+  #s1x .chk li::before{content:"✓";color:var(--acc);font-weight:900}
+  #s1x .scta{position:relative;margin-top:14px;display:block;text-align:center;background:var(--acc);color:#fff;font-weight:850;font-size:14px;
+    padding:13px;border-radius:12px;text-decoration:none;transition:background .15s;animation:ctaBob 2.2s ease-in-out infinite}
+  #s1x .scta::before{content:"";position:absolute;inset:0;border-radius:12px;pointer-events:none;animation:ctaRing 2.2s ease-out infinite}
+  #s1x .scta:hover{background:var(--acc-deep)}
+  @media(prefers-reduced-motion:reduce){#s1x .scta{animation:none}}
+
+  #s1x /* ── 맨 위 : "우리가 찾아내는 리콜 대상" (좌우 대비 패널 + 진입 모션) ── */
+  .opens{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--acc-soft),var(--bg) 82%);
+    padding:clamp(40px,7vw,60px) 22px clamp(28px,5vw,46px);text-align:center;border-bottom:1px solid var(--line)}
+  #s1x .opens .eb{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:850;letter-spacing:.01em;
+    color:var(--acc-deep);background:#fff;border:1.5px solid #CFE7E1;padding:6px 13px;border-radius:99px;
+    box-shadow:0 3px 10px rgba(14,124,107,.12)}
+  #s1x .opens h2{font-size:clamp(21px,4.8vw,31px);font-weight:880;line-height:1.3;margin:15px 0 8px;letter-spacing:-.025em}
+  #s1x .opens h2 .g{position:relative;z-index:0;color:var(--acc);padding:0 3px}
+  #s1x .opens h2 .g::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:38%;z-index:-1;
+    background:#BFE6DD;border-radius:3px;transform:scaleX(1);transform-origin:left}
+  #s1x .opens .sh{font-size:13.5px;color:var(--soft);font-weight:600;margin:0 auto 26px;max-width:26em;line-height:1.55}
+  #s1x /* 좌우 대비 패널 */
+  .opens .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:740px;margin:0 auto;text-align:left}
+  @media(max-width:640px){#s1x .opens .duo{grid-template-columns:1fr;gap:14px}}
+  #s1x .opens .panel{position:relative;border-radius:18px;padding:20px 20px 12px;border:1.6px solid var(--line);background:var(--card);
+    box-shadow:0 1px 2px rgba(20,20,20,.04),0 10px 26px rgba(20,20,20,.06);overflow:hidden}
+  #s1x .opens .panel.timing{background:linear-gradient(180deg,#F3FBF8,#fff);border-color:#BEE3DB}
+  #s1x .opens .panel .pt{font-size:15px;font-weight:880;letter-spacing:-.02em;margin-bottom:4px}
+  #s1x .opens .panel.miss .pt{color:#8a5148} #s1x .opens .panel.timing .pt{color:var(--acc-deep)}
+  #s1x .opens .panel .pcap{font-size:11.5px;font-weight:700;color:var(--soft);margin-bottom:12px}
+  #s1x .opens .panel ul{list-style:none;margin:0;padding:0}
+  #s1x .opens .panel li{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);
+    font-size:14.5px;font-weight:780;color:var(--ink)}
+  #s1x .opens .panel li:last-child{border-bottom:0}
+  #s1x .opens .panel li::before{content:"";flex:0 0 auto;width:7px;height:7px;border-radius:50%}
+  #s1x .opens .panel.miss li::before{background:var(--red);opacity:.6}
+  #s1x .opens .panel.timing li::before{background:var(--acc)}
+  #s1x .opens .punch{position:relative;max-width:740px;margin:26px auto 0;background:var(--acc);color:#fff;border-radius:14px;
+    padding:15px 20px;font-weight:820;font-size:clamp(14px,3.4vw,16px);letter-spacing:-.01em;line-height:1.45;
+    box-shadow:0 10px 24px rgba(14,124,107,.28);text-align:center}
+  #s1x .opens .punch b{color:#FFE39C} #s1x .opens .punch .dn{display:inline-block;margin-left:4px}
+
+  #s1x /* 진입 모션 : keyframe 애니메이션 구동 · .in 전엔 정적 숨김 */
+  .opens:not(.in) .eb,#s1x .opens:not(.in) h2,#s1x .opens:not(.in) .sh,
+  #s1x .opens:not(.in) .panel,#s1x .opens:not(.in) .panel li,#s1x .opens:not(.in) .punch{opacity:0}
+  #s1x .opens:not(.in) h2 .g::after{transform:scaleX(0)}
+  #s1x .opens.in .eb{animation:rUp .6s cubic-bezier(.2,.7,.2,1) both}
+  #s1x .opens.in h2{animation:rUp .7s cubic-bezier(.2,.7,.2,1) .06s both}
+  #s1x .opens.in .sh{animation:rUp .7s cubic-bezier(.2,.7,.2,1) .12s both}
+  #s1x .opens.in .panel.miss{animation:rLeft .8s cubic-bezier(.2,.7,.2,1) .16s both}
+  #s1x .opens.in .panel.timing{animation:rRight .8s cubic-bezier(.2,.7,.2,1) .26s both,breathe 3.2s ease-in-out 1.9s infinite}
+  #s1x .opens.in h2 .g::after{animation:wipe .72s cubic-bezier(.2,.7,.2,1) .6s both}
+  #s1x .opens.in .punch{animation:rUp .7s cubic-bezier(.2,.7,.2,1) 1.25s both,punchGlow 2s ease-in-out 2.1s infinite}
+  #s1x /* 리스트 : 왼쪽은 왼쪽에서·오른쪽은 오른쪽에서 · 한 줄씩 또렷하게(착지 순간 하이라이트 번쩍) */
+  .opens.in .panel.miss li{animation:lineL .52s cubic-bezier(.2,.7,.2,1) both}
+  #s1x .opens.in .panel.timing li{animation:lineR .52s cubic-bezier(.2,.7,.2,1) both}
+  #s1x .opens.in .panel li:nth-child(1){animation-delay:.46s}
+  #s1x .opens.in .panel li:nth-child(2){animation-delay:.62s}
+  #s1x .opens.in .panel li:nth-child(3){animation-delay:.78s}
+  #s1x .opens.in .panel li:nth-child(4){animation-delay:.94s}
+  #s1x .opens.in .panel li:nth-child(5){animation-delay:1.10s}
+  @keyframes rUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+  @keyframes rUpS{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes lineL{0%{opacity:0;transform:translateX(-20px)}55%{background:var(--acc-soft)}100%{opacity:1;transform:none;background:transparent}}
+  @keyframes lineR{0%{opacity:0;transform:translateX(20px)}55%{background:var(--acc-soft)}100%{opacity:1;transform:none;background:transparent}}
+  @keyframes rLeft{from{opacity:0;transform:translateX(-38px) scale(.97)}to{opacity:1;transform:none}}
+  @keyframes rRight{from{opacity:0;transform:translateX(38px) scale(.97)}to{opacity:1;transform:none}}
+  @keyframes wipe{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  @keyframes breathe{0%,100%{box-shadow:0 8px 24px rgba(14,124,107,.16)}50%{box-shadow:0 18px 44px rgba(14,124,107,.34)}}
+  #s1x .opens .panel.timing::after{content:"";position:absolute;top:0;left:-65%;width:45%;height:100%;pointer-events:none;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.6),transparent);transform:skewX(-18deg)}
+  #s1x .opens.in .panel.timing::after{animation:sheen 4s ease-in-out 2.2s infinite}
+  @keyframes sheen{0%{left:-65%}42%,100%{left:135%}}
+  #s1x .opens.in .panel.timing li::before{animation:dotPulse 1.9s ease-in-out 1.9s infinite}
+  @keyframes dotPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(14,124,107,.5)}50%{transform:scale(1.35);box-shadow:0 0 0 5px rgba(14,124,107,0)}}
+  @keyframes punchGlow{0%,100%{box-shadow:0 10px 24px rgba(14,124,107,.28)}50%{box-shadow:0 16px 38px rgba(14,124,107,.55)}}
+  #s1x .opens.in .punch .dn{animation:dnBob 1.3s ease-in-out infinite}
+  @keyframes dnBob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+</style>
+<!-- ── 맨 위 : 우리가 찾아내는 리콜 대상 (좌우 대비 패널) ── -->
+<section class="opens" id="opens">
+  <span class="eb">🎯 우리가 찾아내는 리콜 대상</span>
+  <h2>놓친 치료부터 보험 타이밍까지.<br><span class="g">한 명도 흘려보내지 않게.</span></h2>
+  <p class="sh">이 기준들로 차트를 훑어 <b>전화할 사람</b>을 뽑습니다.</p>
+
+  <div class="duo">
+    <div class="panel miss">
+      <div class="pt">치료가 멈춘 분</div>
+      <div class="pcap">시작해 놓고 끊긴 · 다시 부릅니다</div>
+      <ul>
+        <li>임플란트 미착수</li>
+        <li>크라운 미장착</li>
+        <li>발치 후 임플란트 미연결</li>
+        <li>신경치료 미완</li>
+        <li>잠든 구환</li>
+      </ul>
+    </div>
+    <div class="panel timing">
+      <div class="pt">지금이 보험·검진 타이밍인 분</div>
+      <div class="pcap">지금 오면 이득 · 놓치지 않습니다</div>
+      <ul>
+        <li>정기검진 주기 도래</li>
+        <li>스케일링 대상</li>
+        <li>만 65세 임플란트 보험</li>
+        <li>발치 후 보험 임플란트</li>
+        <li>소아 레진 보험</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="punch">그럼 이 명단, <b>안 부르고 두면</b> 어떻게 될까요?<span class="dn">↓</span></div>
+</section>
+
+<!-- ── 히어로 ── -->
+<div class="hero">
+  <div class="eye">안 부른 사이에</div>
+  <h1>그 이름들이,<br><span class="r">지금도 매달 조용히 샙니다.</span></h1>
+
+  <div class="amt">
+    <div class="lab">우리 병원에서 매달 새는 매출</div>
+    <div class="num"><span class="bb">2,902</span><span class="won">만원 / 월</span></div>
+    <span class="tag">🔒 예시 숫자</span>
+    <div class="sub">연결하면 실제 이름·금액으로 바뀝니다.</div>
+  </div>
+
+  <a class="cta" href="#" onclick="installClick(event)">우리 병원 숫자로 채우기 <span class="arw">→</span></a>
+  <div class="trust">🔒 차트는 <b>읽기만</b> · 무료 · 3분</div>
+  <div class="scrollhint">↓</div>
+</div>
+
+<!-- ── 3단계 밴드 ── -->
+<div class="steps">
+  <div class="row">
+    <span class="st"><span class="no">1</span>설치</span>
+    <span class="ar">→</span>
+    <span class="st"><span class="no">2</span>진단</span>
+    <span class="ar">→</span>
+    <span class="st last"><span class="no">3</span>실제 명단</span>
+  </div>
+  <span class="tm">⏱ 여기까지 <b class="pop">딱 3분</b> · 차트는 우리 병원 안에서만</span>
+</div>
+
+<!-- ── 흐르는 진단결과(설명 없이 카드만) ── -->
+<section class="flow">
+  <div class="marquee">
+    <div class="strk" id="s1track">
+
+      <div class="sc hook k-amber">
+        <div class="tp"><span class="cat">열어보면 —</span><span class="tag">치료 멈춤</span></div>
+        <div class="desc"><b>치료가 멈춘 채 잊힌 환자</b>가 이만큼.</div>
+        <div class="huge"><span class="n bb">191</span> <span class="u">명</span></div>
+        <div class="more">최근 6개월 · 예약 없이 멈춰 있음</div>
+      </div>
+
+      <div class="sc k-red">
+        <div class="tp"><span class="cat">임플란트</span><span class="tag">고가 미착수</span></div>
+        <div class="big"><span class="b">27</span>명이 멈췄어요</div>
+        <div class="desc">상담까지 받고 수술로 안 이어진 환자.</div>
+        <div class="plist">
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">박은령</span> 님 (43세)<small>마지막 진료 2026-04-29</small></div><span class="ago">2개월 전</span></div>
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">한순희</span> 님 (77세)<small>마지막 진료 2026-04-24</small></div><span class="ago">2개월 전</span></div>
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">박성배</span> 님 (72세)<small>마지막 진료 2026-04-23</small></div><span class="ago">2개월 전</span></div>
+        </div>
+        <div class="more">+ <span class="b">24</span>명 더</div>
+        <div class="amtline"><span class="l">예상 누락 매출 · 추정</span><span class="v"><span class="b">4,050</span>만원</span></div>
+      </div>
+
+      <div class="sc k-blue">
+        <div class="tp"><span class="cat">크라운</span><span class="tag">프렙 후 미장착</span></div>
+        <div class="big"><span class="b">48</span>명이 멈췄어요</div>
+        <div class="desc">치아를 깎고 크라운을 씌우지 않은 환자.</div>
+        <div class="plist">
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">이정아</span> 님 (52세)<small>마지막 진료 2026-05-13</small></div><span class="ago">51일 전</span></div>
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">유하은</span> 님 (29세)<small>마지막 진료 2026-05-13</small></div><span class="ago">51일 전</span></div>
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">김병훈</span> 님 (43세)<small>마지막 진료 2026-05-12</small></div><span class="ago">52일 전</span></div>
+        </div>
+        <div class="more">+ <span class="b">45</span>명 더</div>
+        <div class="amtline"><span class="l">예상 누락 매출 · 추정</span><span class="v"><span class="b">1,440</span>만원</span></div>
+      </div>
+
+      <div class="sc k-amber">
+        <div class="tp"><span class="cat">발치 후 임플란트</span><span class="tag">연결 안 됨</span></div>
+        <div class="big"><span class="b">65</span>명이 멈췄어요</div>
+        <div class="desc">발치만 하고 임플란트로 안 이어진 환자.</div>
+        <div class="plist">
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">박경원</span> 님 (52세)<small>마지막 진료 2026-05-16</small></div><span class="ago">48일 전</span></div>
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">김영준</span> 님 (61세)<small>마지막 진료 2026-05-09</small></div><span class="ago">55일 전</span></div>
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">조경아</span> 님 (49세)<small>마지막 진료 2026-05-07</small></div><span class="ago">57일 전</span></div>
+        </div>
+        <div class="more">+ <span class="b">62</span>명 더</div>
+        <div class="amtline"><span class="l">예상 누락 매출 · 추정</span><span class="v"><span class="b">6,500</span>만원</span></div>
+      </div>
+
+      <div class="sc k-teal">
+        <div class="tp"><span class="cat">신경치료</span><span class="tag">마무리 안 됨</span></div>
+        <div class="big"><span class="b">51</span>명이 멈췄어요</div>
+        <div class="desc">신경치료를 시작하고 마무리 안 한 환자.</div>
+        <div class="plist">
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">김기민</span> 님 (33세)<small>마지막 진료 2026-05-18</small></div><span class="ago">46일 전</span></div>
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">김성민</span> 님 (27세)<small>마지막 진료 2026-05-18</small></div><span class="ago">46일 전</span></div>
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">김규식</span> 님 (31세)<small>마지막 진료 2026-05-16</small></div><span class="ago">48일 전</span></div>
+        </div>
+        <div class="more">+ <span class="b">48</span>명 더</div>
+        <div class="amtline"><span class="l">예상 누락 매출 · 추정</span><span class="v"><span class="b">2,040</span>만원</span></div>
+      </div>
+
+      <div class="sc k-teal">
+        <div class="tp"><span class="cat">발치 후 보험 임플란트</span><span class="tag">지금 보험 대상</span></div>
+        <div class="big"><span class="b">34</span>명이 새로 해당</div>
+        <div class="desc">예전에 발치만 한 분, 이제 보험 임플란트 시점.</div>
+        <div class="plist">
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">최영자</span> 님 (66세)<small>발치 2024-11-08 · 보험 도래</small></div><span class="ago">지금</span></div>
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">한동식</span> 님 (68세)<small>발치 2024-09-20 · 보험 도래</small></div><span class="ago">지금</span></div>
+          <div class="pr"><span class="dot"></span><div class="who"><span class="b">오말순</span> 님 (71세)<small>발치 2024-08-14 · 보험 도래</small></div><span class="ago">지금</span></div>
+        </div>
+        <div class="more">+ <span class="b">31</span>명 더</div>
+        <div class="amtline"><span class="l">예상 매출 · 추정</span><span class="v"><span class="b">3,400</span>만원</span></div>
+      </div>
+
+      <div class="sc">
+        <div class="tp"><span class="cat">놓친 매출 합계</span></div>
+        <div class="sum" style="margin-top:12px">
+          <div class="sr"><span class="l">임플란트</span><span class="v"><span class="b">4,050</span>만원</span></div>
+          <div class="sr"><span class="l">크라운</span><span class="v"><span class="b">1,440</span>만원</span></div>
+          <div class="sr"><span class="l">발치 후 임플란트</span><span class="v"><span class="b">6,500</span>만원</span></div>
+          <div class="sr"><span class="l">신경치료</span><span class="v"><span class="b">2,040</span>만원</span></div>
+          <div class="sr"><span class="l">검진주기 초과·휴면</span><span class="v"><span class="b">6,768</span>만원</span></div>
+          <div class="tot"><span class="l">합계 · 추정</span><span class="v"><span class="b">2억 798</span>만원</span></div>
+        </div>
+        <div class="permo">매달 <span class="b">2,902</span>만원씩 사라지는 중</div>
+      </div>
+
+      <div class="sc final">
+        <div class="tp"><span class="cat">AutoRecall</span><span class="tag" style="color:var(--acc-deep);background:var(--acc-soft)">자동 회수</span></div>
+        <div class="big"><span class="b">2억 798</span>만원, 리콜로 잡아드려요</div>
+        <ul class="chk">
+          <li>오늘 걸 환자 자동 선별</li>
+          <li>걸면 안 되는 환자 자동 제외</li>
+          <li>통화 결과 → 다음 콜·문자 자동 연결</li>
+          <li>예약까지 연결, 성과를 숫자로</li>
+        </ul>
+        <a class="scta" href="#" onclick="installClick(event)">우리 병원 숫자로 채우기 →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="foot">※ 화면·이름·숫자는 <b>예시</b>입니다. 설치 후 우리 병원 값으로 채워지고, 차트는 <b>우리 병원 안에서만</b> 열립니다.</p>
+</section>
+
+
+<script>
+(function(){
+  var t=document.getElementById('s1track');
+  if(t) t.innerHTML += t.innerHTML;
+})();
+(function(){
+  var s=document.getElementById('opens');
+  if(!s)return;
+  var fire=function(){s.classList.add('in')};
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ fire(); io.disconnect(); } });
+    },{threshold:.18});
+    io.observe(s);
+  } else { fire(); }
+  /* IO 미발동 환경 폴백: 스크롤로 화면 90% 안에 들어오면 발동 */
+  var onScroll=function(){ if(s.classList.contains('in')){window.removeEventListener('scroll',onScroll);return;} var vh=window.innerHeight||document.documentElement.clientHeight||800; var r=s.getBoundingClientRect(); if(r.top < vh*0.9){ fire(); window.removeEventListener('scroll',onScroll); } };
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+})();
+</script>
+</div>
 
 <footer>
   <div class="wrap">
