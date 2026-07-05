@@ -616,7 +616,7 @@
       <div class="k">AutoRecall · 치과 리콜 자동화</div>
       <h1>원장님이 모르는 사이,<br><span class="warn">이번 달도 구환 매출이</span><br>새고 있습니다.</h1>
       <p>관리 안 한 사이, 옆 치과가 우리 구환을 먼저 부릅니다.</p>
-      <a class="down" href="javascript:void(0)" onclick="window.__smoothTo&&window.__smoothTo('#install',900)">📉 이번 달 새는 구환 매출 3분 만에 확인하기 →</a>
+      <a class="down" href="javascript:void(0)" onclick="window.__smoothTo&&window.__smoothTo('#opens',900)">📉 이번 달 새는 구환 매출 3분 만에 확인하기 →</a>
     </div>
 
     <div class="phone">
@@ -1260,6 +1260,30 @@
   .s1bridge.in .sb-line{animation:sbGrow .7s cubic-bezier(.2,.7,.2,1) .62s both}
   .s1bridge.in .sb-arrow{animation:cnIn .5s cubic-bezier(.2,.7,.2,1) 1.05s both,sbBob 1.3s ease-in-out 1.6s infinite}
   @keyframes sbGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  /* ══ 히어로 안 3단계 밴드(투명·컴팩트) ══ */
+  #s1x .hero .steps{background:transparent;border-top:0;padding:4px 0 2px}
+  /* ══ 간이계산 티저(덤 느낌) ══ */
+  .calcteaser{max-width:640px;margin:42px auto 58px;padding:14px 18px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;
+    background:var(--bg-soft);border:1.4px dashed #CFC9BC;border-radius:14px}
+  .calcteaser .ct-txt{font-size:14px;font-weight:700;color:var(--ink-soft)}
+  .calcteaser .ct-txt b{color:var(--ink)}
+  .calcteaser .ct-btn{border:1.5px solid var(--teal);color:var(--teal-deep);background:#fff;font-weight:800;font-size:13.5px;
+    padding:10px 16px;border-radius:99px;cursor:pointer;transition:.15s;font-family:inherit}
+  .calcteaser .ct-btn:hover{background:var(--teal);color:#fff}
+  /* ══ 계산기 팝업 모달 ══ */
+  .cmodal{position:fixed;inset:0;z-index:2147482000;display:none;align-items:flex-start;justify-content:center;
+    background:rgba(15,23,20,.55);overflow-y:auto;padding:4vh 14px 6vh}
+  .cmodal.open{display:flex}
+  .cmodal .cm-box{position:relative;background:var(--bg);border-radius:20px;max-width:960px;width:100%;
+    box-shadow:0 30px 80px rgba(0,0,0,.35);overflow:hidden}
+  .cmodal .cm-x{position:absolute;top:14px;right:14px;z-index:6;width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;
+    background:#fff;color:var(--ink);font-size:16px;font-weight:800;box-shadow:0 4px 14px rgba(0,0,0,.18);font-family:inherit}
+  .cmodal .cm-x:hover{background:var(--teal);color:#fff}
+  .cmodal section{border-bottom:0;padding:clamp(24px,4vw,40px) 0 clamp(20px,3vw,32px)}
+  .cmodal h2{font-size:clamp(19px,2.6vw,26px)}
+  .cmodal .lead{font-size:14.5px}
+  .cmodal .reveal{opacity:1!important;transform:none!important;transition:none!important}
+  body.cmodal-lock{overflow:hidden}
 
 </style>
 <!-- ── 맨 위 : 우리가 찾아내는 리콜 대상 (좌우 대비 패널) ── -->
@@ -1295,20 +1319,8 @@
     </div>
   </div>
 
-  <div class="punch">그럼 이 명단, <b>안 부르고 두면</b> 어떻게 될까요?<span class="dn">↓</span></div>
 </section>
 
-<!-- ── 3단계 밴드 ── -->
-<div class="steps">
-  <div class="row">
-    <span class="st"><span class="no">1</span>설치</span>
-    <span class="ar">→</span>
-    <span class="st"><span class="no">2</span>진단</span>
-    <span class="ar">→</span>
-    <span class="st last"><span class="no">3</span>실제 명단</span>
-  </div>
-  <span class="tm">⏱ 여기까지 <b class="pop">딱 3분</b> · 차트는 우리 병원 안에서만</span>
-</div>
 
 <!-- ── 흐르는 진단결과(설명 없이 카드만) ── -->
 <section class="flow">
@@ -1430,20 +1442,26 @@
     <div class="sub">연결하면 실제 이름·금액으로 바뀝니다.</div>
   </div>
 
+  <!-- ── 3단계 밴드 ── -->
+  <div class="steps">
+    <div class="row">
+      <span class="st"><span class="no">1</span>설치</span>
+      <span class="ar">→</span>
+      <span class="st"><span class="no">2</span>진단</span>
+      <span class="ar">→</span>
+      <span class="st last"><span class="no">3</span>실제 명단</span>
+    </div>
+    <span class="tm">⏱ 여기까지 <b class="pop">딱 3분</b> · 차트는 우리 병원 안에서만</span>
+  </div>
+
   <a class="cta" href="#" onclick="installClick(event)">다운로드 후 우리치과 환자 목록 확인하기 <span class="arw">→</span></a>
-  <div class="trust">🔒 차트는 <b>읽기만</b> · 무료 · 3분</div>
+  <div class="trust">🔒 차트는 <b>읽기만</b> · 무료</div>
 </div>
 
-<!-- 히어로 → 계산기 스토리 브릿지 (예시 → 내 숫자) -->
-<div class="s1bridge" id="s1bridge" onclick="window.__smoothTo?window.__smoothTo('#install',900):document.getElementById('install').scrollIntoView({behavior:'smooth'})" title="아래에서 계속">
-  <div class="sb-steps">
-    <span class="sb-step done"><i>✓</i>어떤 명단이 나오는지 봤다</span>
-    <span class="sb-sep">›</span>
-    <span class="sb-step now"><i>2</i>우리 병원 숫자로 확인 · 30초</span>
-  </div>
-  <div class="sb-copy">여기까지는 <b>예시</b>였습니다.<br>다운로드 전에, <b>우리 병원 값</b>으로 직접 계산해 보세요.</div>
-  <div class="sb-line"></div>
-  <div class="sb-arrow">↓</div>
+<!-- 간이 계산 = 덤(팝업) 티저 -->
+<div class="calcteaser" id="calcTeaser">
+  <span class="ct-txt">여기까지는 <b>예시</b> — 우리 병원 값이 궁금하다면?</span>
+  <button type="button" class="ct-btn" onclick="window.__calcOpen&&window.__calcOpen(event)">🧮 30초 간이 계산 열기</button>
 </div>
 
 
@@ -1503,11 +1521,25 @@ window.__s1go=function(e){ if(e){e.preventDefault();}
   }
   window.addEventListener('scroll',carry,{passive:true}); carry();
 })();
+/* ══ 간이계산 팝업 모달 열기/닫기 ══ */
+window.__calcOpen=function(e){ if(e)e.preventDefault();
+  var m=document.getElementById('calcModal'); if(!m)return;
+  m.classList.add('open'); document.body.classList.add('cmodal-lock'); };
+window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m)return;
+  m.classList.remove('open'); document.body.classList.remove('cmodal-lock'); };
+(function(){ function bind(){ var m=document.getElementById('calcModal'); if(!m)return;
+    m.addEventListener('click',function(ev){ if(ev.target===m) window.__calcClose(); });
+    document.addEventListener('keydown',function(ev){ if(ev.key==='Escape') window.__calcClose(); }); }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',bind); } else { bind(); }
+})();
 </script>
 </div>
 
 
-<!-- ══════════ 맨 아래 · 우리 병원 간이 계산(다운로드 전 마지막 확인) ══════════ -->
+<!-- ══════════ 간이 계산 팝업(덤) — 티저 버튼으로만 진입 ══════════ -->
+<div class="cmodal" id="calcModal" role="dialog" aria-modal="true" aria-label="우리 병원 간이 계산">
+  <div class="cm-box">
+    <button type="button" class="cm-x" onclick="window.__calcClose&&window.__calcClose()" aria-label="닫기">✕</button>
 <section id="install" style="background:var(--bg-soft);border-bottom:0">
   <div class="wrap">
     <span class="eyebrow">아직 고민되신다면 · 우리 병원 숫자 미리보기</span>
@@ -1572,6 +1604,8 @@ window.__s1go=function(e){ if(e){e.preventDefault();}
 
   </div>
 </section>
+  </div>
+</div>
 
 <footer>
   <div class="wrap">
@@ -1804,7 +1838,7 @@ window.__s1go=function(e){ if(e){e.preventDefault();}
     var c=document.createElement('div'); c.className='cta-card';
     c.innerHTML='<h3>'+((typeof CUR!=='undefined'&&CUR.cta)?CUR.cta:'다시는, 이현주 님 같은 분 놓치지 않기')+'</h3>'
       +'<p>설치하면 위 추정치가 <b>실제 환자 이름이 박힌 오늘의 콜 명단</b>으로 바뀝니다. 흩어진 수천 명이 <b>오늘 전화할 3명</b>으로. 차트는 읽기만, 저장·전송 없음 — 안 깔면 다음 달에도 옆 치과가 먼저 부릅니다.</p>'
-      +'<a href="#install">⬇️ AutoRecall 지금 설치하고 우리 명단 받기 →</a>';
+      +'<a href="#" onclick="installClick(event)">⬇️ AutoRecall 지금 설치하고 우리 명단 받기 →</a>';
     row.appendChild(c); thread.appendChild(row); reveal(c);
     hint.innerHTML='↓ 어떻게 수천 명을 ‘오늘 전화할 3명’으로 추리는지, 아래에서 직접 확인하세요';
   }
