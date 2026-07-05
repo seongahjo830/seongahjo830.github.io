@@ -1234,15 +1234,14 @@
 
   #s1x /* ── 맨 위 : "우리가 찾아내는 리콜 대상" (좌우 대비 패널 + 진입 모션) ── */
   .opens{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--acc-soft),var(--bg) 82%);
-    padding:clamp(40px,7vw,60px) 22px clamp(28px,5vw,46px);text-align:center;border-bottom:1px solid var(--line)}
-  #s1x .opens .eb{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:850;letter-spacing:.01em;
-    color:var(--acc-deep);background:#fff;border:1.5px solid #CFE7E1;padding:6px 13px;border-radius:99px;
-    box-shadow:0 3px 10px rgba(14,124,107,.12)}
-  #s1x .opens h2{font-size:clamp(21px,4.8vw,31px);font-weight:880;line-height:1.3;margin:15px 0 8px;letter-spacing:-.025em}
-  #s1x .opens h2 .g{position:relative;z-index:0;color:var(--acc);padding:0 3px}
-  #s1x .opens h2 .g::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:38%;z-index:-1;
-    background:#BFE6DD;border-radius:3px;transform:scaleX(1);transform-origin:left}
-  #s1x .opens .sh{font-size:13.5px;color:var(--soft);font-weight:600;margin:0 auto 26px;max-width:26em;line-height:1.55}
+    padding:clamp(40px,7vw,60px) 22px clamp(28px,5vw,46px);text-align:left;border-bottom:1px solid var(--line)}
+  #s1x .opens .ohead{max-width:740px;margin:0 auto}
+  #s1x .opens .eb{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.09em;
+    color:var(--accent);background:var(--accent-soft);padding:6px 15px;border-radius:99px}
+  #s1x .opens h2{font-size:clamp(25px,3.9vw,40px);font-weight:840;line-height:1.2;margin:20px 0 12px;letter-spacing:-.03em}
+  #s1x .opens h2 .g{color:var(--acc)}
+  #s1x .opens h2 .g::after{display:none}
+  #s1x .opens .sh{font-size:clamp(16px,2.2vw,19px);color:var(--ink-soft);font-weight:500;margin:0 0 30px;max-width:40em;line-height:1.7}
   #s1x /* 좌우 대비 패널 */
   .opens .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:740px;margin:0 auto;text-align:left}
   @media(max-width:640px){#s1x .opens .duo{grid-template-columns:1fr;gap:14px}}
@@ -1342,9 +1341,11 @@
 </style>
 <!-- ── 맨 위 : 우리가 찾아내는 리콜 대상 (좌우 대비 패널) ── -->
 <section class="opens" id="opens">
-  <span class="eb">🎯 우리가 찾아내는 리콜 대상</span>
+  <div class="ohead">
+  <span class="eb">우리가 찾아내는 리콜 대상</span>
   <h2>놓친 치료부터 보험 타이밍까지.<br><span class="g">한 명도 흘려보내지 않게.</span></h2>
-  <p class="sh">이 기준들로 차트를 훑어 <b>전화할 사람</b>을 뽑습니다.</p>
+  <p class="sh">이 기준들로 차트를 훑어 <mark>전화할 사람</mark>을 뽑습니다.</p>
+  </div>
 
   <div class="duo">
     <div class="panel miss">
