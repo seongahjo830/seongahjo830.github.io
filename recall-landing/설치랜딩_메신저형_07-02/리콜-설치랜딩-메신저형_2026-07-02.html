@@ -1296,6 +1296,33 @@
   #s1x .fin .fnote{max-width:600px;margin:18px auto 0;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);
     border-radius:12px;padding:12px 17px;font-size:13px;line-height:1.7;color:#CDEDE5;font-weight:600}
   #s1x .fin .fnote b{color:#fff}
+  /* ══ calc-next 2줄 구조 ══ */
+  .calc-next{flex-direction:column;gap:5px;padding:14px 18px}
+  .calc-next .cn-q{font-size:12.5px;font-weight:700;opacity:.85}
+  .calc-next .cn-main{font-size:clamp(13.5px,3.6vw,15.5px);font-weight:850;display:inline-flex;align-items:center;gap:7px;
+    letter-spacing:-.01em;text-wrap:balance;justify-content:center;flex-wrap:wrap}
+  /* ══ 계산 완료 → 다운로드 유도 팝업 ══ */
+  .dlpop{position:fixed;inset:0;z-index:2147482600;display:none;align-items:center;justify-content:center;
+    background:rgba(10,20,17,.6);padding:20px}
+  .dlpop.open{display:flex}
+  .dlpop .dl-box{position:relative;background:#fff;border-radius:22px;max-width:460px;width:100%;
+    padding:36px 26px 24px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.4);
+    animation:dlIn .5s cubic-bezier(.2,.9,.3,1.35) both}
+  @keyframes dlIn{from{opacity:0;transform:translateY(28px) scale(.92)}to{opacity:1;transform:none}}
+  .dlpop .dl-x{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:0;
+    background:#F3F1EB;color:#141618;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit}
+  .dlpop .dl-x:hover{background:#E5E1D8}
+  .dlpop .dl-emo{font-size:38px;margin-bottom:8px}
+  .dlpop .dl-t{font-size:clamp(18px,4.4vw,22px);font-weight:880;letter-spacing:-.02em;line-height:1.35;color:#141618}
+  .dlpop .dl-t b{color:#C0392B}
+  .dlpop .dl-s{font-size:13px;color:#5B6360;font-weight:650;margin-top:9px;line-height:1.6}
+  .dlpop .dl-s b{color:#0A5E51}
+  .dlpop .dl-cta{display:block;margin-top:20px;background:var(--teal);color:#fff;font-weight:850;
+    font-size:clamp(14.5px,3.8vw,16.5px);padding:17px 16px;border-radius:14px;text-decoration:none;
+    box-shadow:0 12px 28px rgba(14,124,107,.35);animation:ctaBob 2.2s ease-in-out .6s infinite;transition:background .15s}
+  .dlpop .dl-cta:hover{background:var(--teal-deep)}
+  .dlpop .dl-later{margin-top:13px;background:none;border:0;color:#8a949e;font-size:12.5px;font-weight:700;
+    cursor:pointer;text-decoration:underline;font-family:inherit}
   @media(max-width:560px){#s1x .fin .frow{flex-direction:column}#s1x .fin .far{transform:rotate(90deg)}}
   /* ══ 히어로 안 3단계 밴드(투명·컴팩트) ══ */
   #s1x .hero .steps{background:transparent;border-top:0;padding:4px 0 2px}
@@ -1589,6 +1616,35 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
     });
   },7500);
 })();
+
+/* 계산 완료 → 4.2초 뒤 다운로드 유도 팝업 (내 손실액 승계) */
+(function(){
+  function init(){
+    var out=document.getElementById('calcOut'), pop=document.getElementById('dlPop');
+    if(!out||!pop) return;
+    var was=out.classList.contains('staged'), timer=null;
+    new MutationObserver(function(){
+      var is=out.classList.contains('staged');
+      if(is&&!was){
+        clearTimeout(timer);
+        timer=setTimeout(function(){
+          var l=document.getElementById('oLoss'), d=document.getElementById('dlLoss');
+          if(l&&d) d.textContent=(l.textContent||'').trim();
+          pop.classList.add('open');
+        },4200);
+      }
+      if(!is) clearTimeout(timer);
+      was=is;
+    }).observe(out,{attributes:true,attributeFilter:['class']});
+    window.__dlClose=function(e){ if(e)e.preventDefault(); pop.classList.remove('open'); };
+    pop.addEventListener('click',function(ev){ if(ev.target===pop) window.__dlClose(); });
+    /* ESC = 위에 뜬 팝업만 닫기(캡처 단계에서 가로채 모달 유지) */
+    document.addEventListener('keydown',function(ev){
+      if(ev.key==='Escape'&&pop.classList.contains('open')){ ev.stopImmediatePropagation(); window.__dlClose(); }
+    },true);
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',init); } else { init(); }
+})();
 </script>
 </div>
 
@@ -1650,7 +1706,10 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
           <div class="obox"><div class="ol">이미 잠든 구환(누적)</div><div class="ov" id="oDorm">810명</div><div class="os" id="oDormRec">지금 깨우면 1,701만원 회수 가능</div></div>
         </div>
         <p class="assump">가정 — 구환 1인 연가치 = 월매출×12×(1−신환비율)÷구환수 · 이번 달 리콜 대상 = 구환수÷12 · 한 달 손실 = 대상×연가치×월감쇠(1.7%) · 잠든 구환 = 구환수×(12%+연차×3%). <b>모두 벤치마크 가정값이며, 의료·매출 효과를 보장하지 않습니다.</b></p>
-        <a class="calc-next" href="#" onclick="installClick(event)">이 돈, 계속 흘려보내실 건가요? — <b>다운로드 후 우리치과 환자 목록 확인하기</b> →</a>
+        <a class="calc-next" href="#" onclick="installClick(event)">
+          <span class="cn-q">이 돈, 계속 흘려보내실 건가요?</span>
+          <span class="cn-main">다운로드 후 우리치과 환자 목록 확인하기 <span class="cn-dn">→</span></span>
+        </a>
       </div>
     </div>
 
@@ -1661,6 +1720,18 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
 
   </div>
 </section>
+  </div>
+</div>
+
+<!-- 계산 완료 → 다운로드 유도 팝업 (2026-07-06) -->
+<div class="dlpop" id="dlPop" role="dialog" aria-modal="true" aria-label="다운로드 안내">
+  <div class="dl-box">
+    <button type="button" class="dl-x" onclick="window.__dlClose&&window.__dlClose()" aria-label="닫기">✕</button>
+    <div class="dl-emo">💸</div>
+    <div class="dl-t">한 달 미루면 <b id="dlLoss">—</b>이 사라집니다</div>
+    <div class="dl-s">진짜 명단은 설치 3분이면 나옵니다 · <b>7/17(금)까지 설치하면 무료</b></div>
+    <a class="dl-cta" href="#" onclick="installClick(event)">다운로드 후 우리치과 환자 목록 확인하기 →</a>
+    <button type="button" class="dl-later" onclick="window.__dlClose&&window.__dlClose()">결과 더 볼게요</button>
   </div>
 </div>
 
