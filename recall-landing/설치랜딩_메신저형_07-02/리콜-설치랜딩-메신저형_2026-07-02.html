@@ -1326,6 +1326,17 @@
   .dlpop .dl-cta:hover{background:var(--teal-deep)}
   .dlpop .dl-later{margin-top:13px;background:none;border:0;color:#8a949e;font-size:12.5px;font-weight:700;
     cursor:pointer;text-decoration:underline;font-family:inherit}
+  /* ══ STEP3 후기 자동 읽기 투어 (2026-07-06) ══ */
+  #step3 .rcard .tsw{background-image:linear-gradient(180deg,transparent 60%,#FFE49C 60%);background-repeat:no-repeat;
+    background-size:0% 100%;transition:background-size 1.5s ease;
+    -webkit-box-decoration-break:clone;box-decoration-break:clone}
+  #step3 .rcard.tour-on .tsw{background-size:100% 100%}
+  #step3 .rcard.tour-on{transform:translateY(-4px);box-shadow:0 16px 36px rgba(14,124,107,.16)}
+  #step3 .rcard.tour-evi .evi{max-height:560px;opacity:1;padding:15px 17px;margin-top:13px}
+  #step3 .evi b{background-image:linear-gradient(180deg,transparent 58%,#FFE49C 58%);background-repeat:no-repeat;
+    background-size:0% 100%;transition:background-size .9s ease .35s;
+    -webkit-box-decoration-break:clone;box-decoration-break:clone}
+  #step3 .rcard.tour-evi .evi b{background-size:100% 100%}
   @media(max-width:560px){#s1x .fin .frow{flex-direction:column}#s1x .fin .far{transform:rotate(90deg)}}
   /* ══ 히어로 안 3단계 밴드(투명·컴팩트) ══ */
   #s1x .hero .steps{background:transparent;border-top:0;padding:4px 0 2px}
@@ -1651,6 +1662,35 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
     },true);
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',init); } else { init(); }
+})();
+
+/* STEP3 후기 자동 읽기 투어 — 형광펜 스윕 → 관련데이터 펼침·핵심 하이라이트 → 다음 카드 (반복) */
+(function(){
+  function initTour(){
+    var grid=document.querySelector('#step3 .rev-grid'); if(!grid) return;
+    var cards=[].slice.call(grid.querySelectorAll('.rcard')); if(!cards.length) return;
+    cards.forEach(function(c){ var p=c.querySelector('p');
+      if(p&&!p.querySelector('.tsw')) p.innerHTML='<span class="tsw">'+p.innerHTML+'</span>'; });
+    var i=-1, paused=false, visible=false, timers=[];
+    function clearT(){ timers.forEach(clearTimeout); timers=[]; }
+    function offAll(){ cards.forEach(function(c){ c.classList.remove('tour-on','tour-evi'); }); }
+    function step(){
+      clearT(); offAll();
+      if(paused||!visible){ timers.push(setTimeout(step,1200)); return; }
+      i=(i+1)%cards.length;
+      var c=cards[i];
+      c.classList.add('tour-on');
+      timers.push(setTimeout(function(){ c.classList.add('tour-evi'); },1900));
+      timers.push(setTimeout(step,5300));
+    }
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){es.forEach(function(e){visible=e.isIntersecting})},{threshold:.15}).observe(grid);
+    } else { visible=true; }
+    grid.addEventListener('mouseenter',function(){ paused=true; offAll(); });
+    grid.addEventListener('mouseleave',function(){ paused=false; });
+    step();
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',initTour); } else { initTour(); }
 })();
 </script>
 </div>
