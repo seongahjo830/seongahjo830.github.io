@@ -1364,20 +1364,18 @@
   /* 카드에 마우스 올리면(확대 중) 형광펜 즉시 완성 */
   #reviews .rv-card:hover .rv-q mark,#reviews .rv-card.rv-hot .rv-q mark{animation:none;background-size:100% 100%}
   /* ══ STEP3.5·3.8 제목·리드 풍성한 반복 모션 (2026-07-06) ══ */
-  #step35 h2 .w,#step38 h2 .w{display:inline-block;opacity:.34;will-change:opacity,transform;
-    animation:secWord 5s ease-in-out infinite}
-  @keyframes secWord{0%,60%,100%{opacity:.34;transform:none}
-    7%{opacity:1;transform:translateY(-3px) scale(1.05)}20%{opacity:1;transform:none}}
-  #step35 h2 mark,#step38 h2 mark{background-image:linear-gradient(180deg,transparent 56%,#FFE39C 56%);
-    background-repeat:no-repeat;background-size:0% 100%;-webkit-box-decoration-break:clone;box-decoration-break:clone;
-    animation:secH2Hl 5s ease-in-out infinite}
-  @keyframes secH2Hl{0%,12%{background-size:0% 100%}42%,82%{background-size:100% 100%}96%,100%{background-size:0% 100%}}
+  /* 제목: 평소 정적 → 14초마다 단어가 왼→오른쪽으로 '한 번만' 물결(충분히 기다렸다가) */
+  #step35 h2 .w,#step38 h2 .w{display:inline-block;will-change:transform;animation:secWord 14s ease-in-out infinite}
+  @keyframes secWord{0%,17%,100%{transform:none}4%{transform:translateY(-5px) scale(1.06)}11%{transform:none}}
+  /* 제목 강조 구절: 형광펜 정적 유지(깜빡임 없음) */
+  #step35 h2 mark,#step38 h2 mark{background:linear-gradient(180deg,transparent 56%,#FFE39C 56%)}
+  /* 리드 핵심 구절: 14초마다 순서대로 형광펜(드물게) */
   #step35 .lead b,#step35 .lead mark,#step38 .lead b,#step38 .lead mark{
     background-image:linear-gradient(180deg,transparent 58%,#FFE49C 58%);background-repeat:no-repeat;background-size:0% 100%;
-    -webkit-box-decoration-break:clone;box-decoration-break:clone;animation:secLeadHl 7.4s ease-in-out infinite}
-  @keyframes secLeadHl{0%,5%{background-size:0% 100%}24%,74%{background-size:100% 100%}93%,100%{background-size:0% 100%}}
-  #step35 .lead b:nth-of-type(2),#step38 .lead b:nth-of-type(2){animation-delay:1.6s}
-  #step35 .lead mark,#step38 .lead mark{animation-delay:3.2s}
+    -webkit-box-decoration-break:clone;box-decoration-break:clone;animation:secLeadHl 14s ease-in-out infinite}
+  @keyframes secLeadHl{0%,4%{background-size:0% 100%}15%,62%{background-size:100% 100%}78%,100%{background-size:0% 100%}}
+  #step35 .lead b:nth-of-type(2),#step38 .lead b:nth-of-type(2){animation-delay:1.4s}
+  #step35 .lead mark,#step38 .lead mark{animation-delay:2.8s}
   @media(max-width:560px){#s1x .fin .frow{flex-direction:column}#s1x .fin .far{transform:rotate(90deg)}}
   /* ══ 히어로 안 3단계 밴드(투명·컴팩트) ══ */
   #s1x .hero .steps{background:transparent;border-top:0;padding:4px 0 2px}
