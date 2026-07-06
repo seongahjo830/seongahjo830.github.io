@@ -385,10 +385,11 @@
   .ba-bad .ba-q{color:#7a7167} .ba-good .ba-q{color:#2a4640}
   /* 가운데 = 그 줄의 '상황(축)' 라벨. 방향성 화살표 제거(방향은 상단 열 헤더가 전달) */
   .ba-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-  .ba-mid .cat{font-size:12.5px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.3;
-    background:#fff;border:1.5px solid var(--line);border-radius:11px;padding:8px 12px;box-shadow:var(--shadow-sm)}
-  .ba-mid .cat i{display:block;font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.04em;
-    color:var(--ink-soft);margin-bottom:2px;opacity:.85}
+  .ba-mid .cat{font-size:16.5px;font-weight:880;color:var(--ink);letter-spacing:-.02em;line-height:1.25;
+    background:linear-gradient(180deg,#fff,#F6F4EE);border:1.6px solid #D8D2C4;border-radius:13px;padding:12px 14px;
+    box-shadow:0 6px 16px rgba(20,20,20,.08)}
+  .ba-mid .cat i{display:block;font-style:normal;font-size:11px;font-weight:800;letter-spacing:.04em;
+    color:var(--teal-deep);margin-bottom:4px;opacity:1}
   @media(max-width:720px){
     .ba-head{display:none}
     .ba-row{grid-template-columns:1fr;gap:8px;padding:11px;background:#faf9f5;border-radius:16px}
@@ -1021,7 +1022,7 @@
   </div>
 
   <div class="wrap">
-    <p class="muted center" style="font-size:13px;margin-top:30px">※ 실제 사용 병원의 피드백을 바탕으로 하며, 개인정보 보호를 위해 성함은 직함으로 표기하고 일부 표현은 자연스럽게 다듬었습니다. · <span style="color:var(--ink-soft)">카드에 마우스를 올리면 잠시 멈춥니다.</span></p>
+    <p class="muted center" style="font-size:13px;margin-top:30px">※ 실제 사용 병원의 피드백을 바탕으로 하며, 개인정보 보호를 위해 성함은 직함으로 표기하고 일부 표현은 자연스럽게 다듬었습니다.</p>
   </div>
 </section>
 
@@ -1422,7 +1423,7 @@
   <div class="ohead">
   <span class="eb">우리가 찾아내는 리콜 대상</span>
   <h2>놓친 치료부터 보험 타이밍까지.<br><span class="g">한 명도 흘려보내지 않게.</span></h2>
-  <p class="sh">이 기준들로 차트를 훑어 <mark>전화할 사람</mark>을 뽑습니다.</p>
+  <p class="sh">일상적으로 챙겨야 하는 전화부터, <mark>잠든 환자를 깨우는 전화</mark>까지 — 중요한 것부터 리스트업.</p>
   </div>
 
   <div class="duo">
@@ -1579,8 +1580,8 @@
   <a class="fcta" href="#" onclick="installClick(event)">다운로드 후 우리치과 환자 목록 확인하기 <span class="arw">→</span></a>
   <div class="ftrust">🔒 차트는 <b>읽기만</b> · <b>7/17(금) 설치까지 무료</b> · 저장·전송 없음</div>
   <div class="fnote">
-    <div class="fr"><span class="fi">🖥️</span><span>설치는 <b>덴트웹 서버 컴퓨터 1대</b>면 됩니다 — 데스크 PC에는 아무것도 깔지 않습니다</span></div>
-    <div class="fr"><span class="fi">🔒</span><span>프로그램은 서버 안 <b>격리된 공간</b>에서만 실행됩니다 — 차트가 병원 밖으로 나가지 않습니다</span></div>
+    <div class="fr"><span class="fi">🖥️</span><span>설치는 <b>덴트웹 서버 컴퓨터</b>에 진행해야 <b>덴트웹 기반</b>으로 진단할 수 있습니다</span></div>
+    <div class="fr"><span class="fi">🔒</span><span>프로그램은 서버 안 <b>격리된 공간</b>에서만 실행됩니다</span></div>
     <div class="fr"><span class="fi">💳</span><span><b>7월 17일(금)</b>까지 설치한 병원에는 <b>리스트를 무료로 제공</b>해 드립니다</span></div>
   </div>
 </section>
