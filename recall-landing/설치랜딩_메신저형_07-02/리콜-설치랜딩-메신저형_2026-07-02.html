@@ -1376,6 +1376,20 @@
   @keyframes secLeadHl{0%,4%{background-size:0% 100%}15%,62%{background-size:100% 100%}78%,100%{background-size:0% 100%}}
   #step35 .lead b:nth-of-type(2),#step38 .lead b:nth-of-type(2){animation-delay:1.4s}
   #step35 .lead mark,#step38 .lead mark{animation-delay:2.8s}
+  /* ══ 비교카드 읽는 스포트라이트: 한 줄씩 위→아래로 (11초 주기) ══ */
+  #step35 .ba-row,#step38 .ba-row{animation:baRow 11s ease-in-out infinite;animation-delay:var(--rd,0s)}
+  @keyframes baRow{0%,12%,100%{transform:none}3.5%{transform:translateY(-3px)}8%{transform:none}}
+  #step35 .ba-row .ba-good,#step38 .ba-row .ba-good{animation:baGlow 11s ease-in-out infinite;animation-delay:var(--rd,0s)}
+  @keyframes baGlow{0%,12%,100%{box-shadow:0 10px 26px rgba(14,124,107,.14)}4%{box-shadow:0 20px 46px rgba(14,124,107,.36)}}
+  #step35 .ba-row .ba-mk,#step38 .ba-row .ba-mk{animation:baMk 11s ease-in-out infinite;animation-delay:var(--rd,0s)}
+  @keyframes baMk{0%,12%,100%{transform:none}3.5%{transform:scale(1.28)}8%{transform:none}}
+  /* 마우스 올린 줄은 스포트라이트 멈추고 hover 확대 우선 */
+  #step35 .ba-row:hover,#step38 .ba-row:hover,
+  #step35 .ba-row:hover .ba-good,#step38 .ba-row:hover .ba-good,
+  #step35 .ba-row:hover .ba-mk,#step38 .ba-row:hover .ba-mk{animation-play-state:paused}
+  /* 💡 결론 박스: 아주 가끔 은은한 강조 */
+  #step35 .note-inline,#step38 .note-inline{animation:baNote 11s ease-in-out infinite}
+  @keyframes baNote{0%,60%,100%{box-shadow:none}70%,86%{box-shadow:0 0 0 2px rgba(14,124,107,.16)}}
   @media(max-width:560px){#s1x .fin .frow{flex-direction:column}#s1x .fin .far{transform:rotate(90deg)}}
   /* ══ 히어로 안 3단계 밴드(투명·컴팩트) ══ */
   #s1x .hero .steps{background:transparent;border-top:0;padding:4px 0 2px}
@@ -1659,21 +1673,6 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
   },7000);
 })();
 
-/* 설치 전↔후 비교(.ba, STEP 3.5·3.8) 진입 모션도 반복 재생 — 보이는 동안 7.5초마다 */
-(function(){
-  var els=[].slice.call(document.querySelectorAll('#step35 .ba, #step38 .ba'));
-  if(!els.length) return;
-  setInterval(function(){
-    var vh=window.innerHeight||document.documentElement.clientHeight||800;
-    els.forEach(function(el){
-      if(!el.classList.contains('rin')) return;
-      var r=el.getBoundingClientRect();
-      if(r.bottom<0||r.top>vh) return;
-      el.classList.remove('rin'); void el.offsetWidth; el.classList.add('rin');
-    });
-  },7500);
-})();
-
 /* 계산 완료 → 4.2초 뒤 다운로드 유도 팝업 (내 손실액 승계) */
 (function(){
   function init(){
@@ -1778,6 +1777,17 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
     [].slice.call(el.querySelectorAll('.w')).forEach(function(w,i){ w.style.animationDelay=(i*0.15)+'s'; });
   }
   function init(){ ['step35','step38'].forEach(function(id){ var h=document.querySelector('#'+id+' h2'); if(h&&!h.querySelector('.w')) wrapWords(h); }); }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',init); } else { init(); }
+})();
+
+/* 비교카드 행별 스캔 딜레이(위→아래로 순차) */
+(function(){
+  function init(){
+    ['step35','step38'].forEach(function(id){
+      var rows=document.querySelectorAll('#'+id+' .ba-row');
+      [].slice.call(rows).forEach(function(r,i){ r.style.setProperty('--rd',(i*0.7)+'s'); });
+    });
+  }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',init); } else { init(); }
 })();
 </script>
