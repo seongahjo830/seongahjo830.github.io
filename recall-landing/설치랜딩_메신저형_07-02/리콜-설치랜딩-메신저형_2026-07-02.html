@@ -1346,12 +1346,13 @@
   .msgr .head h1 .warn::after{content:"";position:absolute;left:-6px;right:-6px;top:7%;bottom:3%;z-index:-1;border-radius:7px;
     background:#FFD24B;transform:scaleX(0);transform-origin:left;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
   .msgr .head h1 .warn.hl::after{transform:scaleX(1)}
-  .msgr .head h1 .warn .ch{display:inline-block}
+  .msgr .head h1 .warn .ch{display:inline-block;will-change:opacity,transform;backface-visibility:hidden;transform:translateZ(0)}
   .msgr .head h1 .warn.vanishing .ch{animation:hVanish 4.6s ease-in-out infinite}
-  @keyframes hVanish{0%,100%{opacity:1;transform:none;filter:blur(0)}
-   38%{opacity:.08;transform:translateY(-7px);filter:blur(4px)}
-   62%{opacity:.08;transform:translateY(-7px);filter:blur(4px)}
-   88%{opacity:1;transform:none;filter:blur(0)}}
+  /* blur 제거(글자 blur = GPU 최고 비용 → 버벅 원인). opacity+transform만 = 합성 전용 */
+  @keyframes hVanish{0%,100%{opacity:1;transform:translateZ(0)}
+   38%{opacity:.06;transform:translateY(-6px) translateZ(0)}
+   62%{opacity:.06;transform:translateY(-6px) translateZ(0)}
+   88%{opacity:1;transform:translateZ(0)}}
   @media(max-width:560px){#s1x .fin .frow{flex-direction:column}#s1x .fin .far{transform:rotate(90deg)}}
   /* ══ 히어로 안 3단계 밴드(투명·컴팩트) ══ */
   #s1x .hero .steps{background:transparent;border-top:0;padding:4px 0 2px}
