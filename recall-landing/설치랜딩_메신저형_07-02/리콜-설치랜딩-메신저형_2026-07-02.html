@@ -1349,6 +1349,20 @@
    38%{opacity:.06;transform:translateY(-6px) translateZ(0)}
    62%{opacity:.06;transform:translateY(-6px) translateZ(0)}
    88%{opacity:1;transform:translateZ(0)}}
+  /* ══ 흐르는 후기 마크 = 노란 형광펜 반복 스윕 (2026-07-06) ══ */
+  #reviews .rv-q mark{background:none;background-image:linear-gradient(180deg,transparent 58%,#FFE49C 58%);
+    background-repeat:no-repeat;background-size:0% 100%;padding:0 1px;color:inherit;
+    -webkit-box-decoration-break:clone;box-decoration-break:clone;
+    animation:rvHl 6.5s ease-in-out infinite}
+  @keyframes rvHl{0%,6%{background-size:0% 100%}26%,78%{background-size:100% 100%}94%,100%{background-size:0% 100%}}
+  /* 카드마다 시차 — 여기저기서 번갈아 칠해지게 */
+  #reviews .rv-card:nth-child(6n+2) .rv-q mark{animation-delay:1.1s}
+  #reviews .rv-card:nth-child(6n+3) .rv-q mark{animation-delay:2.2s}
+  #reviews .rv-card:nth-child(6n+4) .rv-q mark{animation-delay:3.3s}
+  #reviews .rv-card:nth-child(6n+5) .rv-q mark{animation-delay:4.4s}
+  #reviews .rv-card:nth-child(6n) .rv-q mark{animation-delay:5.5s}
+  /* 카드에 마우스 올리면(확대 중) 형광펜 즉시 완성 */
+  #reviews .rv-card:hover .rv-q mark,#reviews .rv-card.rv-hot .rv-q mark{animation:none;background-size:100% 100%}
   @media(max-width:560px){#s1x .fin .frow{flex-direction:column}#s1x .fin .far{transform:rotate(90deg)}}
   /* ══ 히어로 안 3단계 밴드(투명·컴팩트) ══ */
   #s1x .hero .steps{background:transparent;border-top:0;padding:4px 0 2px}
