@@ -1685,8 +1685,22 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
   function initTour(){
     var grid=document.querySelector('#step3 .rev-grid'); if(!grid) return;
     var cards=[].slice.call(grid.querySelectorAll('.rcard')); if(!cards.length) return;
-    cards.forEach(function(c){ var p=c.querySelector('p');
-      if(p&&!p.querySelector('.tsw')) p.innerHTML='<span class="tsw">'+p.innerHTML+'</span>'; });
+    /* 카드별 핵심 구절만 형광펜 (전체 밑줄 X) */
+    var KEYS=[
+      '검진 시기에 딱 맞춰 연락이 와요',
+      '먼저 전화 와서 괜찮은지 물어봐 주니 훨씬 안심됐어요',
+      '미뤄둔 치료를 잊을 만하면 먼저 챙겨줘요',
+      '‘만 65세부터 보험 적용되세요’ 하고 딱 맞춰 알려주셨어요',
+      '‘만 12세까지 레진이 보험 되는 시기’라며 미리 알려주셨어요',
+      '조금만 빨랐어도…',
+      '이번엔 아무 연락이 없더라고요',
+      '그 뒤로 소식이 없어서',
+      '한 번만 미리 알려주셨어도 좋았을 텐데'
+    ];
+    cards.forEach(function(c,ci){ var p=c.querySelector('p'); if(!p||p.querySelector('.tsw'))return;
+      var k=KEYS[ci]||'', h=p.innerHTML;
+      if(k&&h.indexOf(k)!==-1){ p.innerHTML=h.replace(k,'<span class="tsw">'+k+'</span>'); }
+    });
     var i=-1, paused=false, visible=false, timers=[];
     function clearT(){ timers.forEach(clearTimeout); timers=[]; }
     function offAll(){ cards.forEach(function(c){ c.classList.remove('tour-on','tour-evi'); }); }
