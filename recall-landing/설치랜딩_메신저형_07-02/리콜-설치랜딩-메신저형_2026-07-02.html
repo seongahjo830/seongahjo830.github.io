@@ -1296,6 +1296,9 @@
   #s1x .fin .fnote{max-width:600px;margin:18px auto 0;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);
     border-radius:12px;padding:12px 17px;font-size:13px;line-height:1.7;color:#CDEDE5;font-weight:600}
   #s1x .fin .fnote b{color:#fff}
+  #s1x .fin .fnote{text-align:left}
+  #s1x .fin .fnote .fr{display:flex;gap:9px;align-items:flex-start;padding:4px 0}
+  #s1x .fin .fnote .fi{flex:0 0 auto}
   /* ══ calc-next 2줄 구조 ══ */
   .calc-next{flex-direction:column;gap:5px;padding:14px 18px}
   .calc-next .cn-q{font-size:12.5px;font-weight:700;opacity:.85}
@@ -1511,7 +1514,11 @@
 
   <a class="fcta" href="#" onclick="installClick(event)">다운로드 후 우리치과 환자 목록 확인하기 <span class="arw">→</span></a>
   <div class="ftrust">🔒 차트는 <b>읽기만</b> · <b>7/17(금) 설치까지 무료</b> · 저장·전송 없음</div>
-  <div class="fnote">🖥️ 아무 컴퓨터가 아니라 병원 <b>서버 컴퓨터</b>에 설치합니다. 프로그램은 그 서버 안 <b>격리된 환경</b>에서만 돌아가고, 차트가 밖으로 나가는 일은 없습니다. <b>7월 17일(금)까지 설치한 병원은 무료</b>입니다.</div>
+  <div class="fnote">
+    <div class="fr"><span class="fi">🖥️</span><span>설치는 <b>덴트웹 서버 컴퓨터 1대</b>면 됩니다 — 데스크 PC에는 아무것도 깔지 않습니다</span></div>
+    <div class="fr"><span class="fi">🔒</span><span>프로그램은 서버 안 <b>격리된 공간</b>에서만 실행됩니다 — 차트가 병원 밖으로 나가지 않습니다</span></div>
+    <div class="fr"><span class="fi">💳</span><span><b>7월 17일(금)</b>까지 설치한 병원은 <b>무료</b>입니다</span></div>
+  </div>
 </section>
 
 <!-- 간이 계산 = 덤(팝업) 티저 -->
