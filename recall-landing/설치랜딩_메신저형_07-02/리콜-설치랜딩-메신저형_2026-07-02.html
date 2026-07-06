@@ -1557,6 +1557,19 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
     document.addEventListener('keydown',function(ev){ if(ev.key==='Escape') window.__calcClose(); }); }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',bind); } else { bind(); }
 })();
+
+/* 리콜 대상 섹션 진입 모션 반복 재생 — 보이는 동안 7초마다 촤르륵 다시 (화면 밖이면 정지) */
+(function(){
+  var s=document.getElementById('opens'); if(!s)return;
+  var visible=false;
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){es.forEach(function(e){visible=e.isIntersecting})},{threshold:.25}).observe(s);
+  } else { visible=true; }
+  setInterval(function(){
+    if(!visible||!s.classList.contains('in'))return;
+    s.classList.remove('in'); void s.offsetWidth; s.classList.add('in');
+  },7000);
+})();
 </script>
 </div>
 
