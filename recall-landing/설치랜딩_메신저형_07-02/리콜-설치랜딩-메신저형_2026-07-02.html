@@ -1961,6 +1961,8 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
     if(q) q.innerHTML=CUR.quote; if(h) h.textContent=CUR.hl; })();
 
   var i=0, fast=false, cardBuilt=false;
+  /* ★ 스크롤 몰입: 카톡 폰이 화면에 보일 때만 대화가 하나씩 진행(안 보이면 멈춤·다시 보면 이어감) */
+  var ktVisible=false, ktWaiting=false;
   function appendDay(s){ var d=document.createElement('div'); d.className='day'; d.textContent=s; thread.appendChild(d); return d; }
   function appendSys(m){ var d=document.createElement('div'); d.className='sys'; d.innerHTML=m; thread.appendChild(d); reveal(d); }
   function appendMsg(side,name,m,isBot){
@@ -1991,6 +1993,9 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
 
   function next(){
     if(i>=S.length){ return; }
+    /* 폰이 화면에서 충분히 보이지 않으면 여기서 대기 → 스크롤로 보이면 옵저버가 재개 */
+    if(!ktVisible){ ktWaiting=true; return; }
+    ktWaiting=false;
     var step=S[i++];
     if(step.t==='day'){ appendDay(step.s); setTimeout(next,fast?10:200); return; }
     if(step.t==='sys'){ appendSys(step.m); setTimeout(next,fast?20:760); return; }
@@ -2119,7 +2124,18 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
     hint.innerHTML='↓ 어떻게 수천 명을 ‘오늘 전화할 3명’으로 추리는지, 아래에서 직접 확인하세요';
   }
 
-  setTimeout(next, 3100); // 헤드라인 연출(형광펜+사라짐) 뒤 대화 시작
+  /* ★ 카톡 폰 가시성 추적 — 화면에 40%+ 들어오면 대화 진행, 벗어나면 멈춤 */
+  var msgrEl=document.getElementById('msgr');
+  if(msgrEl && 'IntersectionObserver' in window){
+    new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        ktVisible = e.isIntersecting && e.intersectionRatio>=0.4;
+        if(ktVisible && ktWaiting){ ktWaiting=false; next(); } // 다시 보이면 이어감
+      });
+    },{threshold:[0,0.4,0.75]}).observe(msgrEl);
+  } else { ktVisible=true; } // 옵저버 미지원 브라우저는 종전대로
+
+  setTimeout(next, 3100); // 헤드라인 연출 뒤 시작 시도(폰이 안 보이면 게이트가 대기시킴)
 })();
 
 /* ══════════ STEP2 4화면 로테이터(자동 순환) ══════════ */
