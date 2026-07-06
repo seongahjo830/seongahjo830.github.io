@@ -945,30 +945,30 @@
     transition:transform .42s cubic-bezier(.22,.61,.36,1),box-shadow .42s ease,border-color .42s ease}
   /* 상단 역할 컬러 액센트 바 */
   .rv-card::after{content:"";position:absolute;top:0;left:0;right:0;height:4px;
-    background:var(--accent);opacity:.85;z-index:2}
+    background:var(--calc-accent);opacity:.85;z-index:2}
   .rv-card.mgr::after{background:var(--teal)} .rv-card.desk::after{background:#C77E12}
   .rv-card.rv-hot,.rv-card:hover{transform:scale(1.06);box-shadow:0 22px 46px -14px rgba(20,40,80,.32);
-    border-color:var(--accent);z-index:5}
+    border-color:var(--calc-accent);z-index:5}
   .rv-card.mgr.rv-hot,.rv-card.mgr:hover{border-color:var(--teal)}
   .rv-card.desk.rv-hot,.rv-card.desk:hover{border-color:#C77E12}
   .rv-card.rv-hot::after,.rv-card:hover::after{opacity:1;height:5px}
   /* 여는 인용부호 — 좌상단, 은은하게(떠다니는 느낌 제거) */
   .rv-card::before{content:"\201C";position:absolute;top:16px;left:18px;
-    font-family:Georgia,serif;font-size:52px;line-height:1;color:var(--accent-soft);font-weight:800;z-index:0;opacity:.9}
+    font-family:Georgia,serif;font-size:52px;line-height:1;color:#DAE2EF;font-weight:800;z-index:0;opacity:.9}
   .rv-card.mgr::before{color:var(--teal-soft)}
   .rv-card.desk::before{color:#F3D9AE}
   .rv-q{position:relative;z-index:1;font-size:15px;line-height:1.72;color:var(--ink);font-weight:500}
-  .rv-q mark{background:linear-gradient(180deg,transparent 58%,var(--accent-soft) 58%);padding:0 1px;color:inherit}
+  .rv-q mark{background:linear-gradient(180deg,transparent 58%,#DCE6F3 58%);padding:0 1px;color:inherit}
   .rv-card.mgr .rv-q mark{background:linear-gradient(180deg,transparent 58%,var(--teal-soft) 58%)}
   .rv-card.desk .rv-q mark{background:linear-gradient(180deg,transparent 58%,#FBEBCF 58%)}
   .rv-foot{display:flex;align-items:center;gap:11px;margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
   .rv-av{width:40px;height:40px;flex:0 0 40px;border-radius:50%;display:grid;place-items:center;
     font-weight:800;font-size:16px;color:#fff}
-  .av-doc{background:var(--accent)} .av-mgr{background:var(--teal)} .av-desk{background:#C77E12}
+  .av-doc{background:var(--calc-accent)} .av-mgr{background:var(--teal)} .av-desk{background:#C77E12}
   .rv-name{font-weight:800;font-size:13.5px;color:var(--ink);line-height:1.3}
   .rv-clinic{font-size:12px;color:var(--ink-soft);margin-top:2px}
   .rv-tag{margin-left:auto;font-size:11px;font-weight:700;padding:4px 11px;border-radius:99px;white-space:nowrap}
-  .tag-doc{color:var(--accent);background:var(--accent-soft)}
+  .tag-doc{color:var(--calc-accent-deep);background:var(--calc-accent-soft)}
   .tag-mgr{color:var(--teal-deep);background:var(--teal-soft)}
   .tag-desk{color:#9A5B08;background:#FBEBCF}
   /* 자동 흐름은 항상 켜둠 — 손으로 드래그 스크롤하는 방식은 쓰지 않는다(요청).
