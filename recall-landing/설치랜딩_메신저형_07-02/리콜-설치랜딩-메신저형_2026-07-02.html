@@ -614,7 +614,7 @@
   <div class="stage">
     <div class="head">
       <div class="k">AutoRecall · 치과 리콜 자동화</div>
-      <h1>당신의 구환이<br><span class="warn">조용히 사라지고 있는</span> 이유</h1>
+      <h1><span class="hln">당신의 구환이</span><br><span class="hln"><span class="warn" id="heroWarn">조용히 사라지고 있는</span> 이유</span></h1>
       <p>관리 안 한 사이, 옆 치과가 우리 구환을 먼저 부릅니다.</p>
       <a class="down" href="javascript:void(0)" onclick="window.__smoothTo&&window.__smoothTo('#opens',900)">📉 이번 달 새는 구환 매출 3분 만에 확인하기 →</a>
     </div>
@@ -1337,6 +1337,21 @@
     background-size:0% 100%;transition:background-size .9s ease .35s;
     -webkit-box-decoration-break:clone;box-decoration-break:clone}
   #step3 .rcard.tour-evi .evi b{background-size:100% 100%}
+  /* ══ 히어로 타이포 콤보: 형광펜(T04)+사라짐(T07) (2026-07-06) ══ */
+  .msgr .head h1 .hln{display:inline-block;opacity:0;animation:hFadeUp .7s ease both}
+  .msgr .head h1 .hln:nth-of-type(2){animation-delay:.35s}
+  @keyframes hFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .msgr .head h1 .warn{position:relative;z-index:0;color:#fff;transition:color .45s ease}
+  .msgr .head h1 .warn.hl{color:#17222e;text-shadow:none}
+  .msgr .head h1 .warn::after{content:"";position:absolute;left:-6px;right:-6px;top:7%;bottom:3%;z-index:-1;border-radius:7px;
+    background:#FFD24B;transform:scaleX(0);transform-origin:left;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+  .msgr .head h1 .warn.hl::after{transform:scaleX(1)}
+  .msgr .head h1 .warn .ch{display:inline-block}
+  .msgr .head h1 .warn.vanishing .ch{animation:hVanish 4.6s ease-in-out infinite}
+  @keyframes hVanish{0%,100%{opacity:1;transform:none;filter:blur(0)}
+   38%{opacity:.08;transform:translateY(-7px);filter:blur(4px)}
+   62%{opacity:.08;transform:translateY(-7px);filter:blur(4px)}
+   88%{opacity:1;transform:none;filter:blur(0)}}
   @media(max-width:560px){#s1x .fin .frow{flex-direction:column}#s1x .fin .far{transform:rotate(90deg)}}
   /* ══ 히어로 안 3단계 밴드(투명·컴팩트) ══ */
   #s1x .hero .steps{background:transparent;border-top:0;padding:4px 0 2px}
@@ -1692,6 +1707,21 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',initTour); } else { initTour(); }
 })();
+
+/* 히어로 헤드라인 콤보: 라인 페이드업 → 1.2s 형광펜 스윕 → 2.7s '사라짐' 루프 */
+(function(){
+  function initHero(){
+    var w=document.getElementById('heroWarn'); if(!w) return;
+    w.innerHTML=w.textContent.split('').map(function(c){return c===' '?' ':'<span class="ch">'+c+'</span>';}).join('');
+    var chs=[].slice.call(w.querySelectorAll('.ch'));
+    setTimeout(function(){ w.classList.add('hl'); },1200);
+    setTimeout(function(){
+      chs.forEach(function(s,i){ s.style.animationDelay=(i*0.09)+'s'; });
+      w.classList.add('vanishing');
+    },2700);
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',initHero); } else { initHero(); }
+})();
 </script>
 </div>
 
@@ -2018,7 +2048,7 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
     hint.innerHTML='↓ 어떻게 수천 명을 ‘오늘 전화할 3명’으로 추리는지, 아래에서 직접 확인하세요';
   }
 
-  setTimeout(next, 600);
+  setTimeout(next, 3100); // 헤드라인 연출(형광펜+사라짐) 뒤 대화 시작
 })();
 
 /* ══════════ STEP2 4화면 로테이터(자동 순환) ══════════ */
