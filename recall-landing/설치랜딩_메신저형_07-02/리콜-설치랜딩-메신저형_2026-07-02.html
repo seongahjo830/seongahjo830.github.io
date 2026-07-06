@@ -1260,6 +1260,36 @@
   .s1bridge.in .sb-line{animation:sbGrow .7s cubic-bezier(.2,.7,.2,1) .62s both}
   .s1bridge.in .sb-arrow{animation:cnIn .5s cubic-bezier(.2,.7,.2,1) 1.05s both,sbBob 1.3s ease-in-out 1.6s infinite}
   @keyframes sbGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  /* ══ F1 풀밴드 피날레 (2026-07-06) ══ */
+  #s1x .fin{background:linear-gradient(160deg,var(--acc-deep),var(--acc) 55%,#12907C);color:#fff;
+    padding:clamp(52px,9vw,90px) 22px clamp(56px,9vw,92px);text-align:center;position:relative;overflow:hidden;
+    border-bottom:1px solid var(--line)}
+  #s1x .fin::before{content:"";position:absolute;top:-40%;right:-12%;width:420px;height:420px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.10),transparent 70%)}
+  #s1x .fin .feye{font-size:12.5px;font-weight:850;letter-spacing:.1em;color:#9FE0D2;margin-bottom:18px}
+  #s1x .fin h2{font-size:clamp(25px,5.4vw,42px);font-weight:880;line-height:1.28;letter-spacing:-.03em;margin:0 0 12px;color:#fff}
+  #s1x .fin h2 .y{color:#FFE39C}
+  #s1x .fin .fsub{font-size:clamp(14.5px,3vw,17px);color:#CDEDE5;font-weight:600;margin:0 0 34px}
+  #s1x .fin .frow{display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+  #s1x .fin .fst{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.3);
+    border-radius:14px;padding:13px 20px;font-weight:820;font-size:16px;color:#fff}
+  #s1x .fin .fst .no{width:25px;height:25px;border-radius:50%;background:rgba(255,255,255,.22);color:#fff;font-size:13px;
+    display:grid;place-items:center;font-weight:880}
+  #s1x .fin .fst.last{background:#fff;color:var(--acc-deep);border-color:#fff;box-shadow:0 10px 26px rgba(0,0,0,.18)}
+  #s1x .fin .fst.last .no{background:var(--acc);color:#fff}
+  #s1x .fin .far{color:rgba(255,255,255,.55);font-weight:900;font-size:18px}
+  #s1x .fin .ftm{display:block;font-size:14px;font-weight:750;color:#CDEDE5;margin-bottom:34px}
+  #s1x .fin .ftm b{color:#FFE39C;font-size:16px}
+  #s1x .fin .fcta{position:relative;display:inline-flex;align-items:center;gap:11px;background:#fff;color:var(--acc-deep);
+    font-weight:880;font-size:clamp(18px,4.6vw,23px);padding:22px 40px;border-radius:18px;text-decoration:none;cursor:pointer;
+    box-shadow:0 16px 44px rgba(0,0,0,.28);animation:ctaBob 2.2s ease-in-out infinite}
+  #s1x .fin .fcta::before{content:"";position:absolute;inset:0;border-radius:18px;pointer-events:none;animation:finRing 2.2s ease-out infinite}
+  #s1x .fin .fcta:hover{background:#F3FBF8}
+  #s1x .fin .fcta .arw{animation:arwNudge 1.3s ease-in-out infinite}
+  @keyframes finRing{0%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}70%,100%{box-shadow:0 0 0 20px rgba(255,255,255,0)}}
+  #s1x .fin .ftrust{margin-top:20px;font-size:13.5px;color:#B9E2D8;font-weight:650}
+  #s1x .fin .ftrust b{color:#fff}
+  @media(max-width:560px){#s1x .fin .frow{flex-direction:column}#s1x .fin .far{transform:rotate(90deg)}}
   /* ══ 히어로 안 3단계 밴드(투명·컴팩트) ══ */
   #s1x .hero .steps{background:transparent;border-top:0;padding:4px 0 2px}
   /* ══ 간이계산 티저(덤 느낌) ══ */
@@ -1430,33 +1460,24 @@
   <p class="foot">※ 화면·이름·숫자는 <b>예시</b>입니다. 설치 후 우리 병원 값으로 채워지고, 차트는 <b>우리 병원 안에서만</b> 열립니다.</p>
 </section>
 
-<!-- ── 히어로 ── -->
-<div class="hero">
-  <div class="eye">안 부른 사이에</div>
-  <h1>그 이름들이,<br><span class="r">지금도 매달 조용히 샙니다.</span></h1>
+<!-- ── 피날레 : F1 풀밴드 클로징 (2026-07-06) ── -->
+<section class="fin">
+  <div class="feye">이 명단, 우리 병원 버전은</div>
+  <h2>이미 <span class="y">차트 안에</span> 있습니다.<br>꺼내는 데 딱 3분.</h2>
+  <p class="fsub">고민하는 지금도 명단은 쌓이고 있습니다 — 오늘 걸 전화부터 보여드릴게요.</p>
 
-  <div class="amt">
-    <div class="lab">우리 병원에서 매달 새는 매출</div>
-    <div class="num"><span class="bb">2,902</span><span class="won">만원 / 월</span></div>
-    <span class="tag">🔒 예시 숫자</span>
-    <div class="sub">연결하면 실제 이름·금액으로 바뀝니다.</div>
+  <div class="frow">
+    <span class="fst"><span class="no">1</span>설치</span>
+    <span class="far">→</span>
+    <span class="fst"><span class="no">2</span>진단</span>
+    <span class="far">→</span>
+    <span class="fst last"><span class="no">3</span>실제 명단</span>
   </div>
+  <span class="ftm">⏱ 여기까지 <b>딱 3분</b> · 차트는 우리 병원 안에서만</span>
 
-  <!-- ── 3단계 밴드 ── -->
-  <div class="steps">
-    <div class="row">
-      <span class="st"><span class="no">1</span>설치</span>
-      <span class="ar">→</span>
-      <span class="st"><span class="no">2</span>진단</span>
-      <span class="ar">→</span>
-      <span class="st last"><span class="no">3</span>실제 명단</span>
-    </div>
-    <span class="tm">⏱ 여기까지 <b class="pop">딱 3분</b> · 차트는 우리 병원 안에서만</span>
-  </div>
-
-  <a class="cta" href="#" onclick="installClick(event)">다운로드 후 우리치과 환자 목록 확인하기 <span class="arw">→</span></a>
-  <div class="trust">🔒 차트는 <b>읽기만</b> · 무료</div>
-</div>
+  <a class="fcta" href="#" onclick="installClick(event)">다운로드 후 우리치과 환자 목록 확인하기 <span class="arw">→</span></a>
+  <div class="ftrust">🔒 차트는 <b>읽기만</b> · <b>무료</b> · 저장·전송 없음</div>
+</section>
 
 <!-- 간이 계산 = 덤(팝업) 티저 -->
 <div class="calcteaser" id="calcTeaser">
