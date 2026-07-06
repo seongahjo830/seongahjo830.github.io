@@ -280,7 +280,14 @@
   .toast b small{font-weight:600; color:var(--ink-soft); font-size:.68em}
   .toast .t2{font-weight:700; font-size:.92em}
   .toast .t2 i{font-style:normal; color:#9AA3AE; font-size:.85em}
-  .toast .t3{font-weight:900; color:var(--gold); font-size:1.1em}
+  .toast .t3{font-weight:900; color:var(--gold); font-size:1.12em; background:var(--gold-bg); border:1px solid var(--gold-line); border-radius:99px; padding:.2em .95em; margin-top:.15em}
+  /* 토스트 줄별 순차 등장 (읽을 시간 확보 + 딱딱 강조) */
+  .toast b,.toast .t2,.toast .t3{opacity:0}
+  .toast.on b{animation:tline .5s cubic-bezier(.2,1.55,.35,1) .38s forwards}
+  .toast.on .t2{animation:tline .5s cubic-bezier(.2,1.55,.35,1) .82s forwards}
+  .toast.on .t3{animation:t3pop .62s cubic-bezier(.2,1.7,.35,1) 1.26s forwards}
+  @keyframes tline{0%{opacity:0;transform:translateY(.55em) scale(.94)}60%{opacity:1;transform:translateY(-.1em) scale(1.05)}100%{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes t3pop{0%{opacity:0;transform:translateY(.6em) scale(.78)}55%{opacity:1;transform:translateY(-.12em) scale(1.15)}100%{opacity:1;transform:translateY(0) scale(1)}}
   /* 폭죽 조각 */
   .confetti{position:absolute; z-index:29; width:.7em; height:1.1em; border-radius:.15em; pointer-events:none}
 
@@ -377,8 +384,8 @@
   @keyframes ctaglowStrong{0%,100%{box-shadow:0 10px 30px rgba(14,124,107,.35); transform:scale(1)}
     50%{box-shadow:0 0 0 10px rgba(14,124,107,.26),0 22px 62px rgba(14,124,107,.56); transform:translateY(-3px) scale(1.06)}}
   .nudge{position:absolute; z-index:30; display:inline-flex; align-items:center; gap:.45em;
-    background:var(--navy); color:#fff; font-weight:800; font-size:14.5px; white-space:nowrap;
-    border-radius:99px; padding:.5em 1.05em; box-shadow:0 12px 30px rgba(12,27,51,.35);
+    background:var(--teal-deep); color:#fff; font-weight:800; font-size:14.5px; white-space:nowrap;
+    border-radius:99px; padding:.55em 1.1em; box-shadow:0 12px 30px rgba(14,124,107,.4);
     opacity:0; transition:opacity .4s var(--ease); animation:nudgebob 1s ease-in-out infinite}
   .nudge.on{opacity:1}
   .nudge .fi{display:inline-block; animation:nudgefinger 1s ease-in-out infinite}
@@ -577,7 +584,6 @@
           <b id="fnM">+₩0만</b>
           <div class="fm-sub"><span id="fnB">확보 예약 5건</span> · <span id="fnP">복귀 구환 5명</span> (예시)</div>
         </div>
-        <div class="fn-copy">설치하지 않으면, <b>이 5명은 내일도 잠든 채 남습니다.</b></div>
         <div class="fn-note">지금 설치하면 내일 아침, <b>우리 병원 차트로</b> 이 명단이 그대로 뜹니다</div>
       </div>
       <div class="stepfloat">
@@ -983,10 +989,10 @@
     await typeSms(smsFor(PTS[TARGET]));
     await sleep(320);
     await moveTo(bkSave); await clickFX(bkSave);
-    /* 🎉 정중앙 셀레브레이션: 대형 폭죽 + 축하 카드 팝 */
+    /* 🎉 정중앙 셀레브레이션: 대형 폭죽 + 축하 카드 팝 + 줄별 순차 등장(읽을 시간) */
     fireConfetti(50,43,1.15);
     toast.classList.add('on');
-    await sleep(1600);
+    await sleep(2250);
     /* 💰 금액 칩이 카드 아래에서 티커로 날아가 입금됨 */
     const wf=document.createElement('div');
     wf.className='wonfly'; wf.textContent='+₩124만';
