@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>5 · 직접 만드는 리콜 시스템 — 빈틈없는 데스크</title>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div class="wrap">
+<nav class="filenav"><a class="home" href="index.html">📚 목차</a><span style="margin-left:auto"><a href="04_Part4_%EB%A6%AC%EC%BD%9C%EC%9D%98%EC%9D%98.html">← 이전</a> · <a href="06_Part6_%EA%B5%90%EC%9C%A1%ED%8F%89%EA%B0%80.html">다음 →</a></span></nav>
+<div class="filemark">5 · 직접 만드는 리콜 시스템</div>
+<main>
+<div class="part-divider" id="part5">
+  <div class="pnum">Part 5</div>
+  <h2>직접 만드는 리콜 시스템</h2>
+  <div class="pdesc">특별한 프로그램 없이, 전자차트(덴트웹)와 엑셀만으로 — 실장의 실제 순서</div>
+</div>
+
+<p class="lead">앞에서 리콜은 "성실함이 아니라 시스템"이라고 했습니다. 그럼 그 시스템을 <b>손으로</b> 어떻게 세우는가. 이 장은 실장이 실제로 밟는 다섯 단계를, 오늘 그대로 따라 할 수 있게 정리한 것입니다. <u>여기 나온 대로만 하면, 웬만한 리콜 프로그램이 하는 일을 사람 손으로 재현할 수 있습니다.</u></p>
+
+<h3 id="s5-1"><span class="n">5-1</span>리콜 대상을 어디서 뽑나 (덴트웹·차트)</h3>
+
+<p>리콜의 출발은 "누구에게 연락할지"를 차트에서 정확히 뽑아내는 것입니다. 대부분의 전자차트(덴트웹 등)에는 <b>최종 내원일·치료상태·미수금</b> 기준으로 명단을 뽑는 조회 기능이 있습니다. 여기서 <u>네 개의 명단</u>을 만듭니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Step 1</span> 차트에서 뽑는 4개 명단</div>
+  <div class="tb">
+    <ul class="check">
+      <li><b>미완료 치료</b> — 치료계획은 잡혔는데 중단된 환자 (예약현황·치료계획 조회)</li>
+      <li><b>경과관찰 대상</b> — 발치·근관·임플란트 수술 후 확인이 필요한 환자</li>
+      <li><b>정기검진 도래</b> — 마지막 스케일링·검진 후 <u>6~12개월 경과</u>한 환자 (미내원자 조회)</li>
+      <li><b>미수금 보유</b> — 잔액이 남은 환자 (수납·미수금 조회)</li>
+    </ul>
+    <p style="margin:12px 0 0;font-size:.9rem;color:var(--muted)">각 조회 결과를 <b>엑셀로 내보내</b>기 합니다. 최종 내원일 컬럼을 기준으로 정렬하면 "오래 안 온 순서"가 바로 보입니다.</p>
+  </div>
+</div>
+
+<div class="box warn">
+  <div class="bt">🔒 개인정보 — 처음부터 안전하게</div>
+  이 명단에는 환자 실명·연락처가 담깁니다. 파일은 <b>병원 PC에만</b> 두고 <u>암호를 걸며</u>, 개인 메일·USB로 돌리지 않습니다. 리콜 시스템의 신뢰는 여기서 시작합니다.
+</div>
+
+
+<h3 id="s5-2"><span class="n">5-2</span>대장을 만들지 마라 — "주간 리스트"로 굴린다</h3>
+
+<p>여기서 많은 병원이 걸려 넘어집니다 — 엑셀에 환자마다 날짜·이력·다음 연락일을 한 칸씩 채우는 <b>거대한 리콜 대장</b>을 만드는 것. 이건 <u>거의 예외 없이 3주 안에 멈춥니다.</u> 날짜와 내원 이력은 <b>이미 전자차트가 관리하고 있습니다.</b> 그걸 엑셀에 옮겨 손으로 또 관리하는 건 이중 노동이라 아무도 오래 못 합니다.</p>
+
+<div class="pull">영구 대장을 채우려 하지 말고, 매주 새로 뽑는 "이번 주 콜 리스트" 한 장으로 굴려라.</div>
+
+<div class="box">
+  <div class="bt">⚙️ "시스템"이란 = 매주 같은 자리에서 같은 리스트가 나오는 것</div>
+  리콜이 시스템이라는 건 거창한 프로그램을 뜻하지 않습니다. <u>사람의 기억이 아니라, 정해진 방법으로 매주 같은 리스트가 자동으로 나오는 상태</u>를 말합니다. 그래야 담당자가 바뀌어도, 바쁜 주에도 굴러갑니다.
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tag">System</span> 주간 콜 리스트 — 3단계면 끝</div>
+  <div class="tb">
+    <ul class="script">
+      <li><span class="who">1 · 뽑기 (실장, 5분)</span><span class="say me">매주 월요일, 전자차트의 <b>미내원·미완료 조회</b>를 그대로 출력(엑셀 내보내기 또는 인쇄). 새로 만들 것 없음 — 차트가 이미 가진 걸 꺼낼 뿐.</span></li>
+      <li><span class="who">2 · 정렬 (실장, 5분)</span><span class="say me">위험순으로 <b>한 번 정렬</b>해 데스크에 넘긴다(정렬 규칙은 5-3). 누가 우선인지 판단은 실장이 대신 해준다.</span></li>
+      <li><span class="who">3 · 표시만 (데스크)</span><span class="say me">데스크는 위에서부터 걸고, 옆에 <b>기호 하나</b>만 — ✓예약 · △문자 · ✗부재. 끝.</span></li>
+    </ul>
+    <p style="margin:10px 0 0;font-size:.9rem;color:var(--muted)">다음 주엔 이 리스트를 <b>버립니다.</b> ✗(안 받은) 사람은 차트에 그대로 남아 다음 주 리스트에 자동으로 다시 올라옵니다 — 그래서 "다음 연락일"을 손으로 관리할 필요가 없습니다.</p>
+  </div>
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 왜 이게 대장보다 나은가</div>
+  날짜·이력 관리는 차트에 맡기니, 사람이 채울 칸은 <u>결과 기호 하나</u>뿐입니다. 옮겨 적기·누락·중복이 사라지고, <b>누가 해도 똑같이</b> 굴러갑니다. 엑셀 함수도, 드롭다운도, 매일 갱신도 필요 없습니다.
+</div>
+
+
+<h3 id="s5-3"><span class="n">5-3</span>우선순위 — 누구부터 전화할까</h3>
+
+<p>수천 명을 같은 무게로 대하면 아무도 제대로 못 챙깁니다. <b>먼저 걸어야 할 사람</b>부터 줄을 세워야 합니다. 실장들이 실제로 쓰는 순서는 <u>임상 위험 → 돈 → 타이밍 → 정기</u>의 워터폴입니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Rule</span> 우선순위 워터폴 (위에서부터 채움)</div>
+  <div class="tb">
+    <ul class="script">
+      <li><span class="who">★★★ 1순위 · 임상</span><span class="say me">수술·근관 중단·임플란트 경과관찰 — <b>미루면 임상 위험</b>. 오늘 전화.</span></li>
+      <li><span class="who">★★★ 2순위 · 돈</span><span class="say me">고액 미완료 치료·미수금 — 회수·전환 가치 큼. 오늘~이번 주 전화.</span></li>
+      <li><span class="who">★★ 3순위 · 타이밍</span><span class="say me">마지막 내원 <u>6~12개월</u> 구간 — 지금 연락하면 돌아올 확률 최고(25~35%). 이번 주 전화.</span></li>
+      <li><span class="who">★ 4순위 · 정기</span><span class="say me">일반 정기검진 대상 — <b>문자로 충분</b>. 전화는 아낀다.</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="box data">
+  <div class="bt">🔬 왜 "전부 6개월마다"가 아니라 위험 순인가 — 잘 안 알려진 근거</div>
+  영국 NHS가 성인 <u><b>2,372명을 4년간</b></u> 추적한 대규모 임상시험(INTERVAL, 영국치과저널 2021)에서, <b>6개월 고정 vs 위험도 맞춤 vs 24개월 주기</b> 사이에 잇몸·충치·삶의 질 차이가 <u>없었습니다</u>. 즉 건강한 사람을 무작정 자주 부르는 건 효과가 약하고, <b>리콜은 위험군·놓친 치료 중심으로 정확히</b> 하는 게 근거에 맞습니다. 이게 우선순위를 매기는 이유입니다.
+  <span class="src">출처 · INTERVAL Dental Recalls Trial, British Dental Journal 2021 · 영국 51개 치과 다기관 RCT</span>
+</div>
+
+<div class="box">
+  <div class="bt">💡 실장 팁 — 숨은 매출을 여는 한 컬럼</div>
+  한 대형 컨설팅 보고에 따르면 <b>치과의 약 71%가 잇몸 낭깊이(치주 포켓)를 기록하지 않습니다.</b> 리콜 대장에 <u>치주 상태 한 칸</u>만 추가해 관리하면, 놓치고 있던 잇몸 유지관리 대상이 드러납니다 — 임상적으로도 중요하고, 위생 매출로도 이어지는 저평가 구간입니다.
+  <span class="src">출처 · Levin Group(30,000개 치과 컨설팅) 운영 보고</span>
+</div>
+
+
+<h3 id="s5-4"><span class="n">5-4</span>콜·문자 주기 설계</h3>
+
+<h4>가장 좋은 리콜은 "리콜하지 않아도 되게" 만드는 것</h4>
+<p>미국치과의사협회(ADA)가 공식적으로 권하는 최선은 화려한 전략이 아니라 <b>"환자가 떠나기 전에 다음 예약을 미리 잡는 것(선예약)"</b>입니다. 실제로 <u>떠나기 전 다음 예약을 잡은 환자는 80~90%가 다시 오지만, 안 잡고 보낸 환자는 35~45%</u>에 그칩니다 — <b>선예약 한 번이 리콜 열 번보다 셉니다.</b> 그래서 리콜 리스트는 <u>선예약에 실패한 사람을 받는 안전망</u>으로 두면 시스템이 깔끔해집니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Rule</span> 미예약자 접촉 리듬</div>
+  <div class="tb">
+    <ul class="check">
+      <li>첫 접촉은 <b>예정일 2~4주 전</b> (예약률이 가장 높은 구간)</li>
+      <li>점수 높은 소수(★★★)는 <b>전화</b>, 나머지는 <b>문자</b> — 노동을 아낀다</li>
+      <li>전화 안 받으면 <u>단발로 끝내지 말고</u> 문자 → 며칠 뒤 재시도 (멀티터치 15~25% vs 단발 5~8%, 3~5배)</li>
+      <li>그래도 안 닿으면 <b>90일 뒤 다시</b> 명단에 올린다</li>
+      <li>연락 시간대는 <b>화·수요일 오전 10~12시 / 오후 2~4시</b>가 응답이 좋다</li>
+    </ul>
+  </div>
+</div>
+
+
+<div class="box">
+  <div class="bt">💡 타이밍·톤 팁 (업계 실무 경험)</div>
+  한 병원마케팅 실무자는 리콜 주기를 <b>D+1(진료 직후 불편 확인) · D+14(2주 뒤 상태 점검) · D+90(정기 관리 안내)</b>로 나누길 권합니다. 환자는 진료를 <u>3개월이 아니라 약 2주면 잊는다</u>고 보기 때문입니다. 문투도 "예약하세요"가 아니라 <b>"증상은 좀 나아지셨어요?"</b>처럼 안부로 시작하면 반응이 다릅니다. <em>(개인 경험담 — 수치 미검증, 방향만 참고)</em>
+</div>
+
+<h3 id="s5-5"><span class="n">5-5</span>주간 루틴과 데스크 지시, 그리고 현실</h3>
+
+<p>리콜을 굴리는 건 대단한 관리가 아니라 <b>매주 같은 리듬</b>입니다. 아래 루틴이면 충분합니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Routine</span> 리콜 주간 루틴</div>
+  <div class="tb">
+    <ul class="check">
+      <li><b>월요일 (실장 10분)</b> — 차트에서 이번 주 리스트를 뽑고, 위험순 정렬해 데스크에 넘김</li>
+      <li><b>화~금 (데스크 하루 30분)</b> — 리스트 위에서부터 전화(상위)·문자(하위), 옆에 기호만 ✓△✗</li>
+      <li><b>안 받은 사람(✗)</b> — 따로 관리 안 함. 차트에 남아 <u>다음 주 리스트에 자동 재등장</u></li>
+      <li><b>금요일 (3줄 보고)</b> — 이번 주 연락 ○명 / 예약 잡힘 ○명 / 특이사항. 끝.</li>
+    </ul>
+    <p style="margin:10px 0 0;font-size:.9rem;color:var(--muted)">우량 기준: 떠나기 전 <b>선예약률</b>을 꾸준히 올리고, 재검진 재예약률 <b>90%+</b>를 목표로.</p>
+  </div>
+</div>
+
+<div class="box">
+  <div class="bt">🗣️ 원장·실장은 데스크에게 이렇게 지시한다</div>
+  복잡한 규칙을 외우게 하지 마세요. 핵심은 <u>데스크가 판단할 게 없게</u> 만드는 것입니다.
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li><b>한 문장 목표로</b> — "매주 이 리스트 위에서부터 20명 연락하고, 예약 잡힌 수만 알려줘."</li>
+    <li><b>판단은 실장이 대신</b> — 누가 먼저인지는 정렬로 이미 정해져 있으니, 데스크는 <u>위에서부터 걸기만</u>.</li>
+    <li><b>결과만 간단 보고</b> — 대장을 검사하지 말고 숫자 3개만. 감시가 아니라 <b>리듬</b>을 만드는 것.</li>
+  </ul>
+</div>
+
+<div class="box warn">
+  <div class="bt">⚠️ 솔직한 현실 — 방법은 간단한데, 왜 대부분 멈추나</div>
+  방법 자체는 위처럼 단순합니다. 어려운 건 <b>매주 빠짐없이</b> 리스트를 뽑고, 정렬하고, 상위부터 전화를 돌리고, 안 받은 사람을 몇 주째 다시 거는 <u>그 반복을 지치지 않고 계속하는 일</u>입니다. 바쁜 주가 오면 "이번 주만 건너뛰자"가 시작되고, 두세 번 건너뛰면 리듬이 깨집니다. <b>대부분의 병원은 방법을 몰라서가 아니라 꾸준함에서 무너집니다.</b> 이 리듬을 몇 달이고 유지하는 병원이 조용히 앞서갑니다.
+</div>
+
+
+<div class="box">
+  <div class="bt">🔁 이 책의 5장을 그대로 자동화하면</div>
+  방금 설명한 <u>"주간 리스트 → 위험순 정렬 → 상위 전화·나머지 문자 → 결과 추적 → 다음 주 재등장"</u>을 사람 대신 돌려주는 도구도 있습니다. 차트에서 대상을 자동으로 뽑아 점수순으로 정렬하고, 콜 결과를 다음 액션으로 이어줍니다. <b>꾸준함이 부담되면</b> 이런 도구를 검토해볼 만합니다 — 이 책이 손으로 하라고 알려준 걸, 그대로 자동으로 하는 셈입니다.
+  <span style="display:block;margin-top:8px;font-size:.86rem;color:var(--muted)">예: 리콜 자동화 프로그램 <b>AutoRecall</b> · <a href="https://4prismmso-rgb.github.io/autorecall/" rel="noopener">4prismmso-rgb.github.io/autorecall</a></span>
+</div>
+
+<!-- ========================================================= -->
+<!-- PART 6 -->
+<!-- ========================================================= -->
+</main>
+<nav class="filenav"><a class="home" href="index.html">📚 목차</a><span style="margin-left:auto"><a href="04_Part4_%EB%A6%AC%EC%BD%9C%EC%9D%98%EC%9D%98.html">← 이전</a> · <a href="06_Part6_%EA%B5%90%EC%9C%A1%ED%8F%89%EA%B0%80.html">다음 →</a></span></nav>
+<footer>
+  『빈틈없는 데스크 — 병원 매출의 숨은 엔진』 · 치과 경영 실무 시리즈 Vol.1<br>
+  발행 · 4Prism × 사계절치과 현장연구 · 2026<br><br>
+  <span style="font-size:.78rem">데이터·이론 출처 · 국세청 국세통계 · 국민건강보험공단 구강검진 수검률 · INTERVAL RCT(BDJ 2021) · ADA·Levin Group·JADA 리콜 벤치마크 · Carlzon 「Moments of Truth」(1987)·Shostack HBR(1984)·Kahneman peak-end · Goodhart(1975)·Campbell(1976)·Deci SDT·Deming 「Out of the Crisis」(1986)·Adobe/Deloitte 평가 개편 · TWI 직무훈련·Collins·Brown 인지적 도제. 업계 벤치마크 수치는 방향값이며 병원별 실측과 다를 수 있습니다.</span><br><br>
+  본 자료는 일반적 운영 가이드입니다. 보험청구·노무·법적 사항은 병원 상황에 맞게 전문가 확인이 필요합니다.
+</footer>
+</div></body></html>

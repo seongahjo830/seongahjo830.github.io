@@ -1,0 +1,1559 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리콜 프로그램 랜딩페이지 후보 — 미리보기 갤러리</title>
+<style>
+  :root{
+    --bg:#F5F4F0; --card:#fff; --ink:#1E1A14; --soft:#544D43; --faint:#8C8475;
+    --line:#E6E0D4; --accent:#3E6B53; --star:#C2603A;
+    --font:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+  header{padding:50px 0 18px;text-align:center}
+  header .k{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  header h1{font-size:clamp(26px,4.6vw,40px);font-weight:800;letter-spacing:-.03em;margin:12px 0 0}
+  header p{color:var(--soft);max-width:680px;margin:13px auto 0;font-size:16px}
+  .toc{position:sticky;top:0;z-index:50;background:rgba(245,244,240,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin-top:18px}
+  .toc .inner{max-width:1240px;margin:0 auto;padding:11px 24px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .toc a{font-size:13px;font-weight:700;color:var(--soft);background:#fff;border:1px solid var(--line);padding:6px 12px;border-radius:30px;white-space:nowrap}
+  .toc a:hover{color:#fff;background:var(--accent);border-color:var(--accent)}
+  section{margin:40px 0 0}
+  .sec-head{display:flex;align-items:center;gap:12px}
+  .sec-head h2{font-size:21px;font-weight:800;letter-spacing:-.02em}
+  .sec-head .cnt{font-size:12.5px;font-weight:800;color:var(--faint);background:#fff;border:1px solid var(--line);padding:3px 10px;border-radius:20px}
+  .sec-blurb{color:var(--soft);font-size:14.5px;margin:6px 0 0}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:18px 0 4px}
+  @media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px -20px rgba(40,30,15,.32);transition:transform .15s,box-shadow .15s;position:relative;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-4px);box-shadow:0 18px 42px -18px rgba(40,30,15,.4)}
+  .card.rec{border:2px solid var(--star)}
+  .feat{margin:30px 0 10px;text-align:center}
+  .feat-head{margin-bottom:4px}
+  .feat-pin{display:inline-block;background:var(--star);color:#fff;font-weight:800;font-size:12.5px;letter-spacing:.04em;padding:5px 15px;border-radius:30px}
+  .feat-title{font-size:clamp(20px,3vw,25px);font-weight:800;letter-spacing:-.02em;margin:11px 0 0}
+  .feat-blurb{max-width:720px;margin:8px auto 0}
+  .feat-wrap{display:flex;justify-content:center;margin-top:18px}
+  .feat-card{max-width:600px;width:100%;text-align:left}
+  .feat-thumb{height:440px}
+  /* 카톡 후보 = 미리보기 없이 키워드만, 더 작은 바둑판 */
+  .kakao-sec{margin:30px 0 0}
+  .kakao-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:11px;padding:14px 0 4px}
+  .kk-card{display:flex;flex-direction:column;gap:4px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 14px 12px;transition:transform .14s,box-shadow .14s,border-color .14s}
+  .kk-card:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 10px 22px -14px rgba(40,30,15,.45)}
+  .kk-card.knew{border-color:var(--star)}
+  .kk-code{font-size:11px;font-weight:800;color:var(--faint);letter-spacing:.05em}
+  .kk-name{font-size:14.5px;font-weight:800;letter-spacing:-.01em;line-height:1.3}
+  .kk-kw{font-size:12px;color:var(--soft);line-height:1.45;flex:1}
+  .kk-go{font-size:11.5px;font-weight:800;color:var(--accent);margin-top:5px}
+  .badge{position:absolute;top:13px;left:13px;z-index:5;background:var(--star);color:#fff;font-weight:800;font-size:12px;padding:5px 11px;border-radius:30px}
+  .thumb{position:relative;height:300px;overflow:hidden;border-bottom:1px solid var(--line);background:#fff}
+  .thumb iframe{width:250%;height:250%;border:0;transform:scale(.4);transform-origin:top left;pointer-events:none}
+  .thumb a.ov{position:absolute;inset:0;z-index:4}
+  .thumb a.ov:hover{box-shadow:inset 0 0 0 3px var(--accent)}
+  .meta{padding:17px 19px 19px;display:flex;flex-direction:column;gap:0;flex:1}
+  .meta .no{font-size:11.5px;font-weight:800;color:var(--faint);letter-spacing:.08em}
+  .meta h2{font-size:18px;font-weight:800;letter-spacing:-.02em;margin:4px 0 0}
+  .meta .ko{font-size:13.5px;color:var(--accent);font-weight:700;margin-top:5px;line-height:1.45}
+  .meta .btn{margin-top:14px;display:block;text-align:center;font-weight:700;font-size:14px;padding:11px;border-radius:10px;background:var(--ink);color:#fff;transition:.15s}
+  .meta .btn:hover{background:var(--accent)}
+  .docs{margin:46px 0 0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+  .docs h3{font-size:16px;font-weight:800}
+  .docs .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .docs a{font-size:13.5px;font-weight:700;color:var(--soft);background:var(--bg);border:1px solid var(--line);padding:8px 13px;border-radius:10px}
+  .docs a:hover{color:var(--accent);border-color:var(--accent)}
+  .note{font-size:12.5px;color:var(--faint);margin:26px 0 0;text-align:center;line-height:1.7}
+  footer{text-align:center;color:var(--faint);font-size:13px;padding:26px 0 56px}
+  .backbtn{position:fixed;top:14px;left:14px;z-index:100;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-size:13.5px;font-weight:800;color:var(--ink);background:rgba(255,255,255,.94);border:1px solid var(--line);padding:9px 15px 9px 12px;border-radius:30px;box-shadow:0 6px 18px -10px rgba(40,30,15,.45);backdrop-filter:blur(6px);transition:.15s}
+  .backbtn:hover{color:#fff;background:var(--accent);border-color:var(--accent)}
+  .backbtn .arr{font-size:16px;line-height:1}
+  .infobtn{position:fixed;top:14px;right:14px;z-index:100;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-size:12px;font-weight:800;color:var(--soft);background:rgba(255,255,255,.94);border:1px solid var(--line);padding:7px 12px;border-radius:30px;box-shadow:0 6px 18px -10px rgba(40,30,15,.45);backdrop-filter:blur(6px);transition:.15s}
+  .infobtn:hover{color:#fff;background:var(--accent);border-color:var(--accent)}
+  .infobtn .q{font-size:11px;opacity:.7}
+  @media(max-width:640px){.backbtn{font-size:12.5px;padding:8px 13px 8px 10px}.infobtn{font-size:11px;padding:6px 10px}}
+</style>
+</head>
+<body>
+  <a class="backbtn" href="index.html"><span class="arr">←</span> 허브로</a>
+  <a class="infobtn" href="https://webdot.co.kr/guide/%EB%9E%9C%EB%94%A9%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%A0%84%ED%99%98%EC%9C%A8-%EB%86%92%EC%9D%B4%EB%8A%94-%EA%B5%AC%EC%A1%B0-%EC%84%A4%EA%B3%84-%EA%B0%80%EC%9D%B4%EB%93%9C" target="_blank" rel="noopener">랜딩페이지란? <span class="q">↗</span></a>
+  <header><div class="wrap">
+    <div class="k">AutoRecall · Landing Gallery</div>
+    <h1>리콜 프로그램 랜딩페이지 후보</h1>
+    <p>모든 후보를 <b>실제 첫 화면 그대로</b> 미리보기로 한눈에. 카드를 누르면 바로 전체 화면 — 두 번 클릭 없이 바로 들어갑니다. <b>최신순</b>으로 정렬돼 <b>맨 위가 가장 최근</b> 작업입니다.</p>
+  </div></header>
+  <div class="wrap">
+    
+    <section id="sec-MAIN" class="feat">
+      <div class="feat-head"><span class="feat-pin">📌 지금 메인 · 수정 중</span></div>
+      <h2 class="feat-title">🏆 🏆 메인 — 리콜 설치 랜딩(메신저형) · 수정 중</h2>
+      <p class="sec-blurb feat-blurb">지금 메인으로 다듬는 중인 설치 유도 랜딩(원장 대상 — '원장님이 모르는 사이 새는 구환 매출'). 맨 위 가운데에 고정.</p>
+      <div class="feat-wrap">
+        <div class="card rec feat-card">
+          <div class="thumb feat-thumb"><a class="ov" href="설치랜딩_메신저형_07-02/07B_라이브데모.html"></a><iframe src="설치랜딩_메신저형_07-02/07B_라이브데모.html" loading="lazy" title="히어로 시안 07B — 스플릿 라이브데모(자동 시연)"></iframe></div>
+          <div class="meta"><div class="no">MAIN</div><h2>히어로 시안 07B — 스플릿 라이브데모(자동 시연)</h2><div class="ko">“수천 명 흩어진 구환 차트를, 오늘 전화할 3명 으로.”</div><a class="btn" href="설치랜딩_메신저형_07-02/07B_라이브데모.html">전체 화면으로 보기 →</a></div>
+        </div>
+      </div>
+    </section>
+    <section id="sec-DC">
+      <div class="sec-head">
+        <h2>🎨 🎨 누수 계산기 디자인 5안 — 고르는 중 (버튼→결과 하나씩 등장)</h2>
+        <span class="cnt">6개</span>
+      </div>
+      <p class="sec-blurb">메인 설치 랜딩에 들어갈 '우리 병원 누수 계산기'를 서로 다른 디자인 언어 5종으로 만든 것 — 아래 카드를 하나씩 열어 보고 고르세요. A 미니멀(⭐추천·기존 랜딩과 가장 자연스럽게 이어짐)·B 에디토리얼(준우승·잡지형 각인)·C 다크·D 토스풍·E 데이터임팩트. 계산식·순차등장 동작은 5개 모두 동일, 디자인만 다름. 맨 끝 '누수계산기-디자인5안' 카드는 5안을 한 화면에 나란히 비교하는 허브(점수표+⭐추천 포함). 문구·숫자는 예시·가정값.</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="누수계산기-디자인5안_07-03/누수계산기-디자인5안.html"></a><iframe src="누수계산기-디자인5안_07-03/누수계산기-디자인5안.html" loading="lazy" title="리콜 누수 계산기 · 디자인 5안 비교"></iframe></div>
+        <div class="meta">
+          <div class="no">DC · 01</div>
+          <h2>리콜 누수 계산기 · 디자인 5안 비교</h2>
+          <div class="ko">“리콜 누수 계산기 — 디자인 5안 비교”</div>
+          <a class="btn" href="누수계산기-디자인5안_07-03/누수계산기-디자인5안.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="누수계산기-디자인5안_07-03/A_미니멀.html"></a><iframe src="누수계산기-디자인5안_07-03/A_미니멀.html" loading="lazy" title="치과 리콜 누수 계산기 · 미니멀"></iframe></div>
+        <div class="meta">
+          <div class="no">DC · 02</div>
+          <h2>치과 리콜 누수 계산기 · 미니멀</h2>
+          <div class="ko">“원장님이 지금 아는 값 4가지만 넣으면, 대략의 누수가 바로 보입니다.”</div>
+          <a class="btn" href="누수계산기-디자인5안_07-03/A_미니멀.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="누수계산기-디자인5안_07-03/B_에디토리얼.html"></a><iframe src="누수계산기-디자인5안_07-03/B_에디토리얼.html" loading="lazy" title="치과 리콜 누수 계산기 · 에디토리얼"></iframe></div>
+        <div class="meta">
+          <div class="no">DC · 03</div>
+          <h2>치과 리콜 누수 계산기 · 에디토리얼</h2>
+          <div class="ko">“원장님이 지금 아는 값 4가지만 넣으면, 대략의 누수가 바로 보입니다.”</div>
+          <a class="btn" href="누수계산기-디자인5안_07-03/B_에디토리얼.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="누수계산기-디자인5안_07-03/C_다크.html"></a><iframe src="누수계산기-디자인5안_07-03/C_다크.html" loading="lazy" title="치과 리콜 누수 계산기 — 다크"></iframe></div>
+        <div class="meta">
+          <div class="no">DC · 04</div>
+          <h2>치과 리콜 누수 계산기 — 다크</h2>
+          <div class="ko">“원장님이 지금 아는 값 4가지만 넣으면, 대략의 누수가 바로 보입니다.”</div>
+          <a class="btn" href="누수계산기-디자인5안_07-03/C_다크.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="누수계산기-디자인5안_07-03/D_토스풍.html"></a><iframe src="누수계산기-디자인5안_07-03/D_토스풍.html" loading="lazy" title="치과 리콜 누수 계산기 · 토스풍"></iframe></div>
+        <div class="meta">
+          <div class="no">DC · 05</div>
+          <h2>치과 리콜 누수 계산기 · 토스풍</h2>
+          <div class="ko">“원장님이 지금 아는 값 4가지만 넣으면, 대략의 누수가 바로 보입니다.”</div>
+          <a class="btn" href="누수계산기-디자인5안_07-03/D_토스풍.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="누수계산기-디자인5안_07-03/E_데이터임팩트.html"></a><iframe src="누수계산기-디자인5안_07-03/E_데이터임팩트.html" loading="lazy" title="치과 리콜 누수 계산기 — 데이터/임팩트"></iframe></div>
+        <div class="meta">
+          <div class="no">DC · 06</div>
+          <h2>치과 리콜 누수 계산기 — 데이터/임팩트</h2>
+          <div class="ko">“원장님이 지금 아는 값 4가지만 넣으면, 대략의 누수가 바로 보입니다.”</div>
+          <a class="btn" href="누수계산기-디자인5안_07-03/E_데이터임팩트.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-KAKAO" class="kakao-sec">
+      <div class="sec-head"><h2>💬 카톡 형식 후보</h2><span class="cnt">6개</span></div>
+      <p class="sec-blurb">반응이 좋은 <b>카톡(대화)형</b> 랜딩 후보 모음 — 미리보기 없이 <b>컨셉 키워드만</b> 작은 카드로. 카드를 누르면 전체 화면.</p>
+      <div class="kakao-grid">
+        <a class="kk-card knew" href="리콜-카톡-시나리오-최종후보_2026-07-02/리콜-카톡-시나리오-최종후보_2026-07-02.html">
+          <div class="kk-code">🏆 KF</div>
+          <div class="kk-name">카톡 스토리라인 최종 후보 5안</div>
+          <div class="kk-kw">최종 5안 · 대화 스토리라인 · 추천</div>
+          <span class="kk-go">열기 →</span>
+        </a>
+        <a class="kk-card knew" href="리콜-카톡-시나리오-전환형_2026-07-02/리콜-카톡-시나리오-전환형_2026-07-02.html">
+          <div class="kk-code">💬 K전환</div>
+          <div class="kk-name">카톡 스토리라인 · 전환형 5안</div>
+          <div class="kk-kw">전환 초점 · 대화 스토리라인 · 5안</div>
+          <span class="kk-go">열기 →</span>
+        </a>
+        <a class="kk-card knew" href="리콜-카톡-시나리오-다른결_2026-07-02/리콜-카톡-시나리오-다른결_2026-07-02.html">
+          <div class="kk-code">💬 K다른결</div>
+          <div class="kk-name">카톡 스토리라인 · 다른 결 5안</div>
+          <div class="kk-kw">뼈대부터 바꾼 · 결 다른 · 대화 스토리라인 · 5안</div>
+          <span class="kk-go">열기 →</span>
+        </a>
+        <a class="kk-card knew" href="리콜-카톡-뼈아픈리뷰-10안_2026-07-02/리콜-카톡-뼈아픈리뷰-10안_2026-07-02.html">
+          <div class="kk-code">💬 KR</div>
+          <div class="kk-name">뼈아픈 리뷰 · 톤 10안</div>
+          <div class="kk-kw">환자 리뷰 톤 · 뼈아픈 후기 · 10안</div>
+          <span class="kk-go">열기 →</span>
+        </a>
+        <a class="kk-card knew" href="리콜-카톡-시나리오-10안_2026-07-02/리콜-카톡-시나리오-10안_2026-07-02.html">
+          <div class="kk-code">💬 K10</div>
+          <div class="kk-name">카톡 스토리라인 10안</div>
+          <div class="kk-kw">대화형 스토리라인 · 10안</div>
+          <span class="kk-go">열기 →</span>
+        </a>
+        <a class="kk-card knew" href="리콜-카톡-시나리오-4안_2026-07-02/리콜-카톡-시나리오-4안_2026-07-02.html">
+          <div class="kk-code">💬 K4</div>
+          <div class="kk-name">카톡 스토리라인 4안 비교</div>
+          <div class="kk-kw">스토리라인 4안 비교</div>
+          <span class="kk-go">열기 →</span>
+        </a>
+      </div>
+    </section>
+    <section id="sec-★">
+      <div class="sec-head">
+        <h2>📖 읽을거리 — 왜 리콜해야 하는가 (원장용) · 최신</h2>
+        <span class="cnt">4개</span>
+      </div>
+      <p class="sec-blurb">판매 랜딩이 아니라 원장이 가볍게 읽는 “읽을거리”. ⭐ 자가진단 계산기 포함(한 달 미루면 얼마? 슬라이더 2버전: 설치 없이 간이 / 설치 후 정밀). ① 데이터로 보는 「리콜, 왜 중요한가」(임상근거 INTERVAL·Cochrane·NICE·JADA + 휴면 곡선으로 우리가 직접 정리) · ② 「이번 달 얼마 새는지」(손해 표 100명=720만원, 끝에서 “설치=우리 치과 진단”으로 초대) · ③ 참고: 현장 마케터의 글(외부 필자 최서로, 출처 표기). 클릭해서 바로 읽기.</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="Z_읽을거리-리콜해야하는이유_07-02/리콜-왜-중요한가_근거정리.html"></a><iframe src="Z_읽을거리-리콜해야하는이유_07-02/리콜-왜-중요한가_근거정리.html" loading="lazy" title="리콜, 왜 중요한가 — 데이터로 보는 구환 관리"></iframe></div>
+        <div class="meta">
+          <div class="no">★ · 01</div>
+          <h2>리콜, 왜 중요한가 — 데이터로 보는 구환 관리</h2>
+          <div class="ko">“리콜, 왜 중요한가”</div>
+          <a class="btn" href="Z_읽을거리-리콜해야하는이유_07-02/리콜-왜-중요한가_근거정리.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="Z_읽을거리-리콜해야하는이유_07-02/리콜-한달미루면-자가진단.html"></a><iframe src="Z_읽을거리-리콜해야하는이유_07-02/리콜-한달미루면-자가진단.html" loading="lazy" title="한 달 미루면 얼마? — 리콜 지연 손해 자가진단"></iframe></div>
+        <div class="meta">
+          <div class="no">★ · 02</div>
+          <h2>한 달 미루면 얼마? — 리콜 지연 손해 자가진단</h2>
+          <div class="ko">“한 달 미루면 얼마일까?”</div>
+          <a class="btn" href="Z_읽을거리-리콜해야하는이유_07-02/리콜-한달미루면-자가진단.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="Z_읽을거리-리콜해야하는이유_07-02/리콜해야-하는-이유.html"></a><iframe src="Z_읽을거리-리콜해야하는이유_07-02/리콜해야-하는-이유.html" loading="lazy" title="리콜해야 하는 이유 — 이번 달도 새는 구환 매출"></iframe></div>
+        <div class="meta">
+          <div class="no">★ · 03</div>
+          <h2>리콜해야 하는 이유 — 이번 달도 새는 구환 매출</h2>
+          <div class="ko">“원장님이 모르는 사이, 이번 달도 구환 매출이 샙니다.”</div>
+          <a class="btn" href="Z_읽을거리-리콜해야하는이유_07-02/리콜해야-하는-이유.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="Z_읽을거리-리콜해야하는이유_07-02/최서로-리콜시스템-재진율30_원문.html"></a><iframe src="Z_읽을거리-리콜해야하는이유_07-02/최서로-리콜시스템-재진율30_원문.html" loading="lazy" title="참고 — 리콜 시스템만으로 재진율 30% 올리는 법 (최서로)"></iframe></div>
+        <div class="meta">
+          <div class="no">★ · 04</div>
+          <h2>참고 — 리콜 시스템만으로 재진율 30% 올리는 법 (최서로)</h2>
+          <div class="ko">“리콜 시스템만으로 재진율 30% 올리는 법”</div>
+          <a class="btn" href="Z_읽을거리-리콜해야하는이유_07-02/최서로-리콜시스템-재진율30_원문.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-HB">
+      <div class="sec-head">
+        <h2>🏆 히어로 보드 — 그룹별 어그로 챔피언 (라운드 5) · 최신</h2>
+        <span class="cnt">1개</span>
+      </div>
+      <p class="sec-blurb">개별 랜딩이 아니라 후보 히어로(첫 화면 헤드라인) 문구들을 그룹별로 겨루게 한 “보드” — 각 그룹에서 가장 어그로가 센 챔피언을 골라 한눈에 비교. 마음에 드는 챔피언을 고르면 그 방향으로 변주를 더 뽑는 다음 라운드로 이어짐. (문구 속 숫자는 예시·가정값, 의료효과 보장 배제)</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="Y_히어로보드-그룹별어그로챔피언_07-02/히어로보드-그룹별어그로챔피언.html"></a><iframe src="Y_히어로보드-그룹별어그로챔피언_07-02/히어로보드-그룹별어그로챔피언.html" loading="lazy" title="리콜 히어로 보드 · 라운드 5 · 그룹별 어그로 챔피언 · 2026-07-02"></iframe></div>
+        <div class="meta">
+          <div class="no">HB · 01</div>
+          <h2>리콜 히어로 보드 · 라운드 5 · 그룹별 어그로 챔피언 · 2026-07-02</h2>
+          <div class="ko">“그룹별 어그로 챔피언 픽 특성 조합 · 최대 후킹 · 2026-07-02”</div>
+          <a class="btn" href="Y_히어로보드-그룹별어그로챔피언_07-02/히어로보드-그룹별어그로챔피언.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-5s">
+      <div class="sec-head">
+        <h2>⏱️ 스토리라인 5초안 — 이론 근거판 · 최신</h2>
+        <span class="cnt">1개</span>
+      </div>
+      <p class="sec-blurb">첫 5초 안에 구환의 시선을 잡는 히어로 스토리라인 후보들을, 왜 먹히는지 **심리·전환 이론 근거**와 함께 나란히 놓은 판. 각 초안이 어떤 원리(손실 프레이밍·구체성·열린 고리 등)를 쓰는지 짝지어 비교. (문구 속 숫자는 예시·가정값, 의료효과 보장 배제)</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="스토리라인-5초안-근거판_07-02/리콜-스토리라인-5초안-근거판_2026-07-02.html"></a><iframe src="스토리라인-5초안-근거판_07-02/리콜-스토리라인-5초안-근거판_2026-07-02.html" loading="lazy" title="리콜 랜딩 스토리라인 5초안 · 이론 근거판"></iframe></div>
+        <div class="meta">
+          <div class="no">5s · 01</div>
+          <h2>리콜 랜딩 스토리라인 5초안 · 이론 근거판</h2>
+          <div class="ko">“우리 구환이 지금 옆 치과 신환으로 앉아 있습니다.”</div>
+          <a class="btn" href="스토리라인-5초안-근거판_07-02/리콜-스토리라인-5초안-근거판_2026-07-02.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-X">
+      <div class="sec-head">
+        <h2>🩺 원장 피드백 9개 반영 · 공감→설치 3종 · 최신</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">원장이 “괜찮았다”고 한 메시지 9개를 전부 설계로 녹인 설치 유도 3종(전환 리서치 기반: 인터랙티브 체크리스트=전환 40%·후기 사회증거=+340%·손실 프레이밍). 같은 캐치프레이즈로 시작하되 결이 다르게: 🩺 증상 체크리스트→진단서→처방(9증상 클릭=“우리 치과 몇 가지 해당?” 실시간 카운트→정밀 누수 계산) · ⭐ 두 치과 이야기·환자 후기 월(관리치과 ★4.8 vs 방치치과 ★3.1 비교 벽) · 📋 원장 경영 브리핑(새는 양동이+마케팅비 vs 구환 ROI 배수 계산기). 9메시지 커버리지 검증+3중 레드팀 반영(reduced-motion·대비·skip링크·aria·won반올림·후기 예시라벨). 첫 화면 강력 훅 · 반응형</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="X_피드백반영-3종-체크리스트·후기·ROI_07-01/1_증상체크리스트-진단서-처방.html"></a><iframe src="X_피드백반영-3종-체크리스트·후기·ROI_07-01/1_증상체크리스트-진단서-처방.html" loading="lazy" title="우리 치과 리콜 자가검진 — 몇 가지나 해당될까요?"></iframe></div>
+        <div class="meta">
+          <div class="no">X · 01</div>
+          <h2>우리 치과 리콜 자가검진 — 몇 가지나 해당될까요?</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="X_피드백반영-3종-체크리스트·후기·ROI_07-01/1_증상체크리스트-진단서-처방.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="X_피드백반영-3종-체크리스트·후기·ROI_07-01/2_두치과이야기-환자후기월.html"></a><iframe src="X_피드백반영-3종-체크리스트·후기·ROI_07-01/2_두치과이야기-환자후기월.html" loading="lazy" title="두 치과 이야기 — 환자는 ★를 이렇게 다르게 줍니다"></iframe></div>
+        <div class="meta">
+          <div class="no">X · 02</div>
+          <h2>두 치과 이야기 — 환자는 ★를 이렇게 다르게 줍니다</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="X_피드백반영-3종-체크리스트·후기·ROI_07-01/2_두치과이야기-환자후기월.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="X_피드백반영-3종-체크리스트·후기·ROI_07-01/3_원장브리핑-구환vs신환-ROI.html"></a><iframe src="X_피드백반영-3종-체크리스트·후기·ROI_07-01/3_원장브리핑-구환vs신환-ROI.html" loading="lazy" title="원장 브리핑 — 마케팅비 쓰기 전에, 새는 구환부터"></iframe></div>
+        <div class="meta">
+          <div class="no">X · 03</div>
+          <h2>원장 브리핑 — 마케팅비 쓰기 전에, 새는 구환부터</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="X_피드백반영-3종-체크리스트·후기·ROI_07-01/3_원장브리핑-구환vs신환-ROI.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-Q">
+      <div class="sec-head">
+        <h2>🪶 완전 새로운 느낌 3종 · 손편지·신문호외·웹툰 · 최신</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">데이터·계기판·앱 계열과 정반대의 결로 같은 설계도(3막 8장 + 자가진단)를: ✉️ 손편지(잊혀진 환자가 원장님께 보내는 편지지·밀랍봉인, 감성 1인칭으로 시작) · 📰 治齒新聞 호외(빈티지 신문 1면 조판·세리프·다단·독자 자가진단 계산기) · 🗯️ 세로 웹툰(데스크 실장의 하루를 EP.1~8 만화 컷·말풍선·플랫 일러스트로, 모바일 퍼스트). 첫 화면 강력 훅 + 반응형</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="Q_완전새로운느낌-3종_07-01/1_손편지_잊혀진환자의편지.html"></a><iframe src="Q_완전새로운느낌-3종_07-01/1_손편지_잊혀진환자의편지.html" loading="lazy" title="잊혀진 환자가 원장님께 보내는 편지"></iframe></div>
+        <div class="meta">
+          <div class="no">Q · 01</div>
+          <h2>잊혀진 환자가 원장님께 보내는 편지</h2>
+          <div class="ko">“저, 기억하세요? 한동안 안 갔던 그 환자예요.”</div>
+          <a class="btn" href="Q_완전새로운느낌-3종_07-01/1_손편지_잊혀진환자의편지.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="Q_완전새로운느낌-3종_07-01/2_신문1면_치아신문호외.html"></a><iframe src="Q_완전새로운느낌-3종_07-01/2_신문1면_치아신문호외.html" loading="lazy" title="治齒新聞 호외: 안 오는 환자는 없다"></iframe></div>
+        <div class="meta">
+          <div class="no">Q · 02</div>
+          <h2>治齒新聞 호외: 안 오는 환자는 없다</h2>
+          <div class="ko">““안 오는 환자는 없다 — 안 부른 환자 가 있을 뿐””</div>
+          <a class="btn" href="Q_완전새로운느낌-3종_07-01/2_신문1면_치아신문호외.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="Q_완전새로운느낌-3종_07-01/3_세로웹툰_데스크실장의하루.html"></a><iframe src="Q_완전새로운느낌-3종_07-01/3_세로웹툰_데스크실장의하루.html" loading="lazy" title="웹툰: 데스크 실장의 하루"></iframe></div>
+        <div class="meta">
+          <div class="no">Q · 03</div>
+          <h2>웹툰: 데스크 실장의 하루</h2>
+          <div class="ko">“안 오는 환자는 없어요. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="Q_완전새로운느낌-3종_07-01/3_세로웹툰_데스크실장의하루.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-W">
+      <div class="sec-head">
+        <h2>💚 공감→설치 3종 · 원장 피드백 9개 반영 · 최신</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">원장 피드백(괜찮았던 메시지 9개)을 설계로 녹인 설치 유도 3종 — 공감 먼저, 그다음 설치하고 싶게: 🗣️ 후기 벽 + 갈림길(관리받은 환자 ★후기 벽 + 한 환자의 6개월이 ‘부른 치과 vs 안 부른 치과’로 갈라짐) · 🩺 원장님 셀프 문진표(증상을 직접 체크 → “우리 치과는 몇 가지나 해당?” 실시간 카운트 → 처방전) · ⛏️ 구환 금광 + 정제소(차트=안 캔 금맥, 흩어진 명단을 ‘오늘 걸 3통’으로 가공, 마케팅비 vs 구환 재호출비 비교). 첫 화면 강력 캐치+시각훅 · 모바일 퍼스트 반응형</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="W_공감설치3종-후기벽-셀프문진-구환금광_07-01/1_후기벽-갈림길.html"></a><iframe src="W_공감설치3종-후기벽-셀프문진-구환금광_07-01/1_후기벽-갈림길.html" loading="lazy" title="안 오는 환자는 없습니다. 안 부른 환자만 있을 뿐."></iframe></div>
+        <div class="meta">
+          <div class="no">W · 01</div>
+          <h2>안 오는 환자는 없습니다. 안 부른 환자만 있을 뿐.</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="W_공감설치3종-후기벽-셀프문진-구환금광_07-01/1_후기벽-갈림길.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="W_공감설치3종-후기벽-셀프문진-구환금광_07-01/2_원장님-셀프문진표.html"></a><iframe src="W_공감설치3종-후기벽-셀프문진-구환금광_07-01/2_원장님-셀프문진표.html" loading="lazy" title="원장님 셀프 문진표"></iframe></div>
+        <div class="meta">
+          <div class="no">W · 02</div>
+          <h2>원장님 셀프 문진표</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자만 있을 뿐.”</div>
+          <a class="btn" href="W_공감설치3종-후기벽-셀프문진-구환금광_07-01/2_원장님-셀프문진표.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="W_공감설치3종-후기벽-셀프문진-구환금광_07-01/3_구환금광-정제소.html"></a><iframe src="W_공감설치3종-후기벽-셀프문진-구환금광_07-01/3_구환금광-정제소.html" loading="lazy" title="원장님 차트 속 안 캔 금맥"></iframe></div>
+        <div class="meta">
+          <div class="no">W · 03</div>
+          <h2>원장님 차트 속 안 캔 금맥</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자만 있을 뿐.”</div>
+          <a class="btn" href="W_공감설치3종-후기벽-셀프문진-구환금광_07-01/3_구환금광-정제소.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-V">
+      <div class="sec-head">
+        <h2>🛰️ 완전 새로운 느낌 3종 · 레이더·엑셀시트·일기예보 · 최신</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">기존 모든 포맷과 다른 결로 같은 설계도(3막 8장 + 자가진단)를: 🛰️ 관제탑 레이더(스위핑 레이더에서 잠든 환자=붉은 점이 옆 치과로 빠져나감, 슬라이더로 누수 추적) · 📊 죽어가는 엑셀 시트(데스크의 그 .xlsx — 방치 개월을 늘리면 행이 붉게 죽고 합계가 떨어짐, fx 수식줄) · 🌦️ 리콜 일기예보(방송 일기예보, 강수확률=끊김율 올리면 폭우·매출 침수, 설치하면 맑음). 첫 화면 강력 훅 + 반응형 + reduced-motion·예시라벨</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="V_완전새느낌-레이더시트예보_06-30/1_관제탑레이더.html"></a><iframe src="V_완전새느낌-레이더시트예보_06-30/1_관제탑레이더.html" loading="lazy" title="관제탑 — 당신의 환자가 레이더에서 사라지고 있습니다"></iframe></div>
+        <div class="meta">
+          <div class="no">V · 01</div>
+          <h2>관제탑 — 당신의 환자가 레이더에서 사라지고 있습니다</h2>
+          <div class="ko">“당신의 환자가 레이더에서 사라지고 있습니다.”</div>
+          <a class="btn" href="V_완전새느낌-레이더시트예보_06-30/1_관제탑레이더.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="V_완전새느낌-레이더시트예보_06-30/2_죽어가는엑셀시트.html"></a><iframe src="V_완전새느낌-레이더시트예보_06-30/2_죽어가는엑셀시트.html" loading="lazy" title="리콜_명단_최종_진짜최종.xlsx — 당신의 리콜은 엑셀에서 조용히 죽고 있습니다"></iframe></div>
+        <div class="meta">
+          <div class="no">V · 02</div>
+          <h2>리콜_명단_최종_진짜최종.xlsx — 당신의 리콜은 엑셀에서 조용히 죽고 있습니다</h2>
+          <div class="ko">“당신의 리콜 명단은, 엑셀에서 조용히 죽고 있습니다.”</div>
+          <a class="btn" href="V_완전새느낌-레이더시트예보_06-30/2_죽어가는엑셀시트.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="V_완전새느낌-레이더시트예보_06-30/3_리콜일기예보.html"></a><iframe src="V_완전새느낌-레이더시트예보_06-30/3_리콜일기예보.html" loading="lazy" title="리콜 일기예보 — 우리 치과 매출에 ‘누수 주의보’"></iframe></div>
+        <div class="meta">
+          <div class="no">V · 03</div>
+          <h2>리콜 일기예보 — 우리 치과 매출에 ‘누수 주의보’</h2>
+          <div class="ko">“우리 치과 매출에 누수 주의보 가 내렸습니다.”</div>
+          <a class="btn" href="V_완전새느낌-레이더시트예보_06-30/3_리콜일기예보.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-RE">
+      <div class="sec-head">
+        <h2>🎭 스토리라인 3종 · 디자인 언어가 정반대인 3종 · 최신</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">같은 설계도(3막 8장 + 자가진단)를 디자인 언어 자체가 정반대인 셋으로: 📰 명단의 벽(에디토리얼 신문 1면 — 잠든 환자 347명의 이름이 흐르는 大자보 히어로) · 🌌 리콜 OS(다크 네온 SaaS 제품 — 빛나는 콜 큐가 실시간으로 깜빡이는 프로덕트 히어로) · ⇆ 평행 6월(좌우 듀오톤 스플릿 — 손잡이를 끌면 안 부른 치과와 부른 치과의 6개월 뒤가 갈림). 첫 화면 강력 훅 + 반응형</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="R_스토리라인-에디토리얼·다크OS·평행스플릿_06-30/1_명단의벽-에디토리얼.html"></a><iframe src="R_스토리라인-에디토리얼·다크OS·평행스플릿_06-30/1_명단의벽-에디토리얼.html" loading="lazy" title="명단의 벽 — 안 오는 환자는 없습니다"></iframe></div>
+        <div class="meta">
+          <div class="no">RE · 01</div>
+          <h2>명단의 벽 — 안 오는 환자는 없습니다</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="R_스토리라인-에디토리얼·다크OS·평행스플릿_06-30/1_명단의벽-에디토리얼.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="R_스토리라인-에디토리얼·다크OS·평행스플릿_06-30/2_리콜OS-다크프로덕트.html"></a><iframe src="R_스토리라인-에디토리얼·다크OS·평행스플릿_06-30/2_리콜OS-다크프로덕트.html" loading="lazy" title="리콜 OS — 오늘 누굴 부를지, 화면이 정해줍니다"></iframe></div>
+        <div class="meta">
+          <div class="no">RE · 02</div>
+          <h2>리콜 OS — 오늘 누굴 부를지, 화면이 정해줍니다</h2>
+          <div class="ko">“오늘 누굴 부를지, 화면이 정해줍니다.”</div>
+          <a class="btn" href="R_스토리라인-에디토리얼·다크OS·평행스플릿_06-30/2_리콜OS-다크프로덕트.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="R_스토리라인-에디토리얼·다크OS·평행스플릿_06-30/3_평행6월-스플릿드래그.html"></a><iframe src="R_스토리라인-에디토리얼·다크OS·평행스플릿_06-30/3_평행6월-스플릿드래그.html" loading="lazy" title="평행 6월 — 같은 치과, 두 개의 6개월 뒤"></iframe></div>
+        <div class="meta">
+          <div class="no">RE · 03</div>
+          <h2>평행 6월 — 같은 치과, 두 개의 6개월 뒤</h2>
+          <div class="ko">“무엇이 두 치과를 갈랐을까?”</div>
+          <a class="btn" href="R_스토리라인-에디토리얼·다크OS·평행스플릿_06-30/3_평행6월-스플릿드래그.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-U">
+      <div class="sec-head">
+        <h2>🖥️ 완전 다른 방식 3종 · 콘솔·메신저·파티클 · 최신</h2>
+        <span class="cnt">4개</span>
+      </div>
+      <p class="sec-blurb">리서치(인터랙티브 자가진단=정적 폼 대비 ~16배 전환)로 같은 설계도(3막 8장 + 자가진단)를 장르 자체가 다른 3개로: 🖥️ 터미널 진단 콘솔(차트를 스캔하는 시스템처럼 타이핑·로그·명령으로, “운영 도구” 신뢰 신호) · 💬 원장·실장 대화 엿보기(메신저 화면, 두 사람 대화로 통증·면죄가 드러나고 진단봇이 내 숫자 계산) · ✨ 잠든 환자 347개의 빛(파티클 캔버스, 스크롤하면 환자=빛이 하나씩 꺼지고 자가진단으로 다시 켜짐). 첫 화면 강력 훅 + 모바일 퍼스트 반응형 + 제작 리서치 노트 동봉</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="U_콘솔-메신저-파티클_06-30/0_제작리서치-이상적방법.html"></a><iframe src="U_콘솔-메신저-파티클_06-30/0_제작리서치-이상적방법.html" loading="lazy" title="제작 리서치 — 스토리라인을 '완전히 다른 3방식'으로 만드는 이상적 방법"></iframe></div>
+        <div class="meta">
+          <div class="no">U · 01</div>
+          <h2>제작 리서치 — 스토리라인을 '완전히 다른 3방식'으로 만드는 이상적 방법</h2>
+          <div class="ko">“같은 스토리라인을 '완전히 다른 3방식'으로 만드는 이상적 방법”</div>
+          <a class="btn" href="U_콘솔-메신저-파티클_06-30/0_제작리서치-이상적방법.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="U_콘솔-메신저-파티클_06-30/1_터미널-진단콘솔.html"></a><iframe src="U_콘솔-메신저-파티클_06-30/1_터미널-진단콘솔.html" loading="lazy" title="차트 스캔 콘솔 · 안 부른 환자만 있습니다"></iframe></div>
+        <div class="meta">
+          <div class="no">U · 02</div>
+          <h2>차트 스캔 콘솔 · 안 부른 환자만 있습니다</h2>
+          
+          <a class="btn" href="U_콘솔-메신저-파티클_06-30/1_터미널-진단콘솔.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="U_콘솔-메신저-파티클_06-30/2_메신저-대화엿보기.html"></a><iframe src="U_콘솔-메신저-파티클_06-30/2_메신저-대화엿보기.html" loading="lazy" title="원장님, 잠깐만요 — 데스크의 진짜 대화"></iframe></div>
+        <div class="meta">
+          <div class="no">U · 03</div>
+          <h2>원장님, 잠깐만요 — 데스크의 진짜 대화</h2>
+          <div class="ko">““원장님, 그 환자들… 안 온 게 아니라 우리가 안 불렀어요.””</div>
+          <a class="btn" href="U_콘솔-메신저-파티클_06-30/2_메신저-대화엿보기.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="U_콘솔-메신저-파티클_06-30/3_파티클-잠든환자347.html"></a><iframe src="U_콘솔-메신저-파티클_06-30/3_파티클-잠든환자347.html" loading="lazy" title="잠든 환자 347명의 빛 — 스크롤하면 하나씩 꺼집니다"></iframe></div>
+        <div class="meta">
+          <div class="no">U · 04</div>
+          <h2>잠든 환자 347명의 빛 — 스크롤하면 하나씩 꺼집니다</h2>
+          <div class="ko">“이 빛 하나가 환자 한 명 입니다. 스크롤하면, 하나씩 꺼집니다.”</div>
+          <a class="btn" href="U_콘솔-메신저-파티클_06-30/3_파티클-잠든환자347.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-T">
+      <div class="sec-head">
+        <h2>🎮 완전 새로운 방식 3종 · 아케이드·손그림·스와이프 · 최신</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">같은 설계도(3막 8장 + 자가진단)를 완전히 새로운 감각으로: 🕹️ 레트로 아케이드 게임(8비트·CRT, 새는 매출 막기 게임화) · ✍️ 손그림 화이트보드 노트(마커·포스트잇·손으로 그린 화살표) · 🃏 스와이프 카드덱(환자 카드를 밀어넘기며 부를까·넘길까). 첫 화면 강력 훅 + 반응형</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="T_완전새로운방식-3종_06-30/1_레트로-아케이드-게임.html"></a><iframe src="T_완전새로운방식-3종_06-30/1_레트로-아케이드-게임.html" loading="lazy" title="INSERT COIN, 새는 매출을 막아라 (레트로 아케이드)"></iframe></div>
+        <div class="meta">
+          <div class="no">T · 01</div>
+          <h2>INSERT COIN, 새는 매출을 막아라 (레트로 아케이드)</h2>
+          
+          <a class="btn" href="T_완전새로운방식-3종_06-30/1_레트로-아케이드-게임.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="T_완전새로운방식-3종_06-30/2_손그림-화이트보드-노트.html"></a><iframe src="T_완전새로운방식-3종_06-30/2_손그림-화이트보드-노트.html" loading="lazy" title="화이트보드에 그려보는 새는 매출 (손그림 노트)"></iframe></div>
+        <div class="meta">
+          <div class="no">T · 02</div>
+          <h2>화이트보드에 그려보는 새는 매출 (손그림 노트)</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자만 있을 뿐.”</div>
+          <a class="btn" href="T_완전새로운방식-3종_06-30/2_손그림-화이트보드-노트.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="T_완전새로운방식-3종_06-30/3_스와이프-카드덱.html"></a><iframe src="T_완전새로운방식-3종_06-30/3_스와이프-카드덱.html" loading="lazy" title="부를까 넘길까, 스와이프 (카드덱)"></iframe></div>
+        <div class="meta">
+          <div class="no">T · 03</div>
+          <h2>부를까 넘길까, 스와이프 (카드덱)</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자만 있을 뿐.”</div>
+          <a class="btn" href="T_완전새로운방식-3종_06-30/3_스와이프-카드덱.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-S">
+      <div class="sec-head">
+        <h2>🗞️ 완전 새로운 방식 · 장르 매체 3종 · 최신</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">같은 설계도(3막 8장 + 자가진단)를 전혀 다른 매체 장르로: 📰 신문 1면 특보(가상 브로드시트, 드롭캡·다단·［도표］로 읽는 누수 기사) · 💬 웹툰 세로 스크롤(실장·원장 캐릭터 말풍선 드라마, 한 컷씩 감정 따라가기) · 🕹️ 레트로 아케이드(8비트 CRT 스캔라인, PRESS START·BOSS 71%·STATUS 능력치=점수). 첫 화면 강력 훅 + 반응형 + 3중 레드팀 반영(reduced-motion·대비·aria·예시라벨)</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="S_완전새로운방식-신문웹툰게임_06-30/1_신문1면-특보-브로드시트.html"></a><iframe src="S_완전새로운방식-신문웹툰게임_06-30/1_신문1면-특보-브로드시트.html" loading="lazy" title="특보 — 안 부른 환자, 매년 8,400만원이 사라진다 (치과경영 1면)"></iframe></div>
+        <div class="meta">
+          <div class="no">S · 01</div>
+          <h2>특보 — 안 부른 환자, 매년 8,400만원이 사라진다 (치과경영 1면)</h2>
+          <div class="ko">“사계절 치과경영 데일리”</div>
+          <a class="btn" href="S_완전새로운방식-신문웹툰게임_06-30/1_신문1면-특보-브로드시트.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="S_완전새로운방식-신문웹툰게임_06-30/2_웹툰-세로스크롤-진료실드라마.html"></a><iframe src="S_완전새로운방식-신문웹툰게임_06-30/2_웹툰-세로스크롤-진료실드라마.html" loading="lazy" title="안 부른 환자만 있을 뿐 — 웹툰 진료실 드라마"></iframe></div>
+        <div class="meta">
+          <div class="no">S · 02</div>
+          <h2>안 부른 환자만 있을 뿐 — 웹툰 진료실 드라마</h2>
+          <div class="ko">“안 오는 환자는 없어요. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="S_완전새로운방식-신문웹툰게임_06-30/2_웹툰-세로스크롤-진료실드라마.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="S_완전새로운방식-신문웹툰게임_06-30/3_레트로-아케이드게임-리콜퀘스트.html"></a><iframe src="S_완전새로운방식-신문웹툰게임_06-30/3_레트로-아케이드게임-리콜퀘스트.html" loading="lazy" title="RECALL QUEST — 안 부른 환자만 있을 뿐 (레트로 아케이드)"></iframe></div>
+        <div class="meta">
+          <div class="no">S · 03</div>
+          <h2>RECALL QUEST — 안 부른 환자만 있을 뿐 (레트로 아케이드)</h2>
+          <div class="ko">“RECALL QUEST”</div>
+          <a class="btn" href="S_완전새로운방식-신문웹툰게임_06-30/3_레트로-아케이드게임-리콜퀘스트.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-R">
+      <div class="sec-head">
+        <h2>🎴 스토리라인 3종 · 시각 언어가 다른 3종 · 최신</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">같은 설계도(3막 8장 + 자가진단)를 완전히 다른 시각 언어 3개로: 🌃 네온 · 꺼지는 불빛(다크 네온 간판, 잠든 환자=하나씩 꺼지는 불빛 격자 + 라이브 누수 카운터) · 📰 리콜 데일리 1면(크림 신문지·명조 머리기사, 자가진단이 “당신 치과 1면 기사”로 인쇄) · 🎴 잠든 환자 카드덱(밝은 촉각 3D 카드, 먼지 쓴 환자 카드를 눌러 깨우면 컬러로 살아남). 첫 화면 강력 훅 + 반응형</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="R_스토리라인-3종-네온신문카드덱_06-30/1_네온-꺼지는불빛.html"></a><iframe src="R_스토리라인-3종-네온신문카드덱_06-30/1_네온-꺼지는불빛.html" loading="lazy" title="안 부른 환자만 있을 뿐 (네온 · 꺼지는 불빛)"></iframe></div>
+        <div class="meta">
+          <div class="no">R · 01</div>
+          <h2>안 부른 환자만 있을 뿐 (네온 · 꺼지는 불빛)</h2>
+          <div class="ko">“불은 꺼지지 않았습니다. 안 부른 환자 가 아직 거기 앉아 있을 뿐.”</div>
+          <a class="btn" href="R_스토리라인-3종-네온신문카드덱_06-30/1_네온-꺼지는불빛.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="R_스토리라인-3종-네온신문카드덱_06-30/2_신문-리콜데일리-1면.html"></a><iframe src="R_스토리라인-3종-네온신문카드덱_06-30/2_신문-리콜데일리-1면.html" loading="lazy" title="리콜 데일리 — 1면: 안 오는 환자는 없습니다, 안 부른 환자만 있을 뿐"></iframe></div>
+        <div class="meta">
+          <div class="no">R · 02</div>
+          <h2>리콜 데일리 — 1면: 안 오는 환자는 없습니다, 안 부른 환자만 있을 뿐</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="R_스토리라인-3종-네온신문카드덱_06-30/2_신문-리콜데일리-1면.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="R_스토리라인-3종-네온신문카드덱_06-30/3_카드덱-잠든환자-깨우기.html"></a><iframe src="R_스토리라인-3종-네온신문카드덱_06-30/3_카드덱-잠든환자-깨우기.html" loading="lazy" title="잠든 환자 카드를 깨우다 (촉각 카드 덱)"></iframe></div>
+        <div class="meta">
+          <div class="no">R · 03</div>
+          <h2>잠든 환자 카드를 깨우다 (촉각 카드 덱)</h2>
+          <div class="ko">“수천 장의 환자 카드가, 먼지를 쓴 채 잠들어 있습니다.”</div>
+          <a class="btn" href="R_스토리라인-3종-네온신문카드덱_06-30/3_카드덱-잠든환자-깨우기.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-Q">
+      <div class="sec-head">
+        <h2>🎛️ 스토리라인 3종 · 만지는 메타포가 다른 3종 · 최신</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">같은 설계도(3막 8장 + 자가진단)를 전혀 다른 손맛으로: 📱 부재중 347통(스마트폰 통화기록·음성사서함 목업, 안 부른 환자=쌓이는 부재중) · 🃏 콜? 패스?(환자 카드 스와이프 트리아지, ‘감’으로 찍는 걸 직접 해보게) · 🌊 새는 매출(물탱크 누수 시뮬레이션, 끊김율 올리면 균열이 커지고 매출이 샌다). 첫 화면 강력 훅 + 모바일 퍼스트 반응형</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="Q_스토리라인-3종-폰콜스와이프누수_06-30/1_부재중347통-폰콜기록.html"></a><iframe src="Q_스토리라인-3종-폰콜스와이프누수_06-30/1_부재중347통-폰콜기록.html" loading="lazy" title="안 부른 환자 347명, 전부 부재중입니다"></iframe></div>
+        <div class="meta">
+          <div class="no">Q · 01</div>
+          <h2>안 부른 환자 347명, 전부 부재중입니다</h2>
+          <div class="ko">“안 부른 환자 347명. 전부 부재중입니다.”</div>
+          <a class="btn" href="Q_스토리라인-3종-폰콜스와이프누수_06-30/1_부재중347통-폰콜기록.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="Q_스토리라인-3종-폰콜스와이프누수_06-30/2_콜아니면패스-카드스와이프.html"></a><iframe src="Q_스토리라인-3종-폰콜스와이프누수_06-30/2_콜아니면패스-카드스와이프.html" loading="lazy" title="콜? 패스? — AutoRecall 환자 카드 스와이프 트리아지"></iframe></div>
+        <div class="meta">
+          <div class="no">Q · 02</div>
+          <h2>콜? 패스? — AutoRecall 환자 카드 스와이프 트리아지</h2>
+          <div class="ko">“🃏 콜? 패스?”</div>
+          <a class="btn" href="Q_스토리라인-3종-폰콜스와이프누수_06-30/2_콜아니면패스-카드스와이프.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="Q_스토리라인-3종-폰콜스와이프누수_06-30/3_새는매출-물탱크누수.html"></a><iframe src="Q_스토리라인-3종-폰콜스와이프누수_06-30/3_새는매출-물탱크누수.html" loading="lazy" title="새는 매출, 물탱크 누수 시뮬레이션"></iframe></div>
+        <div class="meta">
+          <div class="no">Q · 03</div>
+          <h2>새는 매출, 물탱크 누수 시뮬레이션</h2>
+          <div class="ko">“환자는 새고 있습니다. 매달, 조용히.”</div>
+          <a class="btn" href="Q_스토리라인-3종-폰콜스와이프누수_06-30/3_새는매출-물탱크누수.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-P">
+      <div class="sec-head">
+        <h2>🕹️ 완전 다른 방식 · 인터랙티브 3종(스크롤 탈피) · 최신</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">리서치 기반(인터랙티브 데모=최고 전환·퀴즈퍼널 31~40%): 읽는 페이지가 아니라 — 🖱️ 만져보는 라이브 데모(가입 0, 실제 앱 큐를 클릭→결과 버튼→회수액 카운트업) · 💬 대화형 진단 위저드(한 질문씩 답→개인화 누수 진단서) · 📱 풀스크린 스토리 탭(인스타 스토리처럼 8장을 탭/스와이프). 첫 화면 강력 훅 + 반응형</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="P_완전다른방식-인터랙티브3종_06-30/1_라이브데모-만져보는.html"></a><iframe src="P_완전다른방식-인터랙티브3종_06-30/1_라이브데모-만져보는.html" loading="lazy" title="만져보는 AutoRecall — 오늘 전화할 환자가 이미 줄 서 있습니다"></iframe></div>
+        <div class="meta">
+          <div class="no">P · 01</div>
+          <h2>만져보는 AutoRecall — 오늘 전화할 환자가 이미 줄 서 있습니다</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="P_완전다른방식-인터랙티브3종_06-30/1_라이브데모-만져보는.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="P_완전다른방식-인터랙티브3종_06-30/2_대화형진단-위저드.html"></a><iframe src="P_완전다른방식-인터랙티브3종_06-30/2_대화형진단-위저드.html" loading="lazy" title="30초 누수 진단 — 우리 치과에서 지금 새고 있는 돈"></iframe></div>
+        <div class="meta">
+          <div class="no">P · 02</div>
+          <h2>30초 누수 진단 — 우리 치과에서 지금 새고 있는 돈</h2>
+          <div class="ko">“우리 치과에서 지금 새고 있는 돈 , 추정해 드릴게요.”</div>
+          <a class="btn" href="P_완전다른방식-인터랙티브3종_06-30/2_대화형진단-위저드.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="P_완전다른방식-인터랙티브3종_06-30/3_스토리탭-풀스크린.html"></a><iframe src="P_완전다른방식-인터랙티브3종_06-30/3_스토리탭-풀스크린.html" loading="lazy" title="안 부른 환자 — 8장으로 끝내는 스토리 (탭으로 넘기세요)"></iframe></div>
+        <div class="meta">
+          <div class="no">P · 03</div>
+          <h2>안 부른 환자 — 8장으로 끝내는 스토리 (탭으로 넘기세요)</h2>
+          
+          <a class="btn" href="P_완전다른방식-인터랙티브3종_06-30/3_스토리탭-풀스크린.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-O">
+      <div class="sec-head">
+        <h2>🛠️ 스토리라인 3종 · 인터랙션 방식이 다른 3종 · 최신</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">같은 설계도(3막 8장 + 자가진단)를 다루는 방식 자체가 다르게: 📟 계기판 실시간 대시보드(다크 콕핏, 연 추정 누수액이 폭발하듯 카운트업) · 🎞️ 시네마틱 풀스크린 8장(스크롤스냅, 막마다 색 세계가 바뀜) · 💬 대화형 진단 위저드(한 질문씩 답 → 마지막에 리콜 진단서 카드). 첫 화면 강력 훅 + 반응형</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="O_스토리라인-3종-대시보드시네마위저드_06-30/1_계기판-새는매출-실시간대시보드.html"></a><iframe src="O_스토리라인-3종-대시보드시네마위저드_06-30/1_계기판-새는매출-실시간대시보드.html" loading="lazy" title="지금도 새는 매출, 눈앞에서 멈추세요 — 계기판 대시보드"></iframe></div>
+        <div class="meta">
+          <div class="no">O · 01</div>
+          <h2>지금도 새는 매출, 눈앞에서 멈추세요 — 계기판 대시보드</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="O_스토리라인-3종-대시보드시네마위저드_06-30/1_계기판-새는매출-실시간대시보드.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="O_스토리라인-3종-대시보드시네마위저드_06-30/2_시네마틱-풀스크린-8장.html"></a><iframe src="O_스토리라인-3종-대시보드시네마위저드_06-30/2_시네마틱-풀스크린-8장.html" loading="lazy" title="안 부른 환자만 있을 뿐 — 시네마틱 8장"></iframe></div>
+        <div class="meta">
+          <div class="no">O · 02</div>
+          <h2>안 부른 환자만 있을 뿐 — 시네마틱 8장</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="O_스토리라인-3종-대시보드시네마위저드_06-30/2_시네마틱-풀스크린-8장.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="O_스토리라인-3종-대시보드시네마위저드_06-30/3_대화형-진단위저드.html"></a><iframe src="O_스토리라인-3종-대시보드시네마위저드_06-30/3_대화형-진단위저드.html" loading="lazy" title="30초 대화형 자가진단 — 한 질문씩"></iframe></div>
+        <div class="meta">
+          <div class="no">O · 03</div>
+          <h2>30초 대화형 자가진단 — 한 질문씩</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="O_스토리라인-3종-대시보드시네마위저드_06-30/3_대화형-진단위저드.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-N">
+      <div class="sec-head">
+        <h2>🧪 스토리라인 3종 · 보는 방식이 다른 3종 · 최신</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">같은 설계도(3막 8장 + 자가진단)를 보는 방식 자체가 다르게: 🫀 생체신호 모니터(다크 ECG, 맥박이 멈출 때마다 잠든 환자 카운트) · 🔥 침묵의 히트맵(따뜻→회색으로 식어가는 환자 격자) · ⇆ 드래그 Before/After(손잡이로 지금 데스크 ↔ AutoRecall 비교). 첫 화면 강력 훅 + 반응형</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="N_스토리라인-3종-전혀다른방식_06-30/1_생체신호모니터_다크ECG.html"></a><iframe src="N_스토리라인-3종-전혀다른방식_06-30/1_생체신호모니터_다크ECG.html" loading="lazy" title="당신 치과의 리콜 맥박은 지금 뛰고 있습니까"></iframe></div>
+        <div class="meta">
+          <div class="no">N · 01</div>
+          <h2>당신 치과의 리콜 맥박은 지금 뛰고 있습니까</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="N_스토리라인-3종-전혀다른방식_06-30/1_생체신호모니터_다크ECG.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="N_스토리라인-3종-전혀다른방식_06-30/2_침묵의히트맵_식어가는차트.html"></a><iframe src="N_스토리라인-3종-전혀다른방식_06-30/2_침묵의히트맵_식어가는차트.html" loading="lazy" title="당신 치과의 1,050명이 지금 회색으로 식는 중입니다"></iframe></div>
+        <div class="meta">
+          <div class="no">N · 02</div>
+          <h2>당신 치과의 1,050명이 지금 회색으로 식는 중입니다</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 식은 환자 를 못 본 것뿐.”</div>
+          <a class="btn" href="N_스토리라인-3종-전혀다른방식_06-30/2_침묵의히트맵_식어가는차트.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="N_스토리라인-3종-전혀다른방식_06-30/3_드래그비교_지금vs오토리콜.html"></a><iframe src="N_스토리라인-3종-전혀다른방식_06-30/3_드래그비교_지금vs오토리콜.html" loading="lazy" title="손잡이를 끌어보세요, 지금 우리 데스크와 오토리콜의 차이"></iframe></div>
+        <div class="meta">
+          <div class="no">N · 03</div>
+          <h2>손잡이를 끌어보세요, 지금 우리 데스크와 오토리콜의 차이</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="N_스토리라인-3종-전혀다른방식_06-30/3_드래그비교_지금vs오토리콜.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-M">
+      <div class="sec-head">
+        <h2>🎬 스토리라인 — 전혀 다른 3방식</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">같은 8장·같은 수치, 장르만 완전히 다르게: 🔦느와르 추리극(사건파일) · 🧾키네틱 영수증(실시간 인쇄) · 🎬스크롤 시네마(데스크의 하루). 첫 화면 강력 훅 + 자가진단 슬라이더</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="M_스토리라인-전혀다른3방식_06-30/1_사건파일-느와르추리.html"></a><iframe src="M_스토리라인-전혀다른3방식_06-30/1_사건파일-느와르추리.html" loading="lazy" title="사건 파일 No.347 — 사라진 환자들"></iframe></div>
+        <div class="meta">
+          <div class="no">M · 01</div>
+          <h2>사건 파일 No.347 — 사라진 환자들</h2>
+          <div class="ko">“사라진 건 환자가 아니라 당신의 매출 입니다.”</div>
+          <a class="btn" href="M_스토리라인-전혀다른3방식_06-30/1_사건파일-느와르추리.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="M_스토리라인-전혀다른3방식_06-30/2_새는영수증-키네틱.html"></a><iframe src="M_스토리라인-전혀다른3방식_06-30/2_새는영수증-키네틱.html" loading="lazy" title="안 부른 환자 정산서 — 이번 달 새는 매출"></iframe></div>
+        <div class="meta">
+          <div class="no">M · 02</div>
+          <h2>안 부른 환자 정산서 — 이번 달 새는 매출</h2>
+          <div class="ko">“이번 달, 당신 치과가 조용히 놓친 매출 입니다.”</div>
+          <a class="btn" href="M_스토리라인-전혀다른3방식_06-30/2_새는영수증-키네틱.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="M_스토리라인-전혀다른3방식_06-30/3_데스크의하루-시네마틱.html"></a><iframe src="M_스토리라인-전혀다른3방식_06-30/3_데스크의하루-시네마틱.html" loading="lazy" title="데스크의 하루 — 09:00부터 마감까지"></iframe></div>
+        <div class="meta">
+          <div class="no">M · 03</div>
+          <h2>데스크의 하루 — 09:00부터 마감까지</h2>
+          <div class="ko">“오늘도, 데스크의 하루 가 시작됩니다.”</div>
+          <a class="btn" href="M_스토리라인-전혀다른3방식_06-30/3_데스크의하루-시네마틱.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-L">
+      <div class="sec-head">
+        <h2>🎯 스토리라인 리서치 + 최종 랜딩 · 최신</h2>
+        <span class="cnt">2개</span>
+      </div>
+      <p class="sec-blurb">리서치 결론(3막 8장 설계도) + 그 결론으로 만든 자가진단 반응형 랜딩</p>
+      <div class="grid">
+      <div class="card">
+        <div class="thumb"><a class="ov" href="L_스토리라인-리서치+랜딩_06-30/0_리서치결론-스토리라인설계도.html"></a><iframe src="L_스토리라인-리서치+랜딩_06-30/0_리서치결론-스토리라인설계도.html" loading="lazy" title="리서치 결론 — AutoRecall 랜딩 스토리라인 설계도 (3막 8장)"></iframe></div>
+        <div class="meta">
+          <div class="no">L · 01</div>
+          <h2>리서치 결론 — AutoRecall 랜딩 스토리라인 설계도 (3막 8장)</h2>
+          <div class="ko">“AutoRecall 랜딩 스토리라인 설계도”</div>
+          <a class="btn" href="L_스토리라인-리서치+랜딩_06-30/0_리서치결론-스토리라인설계도.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="L_스토리라인-리서치+랜딩_06-30/1_랜딩-3막8장-자가진단.html"></a><iframe src="L_스토리라인-리서치+랜딩_06-30/1_랜딩-3막8장-자가진단.html" loading="lazy" title="안 오는 환자는 없습니다, 안 부른 환자만 있을 뿐"></iframe></div>
+        <div class="meta">
+          <div class="no">L · 02</div>
+          <h2>안 오는 환자는 없습니다, 안 부른 환자만 있을 뿐</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="L_스토리라인-리서치+랜딩_06-30/1_랜딩-3막8장-자가진단.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-K">
+      <div class="sec-head">
+        <h2>🆕 신규 랜딩 컨셉 · 최신</h2>
+        <span class="cnt">6개</span>
+      </div>
+      <p class="sec-blurb">신규 3종(계측기·타임랩스·곡선) + 스토리텔링 스크롤 서사 3버전</p>
+      <div class="grid">
+      <div class="card">
+        <div class="thumb"><a class="ov" href="K_신규랜딩-컨셉_06-30/1_계측기.html"></a><iframe src="K_신규랜딩-컨셉_06-30/1_계측기.html" loading="lazy" title="보이지 않던 가치를, 눈금으로"></iframe></div>
+        <div class="meta">
+          <div class="no">K · 01</div>
+          <h2>보이지 않던 가치를, 눈금으로</h2>
+          <div class="ko">“이걸 머리로 따라갈 수 있을까요?”</div>
+          <a class="btn" href="K_신규랜딩-컨셉_06-30/1_계측기.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="K_신규랜딩-컨셉_06-30/2_타임랩스.html"></a><iframe src="K_신규랜딩-컨셉_06-30/2_타임랩스.html" loading="lazy" title="하루를 따라가 보면, 왜 못 부르는지 보입니다"></iframe></div>
+        <div class="meta">
+          <div class="no">K · 02</div>
+          <h2>하루를 따라가 보면, 왜 못 부르는지 보입니다</h2>
+          <div class="ko">“이걸 머리로 따라갈 수 있을까요?”</div>
+          <a class="btn" href="K_신규랜딩-컨셉_06-30/2_타임랩스.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="K_신규랜딩-컨셉_06-30/3_곡선.html"></a><iframe src="K_신규랜딩-컨셉_06-30/3_곡선.html" loading="lazy" title="그래프가 직접 말합니다, 왜 사람 손으론 못 부르는지"></iframe></div>
+        <div class="meta">
+          <div class="no">K · 03</div>
+          <h2>그래프가 직접 말합니다, 왜 사람 손으론 못 부르는지</h2>
+          <div class="ko">“이걸 머리로 따라갈 수 있을까요?”</div>
+          <a class="btn" href="K_신규랜딩-컨셉_06-30/3_곡선.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="K_신규랜딩-컨셉_06-30/4_스토리텔링.html"></a><iframe src="K_신규랜딩-컨셉_06-30/4_스토리텔링.html" loading="lazy" title="안 부른 게 아니라, 사람 손으론 원래 못 부르는 일이었습니다"></iframe></div>
+        <div class="meta">
+          <div class="no">K · 04</div>
+          <h2>안 부른 게 아니라, 사람 손으론 원래 못 부르는 일이었습니다</h2>
+          <div class="ko">“지금 이 화면의 순서, 머리로 따라갈 수 있을까요?”</div>
+          <a class="btn" href="K_신규랜딩-컨셉_06-30/4_스토리텔링.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="K_신규랜딩-컨셉_06-30/5_스토리텔링-다른버전.html"></a><iframe src="K_신규랜딩-컨셉_06-30/5_스토리텔링-다른버전.html" loading="lazy" title="안 부른 게 아니라, 사람 손으론 못 부르는 일이었습니다"></iframe></div>
+        <div class="meta">
+          <div class="no">K · 05</div>
+          <h2>안 부른 게 아니라, 사람 손으론 못 부르는 일이었습니다</h2>
+          <div class="ko">“이 순서, 머리로 따라갈 수 있을까요?”</div>
+          <a class="btn" href="K_신규랜딩-컨셉_06-30/5_스토리텔링-다른버전.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="K_신규랜딩-컨셉_06-30/6_스토리텔링-최신.html"></a><iframe src="K_신규랜딩-컨셉_06-30/6_스토리텔링-최신.html" loading="lazy" title="안 부른 게 아니라, 사람 손으론 원래 못 부르던 일"></iframe></div>
+        <div class="meta">
+          <div class="no">K · 06</div>
+          <h2>안 부른 게 아니라, 사람 손으론 원래 못 부르던 일</h2>
+          <div class="ko">“이걸 머리로 따라갈 수 있을까요?”</div>
+          <a class="btn" href="K_신규랜딩-컨셉_06-30/6_스토리텔링-최신.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-J">
+      <div class="sec-head">
+        <h2>💌 직원 공감 3종 · 신규</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">‘안 하는 게 아니라 못 하는 것’ — 직원 탓 0, 공감으로 돕기</p>
+      <div class="grid">
+      <div class="card rec"><span class="badge">⭐ 추천</span>
+        <div class="thumb"><a class="ov" href="J_직원공감-3종_06-30/1_데스크의하루.html"></a><iframe src="J_직원공감-3종_06-30/1_데스크의하루.html" loading="lazy" title="데스크의 하루"></iframe></div>
+        <div class="meta">
+          <div class="no">J · 01</div>
+          <h2>데스크의 하루</h2>
+          <div class="ko">“리콜, 안 하는 게 아니라 못 하는 겁니다.”</div>
+          <a class="btn" href="J_직원공감-3종_06-30/1_데스크의하루.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="J_직원공감-3종_06-30/2_쌓이는명단.html"></a><iframe src="J_직원공감-3종_06-30/2_쌓이는명단.html" loading="lazy" title="쌓이는 명단"></iframe></div>
+        <div class="meta">
+          <div class="no">J · 02</div>
+          <h2>쌓이는 명단</h2>
+          <div class="ko">“혼자서는 원래 감당이 안 되는 양입니다.”</div>
+          <a class="btn" href="J_직원공감-3종_06-30/2_쌓이는명단.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="J_직원공감-3종_06-30/3_우리직원에게.html"></a><iframe src="J_직원공감-3종_06-30/3_우리직원에게.html" loading="lazy" title="우리 직원에게"></iframe></div>
+        <div class="meta">
+          <div class="no">J · 03</div>
+          <h2>우리 직원에게</h2>
+          <div class="ko">“우리 직원은 이미, 할 수 있는 걸 다 하고 있습니다.”</div>
+          <a class="btn" href="J_직원공감-3종_06-30/3_우리직원에게.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-A">
+      <div class="sec-head">
+        <h2>⭐ 메인 — AutoRecall 핵심 랜딩</h2>
+        <span class="cnt">8개</span>
+      </div>
+      <p class="sec-blurb">제품 핵심 메시지 메인 후보</p>
+      <div class="grid">
+      <div class="card">
+        <div class="thumb"><a class="ov" href="A_메인-AutoRecall랜딩_06-30/A1_오늘전화할환자-찾지마세요.html"></a><iframe src="A_메인-AutoRecall랜딩_06-30/A1_오늘전화할환자-찾지마세요.html" loading="lazy" title="오늘 전화할 환자, 이제 찾지 마세요"></iframe></div>
+        <div class="meta">
+          <div class="no">A · 01</div>
+          <h2>오늘 전화할 환자, 이제 찾지 마세요</h2>
+          <div class="ko">“오늘 전화할 환자, 이제 찾지 마세요.”</div>
+          <a class="btn" href="A_메인-AutoRecall랜딩_06-30/A1_오늘전화할환자-찾지마세요.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="A_메인-AutoRecall랜딩_06-30/A1v2_찾지마세요-확장판.html"></a><iframe src="A_메인-AutoRecall랜딩_06-30/A1v2_찾지마세요-확장판.html" loading="lazy" title="오늘 전화할 환자, 이제 찾지 마세요"></iframe></div>
+        <div class="meta">
+          <div class="no">A · 02</div>
+          <h2>오늘 전화할 환자, 이제 찾지 마세요</h2>
+          <div class="ko">“오늘 전화할 환자, 이제 찾지 마세요.”</div>
+          <a class="btn" href="A_메인-AutoRecall랜딩_06-30/A1v2_찾지마세요-확장판.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="A_메인-AutoRecall랜딩_06-30/A2_안부른환자만.html"></a><iframe src="A_메인-AutoRecall랜딩_06-30/A2_안부른환자만.html" loading="lazy" title="안 오는 환자는 없습니다. 안 부른 환자만 있을 뿐."></iframe></div>
+        <div class="meta">
+          <div class="no">A · 03</div>
+          <h2>안 오는 환자는 없습니다. 안 부른 환자만 있을 뿐.</h2>
+          
+          <a class="btn" href="A_메인-AutoRecall랜딩_06-30/A2_안부른환자만.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="A_메인-AutoRecall랜딩_06-30/A3_환자가환자를데려오는.html"></a><iframe src="A_메인-AutoRecall랜딩_06-30/A3_환자가환자를데려오는.html" loading="lazy" title="환자가 환자를 데려오는 치과"></iframe></div>
+        <div class="meta">
+          <div class="no">A · 04</div>
+          <h2>환자가 환자를 데려오는 치과</h2>
+          <div class="ko">“환자가 환자를 데려오는 치과, 비결은 때 맞춘 안부 전화 입니다.”</div>
+          <a class="btn" href="A_메인-AutoRecall랜딩_06-30/A3_환자가환자를데려오는.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="A_메인-AutoRecall랜딩_06-30/A4_케이스3막.html"></a><iframe src="A_메인-AutoRecall랜딩_06-30/A4_케이스3막.html" loading="lazy" title="안 온 환자, 누구한테 먼저 전화할까?"></iframe></div>
+        <div class="meta">
+          <div class="no">A · 05</div>
+          <h2>안 온 환자, 누구한테 먼저 전화할까?</h2>
+          <div class="ko">“안 온 환자, 오늘 누구한테 먼저 전화하실 건가요?”</div>
+          <a class="btn" href="A_메인-AutoRecall랜딩_06-30/A4_케이스3막.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="A_메인-AutoRecall랜딩_06-30/A5_줄세워드립니다.html"></a><iframe src="A_메인-AutoRecall랜딩_06-30/A5_줄세워드립니다.html" loading="lazy" title="오늘 전화할 환자, 줄 세워 드립니다"></iframe></div>
+        <div class="meta">
+          <div class="no">A · 06</div>
+          <h2>오늘 전화할 환자, 줄 세워 드립니다</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="A_메인-AutoRecall랜딩_06-30/A5_줄세워드립니다.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="A_메인-AutoRecall랜딩_06-30/A6_깔때기-오늘3명으로.html"></a><iframe src="A_메인-AutoRecall랜딩_06-30/A6_깔때기-오늘3명으로.html" loading="lazy" title="흩어진 명단을, 오늘 전화할 3명으로"></iframe></div>
+        <div class="meta">
+          <div class="no">A · 07</div>
+          <h2>흩어진 명단을, 오늘 전화할 3명으로</h2>
+          <div class="ko">“흩어진 명단을, 오늘 전화할 3명 으로.”</div>
+          <a class="btn" href="A_메인-AutoRecall랜딩_06-30/A6_깔때기-오늘3명으로.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="A_메인-AutoRecall랜딩_06-30/A7_간이진단-벤치마크판_06-30.html"></a><iframe src="A_메인-AutoRecall랜딩_06-30/A7_간이진단-벤치마크판_06-30.html" loading="lazy" title="오늘 전화할 환자, 이제 찾지 마세요"></iframe></div>
+        <div class="meta">
+          <div class="no">A · 08</div>
+          <h2>오늘 전화할 환자, 이제 찾지 마세요</h2>
+          <div class="ko">“오늘 전화할 환자, 이제 찾지 마세요.”</div>
+          <a class="btn" href="A_메인-AutoRecall랜딩_06-30/A7_간이진단-벤치마크판_06-30.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-B">
+      <div class="sec-head">
+        <h2>🎨 디자인 검증 4종</h2>
+        <span class="cnt">4개</span>
+      </div>
+      <p class="sec-blurb">같은 메시지, 서로 다른 디자인 언어</p>
+      <div class="grid">
+      <div class="card">
+        <div class="thumb"><a class="ov" href="B_디자인검증-4종_06-30/1_에디토리얼.html"></a><iframe src="B_디자인검증-4종_06-30/1_에디토리얼.html" loading="lazy" title="에디토리얼"></iframe></div>
+        <div class="meta">
+          <div class="no">B · 01</div>
+          <h2>에디토리얼</h2>
+          <div class="ko">“오늘 전화할 환자, 이제 찾지 마세요.”</div>
+          <a class="btn" href="B_디자인검증-4종_06-30/1_에디토리얼.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="B_디자인검증-4종_06-30/2_다크테크.html"></a><iframe src="B_디자인검증-4종_06-30/2_다크테크.html" loading="lazy" title="다크 테크"></iframe></div>
+        <div class="meta">
+          <div class="no">B · 02</div>
+          <h2>다크 테크</h2>
+          <div class="ko">“오늘 전화할 환자, 점수순으로 자동 정렬.”</div>
+          <a class="btn" href="B_디자인검증-4종_06-30/2_다크테크.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="B_디자인검증-4종_06-30/3_토스풍.html"></a><iframe src="B_디자인검증-4종_06-30/3_토스풍.html" loading="lazy" title="토스풍"></iframe></div>
+        <div class="meta">
+          <div class="no">B · 03</div>
+          <h2>토스풍</h2>
+          <div class="ko">“오늘 전화할 환자, 앱이 골라드려요.”</div>
+          <a class="btn" href="B_디자인검증-4종_06-30/3_토스풍.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="B_디자인검증-4종_06-30/4_데이터임팩트.html"></a><iframe src="B_디자인검증-4종_06-30/4_데이터임팩트.html" loading="lazy" title="데이터 임팩트"></iframe></div>
+        <div class="meta">
+          <div class="no">B · 04</div>
+          <h2>데이터 임팩트</h2>
+          <div class="ko">“안 온 환자는 매출입니다.”</div>
+          <a class="btn" href="B_디자인검증-4종_06-30/4_데이터임팩트.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-C">
+      <div class="sec-head">
+        <h2>🚀 1기 모집 랜딩</h2>
+        <span class="cnt">5개</span>
+      </div>
+      <p class="sec-blurb">베타 1기 모집용</p>
+      <div class="grid">
+      <div class="card">
+        <div class="thumb"><a class="ov" href="C_1기모집랜딩_06-29/1_문제각성.html"></a><iframe src="C_1기모집랜딩_06-29/1_문제각성.html" loading="lazy" title="AutoRecall 1기 창립 멤버 모집 — 안 오는 환자는 없습니다"></iframe></div>
+        <div class="meta">
+          <div class="no">C · 01</div>
+          <h2>AutoRecall 1기 창립 멤버 모집 — 안 오는 환자는 없습니다</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자만 있을 뿐.”</div>
+          <a class="btn" href="C_1기모집랜딩_06-29/1_문제각성.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="C_1기모집랜딩_06-29/2_AI직설.html"></a><iframe src="C_1기모집랜딩_06-29/2_AI직설.html" loading="lazy" title="AutoRecall 1기 모집 — 오늘 전화할 환자, AI가 줄 세워 드립니다"></iframe></div>
+        <div class="meta">
+          <div class="no">C · 02</div>
+          <h2>AutoRecall 1기 모집 — 오늘 전화할 환자, AI가 줄 세워 드립니다</h2>
+          <div class="ko">“오늘 전화할 환자, AI가 줄 세워 드립니다.”</div>
+          <a class="btn" href="C_1기모집랜딩_06-29/2_AI직설.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="C_1기모집랜딩_06-29/3_데스크경영.html"></a><iframe src="C_1기모집랜딩_06-29/3_데스크경영.html" loading="lazy" title="리콜 프로그램 1기 창립 멤버 모집 — 대형 치과의 데스크 경영을 직원 한 명에게"></iframe></div>
+        <div class="meta">
+          <div class="no">C · 03</div>
+          <h2>리콜 프로그램 1기 창립 멤버 모집 — 대형 치과의 데스크 경영을 직원 한 명에게</h2>
+          <div class="ko">“대형 치과의 데스크 경영, 이제 직원 한 명이면 됩니다.”</div>
+          <a class="btn" href="C_1기모집랜딩_06-29/3_데스크경영.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="C_1기모집랜딩_06-29/잠든매출_A_문제각성톤.html"></a><iframe src="C_1기모집랜딩_06-29/잠든매출_A_문제각성톤.html" loading="lazy" title="당신 차트 안에, 잠든 매출이 있습니다 · 리콜 프로그램 1기 모집"></iframe></div>
+        <div class="meta">
+          <div class="no">C · 04</div>
+          <h2>당신 차트 안에, 잠든 매출이 있습니다 · 리콜 프로그램 1기 모집</h2>
+          <div class="ko">“당신 차트 안에, 잠든 매출이 있습니다.”</div>
+          <a class="btn" href="C_1기모집랜딩_06-29/잠든매출_A_문제각성톤.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="C_1기모집랜딩_06-29/잠든매출_B_데스크경영톤.html"></a><iframe src="C_1기모집랜딩_06-29/잠든매출_B_데스크경영톤.html" loading="lazy" title="당신 차트 안에, 잠든 매출이 있습니다 — 리콜 프로그램 1기 모집"></iframe></div>
+        <div class="meta">
+          <div class="no">C · 05</div>
+          <h2>당신 차트 안에, 잠든 매출이 있습니다 — 리콜 프로그램 1기 모집</h2>
+          <div class="ko">“당신 차트 안에, 잠든 매출이 있습니다.”</div>
+          <a class="btn" href="C_1기모집랜딩_06-29/잠든매출_B_데스크경영톤.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-D">
+      <div class="sec-head">
+        <h2>📥 설치 유도 · 5수준</h2>
+        <span class="cnt">8개</span>
+      </div>
+      <p class="sec-blurb">하수→초고수, 설득 강도별</p>
+      <div class="grid">
+      <div class="card">
+        <div class="thumb"><a class="ov" href="D_설치페이지-5수준_06-24/1_하수.html"></a><iframe src="D_설치페이지-5수준_06-24/1_하수.html" loading="lazy" title="🔥🔥 리콜 프로그램 무료 다운로드 🔥🔥 지금 아니면 끝!!!"></iframe></div>
+        <div class="meta">
+          <div class="no">D · 01</div>
+          <h2>🔥🔥 리콜 프로그램 무료 다운로드 🔥🔥 지금 아니면 끝!!!</h2>
+          <div class="ko">“🔥 리콜 프로그램 무료 다운로드 🔥”</div>
+          <a class="btn" href="D_설치페이지-5수준_06-24/1_하수.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="D_설치페이지-5수준_06-24/2_중수.html"></a><iframe src="D_설치페이지-5수준_06-24/2_중수.html" loading="lazy" title="리콜 프로그램 — 무료 다운로드"></iframe></div>
+        <div class="meta">
+          <div class="no">D · 02</div>
+          <h2>리콜 프로그램 — 무료 다운로드</h2>
+          <div class="ko">“리콜 프로그램”</div>
+          <a class="btn" href="D_설치페이지-5수준_06-24/2_중수.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="D_설치페이지-5수준_06-24/3_고수.html"></a><iframe src="D_설치페이지-5수준_06-24/3_고수.html" loading="lazy" title="안 온 환자, 오늘 누가 챙기나 — 리콜 프로그램 (무료)"></iframe></div>
+        <div class="meta">
+          <div class="no">D · 03</div>
+          <h2>안 온 환자, 오늘 누가 챙기나 — 리콜 프로그램 (무료)</h2>
+          <div class="ko">“안 온 환자, 오늘 누가 챙기고 있나요?”</div>
+          <a class="btn" href="D_설치페이지-5수준_06-24/3_고수.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="D_설치페이지-5수준_06-24/4_초고수.html"></a><iframe src="D_설치페이지-5수준_06-24/4_초고수.html" loading="lazy" title="리콜 1기 창립 멤버 — 먼저 합류한 치과만"></iframe></div>
+        <div class="meta">
+          <div class="no">D · 04</div>
+          <h2>리콜 1기 창립 멤버 — 먼저 합류한 치과만</h2>
+          <div class="ko">“아무나 깔 수 있어요. 근데 창립 멤버 는 이번 기수만.”</div>
+          <a class="btn" href="D_설치페이지-5수준_06-24/4_초고수.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="D_설치페이지-5수준_06-24/5_초고수-심사초대.html"></a><iframe src="D_설치페이지-5수준_06-24/5_초고수-심사초대.html" loading="lazy" title="아무 치과나 받지 않습니다 — 리콜 (심사·초대제)"></iframe></div>
+        <div class="meta">
+          <div class="no">D · 05</div>
+          <h2>아무 치과나 받지 않습니다 — 리콜 (심사·초대제)</h2>
+          <div class="ko">“아무 치과나 받지 않습니다.”</div>
+          <a class="btn" href="D_설치페이지-5수준_06-24/5_초고수-심사초대.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="D_설치페이지-5수준_06-24/6_초고수-런칭윈도우.html"></a><iframe src="D_설치페이지-5수준_06-24/6_초고수-런칭윈도우.html" loading="lazy" title="1기 모집 — 단 5일만 열립니다 (리콜 런칭)"></iframe></div>
+        <div class="meta">
+          <div class="no">D · 06</div>
+          <h2>1기 모집 — 단 5일만 열립니다 (리콜 런칭)</h2>
+          <div class="ko">“딱 5일 만 열립니다.”</div>
+          <a class="btn" href="D_설치페이지-5수준_06-24/6_초고수-런칭윈도우.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="D_설치페이지-5수준_06-24/7_초고수-운동표준.html"></a><iframe src="D_설치페이지-5수준_06-24/7_초고수-운동표준.html" loading="lazy" title="데이터로 환자 챙기는 치과들 — 리콜 운동"></iframe></div>
+        <div class="meta">
+          <div class="no">D · 07</div>
+          <h2>데이터로 환자 챙기는 치과들 — 리콜 운동</h2>
+          <div class="ko">“‘감으로 리콜’은 이제 끝났어요.”</div>
+          <a class="btn" href="D_설치페이지-5수준_06-24/7_초고수-운동표준.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="D_설치페이지-5수준_06-24/8_초고수-구조적바이럴.html"></a><iframe src="D_설치페이지-5수준_06-24/8_초고수-구조적바이럴.html" loading="lazy" title="공유 안 해도 알아서 퍼집니다 — 리콜 (구조적 바이럴)"></iframe></div>
+        <div class="meta">
+          <div class="no">D · 08</div>
+          <h2>공유 안 해도 알아서 퍼집니다 — 리콜 (구조적 바이럴)</h2>
+          <div class="ko">“공유 ‘안 해도’ 알아서 퍼집니다.”</div>
+          <a class="btn" href="D_설치페이지-5수준_06-24/8_초고수-구조적바이럴.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-F">
+      <div class="sec-head">
+        <h2>🔁 공유·바이럴 4종</h2>
+        <span class="cnt">4개</span>
+      </div>
+      <p class="sec-blurb">원장끼리 공유될 훅</p>
+      <div class="grid">
+      <div class="card">
+        <div class="thumb"><a class="ov" href="F_공유바이럴-4종_06-24/1_리콜누수점수.html"></a><iframe src="F_공유바이럴-4종_06-24/1_리콜누수점수.html" loading="lazy" title="우리 치과 리콜 누수 점수 — 1분 자가진단"></iframe></div>
+        <div class="meta">
+          <div class="no">F · 01</div>
+          <h2>우리 치과 리콜 누수 점수 — 1분 자가진단</h2>
+          <div class="ko">“우리 치과, 리콜로 매달 얼마 새고 있을까?”</div>
+          <a class="btn" href="F_공유바이럴-4종_06-24/1_리콜누수점수.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="F_공유바이럴-4종_06-24/2_무료콜센터.html"></a><iframe src="F_공유바이럴-4종_06-24/2_무료콜센터.html" loading="lazy" title="대형병원 콜센터를, 동네치과가 무료로"></iframe></div>
+        <div class="meta">
+          <div class="no">F · 02</div>
+          <h2>대형병원 콜센터를, 동네치과가 무료로</h2>
+          <div class="ko">“대형병원은 콜센터 가 환자를 챙깁니다. 동네치과는요?”</div>
+          <a class="btn" href="F_공유바이럴-4종_06-24/2_무료콜센터.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="F_공유바이럴-4종_06-24/3_데이터카드.html"></a><iframe src="F_공유바이럴-4종_06-24/3_데이터카드.html" loading="lazy" title="리콜 한 장 정리 — 동료 원장에게 보내는 카드"></iframe></div>
+        <div class="meta">
+          <div class="no">F · 03</div>
+          <h2>리콜 한 장 정리 — 동료 원장에게 보내는 카드</h2>
+          <div class="ko">““리콜, 요즘 이렇게들 한대””</div>
+          <a class="btn" href="F_공유바이럴-4종_06-24/3_데이터카드.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="F_공유바이럴-4종_06-24/4_자랑카드.html"></a><iframe src="F_공유바이럴-4종_06-24/4_자랑카드.html" loading="lazy" title="동료한테 보내는 자랑 한 장"></iframe></div>
+        <div class="meta">
+          <div class="no">F · 04</div>
+          <h2>동료한테 보내는 자랑 한 장</h2>
+          <div class="ko">““나 요즘 이걸로 안 온 환자 챙겨””</div>
+          <a class="btn" href="F_공유바이럴-4종_06-24/4_자랑카드.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-E">
+      <div class="sec-head">
+        <h2>📖 영업 컨셉 · 스토리 시리즈</h2>
+        <span class="cnt">12개</span>
+      </div>
+      <p class="sec-blurb">스토리텔링으로 푸는 영업 컨셉</p>
+      <div class="grid">
+      <div class="card">
+        <div class="thumb"><a class="ov" href="E_영업컨셉-스토리시리즈/09_일단깔아둬_06-23.html"></a><iframe src="E_영업컨셉-스토리시리즈/09_일단깔아둬_06-23.html" loading="lazy" title="지금 일단, 깔아만 두세요"></iframe></div>
+        <div class="meta">
+          <div class="no">E · 01</div>
+          <h2>지금 일단, 깔아만 두세요</h2>
+          <div class="ko">“지금 일단, 깔아만 두세요.”</div>
+          <a class="btn" href="E_영업컨셉-스토리시리즈/09_일단깔아둬_06-23.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="E_영업컨셉-스토리시리즈/1탄_새는수도꼭지외_06-22/1_새는수도꼭지.html"></a><iframe src="E_영업컨셉-스토리시리즈/1탄_새는수도꼭지외_06-22/1_새는수도꼭지.html" loading="lazy" title="새는 수도꼭지"></iframe></div>
+        <div class="meta">
+          <div class="no">E · 02</div>
+          <h2>새는 수도꼭지</h2>
+          <div class="ko">“지금 이 순간에도 수도꼭지가 새고 있습니다.”</div>
+          <a class="btn" href="E_영업컨셉-스토리시리즈/1탄_새는수도꼭지외_06-22/1_새는수도꼭지.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="E_영업컨셉-스토리시리즈/1탄_새는수도꼭지외_06-22/2_잊혀진환자의편지.html"></a><iframe src="E_영업컨셉-스토리시리즈/1탄_새는수도꼭지외_06-22/2_잊혀진환자의편지.html" loading="lazy" title="잊혀진 환자의 편지"></iframe></div>
+        <div class="meta">
+          <div class="no">E · 03</div>
+          <h2>잊혀진 환자의 편지</h2>
+          <div class="ko">“제가 왜 다른 치과로 갔는지, 아세요?”</div>
+          <a class="btn" href="E_영업컨셉-스토리시리즈/1탄_새는수도꼭지외_06-22/2_잊혀진환자의편지.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="E_영업컨셉-스토리시리즈/1탄_새는수도꼭지외_06-22/3_실장의하루.html"></a><iframe src="E_영업컨셉-스토리시리즈/1탄_새는수도꼭지외_06-22/3_실장의하루.html" loading="lazy" title="실장의 하루"></iframe></div>
+        <div class="meta">
+          <div class="no">E · 04</div>
+          <h2>실장의 하루</h2>
+          <div class="ko">“김 실장님의 하루는 이렇게 바뀌었습니다.”</div>
+          <a class="btn" href="E_영업컨셉-스토리시리즈/1탄_새는수도꼭지외_06-22/3_실장의하루.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="E_영업컨셉-스토리시리즈/1탄_새는수도꼭지외_06-22/4_보이지않는명단.html"></a><iframe src="E_영업컨셉-스토리시리즈/1탄_새는수도꼭지외_06-22/4_보이지않는명단.html" loading="lazy" title="보이지 않는 명단"></iframe></div>
+        <div class="meta">
+          <div class="no">E · 05</div>
+          <h2>보이지 않는 명단</h2>
+          <div class="ko">“당신의 차트엔 보이지 않는 명단 이 잠들어 있습니다.”</div>
+          <a class="btn" href="E_영업컨셉-스토리시리즈/1탄_새는수도꼭지외_06-22/4_보이지않는명단.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="E_영업컨셉-스토리시리즈/2탄_골프시간외_06-23/5_원장님의골프시간.html"></a><iframe src="E_영업컨셉-스토리시리즈/2탄_골프시간외_06-23/5_원장님의골프시간.html" loading="lazy" title="원장님의 골프 시간"></iframe></div>
+        <div class="meta">
+          <div class="no">E · 06</div>
+          <h2>원장님의 골프 시간</h2>
+          <div class="ko">“리콜은 알아서 돌고, 원장님은 진료만 하세요.”</div>
+          <a class="btn" href="E_영업컨셉-스토리시리즈/2탄_골프시간외_06-23/5_원장님의골프시간.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="E_영업컨셉-스토리시리즈/2탄_골프시간외_06-23/6_단골의과학.html"></a><iframe src="E_영업컨셉-스토리시리즈/2탄_골프시간외_06-23/6_단골의과학.html" loading="lazy" title="단골의 과학"></iframe></div>
+        <div class="meta">
+          <div class="no">E · 07</div>
+          <h2>단골의 과학</h2>
+          <div class="ko">“동네에서 제일 잘 되는 빵집은, 맛만 좋은 게 아니에요.”</div>
+          <a class="btn" href="E_영업컨셉-스토리시리즈/2탄_골프시간외_06-23/6_단골의과학.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="E_영업컨셉-스토리시리즈/2탄_골프시간외_06-23/7_2026년12월두병원.html"></a><iframe src="E_영업컨셉-스토리시리즈/2탄_골프시간외_06-23/7_2026년12월두병원.html" loading="lazy" title="2026년 12월, 두 병원"></iframe></div>
+        <div class="meta">
+          <div class="no">E · 08</div>
+          <h2>2026년 12월, 두 병원</h2>
+          <div class="ko">“2026년 1월, 두 병원은 똑같은 출발선에 있었습니다.”</div>
+          <a class="btn" href="E_영업컨셉-스토리시리즈/2탄_골프시간외_06-23/7_2026년12월두병원.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="E_영업컨셉-스토리시리즈/2탄_골프시간외_06-23/8_숫자한개.html"></a><iframe src="E_영업컨셉-스토리시리즈/2탄_골프시간외_06-23/8_숫자한개.html" loading="lazy" title="숫자 한 개"></iframe></div>
+        <div class="meta">
+          <div class="no">E · 09</div>
+          <h2>숫자 한 개</h2>
+          <div class="ko">“매일 아침, 숫자 하나만 보세요.”</div>
+          <a class="btn" href="E_영업컨셉-스토리시리즈/2탄_골프시간외_06-23/8_숫자한개.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="E_영업컨셉-스토리시리즈/3탄_지금당장_06-23/10_2분vs매일.html"></a><iframe src="E_영업컨셉-스토리시리즈/3탄_지금당장_06-23/10_2분vs매일.html" loading="lazy" title="설치는 2분, 안 깔면 매일"></iframe></div>
+        <div class="meta">
+          <div class="no">E · 10</div>
+          <h2>설치는 2분, 안 깔면 매일</h2>
+          <div class="ko">“설치는 2분. 안 깔면, 매일.”</div>
+          <a class="btn" href="E_영업컨셉-스토리시리즈/3탄_지금당장_06-23/10_2분vs매일.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="E_영업컨셉-스토리시리즈/3탄_지금당장_06-23/11_깔면1분안에명단.html"></a><iframe src="E_영업컨셉-스토리시리즈/3탄_지금당장_06-23/11_깔면1분안에명단.html" loading="lazy" title="깔면 1분 안에 명단이 뜬다"></iframe></div>
+        <div class="meta">
+          <div class="no">E · 11</div>
+          <h2>깔면 1분 안에 명단이 뜬다</h2>
+          <div class="ko">“깔면 1분 안에, ‘오늘 전화할 환자’가 화면에 떠 있습니다.”</div>
+          <a class="btn" href="E_영업컨셉-스토리시리즈/3탄_지금당장_06-23/11_깔면1분안에명단.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="E_영업컨셉-스토리시리즈/3탄_지금당장_06-23/12_안깔이유0.html"></a><iframe src="E_영업컨셉-스토리시리즈/3탄_지금당장_06-23/12_안깔이유0.html" loading="lazy" title="안 깔 이유를 못 찾을 거예요"></iframe></div>
+        <div class="meta">
+          <div class="no">E · 12</div>
+          <h2>안 깔 이유를 못 찾을 거예요</h2>
+          <div class="ko">“안 깔 이유를, 하나라도 못 찾을 거예요.”</div>
+          <a class="btn" href="E_영업컨셉-스토리시리즈/3탄_지금당장_06-23/12_안깔이유0.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-G">
+      <div class="sec-head">
+        <h2>🗂️ 이전 홍보본</h2>
+        <span class="cnt">3개</span>
+      </div>
+      <p class="sec-blurb">과거 홍보 페이지 아카이브</p>
+      <div class="grid">
+      <div class="card">
+        <div class="thumb"><a class="ov" href="G_이전홍보/리콜콜로거-사용감-홍보_06-30.html"></a><iframe src="G_이전홍보/리콜콜로거-사용감-홍보_06-30.html" loading="lazy" title="오토리콜 · 사용감 미리보기"></iframe></div>
+        <div class="meta">
+          <div class="no">G · 01</div>
+          <h2>오토리콜 · 사용감 미리보기</h2>
+          <div class="ko">“지금 이 순간에도, 환자는 조용히 빠져나가고 있습니다.”</div>
+          <a class="btn" href="G_이전홍보/리콜콜로거-사용감-홍보_06-30.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="G_이전홍보/리콜프로그램-홍보페이지_06-22.html"></a><iframe src="G_이전홍보/리콜프로그램-홍보페이지_06-22.html" loading="lazy" title="6개월 넘게 안 온 환자, 오늘 누가 챙기나요?"></iframe></div>
+        <div class="meta">
+          <div class="no">G · 02</div>
+          <h2>6개월 넘게 안 온 환자, 오늘 누가 챙기나요?</h2>
+          <div class="ko">“대형병원은 콜센터가 환자를 챙깁니다. 당신 치과의 ‘잠든 환자’는, 누가 챙기죠?”</div>
+          <a class="btn" href="G_이전홍보/리콜프로그램-홍보페이지_06-22.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="G_이전홍보/오토덴트-3모델홍보_06-27.html"></a><iframe src="G_이전홍보/오토덴트-3모델홍보_06-27.html" loading="lazy" title="오토덴트 — 무료 · 맥미니 · 스파크 | 우리 치과에 맞는 한 대"></iframe></div>
+        <div class="meta">
+          <div class="no">G · 03</div>
+          <h2>오토덴트 — 무료 · 맥미니 · 스파크 | 우리 치과에 맞는 한 대</h2>
+          <div class="ko">“잠자던 환자를 매출 로, 흩어진 업무를 한 대 로.”</div>
+          <a class="btn" href="G_이전홍보/오토덴트-3모델홍보_06-27.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-H">
+      <div class="sec-head">
+        <h2>🧠 참고 — 카피·이름·배포 전략</h2>
+        <span class="cnt">6개</span>
+      </div>
+      <p class="sec-blurb">네이밍·카피·배포 전략 참고 문서</p>
+      <div class="grid">
+      <div class="card">
+        <div class="thumb"><a class="ov" href="H_참고-카피이름전략/4Prism-AutoRecall-설치사전준비안내.html"></a><iframe src="H_참고-카피이름전략/4Prism-AutoRecall-설치사전준비안내.html" loading="lazy" title="4Prism AutoRecall · 설치 사전 준비 안내"></iframe></div>
+        <div class="meta">
+          <div class="no">H · 01</div>
+          <h2>4Prism AutoRecall · 설치 사전 준비 안내</h2>
+          <div class="ko">“설치 사전 준비 안내”</div>
+          <a class="btn" href="H_참고-카피이름전략/4Prism-AutoRecall-설치사전준비안내.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="H_참고-카피이름전략/리콜-캐치프라이즈-후보_v2_06-29.html"></a><iframe src="H_참고-카피이름전략/리콜-캐치프라이즈-후보_v2_06-29.html" loading="lazy" title="리콜 캐치프라이즈 후보 v2 — 새 버전 고르기"></iframe></div>
+        <div class="meta">
+          <div class="no">H · 02</div>
+          <h2>리콜 캐치프라이즈 후보 v2 — 새 버전 고르기</h2>
+          <div class="ko">“이번엔 다른 각도로. 마음에 드는 걸 클릭하세요.”</div>
+          <a class="btn" href="H_참고-카피이름전략/리콜-캐치프라이즈-후보_v2_06-29.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="H_참고-카피이름전략/리콜프로그램-이름-바둑판_06-30.html"></a><iframe src="H_참고-카피이름전략/리콜프로그램-이름-바둑판_06-30.html" loading="lazy" title="리콜 프로그램 이름 — 바둑판 보드"></iframe></div>
+        <div class="meta">
+          <div class="no">H · 03</div>
+          <h2>리콜 프로그램 이름 — 바둑판 보드</h2>
+          
+          <a class="btn" href="H_참고-카피이름전략/리콜프로그램-이름-바둑판_06-30.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="H_참고-카피이름전략/리콜프로그램-이름-바둑판-콜필수30_06-30.html"></a><iframe src="H_참고-카피이름전략/리콜프로그램-이름-바둑판-콜필수30_06-30.html" loading="lazy" title="리콜 프로그램 이름 — '리콜·콜' 필수 30 바둑판"></iframe></div>
+        <div class="meta">
+          <div class="no">H · 04</div>
+          <h2>리콜 프로그램 이름 — '리콜·콜' 필수 30 바둑판</h2>
+          <div class="ko">“리콜 프로그램 이름 — '리콜·콜' 필수 120”</div>
+          <a class="btn" href="H_참고-카피이름전략/리콜프로그램-이름-바둑판-콜필수30_06-30.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="H_참고-카피이름전략/리콜프로그램-이름후보-리스트업_06-30.html"></a><iframe src="H_참고-카피이름전략/리콜프로그램-이름후보-리스트업_06-30.html" loading="lazy" title="리콜 프로그램 이름 후보 — 통합 결정 보드"></iframe></div>
+        <div class="meta">
+          <div class="no">H · 05</div>
+          <h2>리콜 프로그램 이름 후보 — 통합 결정 보드</h2>
+          
+          <a class="btn" href="H_참고-카피이름전략/리콜프로그램-이름후보-리스트업_06-30.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="H_참고-카피이름전략/AutoRecall-배포전략-플레이북_06-23.html"></a><iframe src="H_참고-카피이름전략/AutoRecall-배포전략-플레이북_06-23.html" loading="lazy" title="AutoRecall 배포 전략 플레이북 — 어떻게 ‘깔게’ 만들 것인가"></iframe></div>
+        <div class="meta">
+          <div class="no">H · 06</div>
+          <h2>AutoRecall 배포 전략 플레이북 — 어떻게 ‘깔게’ 만들 것인가</h2>
+          <div class="ko">“어떻게 ‘깔게’ 만들 것인가”</div>
+          <a class="btn" href="H_참고-카피이름전략/AutoRecall-배포전략-플레이북_06-23.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-I">
+      <div class="sec-head">
+        <h2>🔭 외부 벤치마크</h2>
+        <span class="cnt">2개</span>
+      </div>
+      <p class="sec-blurb">경쟁/참고용 외부 랜딩</p>
+      <div class="grid">
+      <div class="card">
+        <div class="thumb"><a class="ov" href="I_외부벤치마크/덴트라이즈_landing.html"></a><iframe src="I_외부벤치마크/덴트라이즈_landing.html" loading="lazy" title="덴트라이즈 · 매달 600만원이 새고 있습니다"></iframe></div>
+        <div class="meta">
+          <div class="no">I · 01</div>
+          <h2>덴트라이즈 · 매달 600만원이 새고 있습니다</h2>
+          <div class="ko">“원장님 모르는 사이에 덴트웹은 청구해 드리지만 매달 600만원 이 새고 있습니다.”</div>
+          <a class="btn" href="I_외부벤치마크/덴트라이즈_landing.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="I_외부벤치마크/오토덴트-오토리콜_landing_v2.html"></a><iframe src="I_외부벤치마크/오토덴트-오토리콜_landing_v2.html" loading="lazy" title="오토덴트 오토리콜 — 숨어있는 환자가 매출이 됩니다"></iframe></div>
+        <div class="meta">
+          <div class="no">I · 02</div>
+          <h2>오토덴트 오토리콜 — 숨어있는 환자가 매출이 됩니다</h2>
+          <div class="ko">“마케팅비 쓰기 전에, 이미 쌓여있는 구환부터.”</div>
+          <a class="btn" href="I_외부벤치마크/오토덴트-오토리콜_landing_v2.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-·">
+      <div class="sec-head">
+        <h2>📄 P_완전새로운방식-3종-2탄_06-30</h2>
+        <span class="cnt">3개</span>
+      </div>
+      
+      <div class="grid">
+      <div class="card">
+        <div class="thumb"><a class="ov" href="P_완전새로운방식-3종-2탄_06-30/1_게임던전-RPG퀘스트.html"></a><iframe src="P_완전새로운방식-3종-2탄_06-30/1_게임던전-RPG퀘스트.html" loading="lazy" title="리콜 던전 — 잠든 환자를 회수하라"></iframe></div>
+        <div class="meta">
+          <div class="no">· · 01</div>
+          <h2>리콜 던전 — 잠든 환자를 회수하라</h2>
+          <div class="ko">“QUEST. 잠든 환자를 회수하라.”</div>
+          <a class="btn" href="P_완전새로운방식-3종-2탄_06-30/1_게임던전-RPG퀘스트.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="P_완전새로운방식-3종-2탄_06-30/2_매출일보-신문1면.html"></a><iframe src="P_완전새로운방식-3종-2탄_06-30/2_매출일보-신문1면.html" loading="lazy" title="賣出日報 매출일보 — 안 부른 환자, 어디로 갔나"></iframe></div>
+        <div class="meta">
+          <div class="no">· · 02</div>
+          <h2>賣出日報 매출일보 — 안 부른 환자, 어디로 갔나</h2>
+          <div class="ko">“안 부른 환자, 다 어디로 갔나”</div>
+          <a class="btn" href="P_완전새로운방식-3종-2탄_06-30/2_매출일보-신문1면.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="P_완전새로운방식-3종-2탄_06-30/3_꺼져가는별-천문대.html"></a><iframe src="P_완전새로운방식-3종-2탄_06-30/3_꺼져가는별-천문대.html" loading="lazy" title="꺼져가는 별 — 당신 차트의 하늘"></iframe></div>
+        <div class="meta">
+          <div class="no">· · 03</div>
+          <h2>꺼져가는 별 — 당신 차트의 하늘</h2>
+          <div class="ko">“당신 차트의 하늘에서, 별이 하나씩 꺼지고 있습니다.”</div>
+          <a class="btn" href="P_완전새로운방식-3종-2탄_06-30/3_꺼져가는별-천문대.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section id="sec-·">
+      <div class="sec-head">
+        <h2>📄 Q_새매체-웹툰신문검진_06-30</h2>
+        <span class="cnt">3개</span>
+      </div>
+      
+      <div class="grid">
+      <div class="card">
+        <div class="thumb"><a class="ov" href="Q_새매체-웹툰신문검진_06-30/1_세로스크롤웹툰.html"></a><iframe src="Q_새매체-웹툰신문검진_06-30/1_세로스크롤웹툰.html" loading="lazy" title="안 부른 환자만 있을 뿐 — 웹툰으로 보는 우리 치과 이야기"></iframe></div>
+        <div class="meta">
+          <div class="no">· · 01</div>
+          <h2>안 부른 환자만 있을 뿐 — 웹툰으로 보는 우리 치과 이야기</h2>
+          <div class="ko">“안 오는 환자는 없습니다. 안 부른 환자 만 있을 뿐.”</div>
+          <a class="btn" href="Q_새매체-웹툰신문검진_06-30/1_세로스크롤웹툰.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="Q_새매체-웹툰신문검진_06-30/2_신문호외-탐사보도.html"></a><iframe src="Q_새매체-웹툰신문검진_06-30/2_신문호외-탐사보도.html" loading="lazy" title="단독 — 사라진 8,200만원, 치과 차트 속에 잠들어 있었다 · 데일리 리콜"></iframe></div>
+        <div class="meta">
+          <div class="no">· · 02</div>
+          <h2>단독 — 사라진 8,200만원, 치과 차트 속에 잠들어 있었다 · 데일리 리콜</h2>
+          <div class="ko">“데일리 리콜”</div>
+          <a class="btn" href="Q_새매체-웹툰신문검진_06-30/2_신문호외-탐사보도.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="thumb"><a class="ov" href="Q_새매체-웹툰신문검진_06-30/3_귀병원-건강검진결과지.html"></a><iframe src="Q_새매체-웹툰신문검진_06-30/3_귀병원-건강검진결과지.html" loading="lazy" title="리콜 건강검진 결과지 — 귀 병원의 ‘잠든 환자’ 수치"></iframe></div>
+        <div class="meta">
+          <div class="no">· · 03</div>
+          <h2>리콜 건강검진 결과지 — 귀 병원의 ‘잠든 환자’ 수치</h2>
+          <div class="ko">“리콜 건강검진 결과지”</div>
+          <a class="btn" href="Q_새매체-웹툰신문검진_06-30/3_귀병원-건강검진결과지.html">전체 화면으로 보기 →</a>
+        </div>
+      </div>
+      </div>
+    </section>
+    <div class="docs">
+      <h3>📎 참고 문서</h3>
+      <div class="row">
+        <a href="00_요구사항-전체정리_2026-06-30.html">요구사항 전체정리</a>
+        <a href="D_설치페이지-5수준_06-24/검수보드.html">설치 5수준 검수보드</a>
+      </div>
+    </div>
+    <p class="note">※ 미리보기는 실제 페이지를 축소해 라이브로 띄운 것 · 모두 같은 제품(AutoRecall) · 수치·효과는 예시이며 결과를 보장하지 않습니다 · 세부 카피 원장 검수 필요</p>
+  </div>
+  <footer>리콜 프로그램 랜딩페이지 후보 갤러리 · 총 131종</footer>
+</body>
+</html>

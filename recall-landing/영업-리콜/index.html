@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>AutoRecall 영업 팜플렛 — 치과 리콜 자동화 (그래프판 + 매출별 맞춤 4종)</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+  :root{--bg:#FBFAF8;--soft:#F3F1EB;--ink:#141618;--mut:#5B6360;--line:#E5E1D8;
+    --blue:#1D4ED8;--bluD:#163FB0;--bluS:#E8EFFE;--teal:#0E7C6B;--teaD:#0A5E51;--teaS:#E4F4F0;
+    --navy:#0C1B33;--red:#C0392B;--redS:#FCEEEC;--gold:#C77E12;--goldS:#FCF3E4}
+  *{box-sizing:border-box;margin:0}
+  body{background:#e8e6e0;font-family:"Pretendard","Malgun Gothic",sans-serif;color:var(--ink);
+    line-height:1.6;letter-spacing:-.012em;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pg{width:210mm;min-height:297mm;background:var(--bg);margin:8mm auto;padding:14mm 15mm;position:relative;
+    box-shadow:0 6px 30px rgba(0,0,0,.15);page-break-after:always;display:flex;flex-direction:column}
+  @media print{body{background:#fff}.pg{margin:0;box-shadow:none}}
+  .pgno{position:absolute;bottom:7mm;right:15mm;font-size:9px;color:var(--mut);font-weight:700}
+  .brand{position:absolute;bottom:7mm;left:15mm;font-size:9px;color:var(--mut);font-weight:800}
+  .brand b{color:var(--teal)}
+  .eye{display:inline-block;font-size:10.5px;font-weight:850;letter-spacing:.08em;color:var(--teaD);background:var(--teaS);padding:4px 12px;border-radius:99px;margin-bottom:7px}
+  .eye.b{color:var(--bluD);background:var(--bluS)} .eye.r{color:var(--red);background:var(--redS)} .eye.g{color:#8a6410;background:var(--goldS)}
+  h1{font-size:34px;font-weight:900;letter-spacing:-.04em;line-height:1.22}
+  h2{font-size:21px;font-weight:880;letter-spacing:-.03em;line-height:1.28;margin-bottom:3mm}
+  h3{font-size:13.5px;font-weight:820}
+  mark{background:linear-gradient(180deg,transparent 56%,#FFE39C 56%);padding:0 2px}
+  .lead{font-size:11.5px;color:var(--mut);line-height:1.65}
+  .card{background:#fff;border:1.2pt solid var(--line);border-radius:12px;padding:4.5mm}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4mm}
+  .kpi .v{font-size:23px;font-weight:900;letter-spacing:-.02em}
+  .kpi .l{font-size:9.5px;color:var(--mut);font-weight:700;line-height:1.5}
+  table{width:100%;border-collapse:collapse;font-size:10.5px}
+  th,td{border:1pt solid var(--line);padding:2.4mm 3mm;text-align:left;vertical-align:top}
+  th{background:var(--soft);font-weight:850}
+  .ok{color:var(--teaD);font-weight:850} .bad{color:var(--red);font-weight:800} .so{color:var(--gold);font-weight:800}
+  .foot{margin-top:auto;padding-top:3mm;font-size:8.5px;color:var(--mut);border-top:.8pt dashed var(--line);line-height:1.55}
+  .pill{display:inline-block;font-size:9.5px;font-weight:850;border-radius:99px;padding:2px 9px}
+  .step{display:flex;gap:3.5mm;align-items:flex-start;padding:2.8mm 0;border-bottom:.8pt dashed var(--line);font-size:11px}
+  .step:last-child{border-bottom:0}
+  .step .n{flex:0 0 7mm;width:7mm;height:7mm;border-radius:2.4mm;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:900;font-size:11px}
+  .quote{background:#fff;border-left:3pt solid var(--teal);border-radius:0 10px 10px 0;padding:3.5mm 4.5mm;font-size:10.5px;line-height:1.6}
+  .quote .by{display:block;margin-top:1.5mm;font-size:9px;color:var(--mut);font-weight:700}
+  .call{display:flex;gap:3mm;align-items:flex-start;padding:2.5mm 0;border-bottom:.8pt solid var(--line);font-size:10.5px}
+  .call:last-child{border-bottom:0}
+  .call .dot{flex:0 0 3mm;width:3mm;height:3mm;border-radius:50%;margin-top:1.6mm}
+  .call b{font-size:11px}
+  .call small{display:block;color:var(--mut)}
+  svg{width:100%;height:auto;display:block}
+  .axl{font-size:11px;fill:#8B8578;font-weight:650;font-family:inherit}
+  .cht{background:#fff;border:1.2pt solid var(--line);border-radius:12px;padding:4mm 4.5mm}
+  .cht .ct{font-size:12.5px;font-weight:860;display:flex;align-items:center;gap:2.5mm;margin-bottom:1mm}
+  .cht .ct .no{display:inline-grid;place-items:center;width:6mm;height:6mm;border-radius:2mm;color:#fff;font-size:10.5px;font-weight:900}
+  .cht .demo{margin-left:auto;font-size:8.5px;font-weight:800;color:var(--mut);background:var(--soft);border-radius:99px;padding:2px 8px}
+  .cht .sub{font-size:9.5px;color:var(--mut);line-height:1.55;margin-bottom:1.5mm}
+  .cht .src{font-size:8px;color:#96907F;line-height:1.5;margin-top:1.5mm;border-top:.8pt dashed var(--line);padding-top:1.5mm}
+  /* ─ 맞춤 페이지 ─ */
+  .tbadge{display:inline-flex;align-items:center;gap:2.5mm;background:var(--navy);color:#fff;border-radius:10px;padding:2.5mm 4.5mm;font-weight:900;font-size:15px}
+  .tbadge small{font-size:9.5px;font-weight:700;color:#B9C6DB}
+  .rx{display:flex;gap:3mm;align-items:flex-start;padding:2.4mm 0;border-bottom:.8pt dashed var(--line);font-size:10.5px;line-height:1.55}
+  .rx:last-child{border-bottom:0}
+  .rx .ic{flex:0 0 6.5mm;font-size:13px;text-align:center}
+  .tsel{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+  .tsel .tc{border:1.4pt solid var(--line);border-radius:12px;padding:4.5mm;background:#fff}
+  .tsel .tc .tt{font-size:15px;font-weight:900}
+  .tsel .tc .td{font-size:10px;color:var(--mut);margin-top:1mm;line-height:1.6}
+</style>
+</head>
+<body>
+
+<!-- ═════════ P1 표지 ═════════ -->
+<div class="pg" style="background:linear-gradient(165deg,#26282B,#1C1D1F 60%,#26323b);color:#fff;justify-content:center">
+  <div style="font-size:13px;font-weight:800;letter-spacing:.1em;color:#9FE0D2">AUTORECALL · 치과 리콜 자동화</div>
+  <h1 style="color:#fff;font-size:42px;margin-top:7mm">당신의 구환이<br><span style="color:#FFD24B">조용히 사라지고</span> 있습니다</h1>
+  <p style="margin-top:5mm;font-size:13.5px;color:#c4c9cf;line-height:1.7;max-width:150mm">AutoRecall은 차트를 읽어 <b>수천 명 흩어진 구환</b>을 <b>‘오늘 전화할 3명’</b>으로 바꿉니다.</p>
+  <div style="background:rgba(255,255,255,.06);border:1pt solid rgba(255,255,255,.18);border-radius:12px;padding:4mm 5mm;margin-top:7mm">
+    <svg id="cvChart" viewBox="0 0 760 240"></svg>
+    <div style="font-size:9px;color:#9aa1a8;font-weight:700;margin-top:1mm;text-align:right">환자 방치 개월수 → 돌아올 확률 (업계 벤치마크)</div>
+  </div>
+  <div style="display:flex;gap:4mm;margin-top:7mm;flex-wrap:wrap">
+    <div style="background:rgba(255,255,255,.1);border:1pt solid rgba(255,255,255,.28);border-radius:10px;padding:4mm 6mm"><div style="font-size:22px;font-weight:900;color:#FFD24B">2억 798만</div><div style="font-size:10px;color:#9aa1a8;font-weight:700">설치 첫날 발견되는 놓친 매출 (예시 진단)</div></div>
+    <div style="background:rgba(255,255,255,.1);border:1pt solid rgba(255,255,255,.28);border-radius:10px;padding:4mm 6mm"><div style="font-size:22px;font-weight:900;color:#FFD24B">3분</div><div style="font-size:10px;color:#9aa1a8;font-weight:700">설치 → 우리 병원 실제 명단</div></div>
+    <div style="background:#fff;border-radius:10px;padding:4mm 6mm"><div style="font-size:22px;font-weight:900;color:var(--teaD)">무료</div><div style="font-size:10px;color:var(--mut);font-weight:700">앱이 100만원 벌어드릴 때까지</div></div>
+  </div>
+  <div style="margin-top:10mm;font-size:11px;color:#9aa1a8;font-weight:700">안 오는 환자는 없습니다. 안 부른 환자만 있을 뿐입니다.</div>
+  <div class="brand" style="color:#9aa1a8"><b style="color:#7db3ff">AutoRecall</b> · 영업 안내서 v2</div><div class="pgno" style="color:#9aa1a8">01</div>
+</div>
+
+<!-- ═════════ P2 골든타임 그래프 ═════════ -->
+<div class="pg">
+  <span class="eye r">왜 지금인가</span>
+  <h2>환자는 불평하지 않습니다. <mark>그냥 안 옵니다.</mark></h2>
+  <div class="cht" style="margin-top:3mm">
+    <div class="ct"><span class="no" style="background:var(--red)">1</span>리콜의 골든타임 — 시간이 지날수록 돌아올 확률이 녹습니다 <span class="demo">업계 벤치마크</span></div>
+    <svg id="chGold" viewBox="0 0 760 400"></svg>
+    <div class="src">한 번 안내 시 재내원 35~45% · 이어서 챙기면 80~90% · 6~12개월 방치 시 8% 미만(업계 참고 범위). AutoRecall은 ‘누구를’이 아니라 <b>‘오늘 걸어야 하는 사람’</b>을 골라냅니다.</div>
+  </div>
+  <div class="grid3" style="margin-top:4mm">
+    <div class="card kpi"><div class="v" style="color:var(--red)">20~30%</div><div class="l">관리 없을 때 18개월 내 조용히 떠나는 활성 환자</div></div>
+    <div class="card kpi"><div class="v" style="color:var(--red)">8% 미만</div><div class="l">6~12개월 지난 뒤 돌아올 확률</div></div>
+    <div class="card kpi"><div class="v" style="color:var(--teaD)">80~90%</div><div class="l">이어서 챙길 때 재내원율</div></div>
+  </div>
+  <div class="card" style="margin-top:4mm;background:var(--redS);border-color:#F4C4AB">
+    <p style="font-size:10.5px;line-height:1.65">😨 실화 패턴 — 임플란트 상담·견적까지 받은 환자가 <b>옆 치과에서 수술</b>. 이유는 단 하나: <b>먼저 연락 온 곳에서 그냥 했을 뿐.</b></p>
+  </div>
+  <div class="foot">벤치마크 수치는 업계 참고자료 기반 범위값이며, 우리 병원 실제 값은 설치 후 3분 내 확인됩니다.</div>
+  <div class="brand"><b>AutoRecall</b> 영업 안내서</div><div class="pgno">02</div>
+</div>
+
+<!-- ═════════ P3 매출→잠자는 매출 ═════════ -->
+<div class="pg">
+  <span class="eye r">데이터로 보는 리콜 공백</span>
+  <h2>우리 월매출이면, 차트 속에 잠든 돈은 <mark>얼마나</mark> 될까요?</h2>
+  <div class="cht" style="margin-top:3mm">
+    <div class="ct"><span class="no" style="background:var(--red)">2</span>월매출 → 매달 잠드는 리콜 매출 <span class="demo">실통계 매출 × 예시 진단 비율 · 추정</span></div>
+    <p class="sub">2023년 전국 치과의원 평균 <b>월매출 약 6,490만원</b>. 예시 진단에서 같은 규모 치과의 매달 증발액은 <b>약 2,902만원</b> — 이 비율을 매출 축 전체에 늘려 그렸습니다. <b>우리 치과 위치를 가로축에서 찾아보세요.</b></p>
+    <svg id="chSleep" viewBox="0 0 760 430"></svg>
+    <div class="src">📚 출처 — 2024 치과경영보고서(덴탈아리랑, 2023 결산): 평균 연매출 7.79억 / 상위 5% 연매출 20.4억+(치과신문). 음영 밴드 = 진료 구성에 따른 통상 범위(추정). 세로축은 ‘즉시 손실’이 아니라 <b>부르면 살릴 수 있는 잠재 매출</b>입니다.</div>
+  </div>
+  <div class="cht" style="margin-top:4mm">
+    <div class="ct"><span class="no" style="background:#33507F">3</span>방치 5년, 쌓이는 잠재 매출 — 색칠된 면적이 <b style="color:var(--red)">&nbsp;잠든 돈</b> <span class="demo">추정</span></div>
+    <svg id="chCum" viewBox="0 0 760 380"></svg>
+    <div class="src">평균(월 6,490만)·상위 30%(월 8,300만 추정)·상위 10%(월 1.2억 추정) 치과의 리콜 잠재 매출 누적. 뒤로 갈수록 골든타임(6개월)이 지나 <b>실제 회수 가능액은 급감</b> — 그래서 ‘지금’이 항상 최적기입니다.</div>
+  </div>
+  <div class="foot">모든 수치는 실통계 매출에 예시 진단 비율을 적용한 추정이며, 우리 병원 실제 값은 설치 후 3분 진단으로 확인됩니다.</div>
+  <div class="brand"><b>AutoRecall</b> 영업 안내서</div><div class="pgno">03</div>
+</div>
+
+<!-- ═════════ P4 3분 진단 바차트 ═════════ -->
+<div class="pg">
+  <span class="eye b">무엇을 찾아내나</span>
+  <h2>설치 첫날 3분 진단 — <mark>어디서 얼마가</mark> 잠들어 있는지</h2>
+  <div class="cht" style="margin-top:3mm">
+    <div class="ct"><span class="no" style="background:var(--blue)">4</span>발견 항목별 잠재 매출 <span class="demo">예시 진단 (전국 평균 규모)</span></div>
+    <svg id="chDiag" viewBox="0 0 760 420"></svg>
+    <div class="src">환자 이름·마지막 진료일까지 붙은 <b>실명단</b>으로 나옵니다. 차트는 우리 병원 안에서만 열립니다. 보험 적용 조건은 진료 시 확인 필요.</div>
+  </div>
+  <div class="grid2" style="margin-top:4mm">
+    <div class="card" style="border-color:#F4C4AB"><h3 style="color:#8a5148">🔴 치료가 멈춘 분 — 다시 부릅니다</h3>
+      <ul style="font-size:10.5px;margin:2mm 0 0 4mm;line-height:1.9"><li>임플란트 상담 후 미착수</li><li>크라운 프렙 후 미장착</li><li>발치 후 임플란트 미연결</li><li>신경치료 미완 · 잠든 구환(14개월+)</li></ul></div>
+    <div class="card" style="border-color:#BEE3DB"><h3 style="color:var(--teaD)">🟢 지금이 타이밍인 분 — 놓치지 않습니다</h3>
+      <ul style="font-size:10.5px;margin:2mm 0 0 4mm;line-height:1.9"><li>정기검진 주기 도래 · 스케일링</li><li>만 65세 임플란트 보험</li><li>발치 후 보험 임플란트 시점</li><li>소아 레진 보험 시기</li></ul></div>
+  </div>
+  <div class="foot">수치는 예시(가상 환자)입니다. 항목 구성·금액은 병원 진료 구성에 따라 다릅니다.</div>
+  <div class="brand"><b>AutoRecall</b> 영업 안내서</div><div class="pgno">04</div>
+</div>
+
+<!-- ═════════ P5 해결 — 오늘 명단 ═════════ -->
+<div class="pg">
+  <span class="eye">해결책</span>
+  <h2>수천 명 흩어진 구환을, <mark>오늘 전화할 3명</mark>으로</h2>
+  <p class="lead">차트·예약·통화기록을 읽어 <b>지금 걸 순서대로</b> 정렬 — 3,000명을 3초에 훑어 오늘 걸어야 살아나는 몇 명만 남깁니다.</p>
+  <div class="card" style="margin-top:3mm">
+    <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1pt solid var(--line);padding-bottom:2.5mm"><b style="font-size:12px">📞 오늘 전화할 명단</b><span class="pill" style="background:var(--soft);color:var(--mut)">우선순위순 · 5명</span></div>
+    <div class="call"><span class="dot" style="background:var(--red)"></span><span><b>김도현</b> <span class="pill" style="background:var(--redS);color:var(--red)">미착수 상담 콜</span><small>44세 · 임플란트 상담 후 11개월 미착수</small></span></div>
+    <div class="call"><span class="dot" style="background:var(--blue)"></span><span><b>정성호</b> <span class="pill" style="background:var(--bluS);color:var(--bluD)">재방문 콜 · 휴면</span><small>만 67세 · 보험 임플란트 잔여 1/2 · 보험 D-8</small></span></div>
+    <div class="call"><span class="dot" style="background:var(--teal)"></span><span><b>이수진</b> <span class="pill" style="background:var(--teaS);color:var(--teaD)">정기검진 콜</span><small>38세 · 스케일링 7개월 경과 · 보험 시점 도래</small></span></div>
+    <div class="call"><span class="dot" style="background:var(--teal)"></span><span><b>박준영</b> <span class="pill" style="background:var(--teaS);color:var(--teaD)">사후관리 해피콜</span><small>52세 · 크라운 세팅 직후 케어</small></span></div>
+    <div class="call"><span class="dot" style="background:var(--red)"></span><span><b>최민아</b> <span class="pill" style="background:var(--redS);color:var(--red)">예약 부도 당일 콜</span><small>29세 · 오늘 10:30 예약 부도 — 당일이 재예약 골든타임, "○일로 예약 해드릴게요"까지 멘트 제시</small></span></div>
+  </div>
+  <div class="grid3" style="margin-top:4mm">
+    <div class="card"><h3>🎯 우선순위 자동</h3><p style="font-size:9.5px;color:var(--mut);margin-top:1.5mm">긴급도 × 회수 가치 × 타이밍 — 시간대마다 재계산.</p></div>
+    <div class="card"><h3>🚫 걸면 안 되는 환자 제외</h3><p style="font-size:9.5px;color:var(--mut);margin-top:1.5mm">항의·거부 이력, 치료완료 자동 분류 — 실수 전화 0.</p></div>
+    <div class="card"><h3>📝 결과는 버튼 한 번</h3><p style="font-size:9.5px;color:var(--mut);margin-top:1.5mm">결과를 찍으면 다음 콜·문자로 자동 연결.</p></div>
+  </div>
+  <div class="card" style="margin-top:4mm">
+    <h3>통화 → 예약 → 문자까지 한 흐름</h3>
+    <div class="step"><span class="n">1</span><span><b>전화 걸기</b> — 명단 위에서부터. 환자 이력·추천 멘트가 한 화면에</span></div>
+    <div class="step"><span class="n">2</span><span><b>결과 버튼</b> — 예약/부재/거부/다음에 — 한 번 찍으면 끝</span></div>
+    <div class="step"><span class="n">3</span><span><b>자동 후속</b> — 부재중이면 재시도 큐, 예약이면 확인 문자까지</span></div>
+    <div class="step"><span class="n">4</span><span><b>리포트 자동</b> — 월말 성과·직원별 통계가 자동으로</span></div>
+  </div>
+  <div class="foot">명단·환자 정보는 가상 예시입니다. 설치 시 우리 병원 실제 환자로 채워집니다.</div>
+  <div class="brand"><b>AutoRecall</b> 영업 안내서</div><div class="pgno">05</div>
+</div>
+
+<!-- ═════════ P5.5 앱 내장 콜 스크립트·문자 템플릿 ═════════ -->
+<div class="pg">
+  <span class="eye">앱에 내장된 실전 노하우</span>
+  <h2>명단만 주지 않습니다 — <mark>뭐라고 걸지</mark>까지 들어 있습니다</h2>
+  <p class="lead">콜이 안 도는 진짜 이유는 "무슨 말로 시작하지?"입니다. AutoRecall은 콜 유형마다 <b>검증된 전화 시나리오와 문자 템플릿</b>을 환자 정보 옆에 같이 띄웁니다 — 신입도 첫날부터 겁 없이 겁니다.</p>
+  <div class="grid2" style="margin-top:3mm;align-items:start">
+    <div class="card">
+      <h3>📞 화면에 뜨는 스크립트 — 임플란트 상담 후 미착수 콜 (예시)</h3>
+      <div class="step"><span class="n">0</span><span><b>걸기 전 자동 표시</b> — 과거 차팅·상담 내용·예약 가능일이 한 화면에.<br><span style="color:var(--mut)">원칙: 영업 전화가 아니라 <b>안부 전화</b>처럼.</span></span></div>
+      <div class="step"><span class="n">1</span><span><b>오프닝</b> — "안녕하세요, ○○치과입니다^^ 지난번 상담하신 임플란트 치료는 받으셨어요?"</span></div>
+      <div class="step"><span class="n">2</span><span><b>이미 다른 데서 했다면</b> — "치료 시기가 중요해서 안부차 연락드렸어요. 관리 잘 받으세요^^"<br><span style="color:var(--mut)">→ 좋은 인상만 남기고 종료. 앱이 <b>리콜 종결</b>로 자동 분류해 다신 안 겁니다.</span></span></div>
+      <div class="step"><span class="n">3</span><span><b>아직 안 했다면</b> — 미룬 이유부터 공감 → "원장님이 상태 보시고 정확히 안내드릴 수 있게 예약 도와드릴까요?"<br><span style="color:var(--mut)">비용 고민이면 보험 적용 시점(만 65세 등)을 같이 안내.</span></span></div>
+    </div>
+    <div>
+      <div class="card">
+        <h3>💬 상황별 문자 템플릿 — 결과 버튼 누르면 자동 발송 (예시)</h3>
+        <div class="call"><span class="dot" style="background:var(--teal)"></span><span><b>예약 전날 리마인드</b><small>"내일 ○시 예약 잊지 않으셨죠? 어려우시면 미리 연락 주세요^^"</small></span></div>
+        <div class="call"><span class="dot" style="background:var(--blue)"></span><span><b>부재중 2회 후</b><small>"연락이 닿지 않아 문자 남겨요. 편한 시간에 전화 주시거나, 카톡으로 가능한 시간만 알려주시면 맞춰 전화드릴게요"</small></span></div>
+        <div class="call"><span class="dot" style="background:var(--gold)"></span><span><b>연말 스케일링 권유</b><small>"올해 보험 스케일링(연 1회) 아직이시면 연말 전에 챙기세요 — 예약 도와드릴까요?"</small></span></div>
+        <div class="call"><span class="dot" style="background:#8B8578"></span><span><b>리콜 종결 안내</b><small>"치료 중단 시 계획이 달라질 수 있어요. 이후에는 정기검진 안내로만 찾아뵙겠습니다^^" — 부담은 빼고 문은 열어둠</small></span></div>
+      </div>
+      <div class="card" style="margin-top:4mm;background:var(--bluS);border-color:#CBDDF6">
+        <h3>🔁 부재중 콜백 규칙 — 앱이 큐로 자동 관리</h3>
+        <p style="font-size:10.5px;line-height:1.7;margin-top:1.5mm">당일 1~2회 재시도 → 퇴근 전 문자 → <b>다음날 재통화</b> → 그래도 안 되면 카톡 안내 후 다음 주기로. 사람이 기억할 필요 없이 <b>재시도 큐에 알아서 다시 올라옵니다.</b></p>
+      </div>
+    </div>
+  </div>
+  <div class="grid3" style="margin-top:4mm">
+    <div class="card"><h3>① 진료실에서 다음 예약까지</h3><p style="font-size:9.5px;color:var(--mut);margin-top:1.5mm">"이 치료는 N주 간격이 효과가 좋아요" — 원장 한마디 후 그 자리에서 예약. 데스크 콜보다 예약률이 높은 지점.</p></div>
+    <div class="card"><h3>② 연속 치료는 고정 선예약</h3><p style="font-size:9.5px;color:var(--mut);margin-top:1.5mm">초기 치료 3회는 같은 요일·같은 시간으로 미리 묶어 예약 — 이탈 구간 자체를 없앱니다.</p></div>
+    <div class="card"><h3>③ 예약 = 약속으로 잠금</h3><p style="font-size:9.5px;color:var(--mut);margin-top:1.5mm">확정 즉시 안내 문자 발송 — "예약했으니 가야지"라는 약속 심리가 노쇼를 줄입니다.</p></div>
+  </div>
+  <div class="card" style="margin-top:4mm;background:var(--teaS);border-color:#BEE3DB">
+    <p style="font-size:10.5px;line-height:1.65">🎓 <b>신입 교육이 따로 필요 없습니다</b> — 시나리오가 화면에 떠 있으니 읽으면서 걸고, 걸수록 늡니다. "실장님만 할 수 있던 일"이 "누구나 하는 루틴"이 됩니다.</p>
+  </div>
+  <div class="foot">전화 시나리오·문자 문구·콜백 규칙은 실사용 병원의 운영 노하우를 다듬은 예시이며, 설치 시 우리 병원 말투·진료 구성에 맞게 수정해 내장됩니다.</div>
+  <div class="brand"><b>AutoRecall</b> 영업 안내서</div><div class="pgno">06</div>
+</div>
+
+<!-- ═════════ P5.7 몰랐던 운영 디테일 — 새는 구멍 4곳 + 룰북 ═════════ -->
+<div class="pg">
+  <span class="eye r">이 페이지만 읽어도 남습니다</span>
+  <h2>원장님만 모르는, 데스크에서 <mark>예약이 새는 구멍 4곳</mark></h2>
+  <p class="lead">악의가 아닙니다 — 아무도 알려주지 않아 생기는 <b>구조적 습관</b>입니다. 문제는 원장 눈에 절대 안 보인다는 것. 진료실에 계신 동안 데스크에선 이런 일이 흔하게 일어납니다.</p>
+  <div class="grid2" style="margin-top:3mm">
+    <div class="card" style="border-color:#F4C4AB"><h3 style="color:var(--red)">① 마감시간을 당겨서 예약을 안 받음</h3><p style="font-size:10px;color:var(--mut);margin-top:1.5mm;line-height:1.65">"6시 반까지 진료"인데 신환 안내는 "5시 반까지"로 — 마지막 1시간의 신환이 통째로 증발합니다. <b>우리 병원 안내 마감시간, 확인해보신 적 있으세요?</b></p></div>
+    <div class="card" style="border-color:#F4C4AB"><h3 style="color:var(--red)">② 가장 빠른 날 대신 늦은 날로 잡음</h3><p style="font-size:10px;color:var(--mut);margin-top:1.5mm;line-height:1.65">직원이 병원 프로세스를 정확히 몰라 "다음 주쯤 오세요"로 늦춰 잡는 경우가 흔합니다 — 그 사이 환자 마음이 식고, <b>골든타임이 지나갑니다.</b></p></div>
+    <div class="card" style="border-color:#F4C4AB"><h3 style="color:var(--red)">③ 직원끼리 정한 '암묵적 예약 상한'</h3><p style="font-size:10px;color:var(--mut);margin-top:1.5mm;line-height:1.65">병원이 정한 적 없는데 "하루 이 정도면 꽉 찼다"는 자체 룰로 그 이상 예약을 안 받는 경우 — <b>원장은 한가한데 예약은 마감</b>인 미스터리의 정체.</p></div>
+    <div class="card" style="border-color:#F4C4AB"><h3 style="color:var(--red)">④ 신환 문의를 신입이 응대</h3><p style="font-size:10px;color:var(--mut);margin-top:1.5mm;line-height:1.65">아무도 "신환은 실장님 연결"이라고 알려주지 않으면, 신입은 본인 일인 줄 알고 받습니다 — <b>가장 비싼 전화를 가장 경험 적은 사람이</b> 받는 구조.</p></div>
+  </div>
+  <div class="card" style="margin-top:4mm">
+    <h3>📒 아는 치과만 아는 운영 룰북 — 내일 아침 회의감</h3>
+    <table style="margin-top:2mm">
+      <tr><th style="width:24%">상황</th><th>몰랐던 디테일</th></tr>
+      <tr><td><b>예약 부도</b></td><td>골든타이밍 3연타 — <b>부도 즉시 전화</b> → 다음날(신환) / 당일 마감 전(구환) 문자 → 일주일 뒤 한 번 더. 하루 지나면 복귀율이 뚝 떨어집니다.</td></tr>
+      <tr><td><b>문의 후 미예약</b></td><td>포기 기준까지 정해두기 — <b>주 1회, 최대 3번</b>. 그 이상은 스팸, 그 미만은 방치.</td></tr>
+      <tr><td><b>부재중 전화</b></td><td>오전 부재중은 <b>점심 전</b>, 오후 부재중은 <b>마감 전</b> 콜백 — "나중에"는 곧 "내일", 내일이면 남의 환자.</td></tr>
+      <tr><td><b>카톡 문의</b></td><td>카톡은 단순 문의가 많아 <b>예약 전환율이 전화보다 낮습니다</b> — 고가 진료 문의일수록 "전화로 자세히 안내드릴까요?"로 전환.</td></tr>
+      <tr><td><b>소개 부탁</b></td><td>치료 끝난 뒤가 아니라 <b>다니는 중일 때</b> 소개 확률이 가장 높습니다 — 만족이 가장 뜨거운 시점이니까.</td></tr>
+      <tr><td><b>비용 안내</b></td><td>안 물어봐도 <b>대략 금액을 사전 예고</b> — 내원 후 비용 쇼크로 이탈하는 것보다 전화에서 거르는 게 서로 이득.</td></tr>
+    </table>
+  </div>
+  <div class="card" style="margin-top:4mm;background:var(--teaS);border-color:#BEE3DB">
+    <p style="font-size:10.5px;line-height:1.7">🔍 이 구멍들의 공통점 — <b>전부 숫자가 없어서 생깁니다.</b> AutoRecall은 부도·미예약·부재중 재시도를 큐로 자동 실행하고, 누가 몇 통 걸어 몇 명 왔는지 직원별로 남깁니다. 숫자가 보이는 순간, 구멍은 저절로 닫히기 시작합니다.</p>
+  </div>
+  <div class="foot">운영 룰·체크포인트는 실사용 병원과 업계 운영 노하우를 정리한 것으로, 병원 상황에 따라 조정이 필요합니다.</div>
+  <div class="brand"><b>AutoRecall</b> 영업 안내서</div><div class="pgno">07</div>
+</div>
+
+<!-- ═════════ P6 규모별 리콜 공백 곡선 ═════════ -->
+<div class="pg">
+  <span class="eye g">규모의 함정</span>
+  <h2>리콜이 가장 많이 끊기는 구간 — <mark>월매출 1~2억대</mark></h2>
+  <div class="cht" style="margin-top:3mm">
+    <div class="ct"><span class="no" style="background:var(--gold)">5</span>월매출별 · 리콜이 끊기는 비율 <span class="demo">구조 분석 · 추정</span></div>
+    <p class="sub">작을 땐 <b>원장이 환자를 기억</b>하고, 아주 커지면 <b>전담 인력</b>이 생깁니다. 문제는 그 사이 — 환자·직원은 늘었는데 체계는 아직인 성장 구간에서 리콜이 정점으로 끊깁니다.</p>
+    <svg id="chGap" viewBox="0 0 760 420"></svg>
+    <div class="src">규모별 인력 구조(원장 직접 → 중간 공백 → 전담)를 결합한 추정 곡선. 초록 선 = 시스템 도입 시 규모와 무관하게 낮게 고정.</div>
+  </div>
+  <table style="margin-top:4mm">
+    <tr><th style="width:26%">쟁점</th><th>지금</th><th style="background:var(--teaS)">AutoRecall 설치 후</th></tr>
+    <tr><td><b>지속성</b></td><td class="bad">✕ 며칠 하다 다른 일 터지면 원점</td><td class="ok">✓ 매일 걸 리스트가 알아서 — 루틴으로</td></tr>
+    <tr><td><b>사실 확인</b></td><td class="bad">✕ “잘 되고 있어요” 확인 불가</td><td class="ok">✓ 누가 며칠에 몇 통·결과가 숫자로</td></tr>
+    <tr><td><b>사람 의존</b></td><td class="bad">✕ 잘하는 직원 빠지면 멈춤</td><td class="ok">✓ 누가 앉아도 오늘 할 리콜이 똑같이</td></tr>
+    <tr><td><b>보고 작성</b></td><td class="bad">✕ 보고서가 또 하나의 일</td><td class="ok">✓ 결과 보고서 자동 생성</td></tr>
+  </table>
+  <div class="foot">비교는 일반적 운영 형태 기준입니다.</div>
+  <div class="brand"><b>AutoRecall</b> 영업 안내서</div><div class="pgno">06</div>
+</div>
+
+<!-- ═════════ P7 리포트 — 퍼널·직원별 ═════════ -->
+<div class="pg">
+  <span class="eye">끝까지 확인</span>
+  <h2>“잘 되고 있어요”가 아니라 <mark>숫자로 확인</mark>합니다</h2>
+  <div class="cht" style="margin-top:3mm">
+    <div class="ct"><span class="no" style="background:var(--teal)">6</span>월간 리콜 퍼널 — 콜에서 내원까지 <span class="demo">예시</span></div>
+    <svg id="chFunnel" viewBox="0 0 760 250"></svg>
+  </div>
+  <div class="grid2" style="margin-top:4mm">
+    <div class="cht">
+      <div class="ct" style="font-size:11.5px"><span class="no" style="background:#33507F">7</span>직원별 콜 성과 <span class="demo">예시</span></div>
+      <svg id="chStaff" viewBox="0 0 380 220"></svg>
+    </div>
+    <div class="cht">
+      <div class="ct" style="font-size:11.5px"><span class="no" style="background:var(--bluD)">8</span>복귀 매출(추정) 월 추이 <span class="demo">예시</span></div>
+      <svg id="chTrend" viewBox="0 0 380 220"></svg>
+    </div>
+  </div>
+  <div class="quote" style="margin-top:4mm">“차트 열어보니 <b>치료 중단 환자가 생각보다 많았습니다.</b> 매일 할 일로 리스트업 해주는 게 좋았어요.”<span class="by">대표원장 · 천안 서울사계절치과의원 (실사용)</span></div>
+  <div class="quote" style="margin-top:2.5mm;border-color:var(--blue)">“<b>몇 명 걸고 몇 명 왔는지가 보여서</b> 드디어 데스크도 관리가 되는 느낌입니다.”<span class="by">대표원장 · 안양 정성치과의원 (실사용)</span></div>
+  <div class="foot">리포트 수치는 예시입니다. 통화 결과 학습으로 다음 달 큐가 점점 정확해집니다.</div>
+  <div class="brand"><b>AutoRecall</b> 영업 안내서</div><div class="pgno">07</div>
+</div>
+
+<!-- ═════════ P8 실사용 성과 — 면적=회수한 돈 ═════════ -->
+<div class="pg">
+  <span class="eye">설치하면 이렇게 됩니다</span>
+  <h2>설치 후, <mark>색칠된 면적만큼</mark> 돌아왔습니다</h2>
+  <div class="cht" style="margin-top:3mm">
+    <div class="ct"><span class="no" style="background:var(--teal)">9</span>설치 전후 월 복귀 매출 — 면적 = 회수한 돈 <span class="demo">실사용 기반 · 수치는 예시</span></div>
+    <p class="sub">회색 점선 = <b>설치 안 했다면 그대로였을 선</b>(설치 전 6개월 평균). 실제 곡선이 그 위로 올라간 만큼 — 그 사이 면적이 곧 추가로 돌아온 매출입니다.</p>
+    <svg id="chGain" viewBox="0 0 760 400"></svg>
+    <div class="src">실사용 병원 경험을 바탕으로 한 예시 수치. 병원별 실제 값은 규모·진료 구성에 따라 다르며, 설치 후 리포트에서 우리 병원 전후 비교를 그대로 볼 수 있습니다.</div>
+  </div>
+  <div class="quote" style="margin-top:4mm;border-color:var(--gold)">“임플란트 미착수 환자 연락만 <b>비는 시간에 돌려도 본전은 뽑습니다.</b>”<span class="by">대표원장 · 천안 서울사계절치과의원 (실사용)</span></div>
+  <div class="quote" style="margin-top:2.5mm">“덴트웹 리콜관리는 신입이 적응하기 어려웠거든요. 이건 <b>깔면 바로 실전으로 전화를 걸 수 있어서</b> 일 가르치기가 수월해졌어요.”<span class="by">실장 · 천안 서울사계절치과의원 (실사용)</span></div>
+  <div class="card" style="margin-top:4mm;background:var(--bluS);border-color:#CBDDF6">
+    <p style="font-size:10.5px;line-height:1.65">🧩 <b>자매 프로그램 AutoClaim</b> — 같은 팀의 보험청구 누락 방지(3중 차단). 함께 쓰면 <b>‘부르는 돈’과 ‘받는 돈’</b>이 동시에 잡힙니다.</p>
+  </div>
+  <div class="foot">후기는 실사용 병원 피드백 기반, 직함 표기. 효과는 병원별로 다를 수 있습니다.</div>
+  <div class="brand"><b>AutoRecall</b> 영업 안내서</div><div class="pgno">08</div>
+</div>
+
+<!-- ═════════ P9 맞춤 섹션 표지 ═════════ -->
+<div class="pg" id="tierCover" style="background:linear-gradient(165deg,#0C1B33,#16294a);color:#fff;justify-content:center">
+  <div style="font-size:12px;font-weight:850;letter-spacing:.1em;color:#9FE0D2">OUR CLINIC EDITION</div>
+  <h1 style="color:#fff;margin-top:4mm">여기서부터는<br><span style="color:#FFD24B">우리 병원 이야기</span>입니다</h1>
+  <p style="margin-top:5mm;font-size:12.5px;color:#c4c9cf;line-height:1.75;max-width:150mm">치과마다 규모가 다르면 잠든 돈의 크기도, 리콜을 돌릴 사람도, 먼저 걸어야 할 환자도 다릅니다.<br><b>우리 월매출에 맞는 페이지 한 장</b>만 보시면 됩니다.</p>
+  <div class="tsel" style="margin-top:8mm">
+    <div class="tc" data-t="A"><div class="tt" style="color:var(--teaD)">TYPE A</div><div style="font-size:12px;font-weight:850">월매출 ~5천만원</div><div class="td">개원기 · 원장이 직접 다 챙기는 치과</div></div>
+    <div class="tc" data-t="B"><div class="tt" style="color:var(--bluD)">TYPE B</div><div style="font-size:12px;font-weight:850">월매출 5천만~1억원</div><div class="td">전국 평균권 · 실장 1명이 데스크의 축</div></div>
+    <div class="tc" data-t="C"><div class="tt" style="color:var(--gold)">TYPE C</div><div style="font-size:12px;font-weight:850">월매출 1~2억원</div><div class="td">성장 구간 · 직원은 늘었는데 체계는 아직 — <b>리콜 공백 최대 구간</b></div></div>
+    <div class="tc" data-t="D"><div class="tt" style="color:var(--red)">TYPE D</div><div style="font-size:12px;font-weight:850">월매출 2억원 이상</div><div class="td">대형·다닥터 · 전담 운영과 직원별 관리가 핵심</div></div>
+  </div>
+  <p style="margin-top:8mm;font-size:10px;color:#8fa0b8">※ 이 안내서에는 4개 타입이 모두 실려 있습니다. 상담 시에는 해당 병원 타입 페이지만 골라 보여드립니다.</p>
+  <div class="brand" style="color:#8fa0b8"><b style="color:#FFD24B">AutoRecall</b> 맞춤 진단</div><div class="pgno" style="color:#8fa0b8">09</div>
+</div>
+
+<!-- 맞춤 페이지 4장은 JS가 생성 -->
+<div id="tierPages"></div>
+
+<!-- ═════════ P14 보안·설치·FAQ ═════════ -->
+<div class="pg">
+  <span class="eye">보안과 설치 — 가장 많이 묻는 것부터</span>
+  <h2>차트는 <mark>읽기만</mark> 합니다. 밖으로 나가지 않습니다.</h2>
+  <div class="grid2" style="margin-top:3mm">
+    <div class="card"><h3>🔒 보안</h3><ul style="font-size:10px;margin:2mm 0 0 4mm;line-height:1.85"><li>환자 차트 <b>읽기 전용</b> — 수정·삭제 불가</li><li>덴트웹 서버 안 <b>격리 공간</b>에서만 실행</li><li>외부 저장·전송 없음</li><li>원내 EMR·인터넷전화 이력 연동은 서비스 목적 범위 안에서만</li></ul></div>
+    <div class="card"><h3>🖥️ 설치</h3><ul style="font-size:10px;margin:2mm 0 0 4mm;line-height:1.85"><li>덴트웹 서버 컴퓨터에 설치 (원격 지원)</li><li>연락처 남기면 <b>1영업일 내</b> 담당자 연락</li><li>설치 → 오늘의 리콜 큐까지 <b>약 3분</b></li><li>진료 중단 없음</li></ul></div>
+  </div>
+  <div class="card" style="margin-top:4mm"><h3>❓ FAQ</h3>
+    <div class="step"><span class="n">Q</span><span><b>덴트웹 리콜관리와 뭐가 다른가요?</b><br><span style="color:var(--mut);font-size:10px">‘명단’이 아니라 ‘오늘 걸 순서’가 나옵니다. 우선순위·타이밍·결과 추적·직원별 통계까지 한 흐름.</span></span></div>
+    <div class="step"><span class="n">Q</span><span><b>환자가 전화를 싫어하지 않나요?</b><br><span style="color:var(--mut);font-size:10px">거부 이력 자동 제외 + 걸어야 할 이유(검진 도래·보험 시점)가 있는 환자만 — ‘챙겨줘서 고맙다’는 반응이 일반적입니다.</span></span></div>
+    <div class="step"><span class="n">Q</span><span><b>무료 조건이 정확히 뭔가요?</b><br><span style="color:var(--mut);font-size:10px">앱이 만들어 낸 누적 성과(리콜 수익 100만원 또는 청구 지원 100만원) 도달 전까지 무료. 도달 시 충분한 사전 안내 후 전환을 선택하시게 됩니다.</span></span></div>
+    <div class="step"><span class="n">Q</span><span><b>작은 치과도 효과 있나요?</b><br><span style="color:var(--mut);font-size:10px">구환 500명부터 의미 있는 큐가 나옵니다. 규모가 작을수록 한 명의 복귀가 더 크게 느껴집니다.</span></span></div>
+  </div>
+  <table style="margin-top:4mm">
+    <tr><th style="width:22%"></th><th>엑셀·수기 관리</th><th>문자 대량발송</th><th style="background:var(--teaS)">AutoRecall</th></tr>
+    <tr><td><b>대상 선별</b></td><td class="bad">사람 기억 의존</td><td class="so">전체 일괄 (스팸화)</td><td class="ok">차트 기반 · 우선순위 정렬</td></tr>
+    <tr><td><b>타이밍</b></td><td class="bad">몰아서 가끔</td><td class="so">일괄 발송일</td><td class="ok">환자별 골든타임</td></tr>
+    <tr><td><b>실행 확인</b></td><td class="bad">불가</td><td class="so">발송량만</td><td class="ok">통화 결과·재내원까지 숫자로</td></tr>
+    <tr><td><b>비용 · 데이터</b></td><td class="so">담당자 시간 · 원내</td><td class="bad">건당 발송비 · 명단 외부 전송</td><td class="ok">무료 · 원내 읽기 전용</td></tr>
+  </table>
+  <div class="foot">무료·전환 조건 상세는 설치 화면과 약관에 동일하게 고지됩니다.</div>
+  <div class="brand"><b>AutoRecall</b> 영업 안내서</div><div class="pgno">14</div>
+</div>
+
+<!-- ═════════ P15 뒷표지 ═════════ -->
+<div class="pg" style="background:linear-gradient(160deg,#0A5E51,#0E7C6B 55%,#12907C);color:#fff;justify-content:center;text-align:center">
+  <div style="font-size:12px;font-weight:850;letter-spacing:.1em;color:#9FE0D2">이 명단, 우리 병원 버전은</div>
+  <h1 style="color:#fff;margin-top:5mm">이미 차트 안에 있습니다.<br><span style="color:#FFE39C">꺼내는 데 딱 3분. 무료.</span></h1>
+  <div style="display:flex;gap:4mm;justify-content:center;margin-top:9mm;font-weight:850;font-size:13px;flex-wrap:wrap">
+    <span style="background:rgba(255,255,255,.14);border:1pt solid rgba(255,255,255,.3);border-radius:10px;padding:4mm 6mm">① 연락처 남기기 (30초)</span>
+    <span style="align-self:center">→</span>
+    <span style="background:rgba(255,255,255,.14);border:1pt solid rgba(255,255,255,.3);border-radius:10px;padding:4mm 6mm">② 원격 무료 설치</span>
+    <span style="align-self:center">→</span>
+    <span style="background:#fff;color:var(--teaD);border-radius:10px;padding:4mm 6mm">③ 오늘 전화할 명단</span>
+  </div>
+  <div style="background:#fff;color:var(--ink);border-radius:14px;max-width:120mm;margin:10mm auto 0;padding:6mm;text-align:left">
+    <b style="font-size:13px">📞 무료 진단 신청</b>
+    <table style="margin-top:3mm;font-size:11px">
+      <tr><td style="width:30%;background:var(--soft)"><b>치과명</b></td><td></td></tr>
+      <tr><td style="background:var(--soft)"><b>성함 · 직함</b></td><td></td></tr>
+      <tr><td style="background:var(--soft)"><b>연락처</b></td><td></td></tr>
+      <tr><td style="background:var(--soft)"><b>통화 편한 시간</b></td><td></td></tr>
+    </table>
+    <p style="font-size:9px;color:var(--mut);margin-top:2mm">개인정보는 상담 목적으로만 사용 후 파기 · 스팸 없음, 진단 안내 한 번만 드립니다</p>
+  </div>
+  <div style="margin-top:7mm;display:flex;gap:6mm;justify-content:center;align-items:center">
+    <div style="width:22mm;height:22mm;background:#fff;border-radius:4mm;display:grid;place-items:center;color:var(--mut);font-size:8px;font-weight:800">QR<br>(랜딩)</div>
+    <div style="text-align:left;font-size:11px;color:#CDEDE5;line-height:1.7">담당자: ______________<br>연락처: ______________<br>autorecall.app</div>
+  </div>
+  <div style="margin-top:8mm;font-size:10px;color:#9FE0D2">🔒 차트는 읽기만 · 저장·전송 없음 · 앱이 100만원 벌어드릴 때까지 무료<br>본 안내서의 수치(명단·매출·후기)는 작동 방식을 설명하기 위한 예시·추정입니다.</div>
+  <div class="brand" style="color:#9FE0D2"><b style="color:#FFE39C">AutoRecall</b> 영업 안내서</div><div class="pgno" style="color:#9FE0D2">15</div>
+</div>
+
+<script>
+(function(){
+/* ═══ 공용: 부드러운 곡선 ═══ */
+function smooth(p){
+  var d='M'+p[0][0].toFixed(1)+' '+p[0][1].toFixed(1);
+  for(var i=0;i<p.length-1;i++){
+    var p0=p[i-1]||p[i],a=p[i],b=p[i+1],p3=p[i+2]||b;
+    d+='C'+(a[0]+(b[0]-p0[0])/6).toFixed(1)+' '+(a[1]+(b[1]-p0[1])/6).toFixed(1)+' '
+      +(b[0]-(p3[0]-a[0])/6).toFixed(1)+' '+(b[1]-(p3[1]-a[1])/6).toFixed(1)+' '
+      +b[0].toFixed(1)+' '+b[1].toFixed(1);
+  }
+  return d;
+}
+function manFmt(v){ return v>=10000 ? (Math.round(v/1000)/10)+'억' : (v>=1000? (v/1000)+'천만' : v+'만'); }
+
+/* ═══ 라인차트 (인쇄 안전: 즉시 완성 렌더) ═══ */
+function lineChart(id,cfg){
+  var svg=document.getElementById(id); if(!svg) return;
+  var W=cfg.w||760, X0=cfg.x0||70, X1=cfg.x1||(W-140), Y0=cfg.y0, Y1=cfg.y1||40;
+  function px(v){ return X0+(v-cfg.rmin)/(cfg.rmax-cfg.rmin)*(X1-X0); }
+  function py(v){ return Y0-(Math.min(v,cfg.vmax)/cfg.vmax)*(Y0-Y1); }
+  var h='';
+  (cfg.gridY||[]).forEach(function(v){ h+='<line x1="'+X0+'" y1="'+py(v)+'" x2="'+X1+'" y2="'+py(v)+'" stroke="#EAE6DB" stroke-width="1"/>'
+    +'<text class="axl" x="'+(X0-8)+'" y="'+(py(v)+4)+'" text-anchor="end">'+cfg.fmtY(v)+'</text>'; });
+  if(cfg.band){ h+='<rect x="'+px(cfg.band[0])+'" y="'+Y1+'" width="'+(px(cfg.band[1])-px(cfg.band[0]))+'" height="'+(Y0-Y1)+'" fill="'+(cfg.bandColor||'#C77E12')+'" fill-opacity=".09"/>'
+    +'<text class="axl" x="'+((px(cfg.band[0])+px(cfg.band[1]))/2)+'" y="'+(Y1+16)+'" text-anchor="middle" fill="'+(cfg.bandColor||'#C77E12')+'" style="font-weight:850">'+(cfg.bandLabel||'')+'</text>'; }
+  h+='<line x1="'+X0+'" y1="'+Y0+'" x2="'+X1+'" y2="'+Y0+'" stroke="#B9B29F" stroke-width="1.4"/>'
+    +'<line x1="'+X0+'" y1="'+Y1+'" x2="'+X0+'" y2="'+Y0+'" stroke="#B9B29F" stroke-width="1.4"/>';
+  (cfg.ticksX||[]).forEach(function(v){ h+='<text class="axl" x="'+px(v)+'" y="'+(Y0+18)+'" text-anchor="middle">'+cfg.fmtX(v)+'</text>'; });
+  if(cfg.xTitle) h+='<text class="axl" x="'+((X0+X1)/2)+'" y="'+(Y0+38)+'" text-anchor="middle" style="font-weight:800">'+cfg.xTitle+'</text>';
+  if(cfg.yTitle) h+='<text class="axl" x="'+(X0-52)+'" y="'+(Y1-14)+'" style="font-weight:800">'+cfg.yTitle+'</text>';
+  if(cfg.extra) h+=cfg.extra({px:px,py:py,X0:X0,X1:X1,Y0:Y0,Y1:Y1});
+  /* 선끝 라벨 스태거 */
+  var ends=cfg.series.map(function(s){ return {s:s, ey:py(s.ys[s.ys.length-1])}; });
+  ends.sort(function(a,b){ return a.ey-b.ey; });
+  var last=-999; ends.forEach(function(e){ e.ly=Math.max(e.ey,last+38); last=e.ly; });
+  cfg.series.forEach(function(s){
+    var e=ends.filter(function(x){return x.s===s})[0];
+    var pts=cfg.xs.map(function(v,i){ return [px(v), py(s.ys[i])]; });
+    if(s.fill) h+='<path d="'+smooth(pts)+' L'+X1+' '+Y0+' L'+X0+' '+Y0+' Z" fill="'+s.c+'" fill-opacity="'+s.fill+'"/>';
+    h+='<path d="'+smooth(pts)+'" fill="none" stroke="'+s.c+'" stroke-width="'+(s.wdt||3.4)+'"'+(s.dash?' stroke-dasharray="7 6"':'')+' stroke-linecap="round"/>';
+    h+='<line x1="'+X1+'" y1="'+e.ey+'" x2="'+(X1+18)+'" y2="'+e.ly+'" stroke="'+s.c+'" stroke-width="1.2"/>'
+      +'<text class="axl" x="'+(X1+22)+'" y="'+(e.ly+4)+'" fill="'+s.c+'" style="font-weight:880;font-size:12.5px">'+s.lab+'</text>'
+      +(s.sub?'<text class="axl" x="'+(X1+22)+'" y="'+(e.ly+19)+'" fill="'+s.c+'" style="font-size:10px;font-weight:700">'+s.sub+'</text>':'');
+  });
+  svg.innerHTML=h;
+}
+
+/* ═══ 가로 막대 ═══ */
+function hbars(id, items, opts){
+  var svg=document.getElementById(id); if(!svg) return;
+  opts=opts||{};
+  var W=opts.w||760, LX=opts.lx||190, RX=W-96, rowH=opts.rowH||46, top=opts.top||14;
+  var max=Math.max.apply(null,items.map(function(i){return i.v}));
+  var h='', total=0;
+  items.forEach(function(it,k){
+    var y=top+k*rowH, bw=Math.max(6,(it.v/max)*(RX-LX)); total+=it.v;
+    h+='<text class="axl" x="'+(LX-10)+'" y="'+(y+17)+'" text-anchor="end" fill="#3d4340" style="font-weight:780;font-size:12px">'+it.n+'</text>'
+      +'<rect x="'+LX+'" y="'+y+'" width="'+(RX-LX)+'" height="24" rx="7" fill="#F3F1EB"/>'
+      +'<rect x="'+LX+'" y="'+y+'" width="'+bw+'" height="24" rx="7" fill="'+(it.c||'#33507F')+'"/>'
+      +'<text class="axl" x="'+(LX+bw+8)+'" y="'+(y+17)+'" fill="'+(it.c||'#33507F')+'" style="font-weight:880;font-size:12.5px">'+it.t+'</text>'
+      +(it.p?'<text class="axl" x="'+(LX+8)+'" y="'+(y+17)+'" fill="#fff" style="font-weight:750;font-size:10.5px">'+it.p+'</text>':'');
+  });
+  if(opts.total){
+    var ty=top+items.length*rowH+12;
+    h+='<rect x="'+LX+'" y="'+ty+'" rx="10" width="'+(RX-LX)+'" height="46" fill="#0C1B33"/>'
+      +'<text x="'+(LX+16)+'" y="'+(ty+29)+'" fill="#9FE0D2" style="font-weight:800;font-size:12px;font-family:inherit">'+opts.total[0]+'</text>'
+      +'<text x="'+(RX-16)+'" y="'+(ty+31)+'" text-anchor="end" fill="#FFE39C" style="font-weight:900;font-size:19px;font-family:inherit">'+opts.total[1]+'</text>';
+  }
+  svg.innerHTML=h;
+}
+
+/* ═══ 면적=회수 곡선 ═══ */
+function gainChart(id,cfg){
+  var svg=document.getElementById(id); if(!svg) return;
+  var W=cfg.w||760, HT=cfg.h||400, X0=cfg.x0||70, X1=W-40, Y0=HT-56, Y1=34;
+  var mx0=-5, mx1=6;
+  function px(m){ return X0+(m-mx0)/(mx1-mx0)*(X1-X0); }
+  function py(v){ return Y0-(v-cfg.vmin)/(cfg.vmax-cfg.vmin)*(Y0-Y1); }
+  var ms=[-5,-4,-3,-2,-1,0,1,2,3,4,5,6];
+  var pts=ms.map(function(m,i){ return [px(m), py(cfg.ys[i])]; });
+  var base=cfg.base, postPts=pts.slice(5);
+  var areaD=smooth(postPts)+' L'+px(6)+' '+py(base)+' L'+px(0)+' '+py(base)+' Z';
+  var gain=0; ms.forEach(function(m,i){ if(m>=1) gain+=Math.max(0,cfg.ys[i]-base); });
+  var mini=cfg.mini, fs=mini?10:12;
+  var h='';
+  (cfg.gy||[]).forEach(function(v){ h+='<line x1="'+X0+'" y1="'+py(v)+'" x2="'+X1+'" y2="'+py(v)+'" stroke="#EAE6DB"/>'
+    +'<text class="axl" x="'+(X0-8)+'" y="'+(py(v)+4)+'" text-anchor="end" style="font-size:'+(mini?9.5:11)+'px">'+manFmt(v)+'</text>'; });
+  h+='<line x1="'+X0+'" y1="'+Y0+'" x2="'+X1+'" y2="'+Y0+'" stroke="#B9B29F" stroke-width="1.4"/>';
+  [[-4,'4개월 전'],[-2,'2개월 전'],[2,'+2개월'],[4,'+4개월'],[6,'+6개월']].forEach(function(t){
+    h+='<text class="axl" x="'+px(t[0])+'" y="'+(Y0+16)+'" text-anchor="middle" style="font-size:'+(mini?9:10.5)+'px">'+t[1]+'</text>'; });
+  h+='<rect x="'+px(0)+'" y="'+Y1+'" width="'+(px(6)-px(0))+'" height="'+(Y0-Y1)+'" fill="#0E7C6B" fill-opacity=".05"/>'
+    +'<line x1="'+px(0)+'" y1="'+Y1+'" x2="'+px(0)+'" y2="'+Y0+'" stroke="#0A5E51" stroke-width="2" stroke-dasharray="7 5"/>'
+    +'<text class="axl" x="'+px(0)+'" y="'+(Y0+32)+'" text-anchor="middle" fill="#0A5E51" style="font-weight:880;font-size:'+fs+'px">▲ 무료 설치</text>';
+  h+='<line x1="'+px(0)+'" y1="'+py(base)+'" x2="'+px(6)+'" y2="'+py(base)+'" stroke="#8B8578" stroke-width="2" stroke-dasharray="8 6"/>'
+    +'<text class="axl" x="'+px(0.25)+'" y="'+(py(base)+16)+'" fill="#8B8578" style="font-size:'+(fs-1.5)+'px;font-weight:750">─ 설치 안 했다면 그대로였을 선</text>';
+  h+='<path d="'+areaD+'" fill="#0E7C6B" fill-opacity=".30"/>';
+  h+='<path d="'+smooth(pts)+'" fill="none" stroke="'+(cfg.c||'#0E7C6B')+'" stroke-width="'+(mini?3:4)+'" stroke-linecap="round"/>';
+  var midx=px(3.6), midy=(py(base)+py(cfg.ys[10]))/2;
+  h+='<text class="axl" x="'+midx+'" y="'+(midy+4)+'" text-anchor="middle" fill="#0A5E51" style="font-size:'+fs+'px;font-weight:880">▧ 이 면적 = 돌아온 매출</text>';
+  var bw=mini?170:215, bh=mini?40:50;
+  h+='<rect x="'+(X1-bw)+'" y="'+(Y1-4)+'" rx="9" width="'+bw+'" height="'+bh+'" fill="#0A5E51"/>'
+    +'<text x="'+(X1-bw/2)+'" y="'+(Y1+(mini?11:14))+'" text-anchor="middle" fill="#9FE0D2" style="font-size:'+(mini?8.5:10)+'px;font-weight:800;font-family:inherit">'+cfg.nm+' · 6개월 누적</text>'
+    +'<text x="'+(X1-bw/2)+'" y="'+(Y1+(mini?30:38))+'" text-anchor="middle" fill="#FFE39C" style="font-size:'+(mini?14:18)+'px;font-weight:900;font-family:inherit">+'+Math.round(gain).toLocaleString('ko-KR')+'만원</text>';
+  svg.innerHTML=h;
+}
+
+/* ═══ P1 표지: 골든타임 미니 (다크) ═══ */
+(function(){
+  var svg=document.getElementById('cvChart'); if(!svg) return;
+  var X0=54,X1=700,Y0=200,Y1=26;
+  function px(m){return X0+(m/14)*(X1-X0)} function py(v){return Y0-(v/100)*(Y0-Y1)}
+  var ms=[0,1,2,3,4,6,8,10,12,14], vs=[92,42,38,33,28,24,14,9,7,6];
+  var pts=ms.map(function(m,i){return [px(m),py(vs[i])]});
+  var h='<rect x="'+px(0)+'" y="'+Y1+'" width="'+(px(4)-px(0))+'" height="'+(Y0-Y1)+'" fill="#0E7C6B" fill-opacity=".22"/>'
+    +'<text x="'+((px(0)+px(4))/2)+'" y="'+(Y1+18)+'" text-anchor="middle" fill="#9FE0D2" style="font-size:12px;font-weight:850;font-family:inherit">골든타임 — 여기서 걸면 산다</text>'
+    +'<line x1="'+X0+'" y1="'+Y0+'" x2="'+X1+'" y2="'+Y0+'" stroke="rgba(255,255,255,.3)"/>'
+    +'<path d="'+smooth(pts)+' L'+px(14)+' '+Y0+' L'+px(0)+' '+Y0+' Z" fill="#C0392B" fill-opacity=".28"/>'
+    +'<path d="'+smooth(pts)+'" fill="none" stroke="#FF7B6B" stroke-width="4" stroke-linecap="round"/>'
+    +'<circle cx="'+px(14)+'" cy="'+py(6)+'" r="6" fill="#FF7B6B"/>'
+    +'<text x="'+(px(14)+2)+'" y="'+(py(6)-14)+'" text-anchor="end" fill="#FF9C8F" style="font-size:13px;font-weight:880;font-family:inherit">8% 미만 — 남의 환자</text>'
+    +'<text x="'+px(0)+'" y="'+(Y0+18)+'" fill="#9aa1a8" style="font-size:10.5px;font-family:inherit">지금</text>'
+    +'<text x="'+px(6)+'" y="'+(Y0+18)+'" text-anchor="middle" fill="#9aa1a8" style="font-size:10.5px;font-family:inherit">6개월</text>'
+    +'<text x="'+px(14)+'" y="'+(Y0+18)+'" text-anchor="end" fill="#9aa1a8" style="font-size:10.5px;font-family:inherit">14개월</text>';
+  svg.innerHTML=h;
+})();
+
+/* ═══ P2 골든타임 본 차트 ═══ */
+lineChart('chGold',{ xs:[0,1,2,3,4,6,8,10,12,14], y0:330, rmin:0, rmax:14, vmax:100,
+  gridY:[25,50,75,100], fmtY:function(v){return v+'%'},
+  ticksX:[0,3,6,9,12,14], fmtX:function(v){return v==0?'지금':v+'개월'},
+  xTitle:'마지막 내원 후 경과 →', yTitle:'돌아올 확률',
+  extra:function(u){
+    return '<rect x="'+u.px(0)+'" y="'+u.Y1+'" width="'+(u.px(4)-u.px(0))+'" height="'+(u.Y0-u.Y1)+'" fill="#0E7C6B" fill-opacity=".10"/>'
+      +'<text class="axl" x="'+((u.px(0)+u.px(4))/2)+'" y="'+(u.Y1+18)+'" text-anchor="middle" fill="#0A5E51" style="font-weight:880;font-size:13px">골든타임</text>'
+      +'<circle cx="'+u.px(1)+'" cy="'+u.py(42)+'" r="6" fill="#0E7C6B"/><text class="axl" x="'+(u.px(1)+10)+'" y="'+(u.py(42)-10)+'" fill="#0A5E51" style="font-weight:850;font-size:12px">1개월 내: 35~45%</text>'
+      +'<circle cx="'+u.px(8)+'" cy="'+u.py(14)+'" r="6" fill="#C0392B"/><text class="axl" x="'+(u.px(8)+10)+'" y="'+(u.py(14)-10)+'" fill="#C0392B" style="font-weight:850;font-size:12px">6~12개월: 급락</text>';
+  },
+  series:[
+    {ys:[92,42,38,33,28,24,14,9,7,6], c:'#C0392B', fill:.10, lab:'방치 시', sub:'8% 미만 — 남의 환자', wdt:4},
+    {ys:[92,88,86,85,84,83,82,81,80,80], c:'#0E7C6B', fill:.06, lab:'이어서 챙기면', sub:'80~90% 유지', wdt:4, dash:false}
+  ]});
+
+/* ═══ P3-2 매출 → 잠드는 매출 (규모 구간별 누수율 반영 곡선: 작을 땐 원장이 직접 챙겨 완만 → 1.5~2억 구간 급증 → 대형은 전담 생겨 증가세 둔화) ═══ */
+var XS=[5000,10000,15000,20000,30000,40000,50000];
+var SLEEP=[1900,5000,9300,12000,16200,19400,22350];      /* 체계 없이 둘 때 */
+var SLEEP_OK=[400,680,950,1200,1750,2300,2900];          /* AutoRecall 가동 시 */
+lineChart('chSleep',{ xs:XS, y0:350, rmin:5000, rmax:50000, vmax:25000,
+  gridY:[5000,10000,15000,20000,25000], fmtY:manFmt,
+  ticksX:[5000,10000,20000,30000,40000,50000], fmtX:manFmt,
+  xTitle:'월매출 (전체) →', yTitle:'매달 잠드는 리콜 매출 (추정)',
+  extra:function(u){
+    var top=XS.map(function(v,i){return [u.px(v), u.py(SLEEP[i]*1.28)]});
+    var bot=XS.slice().reverse().map(function(v,i){return [u.px(v), u.py(SLEEP[XS.length-1-i]*0.66)]});
+    var d=smooth(top)+' L '+bot.map(function(p){return p[0]+' '+p[1]}).join(' L ')+' Z';
+    var mx=u.px(6490), my=u.py(2902);
+    return '<path d="'+d+'" fill="#C0392B" fill-opacity=".06"/>'
+      +'<line x1="'+mx+'" y1="'+u.Y0+'" x2="'+mx+'" y2="'+(my-12)+'" stroke="#C0392B" stroke-width="2" stroke-dasharray="5 5"/>'
+      +'<circle cx="'+mx+'" cy="'+my+'" r="7" fill="#C0392B"/>'
+      +'<text class="axl" x="'+(mx+12)+'" y="'+(my-18)+'" fill="#C0392B" style="font-weight:880;font-size:12.5px">★ 전국 평균 치과 — 월 2,902만 (예시 진단)</text>';
+  },
+  series:[
+    {ys:SLEEP, c:'#C0392B', fill:.10, lab:'체계 없이 둘 때', sub:'매달 잠드는 잠재 매출', wdt:4},
+    {ys:SLEEP_OK, c:'#0E7C6B', fill:.12, lab:'AutoRecall 가동 시', sub:'잔여 누수 (추정)', wdt:4}
+  ]});
+
+/* ═══ P3-3 방치 5년 누적 ═══ */
+lineChart('chCum',{ xs:[0,6,12,24,36,48,60], y0:310, rmin:0, rmax:60, vmax:210000,
+  gridY:[50000,100000,150000,200000], fmtY:function(v){return (v/10000)+'억'},
+  ticksX:[12,24,36,48,60], fmtX:function(v){return (v/12)+'년'},
+  xTitle:'방치 기간 →', yTitle:'누적 잠재 매출',
+  series:[ /* 볼록 곡선: 잠자는 환자 풀이 커질수록 기울기가 점점 가팔라짐 (5년 총액은 동일) */
+    {ys:[0,6074,16597,45307,81563,123791,171100], c:'#C0392B', fill:.11, lab:'상위 10%', sub:'-17억+ (추정)', wdt:3.6},
+    {ys:[0,4242,11592,31644,56966,86458,119500], c:'#C77E12', fill:.11, lab:'상위 30%', sub:'-12억 (추정)', wdt:3.6},
+    {ys:[0,3316,9060,24733,44524,67575,93400], c:'#33507F', fill:.12, lab:'전국 평균', sub:'-9.3억 (추정)', wdt:3.6}
+  ]});
+
+/* ═══ P4 3분 진단 바차트 ═══ */
+hbars('chDiag',[
+  {n:'발치 후 임플란트 미연결', v:6500, t:'6,500만 · 65명', c:'#C0392B'},
+  {n:'임플란트 상담 후 미착수', v:4050, t:'4,050만 · 27명', c:'#C0392B'},
+  {n:'발치 후 보험 임플란트 도래', v:3400, t:'3,400만 · 34명', c:'#C77E12'},
+  {n:'검진주기 초과 · 휴면', v:3368, t:'3,368만', c:'#33507F'},
+  {n:'신경치료 미완', v:2040, t:'2,040만 · 51명', c:'#33507F'},
+  {n:'크라운 프렙 후 미장착', v:1440, t:'1,440만 · 48명', c:'#33507F'}
+],{rowH:52, top:16, total:['설치 첫날 발견 합계 (예시 진단)','2억 798만원 — 매달 2,902만원씩 증발 중']});
+
+/* ═══ P6 규모별 리콜 공백 ═══ */
+lineChart('chGap',{ xs:XS, y0:340, rmin:5000, rmax:50000, vmax:80,
+  gridY:[20,40,60,80], fmtY:function(v){return v+'%'},
+  ticksX:[5000,10000,20000,30000,40000,50000], fmtX:manFmt,
+  xTitle:'월매출 (전체) →', yTitle:'끊기는 리콜 비율 (추정)',
+  band:[10000,20000], bandLabel:'체계 공백 구간 · 월매출 1~2억', bandColor:'#C0392B',
+  extra:function(u){
+    return '<text class="axl" x="'+u.px(6300)+'" y="'+(u.py(46)-14)+'" text-anchor="middle" style="font-weight:750;font-size:11px">원장이 환자를 기억</text>'
+      +'<text class="axl" x="'+u.px(15000)+'" y="'+(u.py(72)-14)+'" text-anchor="middle" fill="#C0392B" style="font-weight:880;font-size:12.5px">직원↑ 신입↑ 체계는 아직</text>'
+      +'<text class="axl" x="'+u.px(38000)+'" y="'+(u.py(50)-14)+'" text-anchor="middle" style="font-weight:750;font-size:11px">전담 생겨 완화 · 그래도 남음</text>';
+  },
+  series:[
+    {ys:[46,62,71,67,56,50,46], c:'#C0392B', fill:.10, lab:'사람이 챙길 때', sub:'구간 따라 46~71%', wdt:4},
+    {ys:[8,7,6,5,5,5,5], c:'#0E7C6B', fill:.14, lab:'AutoRecall', sub:'규모 무관 ~5%', wdt:4}
+  ]});
+
+/* ═══ P7 퍼널 + 직원별 + 추이 ═══ */
+hbars('chFunnel',[
+  {n:'전화 시도', v:312, t:'312통', c:'#33507F', p:'100%'},
+  {n:'연결', v:221, t:'221명', c:'#1D4ED8', p:'71%'},
+  {n:'재내원 예약', v:58, t:'58명', c:'#C77E12', p:'19%'},
+  {n:'실제 내원', v:47, t:'47명 → +1,840만원(추정)', c:'#0E7C6B', p:'15%'}
+],{rowH:56, top:14});
+hbars('chStaff',[
+  {n:'김○○ 실장', v:24, t:'예약 24 🏆', c:'#0E7C6B'},
+  {n:'박○○ 선생', v:17, t:'예약 17', c:'#33507F'},
+  {n:'최○○ 신입', v:9, t:'예약 9 📘', c:'#8B8578'}
+],{w:380, lx:110, rowH:56, top:20});
+(function(){ /* 복귀매출 추이 미니 */
+  var svg=document.getElementById('chTrend'); if(!svg) return;
+  var X0=64,X1=356,Y0=180,Y1=26;
+  var vs=[520,780,1120,1400,1690,1840];
+  function px(i){return X0+i/(vs.length-1)*(X1-X0)} function py(v){return Y0-(v/2000)*(Y0-Y1)}
+  var pts=vs.map(function(v,i){return [px(i),py(v)]});
+  var h='';
+  [500,1000,1500,2000].forEach(function(v){h+='<line x1="'+X0+'" y1="'+py(v)+'" x2="'+X1+'" y2="'+py(v)+'" stroke="#EAE6DB"/><text class="axl" x="'+(X0-6)+'" y="'+(py(v)+4)+'" text-anchor="end" style="font-size:9.5px">'+(v/1000)+'천만</text>'});
+  h+='<line x1="'+X0+'" y1="'+Y0+'" x2="'+X1+'" y2="'+Y0+'" stroke="#B9B29F"/>'
+    +'<path d="'+smooth(pts)+' L'+X1+' '+Y0+' L'+X0+' '+Y0+' Z" fill="#1D4ED8" fill-opacity=".10"/>'
+    +'<path d="'+smooth(pts)+'" fill="none" stroke="#1D4ED8" stroke-width="3.4" stroke-linecap="round"/>'
+    +'<circle cx="'+px(5)+'" cy="'+py(1840)+'" r="5.5" fill="#1D4ED8"/>'
+    +'<text class="axl" x="'+(px(5)-6)+'" y="'+(py(1840)-12)+'" text-anchor="end" fill="#163FB0" style="font-weight:880;font-size:12px">6개월차 +1,840만</text>';
+  ['1','2','3','4','5','6'].forEach(function(m,i){h+='<text class="axl" x="'+px(i)+'" y="'+(Y0+16)+'" text-anchor="middle" style="font-size:9.5px">'+m+'월차</text>'});
+  svg.innerHTML=h;
+})();
+
+/* ═══ P8 면적=회수 ═══ */
+gainChart('chGain',{ nm:'천안 서울사계절치과 (예시)', c:'#0E7C6B', h:400, vmin:1500, vmax:3000, gy:[2000,2500,3000], base:2140,
+  ys:[2230,2050,2190,2080,2020,2150, 2320,2410,2380,2620,2700,2740] });
+
+/* ═══ 매출별 맞춤 페이지 4장 생성 ═══ */
+var CAT=['발치 후 임플란트 미연결','임플란트 상담 후 미착수','발치 후 보험 임플란트 도래','검진주기 초과 · 휴면','신경치료 미완','크라운 프렙 후 미장착'];
+var BASE=[6500,4050,3400,3368,2040,1440];
+var TIERS=[
+ {t:'A', c:'#0E7C6B', cS:'#E4F4F0', rev:'월매출 ~5천만원', pos:5000, persona:'개원기 · 원장이 직접 다 챙기는 치과',
+  scale:0.6, pts:'약 1,800명', evap:'약 1,700만원', goal:'+500만원~',
+  call:'하루 3통', who:'데스크 1명 · 점심 전 10분 루틴',
+  gain:{vmin:200,vmax:1300,gy:[500,1000],base:560,ys:[610,520,590,540,510,570, 680,760,800,890,950,990]},
+  rx:[
+   ['🎯','<b>정기검진·스케일링 재유치부터.</b> 개원기의 생명줄은 단골 기반 — 검진 주기 도래 환자를 한 명도 흘리지 않는 게 최우선입니다.'],
+   ['💎','<b>임플란트 미착수는 건수는 적어도 한 건이 큽니다.</b> 상담 후 잠든 환자 몇 명만 돌아와도 그 달 매출이 달라집니다.'],
+   ['⏰','<b>휴면 6~12개월 구간을 골든타임 안에.</b> 구환 풀이 작을수록 한 명의 이탈이 치명적 — 늦기 전에 자동으로 큐에 올라옵니다.'],
+   ['👤','<b>사람을 더 뽑을 필요 없습니다.</b> 하루 3통, 10분이면 큐가 비워지는 규모 — 원장님 진료에 지장 없이 데스크 루틴으로 충분합니다.']
+  ]},
+ {t:'B', c:'#163FB0', cS:'#E8EFFE', rev:'월매출 5천만~1억원', pos:6490, persona:'전국 평균권 · 실장 1명이 데스크의 축',
+  scale:1.0, pts:'약 3,000명', evap:'약 2,900만원', goal:'+800만~1,500만원',
+  call:'하루 5통', who:'실장 1명 · 오전 진료 전 루틴',
+  gain:{vmin:1500,vmax:3000,gy:[2000,2500,3000],base:2140,ys:[2230,2050,2190,2080,2020,2150, 2320,2410,2380,2620,2700,2740]},
+  rx:[
+   ['🎯','<b>임플란트 미착수 + 휴면 재활성화가 양대 축.</b> 앞 페이지 예시 진단(2억 798만)이 바로 이 규모 — 잠든 돈이 가장 전형적으로 쌓여 있는 구간입니다.'],
+   ['📊','<b>실장님 업무를 늘리는 게 아니라 바꿉니다.</b> 명단 만들고 엑셀 정리하던 시간이 사라지고, 걸기만 하면 됩니다.'],
+   ['🔁','<b>실장 부재·이직에도 리콜이 멈추지 않게.</b> 누가 앉아도 오늘 걸 5명이 똑같이 나옵니다 — 인수인계 리스크 제거.'],
+   ['📈','<b>월간 리포트로 원장-실장 대화가 숫자로.</b> “몇 통 걸어 몇 명 왔는지”가 자동으로 남아 관리가 됩니다.']
+  ]},
+ {t:'C', c:'#B45309', cS:'#FCF3E4', rev:'월매출 1~2억원', pos:15000, persona:'성장 구간 · 리콜 공백 최대 구간 (6쪽 그래프의 정점)',
+  scale:2.15, pts:'약 5,000명', evap:'약 6,200만원', goal:'+1,500만원~',
+  call:'하루 10통 (2명 분담)', who:'데스크 2명 분담 + 백업 담당 지정',
+  gain:{vmin:3000,vmax:6500,gy:[4000,5000,6000],base:4300,ys:[4450,4150,4380,4200,4100,4320, 4700,4950,4900,5400,5600,5750]},
+  rx:[
+   ['⚠️','<b>지금이 가장 위험한 구간입니다.</b> 환자·직원은 늘었는데 교육 체계는 아직 — 신입 데스크가 많아 중단 치료(프렙 미장착·신경치료 미완)가 가장 많이 새는 규모입니다.'],
+   ['🎯','<b>중단 치료 환자 최우선.</b> 이미 치료비가 절반 들어간 환자들 — 부르면 돌아올 확률도, 회수 금액도 가장 큽니다.'],
+   ['👥','<b>2명 분담 + 백업 지정이 처방.</b> 큐를 반씩 나눠 하루 5통씩 — 한 명이 빠져도 백업이 같은 큐를 이어받습니다.'],
+   ['🧾','<b>보험 타이밍(만 65세·발치 후) 자동 감지.</b> 환자 수가 많아 사람 눈으로는 불가능한 일 — 시스템이 날짜를 셉니다.']
+  ]},
+ {t:'D', c:'#C0392B', cS:'#FCEEEC', rev:'월매출 2억원 이상', pos:30000, persona:'대형·다닥터 · 전담 운영과 직원별 관리가 핵심',
+  scale:3.6, pts:'약 8,000명+', evap:'약 1억원+', goal:'+2,500만원~',
+  call:'하루 15~20통 (전담)', who:'전담 1명(TC·실장) + 직원별 리포트 관리',
+  gain:{vmin:5000,vmax:11000,gy:[6000,8000,10000],base:7100,ys:[7350,6900,7250,7000,6850,7150, 7700,8200,8100,8900,9300,9550]},
+  rx:[
+   ['🎯','<b>고가치 미착수 환자 최우선 배분.</b> 임플란트·보철 미착수만 모아도 억 단위 — 전담자가 위에서부터 걸면 됩니다.'],
+   ['👥','<b>직원별 성과가 자동으로 보입니다.</b> 다닥터·다직원 체제에서 “누가 며칠에 몇 통·몇 예약”이 리포트로 — 코칭과 평가가 데이터로.'],
+   ['🏥','<b>원장별·체어별 분배도 문제없습니다.</b> 콜 결과가 예약으로 이어질 때 담당 원장 스케줄에 맞춰 배치.'],
+   ['📈','<b>규모가 클수록 1%가 큽니다.</b> 월매출 3억이면 리콜 회수 1%p 개선이 연 3,600만원 — 시스템 도입 효과가 가장 큰 규모입니다.']
+  ]}
+];
+
+var tierHost=document.getElementById('tierPages');
+var pgBase=10;
+TIERS.forEach(function(T,ti){
+  var pg=document.createElement('div');
+  pg.className='pg tierpg'; pg.dataset.tier=T.t;
+  var bars=BASE.map(function(v,i){ var s=Math.round(v*T.scale/10)*10;
+    return {n:CAT[i], v:s, t:s.toLocaleString('ko-KR')+'만', c: i<2?'#C0392B':(i==2?'#C77E12':'#33507F')}; });
+  var sum=bars.reduce(function(a,b){return a+b.v},0);
+  var sumTxt=(sum>=10000? (Math.round(sum/1000)/10)+'억원':sum.toLocaleString('ko-KR')+'만원');
+  pg.innerHTML=
+   '<div style="display:flex;align-items:center;gap:4mm;flex-wrap:wrap">'
+   +'<span class="tbadge" style="background:'+T.c+'">TYPE '+T.t+' <small style="color:rgba(255,255,255,.75)">'+T.rev+'</small></span>'
+   +'<span style="font-size:10.5px;color:var(--mut);font-weight:750">'+T.persona+'</span></div>'
+   +'<h2 style="margin-top:3mm">'+T.rev.replace('월매출 ','월매출 <mark>')+'</mark> 치과의 처방전</h2>'
+   +'<div class="cht" style="padding:2.5mm 4mm;margin-top:1mm"><svg id="pos'+T.t+'" viewBox="0 0 760 64"></svg></div>'
+   +'<div class="grid3" style="margin-top:3mm">'
+   +'<div class="card kpi" style="background:'+T.cS+';border-color:'+T.c+'33"><div class="v" style="color:'+T.c+'">'+T.pts+'</div><div class="l">잠자는 구환 풀 (추정)</div></div>'
+   +'<div class="card kpi"><div class="v" style="color:var(--red)">'+T.evap+'</div><div class="l">매달 잠드는 리콜 매출 (추정)</div></div>'
+   +'<div class="card kpi"><div class="v" style="color:var(--teaD)">'+T.goal+'</div><div class="l">월 회수 목표 (예시)</div></div></div>'
+   +'<div class="cht" style="margin-top:3mm"><div class="ct" style="font-size:11.5px">설치 첫날 예상 발견액 — 우리 규모로 환산 <span class="demo">추정 · 합계 약 '+sumTxt+'</span></div>'
+   +'<svg id="bar'+T.t+'" viewBox="0 0 760 300"></svg></div>'
+   +'<div class="grid2" style="margin-top:3mm;align-items:start">'
+   +'<div class="card"><h3 style="margin-bottom:1mm">💊 이 규모의 처방 — <span style="color:'+T.c+'">'+T.call+'</span> · '+T.who+'</h3>'
+   +T.rx.map(function(r){return '<div class="rx"><span class="ic">'+r[0]+'</span><span>'+r[1]+'</span></div>'}).join('')+'</div>'
+   +'<div class="cht"><div class="ct" style="font-size:11px">설치 후 6개월 시나리오 <span class="demo">예시</span></div>'
+   +'<svg id="gn'+T.t+'" viewBox="0 0 380 250"></svg>'
+   +'<div class="src">면적 = 돌아온 매출. 병원별 실제 값은 3분 진단으로 확인.</div></div></div>'
+   +'<div class="foot">본 페이지 수치는 전국 평균 예시 진단을 매출 비례로 환산한 추정입니다. 우리 병원 실제 값은 설치 후 3분 내 실명단으로 확인됩니다.</div>'
+   +'<div class="brand"><b>AutoRecall</b> 맞춤 진단 · TYPE '+T.t+'</div><div class="pgno">'+String(pgBase+ti).padStart(2,'0')+'</div>';
+  tierHost.appendChild(pg);
+  /* 위치 스트립 */
+  (function(){
+    var svg=document.getElementById('pos'+T.t);
+    var X0=60,X1=700,Y=36;
+    function px(v){return X0+(Math.log(v/5000)/Math.log(10))*(X1-X0)}
+    var h='<line x1="'+X0+'" y1="'+Y+'" x2="'+X1+'" y2="'+Y+'" stroke="#D8D2C4" stroke-width="3" stroke-linecap="round"/>';
+    [[5000,'5천만'],[10000,'1억'],[20000,'2억'],[50000,'5억']].forEach(function(t){
+      h+='<line x1="'+px(t[0])+'" y1="'+(Y-5)+'" x2="'+px(t[0])+'" y2="'+(Y+5)+'" stroke="#B9B29F" stroke-width="1.5"/>'
+        +'<text class="axl" x="'+px(t[0])+'" y="'+(Y+22)+'" text-anchor="middle" style="font-size:10px">'+t[1]+'</text>';
+    });
+    var mx=Math.min(px(T.pos),X1-4);
+    h+='<circle cx="'+mx+'" cy="'+Y+'" r="9" fill="'+T.c+'"/><text x="'+mx+'" y="'+(Y+4)+'" text-anchor="middle" fill="#fff" style="font-size:10px;font-weight:900;font-family:inherit">★</text>'
+      +'<text class="axl" x="'+mx+'" y="'+(Y-14)+'" text-anchor="middle" fill="'+T.c+'" style="font-weight:880;font-size:12px">우리 병원은 여기</text>'
+      +'<text class="axl" x="'+X0+'" y="14" style="font-size:10px;font-weight:750">월매출 축 (로그 스케일)</text>';
+    svg.innerHTML=h;
+  })();
+  hbars('bar'+T.t, bars, {rowH:44, top:10, lx:200});
+  gainChart('gn'+T.t, {nm:'TYPE '+T.t+' 시나리오', c:T.c, w:380, h:250, x0:56, mini:true,
+    vmin:T.gain.vmin, vmax:T.gain.vmax, gy:T.gain.gy, base:T.gain.base, ys:T.gain.ys});
+});
+
+/* ═══ ?tier=A|B|C|D — 영업 시 해당 치과 페이지만 ═══ */
+var q=(new URLSearchParams(location.search).get('tier')||'').toUpperCase();
+if(q && ['A','B','C','D'].indexOf(q)>-1){
+  document.querySelectorAll('.tierpg').forEach(function(p){ if(p.dataset.tier!==q) p.style.display='none'; });
+  document.querySelectorAll('#tierCover .tc').forEach(function(c){
+    if(c.dataset.t===q){ c.style.borderColor='#FFD24B'; c.style.boxShadow='0 0 0 2px #FFD24B'; }
+    else { c.style.opacity=.35; }
+  });
+}
+/* 페이지 번호는 항상 동적 채번 (페이지 추가·필터에 자동 대응) */
+var vis=[].slice.call(document.querySelectorAll('.pg')).filter(function(p){return p.style.display!=='none'});
+vis.forEach(function(p,i){ var n=p.querySelector('.pgno'); if(n) n.textContent=String(i+1).padStart(2,'0'); });
+})();
+</script>
+</body>
+</html>

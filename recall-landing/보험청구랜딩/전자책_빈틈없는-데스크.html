@@ -1,0 +1,3193 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>빈틈없는 데스크 — 병원 매출의 숨은 엔진 (전체 합본)</title>
+<style>
+
+:root{
+  --bg:#FBFAF7; --bg-soft:#F4F1EA; --paper:#FFFFFF;
+  --fg:#1F1F1F; --fg-soft:#3A3A3A; --muted:#6E6E6E;
+  --rule:#E8E3D6; --accent:#1D4ED8; --accent-soft:#E6EEF7; --warm:#B8451F;
+  --ink:#14314f;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#1A1816; --bg-soft:#252220; --paper:#201D1A;
+    --fg:#E8E4DC; --fg-soft:#C7C2B8; --muted:#9A968D;
+    --rule:#36322C; --accent:#7AB0FF; --accent-soft:#22303f; --warm:#E89464;
+    --ink:#cfe0f2;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",Roboto,sans-serif;
+  font-size:17px; line-height:1.85; letter-spacing:-0.011em;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:680px; margin:0 auto; padding:0 22px}
+@media(min-width:720px){ body{font-size:18px} }
+
+/* ---------- Cover ---------- */
+.cover{
+  min-height:100svh; display:flex; flex-direction:column; justify-content:center;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(29,78,216,.10), transparent 60%),
+    linear-gradient(180deg,#0e2748 0%, #123256 55%, #0c2340 100%);
+  color:#eaf1fb; text-align:center; padding:56px 26px; position:relative; overflow:hidden;
+}
+.cover .kicker{ font-size:.82rem; letter-spacing:.22em; text-transform:uppercase; color:#8fb6ee; font-weight:700; margin-bottom:26px }
+.cover h1{ font-size:2.55rem; line-height:1.25; letter-spacing:-.03em; font-weight:800; margin:.1em 0 .35em; text-wrap:balance }
+.cover .sub{ font-size:1.08rem; color:#c6d6ee; font-weight:500; line-height:1.7; max-width:22em; margin:0 auto }
+.cover .rule-x{ width:52px; height:3px; background:#5f8fd6; border-radius:2px; margin:30px auto 28px }
+.cover .badge{
+  display:inline-block; margin-top:38px; padding:9px 20px; border:1px solid rgba(255,255,255,.28);
+  border-radius:999px; font-size:.86rem; color:#dbe7f8; font-weight:600; backdrop-filter:blur(2px);
+}
+.cover .imprint{ margin-top:auto; padding-top:44px; font-size:.82rem; color:#7f9fc9; line-height:1.7 }
+.tooth{ font-size:2.4rem; margin-bottom:8px }
+
+/* ---------- Section rhythm ---------- */
+main{ padding:8px 0 40px }
+.part-divider{
+  margin:64px 0 8px; padding:38px 0 30px; text-align:center; border-top:1px solid var(--rule);
+}
+.part-divider .pnum{ font-size:.8rem; letter-spacing:.2em; color:var(--accent); font-weight:800; text-transform:uppercase }
+.part-divider h2{ font-size:1.7rem; line-height:1.3; letter-spacing:-.03em; margin:.35em 0 .2em; font-weight:800 }
+.part-divider .pdesc{ color:var(--muted); font-size:.98rem; max-width:24em; margin:.2em auto 0 }
+
+h3{ font-size:1.24rem; line-height:1.4; letter-spacing:-.025em; font-weight:800; margin:2.1em 0 .5em; }
+h3 .n{ color:var(--accent); font-weight:800; margin-right:.35em; font-variant-numeric:tabular-nums }
+h4{ font-size:1.03rem; font-weight:800; margin:1.6em 0 .3em; letter-spacing:-.02em }
+p{ margin:.7em 0 }
+.lead{ font-size:1.06rem; color:var(--fg-soft) }
+strong,b{ color:var(--warm); font-weight:700 }
+u{ text-decoration:none; background:linear-gradient(180deg,transparent 60%, var(--accent-soft) 60%); padding:0 2px; border-radius:2px }
+mark{ background:#FFF3A8; color:#3a2f00; padding:1px 5px; border-radius:4px; font-weight:600 }
+@media(prefers-color-scheme:dark){ mark{ background:#5c5320; color:#f5ecc0 } }
+.key{ color:var(--accent); font-weight:700 }
+a{ color:var(--accent); text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1.5px }
+hr{ border:0; border-top:1px solid var(--rule); margin:2.4em 0 }
+em{ color:var(--fg-soft) }
+
+/* ---------- TOC ---------- */
+.toc{
+  background:var(--paper); border:1px solid var(--rule); border-radius:18px;
+  padding:26px 24px; margin:40px 0 8px; box-shadow:0 2px 10px rgba(20,30,50,.04);
+}
+.toc h2{ font-size:1.05rem; letter-spacing:.02em; margin:0 0 4px; font-weight:800 }
+.toc .tsub{ color:var(--muted); font-size:.86rem; margin:0 0 16px }
+.toc ol{ list-style:none; margin:0; padding:0; counter-reset:pt }
+.toc .grp{ margin:14px 0 4px; font-weight:800; font-size:.98rem; color:var(--ink); display:flex; align-items:center; gap:8px }
+.toc .grp .dot{ width:22px; height:22px; border-radius:7px; background:var(--accent); color:#fff; font-size:.78rem; display:inline-flex; align-items:center; justify-content:center; font-weight:800 }
+.toc a{ display:block; text-decoration:none; color:var(--fg-soft); padding:4px 0 4px 30px; font-size:.96rem; border-bottom:1px dashed transparent }
+.toc a:hover{ color:var(--accent) }
+.toc .apx{ color:var(--muted) }
+
+/* ---------- Callout / boxes ---------- */
+.box{ border-radius:14px; padding:16px 18px; margin:1.5em 0; border-left:3px solid var(--accent); background:linear-gradient(90deg,var(--accent-soft),transparent 85%) }
+.box .bt{ font-weight:800; font-size:.98rem; margin-bottom:2px; color:var(--ink) }
+.box.warn{ border-left-color:#C79A2E; background:linear-gradient(90deg,#F7EDDA,transparent 85%) }
+.box.warn .bt{ color:#7A5418 }
+.box.good{ border-left-color:#3f9d5a; background:linear-gradient(90deg,#E8F1E8,transparent 85%) }
+.box.good .bt{ color:#2F6B2F }
+.box.quote{ border-left-color:#9c8a5a; background:linear-gradient(90deg,#F0EBE0,transparent 85%); font-style:italic; color:var(--fg-soft) }
+.box.data{ border-left-color:#123256; background:linear-gradient(90deg,#EAF0F7,transparent 85%) }
+.box.data .bt{ color:#123256 }
+.box.data .src{ display:block; margin-top:8px; font-size:.78rem; color:var(--muted) }
+@media(prefers-color-scheme:dark){ .box.data{ background:linear-gradient(90deg,#18293d,transparent 85%) } .box.data .bt{ color:#9fc0ea } }
+@media(prefers-color-scheme:dark){
+  .box.warn{ background:linear-gradient(90deg,#3a3116,transparent 85%) } .box.warn .bt{ color:#e6c37a }
+  .box.good{ background:linear-gradient(90deg,#1c3320,transparent 85%) } .box.good .bt{ color:#8fd39a }
+  .box.quote{ background:linear-gradient(90deg,#302a1c,transparent 85%) }
+}
+
+/* ---------- Practical artifact card ---------- */
+.tool{
+  background:var(--paper); border:1px solid var(--rule); border-radius:16px;
+  padding:0; margin:1.8em 0; overflow:hidden; box-shadow:0 2px 12px rgba(20,30,50,.05);
+}
+.tool > .th{ background:var(--bg-soft); padding:12px 18px; font-weight:800; font-size:.92rem; letter-spacing:-.01em; display:flex; align-items:center; gap:9px; border-bottom:1px solid var(--rule) }
+.tool > .th .tag{ font-size:.68rem; letter-spacing:.12em; background:var(--accent); color:#fff; padding:3px 8px; border-radius:6px; font-weight:800; text-transform:uppercase }
+.tool .tb{ padding:16px 20px }
+.check{ list-style:none; margin:0; padding:0 }
+.check li{ padding:7px 0 7px 30px; position:relative; border-bottom:1px solid var(--rule); font-size:.97rem }
+.check li:last-child{ border-bottom:0 }
+.check li:before{ content:"☐"; position:absolute; left:2px; top:6px; color:var(--accent); font-size:1.05rem }
+.script{ margin:0; padding:0; list-style:none }
+.script li{ padding:10px 0; border-bottom:1px solid var(--rule) }
+.script li:last-child{ border-bottom:0 }
+.script .who{ font-size:.74rem; font-weight:800; letter-spacing:.08em; color:var(--muted); text-transform:uppercase }
+.script .say{ display:block; margin-top:2px }
+.script .say.pt{ color:var(--fg-soft) }
+.script .say.me{ color:var(--fg); font-weight:600 }
+
+/* ---------- Tables ---------- */
+.twrap{ overflow-x:auto; margin:1.5em 0; -webkit-overflow-scrolling:touch }
+table{ border-collapse:collapse; width:100%; font-size:.92rem; min-width:min(100%,420px) }
+th,td{ text-align:left; padding:9px 12px; border-bottom:1px solid var(--rule); vertical-align:top }
+thead th{ background:var(--bg-soft); font-weight:800; font-size:.82rem; color:var(--ink); white-space:nowrap }
+tbody tr:last-child td{ border-bottom:0 }
+
+/* stat */
+.stat{ display:flex; gap:14px; flex-wrap:wrap; margin:1.4em 0 }
+.stat .s{ flex:1 1 130px; background:var(--paper); border:1px solid var(--rule); border-radius:14px; padding:14px 16px }
+.stat .s .big{ font-size:1.6rem; font-weight:800; color:var(--accent); letter-spacing:-.02em; line-height:1.1 }
+.stat .s .lab{ font-size:.82rem; color:var(--muted); margin-top:4px }
+
+.pull{ font-size:1.28rem; line-height:1.5; font-weight:700; letter-spacing:-.025em; color:var(--ink); border-left:4px solid var(--accent); padding:6px 0 6px 20px; margin:1.6em 0 }
+
+/* Flowchart */
+.flow{ margin:1.8em 0 .4em; background:var(--paper); border:1px solid var(--rule); border-radius:16px; padding:14px 10px 8px; box-shadow:0 2px 12px rgba(20,30,50,.05) }
+.flow svg{ width:100%; max-width:400px; height:auto; display:block; margin:0 auto }
+.flow-cap{ font-size:.86rem; color:var(--muted); text-align:center; margin-top:6px; padding:0 10px 4px }
+.flow-title{ font-weight:800; font-size:.96rem; text-align:center; margin:2px 0 6px; color:var(--ink) }
+
+/* SMS templates */
+.sms{ background:var(--bg-soft); border-radius:12px; padding:11px 14px; margin:7px 0 13px; font-size:.94rem; line-height:1.7; border:1px solid var(--rule) }
+.sms .lb{ display:block; font-size:.78rem; color:var(--accent); font-weight:800; margin-bottom:3px }
+
+/* ---------- CTA ---------- */
+.cta{
+  margin:52px 0 20px; border-radius:20px; overflow:hidden;
+  background:linear-gradient(165deg,#123256,#0c2340); color:#eaf1fb; padding:36px 28px; text-align:center;
+}
+.cta .k{ font-size:.78rem; letter-spacing:.2em; color:#8fb6ee; font-weight:800; text-transform:uppercase }
+.cta h3{ color:#fff; font-size:1.5rem; margin:.4em 0 .3em; border:0; padding:0 }
+.cta p{ color:#c6d6ee; font-size:1rem; max-width:26em; margin:.3em auto }
+.cta .btn{
+  display:inline-block; margin-top:22px; background:#fff; color:#123256; font-weight:800;
+  padding:14px 30px; border-radius:999px; text-decoration:none; font-size:1.02rem; letter-spacing:-.01em;
+}
+.cta .url{ display:block; margin-top:14px; font-size:.84rem; color:#8fb6ee; word-break:break-all }
+
+footer{ text-align:center; color:var(--muted); font-size:.82rem; padding:40px 22px 60px; border-top:1px solid var(--rule); margin-top:40px; line-height:1.8 }
+
+details.deep{ border:1px solid var(--rule); border-radius:12px; padding:0; margin:1.4em 0; background:var(--paper) }
+details.deep>summary{ cursor:pointer; padding:13px 16px; font-weight:700; font-size:.95rem; list-style:none; color:var(--ink) }
+details.deep>summary::-webkit-details-marker{ display:none }
+details.deep>summary:before{ content:"▸ "; color:var(--accent) }
+details.deep[open]>summary:before{ content:"▾ " }
+details.deep .dc{ padding:0 16px 14px }
+
+.backtop{ position:fixed; right:14px; bottom:14px; background:var(--accent); color:#fff; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; font-size:1.2rem; box-shadow:0 4px 14px rgba(0,0,0,.25); opacity:.9 }
+
+/* ---- per-file nav (folder edition) ---- */
+.filenav{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;margin-bottom:6px;border-bottom:1px solid var(--rule);font-size:.9rem;font-weight:700}
+.filenav a{color:var(--accent);text-decoration:none}
+.filenav .home{color:var(--ink)}
+.filenav .nx{margin-left:auto}
+.filemark{font-size:.72rem;letter-spacing:.16em;color:var(--muted);font-weight:800;text-transform:uppercase;margin:14px 0 0}
+
+/* ---- scenario vs / dialogue (shared) ---- */
+.vs{margin:1.2em 0;padding:14px 16px;border:1px solid var(--rule);border-radius:14px;background:var(--paper)}
+.vs h4{margin:0 0 8px}
+.vs .bad{color:#B4432A;font-weight:800}
+.vs .good{color:#2F6B2F;font-weight:800}
+.vs p{margin:.35em 0}
+.vs .why{font-size:.9rem;color:var(--muted);border-top:1px dashed var(--rule);padding-top:7px;margin-top:8px}
+@media(prefers-color-scheme:dark){.vs .bad{color:#e89464}.vs .good{color:#8fd39a}}
+
+</style>
+</head><body>
+<header class="cover" id="top">
+  <div class="tooth">🦷</div>
+  <div class="kicker">치과 경영 실무 시리즈 · Vol.1</div>
+  <h1>빈틈없는 데스크</h1>
+  <div class="rule-x"></div>
+  <div class="sub">원장이 몰랐던 <b style="color:#fff">병원 매출의 숨은 엔진</b><br>— 데스크는 접수대가 아니라 운영 허브다</div>
+  <div class="badge">📖 원장 · 실장 · 데스크 코디를 위한 실전 워크북</div>
+  <div class="imprint">
+    발행 · 4Prism × 사계절치과 현장연구 · 2026<br>
+    원장 · 실장 · 데스크가 함께 읽는 운영 안내서
+  </div>
+</header>
+<div class="wrap"><main>
+
+<section id="prologue">
+  <div class="part-divider" style="border-top:0;margin-top:30px">
+    <div class="pnum">Prologue</div>
+    <h2>병원은 대개 진료가 아니라 운영에서 무너진다</h2>
+  </div>
+
+  <p class="lead">치과의사의 진료 실력은 병원의 <b>심장</b>입니다. 심장이 멈추면 아무것도 없습니다. 하지만 현실에서 병원이 흔들리는 건 대개 심장이 아니라 <u>혈관 — 환자·돈·정보를 온몸으로 돌리는 운영</u>에서입니다. 심장이 아무리 힘차도, 혈관이 막히면 몸은 멈춥니다.</p>
+
+  <div class="box data">
+    <div class="bt">📊 숫자로 보는 오늘의 치과</div>
+    전국 치과의원은 약 <u><b>1만 9,500곳</b></u>. 진료과목 중 <b>병·의원 평균 매출이 사실상 최하위</b>권이고, 폐업은 해마다 늘고 있습니다. 그런데 국가 구강검진 수검률은 <u><b>약 30%</b></u> — 일반 건강검진(72.6%)의 절반도 안 됩니다. <b>대부분의 환자가 다시 와야 할 때 오지 않고 있다</b>는 뜻입니다.
+    <span class="src">출처 · 국세청 국세통계(치과의원 사업자 현황) · 국민건강보험공단 구강검진 수검률</span>
+  </div>
+
+  <p>그 "다시 오게 하는" 일, 그리고 온 환자를 놓치지 않는 일이 벌어지는 자리가 <mark>데스크</mark>입니다. 예약을 잡고, 전화를 받고, 리콜을 돌리고, 미수금을 챙기고, 불만을 가라앉히는 곳. 많은 원장님이 데스크를 "접수·수납하는 곳"으로 보지만, 실제로는 <b>병원의 현금이 새는지 고이는지가 결정되는 혈관</b>입니다.</p>
+
+  <div class="box">
+    <div class="bt">🏛️ 병원 경영의 다섯 기둥</div>
+    잘 정리된 병원경영 모델은 경영을 다섯 기둥 — <b>비전 · 마케팅 · 고객관계(CRM) · 인사(HR) · 고객서비스(CS)</b> — 으로 봅니다. 이 책은 그중 가장 즉각적으로 매출에 닿는 두 기둥, <b>고객서비스(데스크 운영)</b>와 <b>고객관계(리콜·구환관리)</b>를 다룹니다. <em>나머지 기둥은 시리즈 후속 편에서.</em>
+  </div>
+
+  <p>읽고 끝나는 책이 아니라 <u>각 장 끝의 체크리스트·응대 스크립트·관리 양식을 오늘 데스크에 그대로 붙여 쓰는</u> 실전 워크북입니다.</p>
+</section>
+
+<!-- ========== TOC ========== -->
+
+<nav class="toc" id="toc-top"><h2>목차</h2><p class="tsub">한 파일 합본 — 클릭하면 해당 장으로 이동합니다</p><ol><a href="#f-00_한장요약" class="apx" style="display:block;padding:5px 0">한장요약</a>
+<a href="#f-01_Part1_데스크는-혈관" class="apx" style="display:block;padding:5px 0">Part1 · 데스크는 혈관</a>
+<a href="#f-02_Part2_환자응대" class="apx" style="display:block;padding:5px 0">Part2 · 환자응대</a>
+<a href="#f-03_Part3_새는돈" class="apx" style="display:block;padding:5px 0">Part3 · 새는돈</a>
+<a href="#f-04_Part4_리콜의의" class="apx" style="display:block;padding:5px 0">Part4 · 리콜의의</a>
+<a href="#f-05_Part5_리콜시스템" class="apx" style="display:block;padding:5px 0">Part5 · 리콜시스템</a>
+<a href="#f-06_Part6_교육평가" class="apx" style="display:block;padding:5px 0">Part6 · 교육평가</a>
+<a href="#f-07_부록_실전템플릿" class="apx" style="display:block;padding:5px 0">부록 · 실전템플릿</a>
+<a href="#f-별첨A_MOT" class="apx" style="display:block;padding:5px 0">별첨A · MOT</a>
+<a href="#f-별첨B_전화멘트" class="apx" style="display:block;padding:5px 0">별첨B · 전화멘트</a>
+<a href="#f-별첨C_데스크고민" class="apx" style="display:block;padding:5px 0">별첨C · 데스크고민</a>
+<a href="#f-별첨D_문자대전" class="apx" style="display:block;padding:5px 0">별첨D · 문자대전</a>
+<a href="#f-별첨E_리콜부르는구실" class="apx" style="display:block;padding:5px 0">별첨E · 리콜부르는구실</a>
+<a href="#f-별첨F_대기업vs치과" class="apx" style="display:block;padding:5px 0">별첨F · 대기업vs치과</a>
+<a href="#f-별첨G_전화리콜심화" class="apx" style="display:block;padding:5px 0">별첨G · 전화리콜심화</a>
+<a href="#f-별첨H_컴플레인대본" class="apx" style="display:block;padding:5px 0">별첨H · 컴플레인대본</a>
+<a href="#f-별첨I_신환첫방문" class="apx" style="display:block;padding:5px 0">별첨I · 신환첫방문</a>
+<a href="#f-별첨J_비급여상담" class="apx" style="display:block;padding:5px 0">별첨J · 비급여상담</a>
+<a href="#f-별첨K_전화곤란상황" class="apx" style="display:block;padding:5px 0">별첨K · 전화곤란상황</a>
+<a href="#f-별첨L_역할과감시" class="apx" style="display:block;padding:5px 0">별첨L · 역할과감시</a>
+<a href="#f-별첨M_데스크누수지도" class="apx" style="display:block;padding:5px 0">별첨M · 데스크누수지도</a>
+<a href="#f-별첨N_노쇼취소관리" class="apx" style="display:block;padding:5px 0">별첨N · 노쇼취소관리</a>
+<a href="#f-별첨O_용어사전" class="apx" style="display:block;padding:5px 0">별첨O · 용어사전</a>
+<a href="#f-별첨P_진료별안내문" class="apx" style="display:block;padding:5px 0">별첨P · 진료별안내문</a>
+<a href="#f-별첨Q_실패해부" class="apx" style="display:block;padding:5px 0">별첨Q · 실패해부</a>
+<a href="#f-별첨R_90일로드맵" class="apx" style="display:block;padding:5px 0">별첨R · 90일로드맵</a>
+<a href="#f-별첨S_리뷰평판" class="apx" style="display:block;padding:5px 0">별첨S · 리뷰평판</a></ol></nav>
+<div class="part-divider" id="epilogue">
+  <div class="pnum">Epilogue</div>
+  <h2>다음 한 걸음</h2>
+</div>
+
+<p>여기까지 오셨다면, 이미 데스크를 "접수대"가 아니라 <b>병원의 혈관</b>으로 보고 계실 겁니다. 이 책의 체크리스트·응대 스크립트·문자 템플릿을 <u>딱 2주만</u> 붙여 써 보세요. 전화 응대가 통일되고, 미수금이 줄고, 다음 예약이 자리에서 잡히기 시작합니다.</p>
+
+<p>그리고 <b>리콜</b>. Part 5의 방법대로 하면 손으로도 충분히 리콜 시스템을 세울 수 있습니다. 관건은 방법이 아니라 <u>매주 지치지 않고 그 바퀴를 돌리는 일</u>입니다. 그걸 끝까지 해내는 병원이 조용히 앞서갑니다.</p>
+
+<div class="box">
+  <div class="bt">✍️ 만든 사람의 말</div>
+  이 책은 데스크 운영과 리콜을 오래 붙들고 씨름한 사람들이 정리했습니다. 화려한 전략이 아니라, <u>오늘 데스크에서 바로 쓰는 것들</u>만 담으려 했습니다. 여기 담긴 기본기부터가 병원을 바꿉니다. 손으로 굴리다 벅차지는 순간이 오면, 그때 자동화를 검토해도 늦지 않습니다.
+</div>
+
+<p style="text-align:center;color:var(--muted);font-size:.9rem;margin-top:26px">
+  📮 다음 편 — <b>진료실 운영·차팅</b> · <b>직원관리·노무</b> · <b>상담·비급여</b> · <b>보험청구</b>
+</p>
+<p style="text-align:center;color:var(--muted);font-size:.8rem;margin-top:12px">
+  리콜 자동화가 궁금하다면 · <a href="https://4prismmso-rgb.github.io/autorecall/" rel="noopener">autorecall 살펴보기</a>
+</p>
+
+<hr>
+<section id="f-00_한장요약">
+
+
+<h3><span class="n">0</span>이 책 전체를 한 장으로</h3>
+
+<p class="lead">27개 파일을 다 읽을 시간이 없다면 이 한 장부터. <b>각 줄이 곧 실행 항목</b>이고, 깊은 내용은 링크로 들어가면 됩니다.</p>
+
+<div class="box good">
+  <div class="bt">🧭 전체를 관통하는 세 문장</div>
+  ① 심장(진료)이 아무리 강해도 <b>혈관(데스크)이 막히면 병원은 멈춘다</b>.<br>
+  ② 매출은 대개 진료실이 아니라 <b>데스크에서 조용히 샌다</b> — 안 받은 전화·안 잡은 다음 예약·안 돌린 리콜.<br>
+  ③ 좋은 방법은 널렸다. 성패는 <b>누가 매주 그것을 보는가</b>에서 갈린다.
+</div>
+
+<h4>새는 곳 5개 → 막는 행동 5개</h4>
+<div class="twrap"><table>
+<thead><tr><th>새는 곳 (데이터)</th><th>막는 행동</th><th>자세히</th></tr></thead>
+<tbody>
+<tr><td>전화 20~35% 미응답 · 놓치면 85%는 다시 안 검</td><td>3콜 응대 + 놓친 콜 <b>5분 내 콜백</b></td><td><a href="#f-별첨M_데스크누수지도">별첨 M</a></td></tr>
+<tr><td>받아도 절반이 예약 못 됨(평균 53%)</td><td>"예약하시겠어요?" 대신 <b>두 시간 중 선택</b></td><td><a href="#f-별첨G_전화리콜심화">별첨 G</a></td></tr>
+<tr><td>다음 예약 없이 가면 재방문 35~45%</td><td>수납대에서 <b>선예약</b>(잡으면 80~90%)</td><td><a href="#f-04_Part4_리콜의의">4장</a></td></tr>
+<tr><td>휴면 6~12개월 지나면 복귀율 급락(25~35%→8%)</td><td><b>주간 리콜 리스트</b> — 매주 뽑고 위에서부터</td><td><a href="#f-05_Part5_리콜시스템">5장</a></td></tr>
+<tr><td>불만은 기록 안 되면 다음 주에 재발</td><td>첫 5초 "그럴 만하세요" + <b>불만 로그</b></td><td><a href="#f-별첨H_컴플레인대본">별첨 H</a></td></tr>
+</tbody>
+</table></div>
+
+<h4>역할 — 각자 이것만</h4>
+<div class="twrap"><table>
+<thead><tr><th></th><th>매일</th><th>매주</th></tr></thead>
+<tbody>
+<tr><td><b>원장</b></td><td>체어 예고 10초("6개월 뒤 이 치아 봐야 해요") + 차트 한 줄</td><td>금요일 질문 1개: "리콜 예약 몇 명?"</td></tr>
+<tr><td><b>실장</b></td><td>초기엔 콜 옆 코칭</td><td>월요일 리스트 뽑기·정렬 + 지표 집계</td></tr>
+<tr><td><b>데스크</b></td><td>30분 콜(기호만 ✓△✗) + 수납 시 선예약 + 확정 문자</td><td>—</td></tr>
+</tbody>
+</table></div>
+<p style="font-size:.9rem;color:var(--muted)">누가 무엇을 감시하는지 → <a href="#f-별첨L_역할과감시">별첨 L</a> · 90일 실행 순서 → <a href="#f-별첨R_90일로드맵">별첨 R</a></p>
+
+<h4>가장 많이 쓰게 될 다섯 문장</h4>
+<ul class="check">
+  <li>화난 환자 첫 5초 — <b>"그럴 만하세요."</b> ("진정하세요" 금지)</li>
+  <li>가격 저항 — <b>"다른 곳과 비교해 보신 거 정말 잘하셨어요."</b></li>
+  <li>예약 클로징 — <b>"화요일 오전과 목요일 오후 중 언제가 편하세요?"</b></li>
+  <li>떠나는 환자 — <b>"몇 월쯤이 편하세요? 그때쯤 연락드릴게요."</b> ("언젠가 오세요" 금지)</li>
+  <li>리콜 전화 — <b>"원장님이 그때 꼭 보자고 하셨던 그 치아요."</b> (리콜의 정점)</li>
+</ul>
+
+<div class="box warn">
+  <div class="bt">⚠️ 실패는 이렇게 온다 — 3주차를 조심</div>
+  선언(1주) → 하는 척(2주) → <b>바쁜 날 처음 밀림(3주, 아무도 안 짚음)</b> → "안 봐도 되네" 학습(5주) → 조용한 사망(6주) → 다음 시도는 더 빨리 죽음. 해독제는 세 개뿐: <u>오너 한 명 · 바쁜 날 규칙 사전 결정 · 원장의 주 1회 질문</u>. → <a href="#f-별첨Q_실패해부">별첨 Q</a>
+</div>
+
+<div class="box">
+  <div class="bt">🚀 오늘 시작한다면 (순서)</div>
+  ① 이번 달 미내원 수·새는 돈 계산해 팀에 공유 → ② 리콜 오너(실장) 지명 + 바쁜 날 규칙 결정 → ③ 다음 월요일 첫 주간 리스트 20명 → ④ 금요일 원장이 묻는다. <em>나머지는 <a href="#f-별첨R_90일로드맵">90일 로드맵</a>대로.</em>
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-01_Part1_데스크는-혈관">
+
+<div class="part-divider" id="part1">
+  <div class="pnum">Part 1</div>
+  <h2>데스크는 왜 병원의 혈관인가</h2>
+  <div class="pdesc">심장은 치과의사, 데스크는 온몸으로 피를 돌리는 혈관 — 막히면 심장도 멈춘다</div>
+</div>
+
+<h3 id="s1-1"><span class="n">1-1</span>"얼굴마담"이라는 착각 — 데스크의 네 얼굴</h3>
+
+<p>데스크 직원을 뽑을 때 우리는 종종 "밝고 인상 좋은 사람"을 찾습니다. 틀리지 않았지만, <u>그건 네 가지 역할 중 하나일 뿐</u>입니다. 좋은 데스크는 하루 종일 <b>네 개의 모자를 번갈아 씁니다.</b></p>
+
+<div class="twrap">
+<table>
+<thead><tr><th>모자</th><th>하는 일</th><th>못하면 생기는 손실</th></tr></thead>
+<tbody>
+<tr><td><b>① 호스트</b></td><td>대기실 온도·첫 한마디·표정 관리. 병원의 첫인상 담당</td><td>신환이 "여기 별로다" 판단하고 이탈</td></tr>
+<tr><td><b>② 번역가</b></td><td>원장의 치료계획을 환자 언어로, 환자 불안을 임상 정보로 양방향 번역</td><td>동의율 하락 → 비급여 치료 무산</td></tr>
+<tr><td><b>③ 조율자</b></td><td>예약·기공·재내원·체어·동선을 잇는 운영 총괄</td><td>대기 폭증·노쇼·진료실 병목</td></tr>
+<tr><td><b>④ 관리자</b></td><td>시제·정산·통계·보고. 데스크 데이터가 원장 결정으로</td><td>새는 돈을 아무도 모름</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>이 네 가지가 <b>한 사람 안에서 매끄럽게 전환</b>될 때 병원이 굴러갑니다. 반대로 데스크를 "접수·수납만 하는 자리"로 규정하는 순간, ②③④는 아무도 하지 않게 됩니다. <mark>그 빈 공간에서 매출이 샙니다.</mark></p>
+
+<div class="box quote">
+  "좋은 데스크 한 사람이 병원의 다음 10년을 바꿉니다."
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tag">Check</span> 데스크 역할 자가진단 — 우리 데스크는 몇 개의 모자를 쓰고 있나</div>
+  <div class="tb">
+    <ul class="check">
+      <li>대기 환자의 표정·불편을 <b>먼저</b> 알아채고 말을 건다 <em>(호스트)</em></li>
+      <li>치료비·치료계획을 환자가 이해했는지 확인하고 다시 설명한다 <em>(번역가)</em></li>
+      <li>예약이 몰리거나 비면 스스로 조정·리콜을 돌린다 <em>(조율자)</em></li>
+      <li>매일 신환 수·취소·미수금을 집계해 원장에게 보고한다 <em>(관리자)</em></li>
+      <li>불만 환자를 원장에게 넘기기 전에 <b>1차로 가라앉힌다</b></li>
+    </ul>
+    <p style="margin:12px 0 0;font-size:.9rem;color:var(--muted)">3개 이하 체크 = 데스크가 "접수대"로만 쓰이고 있다는 신호. 이 책의 Part 2~4가 나머지 모자를 씌우는 법입니다.</p>
+  </div>
+</div>
+
+
+<h3 id="s1-2"><span class="n">1-2</span>왜 치과 데스크는 세상에서 가장 까다로운가</h3>
+
+<p>"데스크 일이 뭐 그리 어렵나, 호텔 프런트나 은행 창구랑 비슷하지 않나?" — 이렇게 보는 순간 병원은 데스크에 잘못된 사람을 앉히고, 잘못된 기대를 겁니다. <b>치과 데스크는 다른 업계 프런트와 난이도의 종류 자체가 다릅니다.</b></p>
+
+<div class="twrap">
+<table>
+<thead><tr><th>항목</th><th>호텔·은행 프런트</th><th>종합병원 원무과</th><th>치과 데스크</th></tr></thead>
+<tbody>
+<tr><td><b>고객 상태</b></td><td>편안·기대</td><td>불안하지만 분업됨</td><td class="danger-word" style="color:#B4432A">아프고 무섭다</td></tr>
+<tr><td><b>한 사람이 맡는 일</b></td><td>1~2가지(체크인·수납)</td><td>접수 또는 수납(분업)</td><td>접수+수납+보험청구+상담+리콜 <b>전부</b></td></tr>
+<tr><td><b>고액 세일즈</b></td><td>거의 없음</td><td>없음(수가 고정)</td><td>수백만 원 비급여 <b>1차 설득</b></td></tr>
+<tr><td><b>행정 리스크</b></td><td>낮음</td><td>전담부서가 흡수</td><td>청구 삭감·환수·의료법 실수 <b>직격</b></td></tr>
+<tr><td><b>관계 길이</b></td><td>대개 일회성</td><td>진료과가 관리</td><td>수개월 회차 + 수년 리콜을 <b>데스크가</b></td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>치과 데스크만 짊어지는 다섯 가지 무게</h4>
+<div class="tool">
+  <div class="th"><span class="tag">Why</span> 다른 프런트엔 없는 부담</div>
+  <div class="tb">
+    <ul class="script">
+      <li><span class="who">1 · 감정노동의 강도</span><span class="say me">고객이 <b>통증·공포 상태</b>로 온다. 편안한 손님을 맞는 접객과 근본적으로 다르다.</span></li>
+      <li><span class="who">2 · 4중 직무 겸직</span><span class="say me">호텔은 컨시어지·체크인·캐셔가 나뉜다. 치과는 <b>1~2명이 접객·수납·보험청구·상담·리콜을 동시에</b> 한다.</span></li>
+      <li><span class="who">3 · 고액·비가역 세일즈</span><span class="say me">수백만 원 비급여를 데스크가 1차로 설득한다. 그런데 <u>의료라 과장은 불법</u> — 정직하게 설득해야 하는 세일즈다.</span></li>
+      <li><span class="who">4 · 전문 행정 리스크</span><span class="say me">보험청구 한 줄이 삭감·환수로, 차팅·개인정보 실수가 과태료로 돌아온다. 실수의 <b>대가가 크다</b>.</span></li>
+      <li><span class="who">5 · 실시간 진료실 조율</span><span class="say me">체어·기공물·응급 환자가 실시간으로 바뀐다. 예약이 정적인 호텔과 달리 <b>진료시간 자체가 유동적</b>이다.</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="pull">그래서 치과 데스크는 "친절한 사람 한 명"으로는 안 된다. 훈련된 사람 + 굴러가는 시스템, 둘 다 있어야 한다.</div>
+
+<p>이 다섯 가지 무게를 사람의 성실함만으로 버티려 하면 반드시 어딘가 빠집니다. <u>빠지는 그 지점이 곧 매출이 새는 곳</u>입니다. 이 책의 나머지는 그 구멍을 하나씩 막는 방법입니다.</p>
+
+
+<h3 id="s1-3"><span class="n">1-3</span>좋은 데스크 1명이 바꾸는 매출 숫자</h3>
+
+<p>감으로는 "데스크가 중요하지" 하면서도, 숫자로 보지 않으면 투자 우선순위에서 늘 밀립니다. 데스크의 가치를 <b>매출 언어로</b> 환산해 봅니다.</p>
+
+<div class="stat">
+  <div class="s"><div class="big">25~95%</div><div class="lab">재방문율 5%p 올릴 때 늘어나는 매출</div></div>
+  <div class="s"><div class="big">5~25배</div><div class="lab">신환 유치비 vs 구환 재활성 비용</div></div>
+  <div class="s"><div class="big">7.4억</div><div class="lab">전국 치과의원 연평균 매출(국세청 기준)</div></div>
+</div>
+
+<p>새 환자 한 명을 데려오는 데는 광고·검색·간판 비용이 큽니다. 반면 <u>이미 우리를 아는 구환은 문자 한 통, 전화 한 통이면 돌아옵니다.</u> 실제로 기존 환자의 재구매 확률은 신규의 여러 배로 높고, <b>재방문율을 단 5%p만 올려도 매출은 25~95% 늘어난다</b>는 것이 잘 알려진 경영 원리입니다. 그 문자와 전화를 누가 챙기느냐 — 데스크입니다. 즉 데스크는 <b>병원에서 가장 싼 마케팅 채널을 운영하는 사람</b>입니다.</p>
+
+<div class="pull">데스크는 비용 센터가 아니라, 병원에서 가장 저렴한 매출 채널이다.</div>
+
+<details class="deep">
+  <summary>왜 구환이 신환보다 압도적으로 남는가 (숫자로)</summary>
+  <div class="dc">
+    <p>신환 1명을 유치하려면 광고비·기회비용·초진 상담시간이 듭니다. 반면 구환은 이미 <b>차트·신뢰·치료이력</b>이 있어 상담이 짧고, 다음 치료로 이어질 확률이 높습니다. 마케팅으로 신환을 채우기 전에 <u>구환부터 먼저 채우라</u>는 원칙이 여기서 나옵니다. 데스크가 이 순서를 지키면, 같은 매출을 훨씬 낮은 비용으로 만듭니다.</p>
+  </div>
+</details>
+
+
+<h3 id="s1-4"><span class="n">1-4</span>원장이 위임할 것 vs 절대 놓치면 안 될 것</h3>
+
+<p>데스크에 힘을 실어준다는 건 <b>모든 걸 떠넘기는 것</b>이 아닙니다. 위임의 경계선을 명확히 그어야 데스크도 편하고 원장도 안전합니다.</p>
+
+<div class="twrap">
+<table>
+<thead><tr><th>위임해도 되는 것 (데스크 자율)</th><th>원장이 직접 쥐어야 할 것</th></tr></thead>
+<tbody>
+<tr><td>예약 조정·리콜 발송·해피콜 실행</td><td>치료계획·진단·비급여 최종 설명</td></tr>
+<tr><td>1차 컴플레인 응대·대기 안내</td><td>의료분쟁·환불 최종 결정</td></tr>
+<tr><td>일상 수납·현금영수증·재료 발주</td><td>미수금 회수 정책·분납 기준 승인</td></tr>
+<tr><td>일·월 통계 집계·보고서 작성</td><td>그 통계를 읽고 내리는 경영 판단</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box warn">
+  <div class="bt">⚠️ 위임의 함정</div>
+  "알아서 해"는 위임이 아니라 <b>방치</b>입니다. 데스크가 자율적으로 움직이려면 <u>판단 기준(스크립트·정책·상한선)</u>이 먼저 있어야 합니다. 이 책의 부록 템플릿이 그 기준선입니다.
+</div>
+
+
+<!-- ========================================================= -->
+<!-- PART 2 -->
+<!-- ========================================================= -->
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-02_Part2_환자응대">
+
+<div class="part-divider" id="part2">
+  <div class="pnum">Part 2</div>
+  <h2>환자를 맞이하는 기술</h2>
+  <div class="pdesc">첫인상 · 전화 · 접수 · 컴플레인 — 신뢰가 만들어지는 접점</div>
+</div>
+
+<h3 id="s2-1"><span class="n">2-1</span>첫인상 30초 설계</h3>
+
+<p>환자는 진료 실력을 판단할 능력이 없습니다. 그래서 <u>데스크에서의 첫 30초로 병원 전체를 평가</u>합니다. 문을 열고 들어온 순간부터 자리에 앉기까지, 이 30초를 <b>우연에 맡기지 말고 설계</b>해야 합니다.</p>
+
+<h4>첫 30초의 세 장면</h4>
+<ol>
+  <li><b>눈맞춤 + 인사(0~5초)</b> — 모니터를 보다가 뒤늦게 고개 드는 것과, 문소리에 바로 눈을 맞추는 것은 완전히 다른 병원입니다.</li>
+  <li><b>이름 확인 + 안내(5~20초)</b> — "○○○ 님, 오늘 스케일링 예약 맞으시죠? 이쪽에 잠시 앉아 계세요."</li>
+  <li><b>대기 예고(20~30초)</b> — "지금 앞에 한 분 계셔서 약 10분 정도 기다리실 수 있어요." <u>불확실성이 불만을 만듭니다.</u> 예고가 곧 서비스입니다.</li>
+</ol>
+
+<div class="box good">
+  <div class="bt">✅ 대기실은 데스크의 얼굴</div>
+  온도·냄새·소음·정리 상태·화장실 청결 — 이 모든 것이 데스크의 관리 항목입니다. 환자는 "청결한 대기실 = 위생적인 진료"로 무의식 연결합니다.
+</div>
+
+
+<h3 id="s2-2"><span class="n">2-2</span>전화응대 표준 — 3콜의 법칙</h3>
+
+<p>전화는 <b>예약이 실제로 잡히거나 날아가는 순간</b>입니다. 그런데도 응대가 사람마다 제각각이면, 신환이 첫 통화에서 이탈합니다. 표준을 정해두면 누가 받아도 같은 병원이 됩니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Script</span> 전화응대 3콜의 법칙</div>
+  <div class="tb">
+    <ul class="script">
+      <li><span class="who">원칙 1 · 3콜 이내</span><span class="say me">벨이 세 번 울리기 전에 받는다. 늦었다면 "늦게 받아 죄송합니다"로 시작.</span></li>
+      <li><span class="who">원칙 2 · 이름을 밝힌다</span><span class="say me">"안녕하세요, 사계절치과 ○○○입니다." — 병원명 + 내 이름.</span></li>
+      <li><span class="who">원칙 3 · 메모 4종</span><span class="say me">이름 · 연락처 · 용건 · 약속시간을 반드시 남긴다. "누가 언제 왜 전화했는지" 기록 없는 통화는 없다.</span></li>
+      <li><span class="who">원칙 4 · 위치는 문자로</span><span class="say pt">"길 좀 알려주세요"</span><span class="say me">→ 말로 설명하지 말고 지도 링크·주소를 문자로 즉시 발송. 정확하고 이탈이 없다.</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="box">
+  <div class="bt">📌 통화 메모가 리콜의 씨앗</div>
+  "다음에 전화 준다던 그 환자" — 메모가 없으면 영영 사라집니다. <u>모든 통화 메모는 곧 잠재 예약</u>입니다. 데스크의 통화 기록이 리콜 명단으로 이어져야 합니다.
+</div>
+
+
+<h3 id="s2-3"><span class="n">2-3</span>신환 접수, 사고를 막는 5분</h3>
+
+<p>신환 접수에서 데스크가 챙길 것은 <b>진료 판단이 아니라 행정·법적 리스크</b>입니다. 전신병력·복용약 같은 임상 정보는 문진표로 받아 <u>그대로 진료팀에 전달</u>하면 됩니다(판단은 진료팀 몫). 데스크의 몫은 따로 있습니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Check</span> 데스크가 챙기는 접수 4종</div>
+  <div class="tb">
+    <ul class="check">
+      <li><b>보험자격·급여제한 사전조회</b> — 스케일링 연 1회, 65세+ 틀니·임플란트 대상 여부. 미리 확인 안 하면 수납 단계에서 분쟁</li>
+      <li><b>특수대상 서류</b> — 의료급여(의뢰서)·자보·산재(지불보증서). <u>서류 없으면 진료 전에 확인</u></li>
+      <li><b>개인정보 수집·활용 동의</b> 서명</li>
+      <li><b>연락처·정보 정확 입력</b> — 리콜·문자가 여기서 시작된다. <u>오타 하나가 리콜 실패</u></li>
+    </ul>
+    <p style="margin:12px 0 0;font-size:.9rem;color:var(--muted)">문진표의 전신병력·복용약(항응고제·골다공증약 등)은 데스크가 판단하지 말고 <b>빠짐없이 진료팀에 넘기는 것</b>까지가 역할입니다.</p>
+  </div>
+</div>
+
+
+<h3 id="s2-4"><span class="n">2-4</span>컴플레인 응대 — 불만을 신뢰로</h3>
+
+<p>불만 환자는 <u>떠나기 직전의 환자가 아니라, 마지막으로 기회를 주는 환자</u>입니다. 잘 응대하면 오히려 충성 환자가 됩니다. 핵심은 <b>사람이 아니라 문제를 다루는 것</b>, 그리고 <b>즉흥이 아니라 표준 스크립트로 응대하는 것</b>입니다. 데스크가 사람마다 다르게 대응하면, 같은 불만이 다음 주에 똑같이 터집니다.</p>
+
+<h4>① 첫 5초 — 분노의 4가지 뿌리를 진단한다</h4>
+<p>화난 환자를 마주하면 반사적으로 변명하게 됩니다. 그 전에 <b>환자가 던진 첫 문장의 명사</b>를 보면 분노의 뿌리가 보입니다. 뿌리를 알면 응대가 달라집니다.</p>
+
+<div class="twrap">
+<table>
+<thead><tr><th>뿌리</th><th>신호가 되는 첫 마디</th><th>필요한 것</th></tr></thead>
+<tbody>
+<tr><td><b>아픔(Hurt)</b></td><td>"아파 죽겠다"</td><td>통증 인정 + 안심</td></tr>
+<tr><td><b>억울함(Injustice)</b></td><td>"치료했으면 안 아파야지"</td><td>합리적 기대 인정 + 정상화 설명</td></tr>
+<tr><td><b>답답함(Frustration)</b></td><td>"언제 끝나요"</td><td>시간 통제 회복(정확한 분 단위)</td></tr>
+<tr><td><b>불신(Fear)</b></td><td>"또 이러네"</td><td>관계·신뢰 복구</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 5초 안에 통하는 단 하나의 문장</div>
+  뿌리가 무엇이든 처음 5초에 이 말이 통합니다 — <b>"그럴 만하세요."</b> 심리치료에서 검증된 <em>인정(validation)</em>의 힘입니다. "진정하세요"는 <u>절대 금물</u>(불에 기름). 감정을 부정하지 말고 먼저 인정하세요.
+</div>
+
+<h4>② 채널을 나눈다 — 대면은 HEAT, 문자는 BIFF</h4>
+<p>같은 불만이라도 <b>얼굴을 보고 하는 응대</b>와 <b>카톡·리뷰로 오는 응대</b>는 완전히 다르게 다뤄야 합니다. 섞으면 둘 다 악화됩니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Script</span> 대면 불만 — HEAT 4단계</div>
+  <div class="tb">
+    <ul class="script">
+      <li><span class="who">H · 듣기</span><span class="say me">(메모지를 들고) "어떤 부분이 가장 불편하셨는지 끝까지 들어보겠습니다."</span></li>
+      <li><span class="who">E · 공감</span><span class="say me">"저라도 그 상황이면 똑같이 화나셨을 거예요." (= "그럴 만하세요")</span></li>
+      <li><span class="who">A · 사과</span><span class="say me">"이런 불편 드려 죄송합니다." <em>— 잘잘못이 아니라 '불편'에 대한 사과</em></span></li>
+      <li><span class="who">T · 실행</span><span class="say me">"지금 ○○분 안에 ○○해드리고, 그다음 ○○ 안내드리겠습니다." <em>— 모호함은 분노를 가속</em></span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tag">Script</span> 문자·리뷰 항의 — BIFF 답신 (5문장 이내)</div>
+  <div class="tb">
+    <ul class="script">
+      <li><span class="who">B 짧게 · I 사실 · F 친근 · F 단호</span><span class="say me">"○○ 님, 메시지 확인했습니다. [날짜] 진료 기록을 검토해 [날짜]까지 회신드리겠습니다. 추가 자료 있으면 이 번호로 보내주세요. 빠르게 해결하겠습니다. 좋은 하루 보내세요."</span></li>
+    </ul>
+    <p style="margin:10px 0 0;font-size:.9rem;color:var(--muted)"><b>문자에서 금지</b> — 장황한 사과·충고·감정 미러링·미해결 질문. 갈등이 심한 상대일수록 사과를 <u>공격의 빌미</u>로 씁니다. 사실과 마감일만 담백하게.</p>
+  </div>
+</div>
+
+<h4>③ 욕설·폭언 — 3진 아웃, 단 5가지는 즉시 112</h4>
+<p>단순 불만을 넘어 <b>욕설·폭언</b>이 시작되면 응대가 아니라 <u>직원 보호와 안전</u>이 우선입니다. 감정으로 맞대응하지 않도록 단계를 미리 정해두세요. (산업안전보건법상 사업주는 이런 매뉴얼·교육 의무가 있습니다.)</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Protocol</span> 3진 아웃</div>
+  <div class="tb">
+    <ul class="script">
+      <li><span class="who">1차 · 경고</span><span class="say me">"○○ 님, 욕설을 하시면 응대를 도와드리기 어렵습니다. 자제 부탁드립니다."</span></li>
+      <li><span class="who">2차 · 종료 예고</span><span class="say me">"한 번 더 욕설이 있으시면 응대를 중단하고 책임자에게 인계하겠습니다."</span></li>
+      <li><span class="who">3차 · 종료</span><span class="say me">"응대를 중단하겠습니다. 추후 문자·메일로 요청 주시면 검토 후 회신드리겠습니다. CCTV·녹취 자료는 보존됩니다." → 직원 15분 휴식·면담</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="box danger" style="border-left-color:#B4432A;background:linear-gradient(90deg,#F7E3DD,transparent 85%)">
+  <div class="bt" style="color:#8B2E15">🚨 경고 없이 즉시 112 — One Strike 5가지</div>
+  ① 신체 접촉·물건 던짐 · ② "죽여버린다" 등 신체위협 · ③ 성희롱 · ④ 신상위협("집 안다") · ⑤ 인종·성·종교 비하. <b>이 5가지는 단 1회로 신고</b>. 직원 역할(누가 신고할지)을 미리 정해두세요.
+</div>
+
+<details class="deep">
+  <summary>진료실에서 환자가 폭발했을 때 — 3초 안전 동작</summary>
+  <div class="dc">
+    <p>환자가 누운 채로 분노하면 밀실감에 더 격해집니다. 진료 중이라면 순서대로: <b>① 기구를 옆으로 치우고(얼굴 위로 지나가지 않게) ② 체어 등받이를 세우고 ③ 마스크·루페를 내려 표정을 보이고 ④ 머리 쪽에서 발치 쪽으로 자리를 옮겨</b> 시야와 동선을 확보합니다. 옆 직원에게 "저 지금 불편합니다" 같은 <u>약속된 한마디</u>로 지원을 부릅니다.</p>
+  </div>
+</details>
+
+<h4>④ 자주 나오는 5대 상황과 첫 마디</h4>
+<div class="twrap">
+<table>
+<thead><tr><th>상황</th><th>뿌리</th><th>첫 5초 멘트</th></tr></thead>
+<tbody>
+<tr><td>치료 후 통증<br>"했는데 왜 아파요"</td><td>아픔·억울함</td><td>"그럴 만하세요. 치료 후 통증이 가장 답답하시죠." → 정상 범위·경과 설명</td></tr>
+<tr><td>보철 결과 불만<br>"색이 이상해요"</td><td>억울함·불신</td><td>"불편하셨겠어요. 어느 부위가 가장 신경 쓰이세요?" → 사진 재확인·조정 약속</td></tr>
+<tr><td>가격 저항<br>"왜 이렇게 비싸요"</td><td>억울함·불신</td><td>"비교해 보신 거 정말 잘하셨어요." → 2-5로</td></tr>
+<tr><td>대기 폭발<br>"언제 불러요"</td><td>답답함</td><td>"○○분째 기다리셨죠, 정말 답답하실 거예요. 정확히 ○○분 안에 모실게요." + 음료 권함</td></tr>
+<tr><td>차별감<br>"왜 저 사람 먼저"</td><td>불신·억울함</td><td>"그렇게 느끼셨다면 죄송합니다." → 응급 순서였음을 투명 설명</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box warn">
+  <div class="bt">⚠️ 예방이 90%다</div>
+  대부분의 불만은 <b>공복 + 통증 + 대기 지연</b>이 겹칠 때 터집니다. 치료 직후 안심 안내문을 주고, 대기 시 정확한 시간과 음료를 먼저 건네면 <u>화가 나기 전에</u> 상당수가 꺼집니다. 그리고 모든 불만은 반드시 <b>기록·공유</b> — 말로 끝난 불만은 재발합니다.
+</div>
+
+
+<h3 id="s2-5"><span class="n">2-5</span>"왜 이렇게 비싸요?" — 가격저항 다루기</h3>
+
+<p>"비싸다"는 <u>가격 자체에 대한 불만이 아니라, "왜 비싼지 모르겠다"는 신호</u>인 경우가 대부분입니다. 여기서 데스크가 즉흥적으로 방어하면 환자는 "사기당하는 느낌"을 받고 동의는 무산됩니다. 반대로 <b>가치를 먼저, 가격을 나중에</b> 풀어주면 같은 금액이 납득됩니다.</p>
+
+<div class="pull">방어하지 말고 분해하라. "얼마"가 아니라 "무엇으로 이루어졌는가"를 먼저 보여준다.</div>
+
+<h4>가장 강력한 첫 마디</h4>
+<div class="box good">
+  <div class="bt">✅ 방어를 해체하는 한 문장</div>
+  "다른 곳과 비교해 보신 거 <b>정말 잘하셨어요.</b> 어느 부분이 가장 다르게 느껴지셨어요?" — 환자를 <u>깎으려는 사람이 아니라 현명한 소비자로 인정</u>하는 순간, 방어벽이 내려가고 대화가 시작됩니다.
+</div>
+
+<h4>Feel–Felt–Found — 이견을 다루는 고전 3단</h4>
+<div class="tool">
+  <div class="th"><span class="tag">Script</span> 공감 → 동질감 → 반전</div>
+  <div class="tb">
+    <ul class="script">
+      <li><span class="who">Feel · 공감</span><span class="say me">"그 마음 이해해요, 부담되시죠."</span></li>
+      <li><span class="who">Felt · 동질감</span><span class="say me">"그렇게 느끼시는 분들 많았어요."</span></li>
+      <li><span class="who">Found · 반전</span><span class="say me">"그런데 실제로 어떤 차이가 있는지 보시면 ○○라는 걸 알게 되셨어요."</span></li>
+    </ul>
+  </div>
+</div>
+
+<h4>가치를 분해해서 보여준다</h4>
+<p>같은 임플란트라도 <b>무엇으로 구성됐는지</b>를 쪼개 보여주면, 총액이 "비싼 값"이 아니라 "이유 있는 값"이 됩니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Template</span> 가격 분해 설명 (예시 틀)</div>
+  <div class="tb">
+    <div class="twrap">
+    <table>
+    <thead><tr><th>구성</th><th>무엇을 쓰는가</th><th>왜 중요한가</th></tr></thead>
+    <tbody>
+    <tr><td>고정체(fixture)</td><td>브랜드·재질(예: 검증된 임플란트)</td><td>장기 생존율 차이</td></tr>
+    <tr><td>힐링 부품</td><td>재사용 vs 1회용 멸균</td><td>감염 관리</td></tr>
+    <tr><td>보철·가이드</td><td>재료·디지털 정밀도</td><td>맞물림·수명</td></tr>
+    <tr><td>사후 보증</td><td>보증 기간·책임 범위</td><td>재치료 리스크</td></tr>
+    </tbody>
+    </table>
+    </div>
+    <p style="margin:10px 0 0;font-size:.9rem;color:var(--muted)">숫자(%)는 병원마다 채워 넣으세요. 핵심은 <u>"○○만원"이 아니라 "이 네 가지의 합"으로 보이게</u> 하는 것.</p>
+  </div>
+</div>
+
+<h4>부담이 진짜 크다면 — 재정·지연·존중</h4>
+<ul>
+  <li><b>재정형</b> — "한 번에 부담되시면 월 ○○만원부터 분납도 가능해요."</li>
+  <li><b>지연형</b> — "지금 결정 안 하셔도 돼요. 자료 한 장 드릴게요. 보시고 궁금한 점 물어봐 주세요."</li>
+  <li><b>존중형</b> — "가격이 가장 중요하시면 저희가 맞는 곳이 아닐 수도 있어요. 다만 결정 전에 2차 의견 한 번 받아보시길 권해요." <em>(역설적으로 신뢰를 높입니다)</em></li>
+</ul>
+
+<div class="box">
+  <div class="bt">🔎 데스크·상담·홈페이지가 같은 답을 해야 한다</div>
+  환자는 데스크에서 한 번, 상담실에서 또 한 번, 홈페이지에서 다시 가격을 마주합니다. <u>세 곳의 설명이 어긋나면</u> 신뢰가 깨집니다. 멘트·자료·공시를 하나의 이야기로 통일하세요. <em>(가격·상담 전략의 깊은 편은 후속 Vol.5에서 다룹니다.)</em>
+</div>
+
+
+<!-- ========================================================= -->
+<!-- PART 3 -->
+<!-- ========================================================= -->
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-03_Part3_새는돈">
+
+<div class="part-divider" id="part3">
+  <div class="pnum">Part 3</div>
+  <h2>새는 돈을 막는 데스크</h2>
+  <div class="pdesc">수납 · 미수금 · 결산 · 보험청구 — 현금흐름의 밸브</div>
+</div>
+
+<h3 id="s3-1"><span class="n">3-1</span>수납 프로세스와 현금영수증</h3>
+
+<p>수납은 "돈 받는 일"이 아니라 <b>다음 예약과 미수금을 동시에 관리하는 접점</b>입니다. 결제만 하고 다음 예약을 안 잡으면, 그 환자는 리콜 대상으로 빠지고 매출이 새기 시작합니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Check</span> 수납 5단계 루틴</div>
+  <div class="tb">
+    <ul class="check">
+      <li>오늘 진료 내역·금액을 환자와 함께 확인</li>
+      <li>결제(카드 무이자 할부 안내) + <b>현금영수증 의무발급</b> — 미발급은 환수·과태료 리스크</li>
+      <li><b>다음 예약을 같은 자리에서</b> 확정 (수납 = 재예약의 결정적 타이밍)</li>
+      <li>미수금·분납 잔액이 있으면 그 자리에서 안내·기록</li>
+      <li>취소·재결제 시 정산오류 확인</li>
+    </ul>
+  </div>
+</div>
+
+<div class="box">
+  <div class="bt">💡 수납대는 리콜의 첫 관문</div>
+  치료가 끝난 환자에게 "다음 정기검진은 6개월 뒤예요, 그때 문자 드릴게요"라고 <u>수납하며 예고</u>하면, 나중 리콜 응답률이 확 올라갑니다.
+</div>
+
+
+<h3 id="s3-2"><span class="n">3-2</span>미수금 관리 — 못 받으면 매출이 아니다</h3>
+
+<p>장부상 매출이 아무리 커도 <mark>회수하지 못한 돈은 매출이 아닙니다.</mark> 미수금은 시간이 지날수록 회수율이 급락합니다. 그래서 <b>예방 → 조기 회수 → 문서화</b> 3단계로 관리합니다.</p>
+
+<div class="twrap">
+<table>
+<thead><tr><th>단계</th><th>핵심 행동</th></tr></thead>
+<tbody>
+<tr><td><b>예방</b></td><td>치료 전 <u>예상 금액 사전 고지</u>, 분납·중단 기준을 미리 합의(서면)</td></tr>
+<tr><td><b>조기 회수</b></td><td>매달 <b>미수금 명단</b> 정리, 발생 후 한 달 이내 접촉·회수 시도</td></tr>
+<tr><td><b>문서화</b></td><td>회수 안 되면 내용증명 준비, 단계별 환불·정산 서류 보관</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box warn">
+  <div class="bt">⚠️ 미수금은 "쌓인 뒤"가 아니라 "생길 때" 잡는다</div>
+  치료 시작 전 금액 합의가 없으면, 끝난 뒤 받으려 할 때 이미 늦습니다. 데스크의 <b>사전 고지 한 문장</b>이 미수금 대부분을 막습니다.
+</div>
+
+
+<h3 id="s3-3"><span class="n">3-3</span>일·월 결산, 원장 의사결정의 원료</h3>
+
+<p>데스크가 매일·매달 집계하는 숫자가 <u>원장의 경영 판단이 서는 땅</u>입니다. 감이 아니라 데이터로 병원을 굴리려면, 데스크 통계가 정확하고 규칙적이어야 합니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">KPI</span> 데스크가 챙겨야 할 결산 지표</div>
+  <div class="tb">
+    <ul class="check">
+      <li><b>일 결산</b> — 매출·미수·카드취소·현금영수증 대조, 당일 환자 수·신환 수</li>
+      <li><b>월 결산</b> — 월 신환 수·소개환자 수·보험/비보험 매출 비율·고액환자 비율·기공물 금액</li>
+      <li><b>비교</b> — 지난달·작년 같은 달과 대조 → <u>원인 분석 → 다음 달 목표</u></li>
+    </ul>
+    <p style="margin:12px 0 0;font-size:.9rem;color:var(--muted)">숫자만 모으고 끝내면 소용없습니다. "왜 늘었나/줄었나"를 한 줄로 붙여 보고하는 것까지가 데스크의 일입니다.</p>
+  </div>
+</div>
+
+
+<h3 id="s3-4"><span class="n">3-4</span>보험청구 오류점검과 삭감 방어</h3>
+
+<p>청구는 <b>제출 전 오류점검</b>에서 대부분의 삭감을 막을 수 있습니다. 데스크(또는 청구 담당)가 월 청구 전 체크리스트를 돌리는 습관 하나로 재청구·삭감이 크게 줍니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Check</span> 월 청구 전 오류점검</div>
+  <div class="tb">
+    <ul class="check">
+      <li>치료재료 구입내역 조회·신고 여부(업무포털)</li>
+      <li>흔한 삭감 항목 사전점검 — GI·리도카인·턱관절(TMD)·희귀상병·의치이장 등</li>
+      <li><b>상대지표(건당 진료비·내원일수) 1.0 미만 유지</b> 확인</li>
+      <li>조정 건수·금액 확인, <u>재청구 기한 내 처리</u></li>
+      <li>반복 삭감 항목은 내부교육으로 연결</li>
+    </ul>
+  </div>
+</div>
+
+<div class="box">
+  <div class="bt">🔎 보험청구는 "청구 후"가 아니라 "청구 전"이 승부처</div>
+  삭감된 뒤 이의신청하는 것보다, <u>제출 전 5분 점검</u>이 훨씬 쌉니다. 이 점검을 누가 언제 하는지 정해두는 게 핵심입니다.
+</div>
+
+
+<!-- ========================================================= -->
+<!-- PART 4 -->
+<!-- ========================================================= -->
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-04_Part4_리콜의의">
+
+<div class="part-divider" id="part4">
+  <div class="pnum">Part 4</div>
+  <h2>병원을 다시 채우는 데스크</h2>
+  <div class="pdesc">예약 · 리콜 · 구환 — 이 책이 가장 오래 머무는 곳</div>
+</div>
+
+<h3 id="s4-1"><span class="n">4-1</span>예약의 원칙 — 노쇼를 줄이는 확정 루틴</h3>
+
+<p>빈 체어는 <b>다시 팔 수 없는 재고</b>입니다. 오늘 비면 오늘 매출은 영영 사라집니다. 노쇼를 줄이는 건 데스크가 만드는 가장 직접적인 매출 방어입니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Check</span> 예약 확정 루틴</div>
+  <div class="tb">
+    <ul class="check">
+      <li>의사별 <b>표준 진료시간</b> 기준으로 슬롯 배치 (과밀·공백 방지)</li>
+      <li>체어·기공물 도착·필요 재료를 <b>예약과 함께</b> 확인</li>
+      <li>예약 직후 <b>확정 문자 발송</b> — 날짜·시간·진료 내용·준비사항(식사·복용약 등)을 한 통에 <em>(문자 문구는 부록 문자 팩 참고)</em></li>
+      <li>예약 <b>전날 + 당일 오전</b> 리마인드 (노쇼를 막는 가장 값싼 방법)</li>
+      <li>⭐ 환자가 <u>떠나기 전에 다음 예약을 미리 잡는다</u>(선예약) — 리콜 부담을 원천에서 줄이는 최선 <em>(5-4에서 자세히)</em></li>
+      <li>노쇼 발생 시 즉시 대기·리콜 명단에서 빈 슬롯 보충 + <b>노쇼 사유 기록</b></li>
+    </ul>
+  </div>
+</div>
+
+<div class="box">
+  <div class="bt">🧾 "확정 문자"는 응대가 아니라 시스템이다</div>
+  예약을 말로만 잡고 끝내면 노쇼는 반드시 생깁니다. <u>예약 직후 확정 문자 → 전날 리마인드 → 당일 오전 알림</u>, 이 세 번의 자동 문자가 노쇼를 눈에 띄게 줄입니다. 문자 리마인더만으로 노쇼가 약 <b>38% 줄었다</b>는 보고도 있습니다. 진료별 문자 문구는 <b>부록 「상황별 문자 팩」</b>에 그대로 쓸 수 있게 담았습니다.
+</div>
+
+
+<h3 id="s4-2"><span class="n">4-2</span>해피콜 vs 리콜, 타이밍이 전부</h3>
+
+<p>둘 다 "전화·문자"지만 <b>목적과 타이밍이 다릅니다.</b> 섞어 쓰면 둘 다 어색해집니다.</p>
+
+<div class="twrap">
+<table>
+<thead><tr><th></th><th>해피콜</th><th>리콜</th></tr></thead>
+<tbody>
+<tr><td><b>목적</b></td><td>치료 직후 안부·불편 확인 (관계·후기)</td><td>정기검진·재치료 유도 (매출)</td></tr>
+<tr><td><b>타이밍</b></td><td>수술 당일 or 이틀 뒤</td><td>주기 도래 1주·이틀 전 문자 → 하루 전·당일 전화</td></tr>
+<tr><td><b>효과</b></td><td>불만 조기 발견·이탈 방지</td><td>구환 재활성 → 빈 체어 채움</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 해피콜이 리콜 응답률을 올린다</div>
+  치료 직후 안부를 받은 환자는 <u>병원을 "나를 기억하는 곳"으로</u> 인식합니다. 그 관계가 6개월 뒤 리콜 문자에 응답하게 만듭니다. 둘은 이어져 있습니다.
+</div>
+
+
+<h3 id="s4-3"><span class="n">4-3</span>리콜의 의의 — 왜 리콜이 병원의 생명선인가</h3>
+
+<p>리콜을 흔히 "정기검진 문자 돌리는 일"로 좁게 봅니다. 하지만 리콜의 본질은 <b>이미 우리를 신뢰하는 환자를, 그가 다시 치료가 필요한 바로 그 시점에 놓치지 않는 것</b>입니다. 그리고 이건 감상이 아니라 <u>병원 손익이 걸린 문제</u>입니다.</p>
+
+<h4>① 대부분의 환자는 지금도 방치되고 있다</h4>
+<p>국가 구강검진 수검률은 약 30%. <b>10명 중 7명이 와야 할 때 오지 않습니다.</b> 그리고 첫 내원 후 그대로 유지되는 환자는 <u>10명 중 4명뿐</u>이라는 보고도 있습니다. 나머지는 아파질 때까지 방치되다가, 결국 다른 병원 신환으로 앉습니다. 리콜은 그 이탈을 막는 <b>단 하나의 구조적 장치</b>입니다.</p>
+
+<div class="box data">
+  <div class="bt">📉 오래 방치될수록 되돌아올 확률은 급락한다</div>
+  같은 휴면 환자라도 <b>언제 연락하느냐</b>로 결과가 갈립니다.
+  <div class="twrap" style="margin:.8em 0 .2em">
+  <table>
+  <thead><tr><th>마지막 내원 후</th><th>다시 오게 될 확률</th></tr></thead>
+  <tbody>
+  <tr><td>6~12개월</td><td><b>25~35%</b></td></tr>
+  <tr><td>12~18개월</td><td>15~25%</td></tr>
+  <tr><td>18~24개월</td><td>10~15%</td></tr>
+  <tr><td>24개월 이상</td><td class="danger-word" style="color:#B4432A">8% 미만</td></tr>
+  </tbody>
+  </table>
+  </div>
+  <b>타이밍이 곧 매출</b>입니다. 한 번 연락(단발) 5~8% vs 여러 번 나눠 연락(멀티터치) 15~25% — 3~5배 차이. 문자 리마인더만으로 노쇼가 약 38% 줄기도 합니다.
+  <span class="src">출처 · JADA·ADA·Cochrane 인용 업계 벤치마크(방향값)</span>
+</div>
+
+<h4>② 구환은 신환보다 압도적으로 남는다</h4>
+<p>신환을 광고로 데려오는 비용은 구환을 다시 부르는 비용의 <u>5~25배</u>입니다. 재방문율을 5%p만 올려도 매출은 25~95% 늘어납니다. 휴면 환자 1,000~1,200명을 안고 있는 병원이라면, 그 명단 자체가 <b>수천만 원에서 수억 원의 잠재 매출</b>입니다. 대형 치과가 이기는 진짜 이유는 실력이 아니라, <mark>누가 언제 다시 와야 하는지를 놓치지 않는 시스템</mark>입니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">예시</span> "한 달 미루면 얼마가 사라지나" — 숫자로 보기</div>
+  <div class="tb">
+    <p style="margin:0 0 8px">리콜 대상 100명, 환자 1인 가치를 30만 원으로 <b>가정</b>하면(예시 숫자):</p>
+    <div class="twrap"><table>
+    <thead><tr><th>연락 시점</th><th>돌아올 인원</th><th>회수 매출</th><th>지금 대비 손실</th></tr></thead>
+    <tbody>
+    <tr><td>지금(적기)</td><td>30명</td><td>900만 원</td><td>—</td></tr>
+    <tr><td>6개월 뒤</td><td>20명</td><td>600만 원</td><td class="danger-word" style="color:#B4432A">−300만</td></tr>
+    <tr><td>1년 뒤</td><td>12~13명</td><td>375만 원</td><td class="danger-word" style="color:#B4432A">−525만</td></tr>
+    <tr><td>2년 뒤</td><td>6명</td><td>180만 원</td><td class="danger-word" style="color:#B4432A">−720만</td></tr>
+    </tbody></table></div>
+    <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">같은 100명인데 <b>지금 부르면 900만, 2년 방치하면 180만.</b> 차액 720만이 <u>한 달에 약 51만 원씩</u> 조용히 증발합니다. <em>(가정값 예시 — 실제 금액은 병원 차트로 계산해야 정확)</em></p>
+  </div>
+</div>
+
+<div class="pull">마케팅으로 신환을 붓기 전에, 구환부터 다시 채워라. 훨씬 싸고, 훨씬 빠르다.</div>
+
+<h4>③ 단, "무조건 다 부르는 것"이 아니다 — 정직한 리콜</h4>
+<p>중요한 균형점 하나. 임상 연구는 <em>건강한 사람을 6개월마다 강박적으로 부른다고 더 건강해지는 건 아니다</em>라고 말합니다. 그래서 좋은 리콜은 숫자 채우기가 아니라 <b>위험군과 놓치면 안 되는 환자를 먼저</b> 챙기는 것입니다 — 잇몸·보철 관리가 필요한 사람, 치료를 중단한 사람, 다시 왔을 때 실제로 도움이 되는 사람. <u>과잉소환은 신뢰를 깎고, 정확한 리콜은 신뢰를 쌓습니다.</u> 이 구분을 사람 손으로 매번 해내기가 어렵다는 게 다음 장의 문제입니다.</p>
+
+
+<h4>그림으로 보면 — 두 개의 바퀴</h4>
+<p>같은 병원이라도 리콜을 놓치느냐 잡느냐에 따라 <b>정반대 방향으로 도는 두 개의 바퀴</b>가 생깁니다.</p>
+
+<div class="flow">
+  <div class="flow-title">❌ 리콜을 놓치는 병원 — 악순환</div>
+  <svg viewBox="0 0 360 336" role="img" aria-label="리콜 관리가 안 될 때 생기는 악순환 흐름도" style="font-family:inherit">
+    <defs><marker id="ahW" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="var(--warm)"/></marker></defs>
+    <g fill="var(--paper)" stroke="var(--warm)" stroke-width="1.6">
+      <rect x="24" y="8" width="232" height="44" rx="11"/>
+      <rect x="24" y="76" width="232" height="44" rx="11"/>
+      <rect x="24" y="144" width="232" height="44" rx="11"/>
+      <rect x="24" y="212" width="232" height="44" rx="11"/>
+      <rect x="24" y="280" width="232" height="44" rx="11"/>
+    </g>
+    <g fill="var(--fg)" font-size="12.5" text-anchor="middle" font-weight="600">
+      <text x="140" y="35">구환을 따로 챙기지 않는다</text>
+      <text x="140" y="103">몇 달 뒤 환자는 잊고 이탈</text>
+      <text x="140" y="171">빈 체어 = 사라지는 매출</text>
+      <text x="140" y="239">신환 광고에 더 의존 (비용↑)</text>
+      <text x="140" y="307">온 신환도 관리 안 돼 또 이탈</text>
+    </g>
+    <g stroke="var(--warm)" stroke-width="1.6" fill="none">
+      <path d="M140,52 L140,73" marker-end="url(#ahW)"/>
+      <path d="M140,120 L140,141" marker-end="url(#ahW)"/>
+      <path d="M140,188 L140,209" marker-end="url(#ahW)"/>
+      <path d="M140,256 L140,277" marker-end="url(#ahW)"/>
+      <path d="M256,302 H332 V30 H258" marker-end="url(#ahW)"/>
+    </g>
+    <text x="348" y="166" transform="rotate(-90 348 166)" text-anchor="middle" font-size="11" fill="var(--warm)" font-weight="700">악순환 반복</text>
+  </svg>
+  <div class="flow-cap">빠져나간 구환은 옆 치과의 신환석에 앉는다 — 구환도 신환도 새는 구조</div>
+</div>
+
+<div class="flow">
+  <div class="flow-title">✅ 리콜이 도는 병원 — 선순환</div>
+  <svg viewBox="0 0 360 336" role="img" aria-label="리콜이 잘 돌 때 생기는 선순환 흐름도" style="font-family:inherit">
+    <defs><marker id="ahB" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="var(--accent)"/></marker></defs>
+    <g fill="var(--paper)" stroke="var(--accent)" stroke-width="1.6">
+      <rect x="24" y="8" width="232" height="44" rx="11"/>
+      <rect x="24" y="76" width="232" height="44" rx="11"/>
+      <rect x="24" y="144" width="232" height="44" rx="11"/>
+      <rect x="24" y="212" width="232" height="44" rx="11"/>
+      <rect x="24" y="280" width="232" height="44" rx="11"/>
+    </g>
+    <g fill="var(--fg)" font-size="12.5" text-anchor="middle" font-weight="600">
+      <text x="140" y="35">떠나기 전 다음 예약(선예약)</text>
+      <text x="140" y="103">정확한 타이밍에 리콜</text>
+      <text x="140" y="171">구환이 다시 온다</text>
+      <text x="140" y="239">빈 체어 채움 → 안정 매출</text>
+      <text x="140" y="307">신환도 리콜 궤도에 안착</text>
+    </g>
+    <g stroke="var(--accent)" stroke-width="1.6" fill="none">
+      <path d="M140,52 L140,73" marker-end="url(#ahB)"/>
+      <path d="M140,120 L140,141" marker-end="url(#ahB)"/>
+      <path d="M140,188 L140,209" marker-end="url(#ahB)"/>
+      <path d="M140,256 L140,277" marker-end="url(#ahB)"/>
+      <path d="M256,302 H332 V30 H258" marker-end="url(#ahB)"/>
+    </g>
+    <text x="348" y="160" transform="rotate(-90 348 160)" text-anchor="middle" font-size="11" fill="var(--accent)" font-weight="700">구환 풀이 커진다</text>
+  </svg>
+  <div class="flow-cap">한 바퀴 돌 때마다 구환 풀이 커지고, 마케팅 부담은 줄어든다</div>
+</div>
+
+<p>차이를 만드는 건 실력이 아니라 <mark>이 바퀴를 끝까지 돌리는 힘</mark>입니다. 그런데 그걸 사람 손으로만 돌리면 반드시 미끄러집니다 — 다음 장입니다.</p>
+
+
+<h3 id="s4-4"><span class="n">4-4</span>사람 손 리콜이 반드시 새는 이유</h3>
+
+<p>리콜을 성실히 하려는 데스크일수록 이 벽에 부딪힙니다. 문제는 의지가 아니라 <b>구조</b>입니다.</p>
+
+<div class="twrap">
+<table>
+<thead><tr><th>수작업 리콜의 한계</th><th>결과</th></tr></thead>
+<tbody>
+<tr><td>누가 언제 와야 하는지 <b>기억·엑셀</b>에 의존</td><td>바쁜 날엔 통째로 건너뜀</td></tr>
+<tr><td>모든 환자를 <b>같은 우선순위</b>로 취급</td><td>돌아올 확률 높은 환자를 놓침</td></tr>
+<tr><td>담당자가 바뀌면 <b>노하우가 증발</b></td><td>이어받는 사람이 처음부터</td></tr>
+<tr><td>콜 결과가 <b>다음 액션으로 연결 안 됨</b></td><td>"안 받음" 이후가 없음</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>즉, 수작업 리콜은 <mark>데스크가 바쁠수록 먼저 포기되는 일</mark>입니다. 그리고 데스크는 항상 바쁩니다. 그래서 리콜은 <u>사람의 성실함이 아니라 시스템으로</u> 굴러가야 새지 않습니다.</p>
+
+<div class="box good">
+  <div class="bt">🧩 그래서 "성실함"이 아니라 "시스템"으로 만든다</div>
+  좋은 리콜은 누가 먼저 돌아올지 우선순위를 정하고, 빈 슬롯에 맞는 환자를 띄우고, 콜 결과를 다음 액션으로 잇는 <b>구조</b>입니다. 그리고 이 구조는 <u>특별한 프로그램 없이도, 덴트웹과 엑셀만으로 직접 만들 수 있습니다.</u> 다음 Part에서 그 방법을 단계별로 보여드립니다.
+</div>
+
+
+<!-- ========================================================= -->
+<!-- PART 5 -->
+<!-- ========================================================= -->
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-05_Part5_리콜시스템">
+
+<div class="part-divider" id="part5">
+  <div class="pnum">Part 5</div>
+  <h2>직접 만드는 리콜 시스템</h2>
+  <div class="pdesc">특별한 프로그램 없이, 전자차트(덴트웹)와 엑셀만으로 — 실장의 실제 순서</div>
+</div>
+
+<p class="lead">앞에서 리콜은 "성실함이 아니라 시스템"이라고 했습니다. 그럼 그 시스템을 <b>손으로</b> 어떻게 세우는가. 이 장은 실장이 실제로 밟는 다섯 단계를, 오늘 그대로 따라 할 수 있게 정리한 것입니다. <u>여기 나온 대로만 하면, 웬만한 리콜 프로그램이 하는 일을 사람 손으로 재현할 수 있습니다.</u></p>
+
+<h3 id="s5-1"><span class="n">5-1</span>리콜 대상을 어디서 뽑나 (덴트웹·차트)</h3>
+
+<p>리콜의 출발은 "누구에게 연락할지"를 차트에서 정확히 뽑아내는 것입니다. 대부분의 전자차트(덴트웹 등)에는 <b>최종 내원일·치료상태·미수금</b> 기준으로 명단을 뽑는 조회 기능이 있습니다. 여기서 <u>네 개의 명단</u>을 만듭니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Step 1</span> 차트에서 뽑는 4개 명단</div>
+  <div class="tb">
+    <ul class="check">
+      <li><b>미완료 치료</b> — 치료계획은 잡혔는데 중단된 환자 (예약현황·치료계획 조회)</li>
+      <li><b>경과관찰 대상</b> — 발치·근관·임플란트 수술 후 확인이 필요한 환자</li>
+      <li><b>정기검진 도래</b> — 마지막 스케일링·검진 후 <u>6~12개월 경과</u>한 환자 (미내원자 조회)</li>
+      <li><b>미수금 보유</b> — 잔액이 남은 환자 (수납·미수금 조회)</li>
+    </ul>
+    <p style="margin:12px 0 0;font-size:.9rem;color:var(--muted)">각 조회 결과를 <b>엑셀로 내보내</b>기 합니다. 최종 내원일 컬럼을 기준으로 정렬하면 "오래 안 온 순서"가 바로 보입니다.</p>
+  </div>
+</div>
+
+<div class="box warn">
+  <div class="bt">🔒 개인정보 — 처음부터 안전하게</div>
+  이 명단에는 환자 실명·연락처가 담깁니다. 파일은 <b>병원 PC에만</b> 두고 <u>암호를 걸며</u>, 개인 메일·USB로 돌리지 않습니다. 리콜 시스템의 신뢰는 여기서 시작합니다.
+</div>
+
+
+<h3 id="s5-2"><span class="n">5-2</span>대장을 만들지 마라 — "주간 리스트"로 굴린다</h3>
+
+<p>여기서 많은 병원이 걸려 넘어집니다 — 엑셀에 환자마다 날짜·이력·다음 연락일을 한 칸씩 채우는 <b>거대한 리콜 대장</b>을 만드는 것. 이건 <u>거의 예외 없이 3주 안에 멈춥니다.</u> 날짜와 내원 이력은 <b>이미 전자차트가 관리하고 있습니다.</b> 그걸 엑셀에 옮겨 손으로 또 관리하는 건 이중 노동이라 아무도 오래 못 합니다.</p>
+
+<div class="pull">영구 대장을 채우려 하지 말고, 매주 새로 뽑는 "이번 주 콜 리스트" 한 장으로 굴려라.</div>
+
+<div class="box">
+  <div class="bt">⚙️ "시스템"이란 = 매주 같은 자리에서 같은 리스트가 나오는 것</div>
+  리콜이 시스템이라는 건 거창한 프로그램을 뜻하지 않습니다. <u>사람의 기억이 아니라, 정해진 방법으로 매주 같은 리스트가 자동으로 나오는 상태</u>를 말합니다. 그래야 담당자가 바뀌어도, 바쁜 주에도 굴러갑니다.
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tag">System</span> 주간 콜 리스트 — 3단계면 끝</div>
+  <div class="tb">
+    <ul class="script">
+      <li><span class="who">1 · 뽑기 (실장, 5분)</span><span class="say me">매주 월요일, 전자차트의 <b>미내원·미완료 조회</b>를 그대로 출력(엑셀 내보내기 또는 인쇄). 새로 만들 것 없음 — 차트가 이미 가진 걸 꺼낼 뿐.</span></li>
+      <li><span class="who">2 · 정렬 (실장, 5분)</span><span class="say me">위험순으로 <b>한 번 정렬</b>해 데스크에 넘긴다(정렬 규칙은 5-3). 누가 우선인지 판단은 실장이 대신 해준다.</span></li>
+      <li><span class="who">3 · 표시만 (데스크)</span><span class="say me">데스크는 위에서부터 걸고, 옆에 <b>기호 하나</b>만 — ✓예약 · △문자 · ✗부재. 끝.</span></li>
+    </ul>
+    <p style="margin:10px 0 0;font-size:.9rem;color:var(--muted)">다음 주엔 이 리스트를 <b>버립니다.</b> ✗(안 받은) 사람은 차트에 그대로 남아 다음 주 리스트에 자동으로 다시 올라옵니다 — 그래서 "다음 연락일"을 손으로 관리할 필요가 없습니다.</p>
+  </div>
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 왜 이게 대장보다 나은가</div>
+  날짜·이력 관리는 차트에 맡기니, 사람이 채울 칸은 <u>결과 기호 하나</u>뿐입니다. 옮겨 적기·누락·중복이 사라지고, <b>누가 해도 똑같이</b> 굴러갑니다. 엑셀 함수도, 드롭다운도, 매일 갱신도 필요 없습니다.
+</div>
+
+
+<h3 id="s5-3"><span class="n">5-3</span>우선순위 — 누구부터 전화할까</h3>
+
+<p>수천 명을 같은 무게로 대하면 아무도 제대로 못 챙깁니다. <b>먼저 걸어야 할 사람</b>부터 줄을 세워야 합니다. 실장들이 실제로 쓰는 순서는 <u>임상 위험 → 돈 → 타이밍 → 정기</u>의 워터폴입니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Rule</span> 우선순위 워터폴 (위에서부터 채움)</div>
+  <div class="tb">
+    <ul class="script">
+      <li><span class="who">★★★ 1순위 · 임상</span><span class="say me">수술·근관 중단·임플란트 경과관찰 — <b>미루면 임상 위험</b>. 오늘 전화.</span></li>
+      <li><span class="who">★★★ 2순위 · 돈</span><span class="say me">고액 미완료 치료·미수금 — 회수·전환 가치 큼. 오늘~이번 주 전화.</span></li>
+      <li><span class="who">★★ 3순위 · 타이밍</span><span class="say me">마지막 내원 <u>6~12개월</u> 구간 — 지금 연락하면 돌아올 확률 최고(25~35%). 이번 주 전화.</span></li>
+      <li><span class="who">★ 4순위 · 정기</span><span class="say me">일반 정기검진 대상 — <b>문자로 충분</b>. 전화는 아낀다.</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="box data">
+  <div class="bt">🔬 왜 "전부 6개월마다"가 아니라 위험 순인가 — 잘 안 알려진 근거</div>
+  영국 NHS가 성인 <u><b>2,372명을 4년간</b></u> 추적한 대규모 임상시험(INTERVAL, 영국치과저널 2021)에서, <b>6개월 고정 vs 위험도 맞춤 vs 24개월 주기</b> 사이에 잇몸·충치·삶의 질 차이가 <u>없었습니다</u>. 즉 건강한 사람을 무작정 자주 부르는 건 효과가 약하고, <b>리콜은 위험군·놓친 치료 중심으로 정확히</b> 하는 게 근거에 맞습니다. 이게 우선순위를 매기는 이유입니다.
+  <span class="src">출처 · INTERVAL Dental Recalls Trial, British Dental Journal 2021 · 영국 51개 치과 다기관 RCT</span>
+</div>
+
+<div class="box">
+  <div class="bt">💡 실장 팁 — 숨은 매출을 여는 한 컬럼</div>
+  한 대형 컨설팅 보고에 따르면 <b>치과의 약 71%가 잇몸 낭깊이(치주 포켓)를 기록하지 않습니다.</b> 리콜 대장에 <u>치주 상태 한 칸</u>만 추가해 관리하면, 놓치고 있던 잇몸 유지관리 대상이 드러납니다 — 임상적으로도 중요하고, 위생 매출로도 이어지는 저평가 구간입니다.
+  <span class="src">출처 · Levin Group(30,000개 치과 컨설팅) 운영 보고</span>
+</div>
+
+
+<h3 id="s5-4"><span class="n">5-4</span>콜·문자 주기 설계</h3>
+
+<h4>가장 좋은 리콜은 "리콜하지 않아도 되게" 만드는 것</h4>
+<p>미국치과의사협회(ADA)가 공식적으로 권하는 최선은 화려한 전략이 아니라 <b>"환자가 떠나기 전에 다음 예약을 미리 잡는 것(선예약)"</b>입니다. 실제로 <u>떠나기 전 다음 예약을 잡은 환자는 80~90%가 다시 오지만, 안 잡고 보낸 환자는 35~45%</u>에 그칩니다 — <b>선예약 한 번이 리콜 열 번보다 셉니다.</b> 그래서 리콜 리스트는 <u>선예약에 실패한 사람을 받는 안전망</u>으로 두면 시스템이 깔끔해집니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Rule</span> 미예약자 접촉 리듬</div>
+  <div class="tb">
+    <ul class="check">
+      <li>첫 접촉은 <b>예정일 2~4주 전</b> (예약률이 가장 높은 구간)</li>
+      <li>점수 높은 소수(★★★)는 <b>전화</b>, 나머지는 <b>문자</b> — 노동을 아낀다</li>
+      <li>전화 안 받으면 <u>단발로 끝내지 말고</u> 문자 → 며칠 뒤 재시도 (멀티터치 15~25% vs 단발 5~8%, 3~5배)</li>
+      <li>그래도 안 닿으면 <b>90일 뒤 다시</b> 명단에 올린다</li>
+      <li>연락 시간대는 <b>화·수요일 오전 10~12시 / 오후 2~4시</b>가 응답이 좋다</li>
+    </ul>
+  </div>
+</div>
+
+
+<div class="box">
+  <div class="bt">💡 타이밍·톤 팁 (업계 실무 경험)</div>
+  한 병원마케팅 실무자는 리콜 주기를 <b>D+1(진료 직후 불편 확인) · D+14(2주 뒤 상태 점검) · D+90(정기 관리 안내)</b>로 나누길 권합니다. 환자는 진료를 <u>3개월이 아니라 약 2주면 잊는다</u>고 보기 때문입니다. 문투도 "예약하세요"가 아니라 <b>"증상은 좀 나아지셨어요?"</b>처럼 안부로 시작하면 반응이 다릅니다. <em>(개인 경험담 — 수치 미검증, 방향만 참고)</em>
+</div>
+
+<h3 id="s5-5"><span class="n">5-5</span>주간 루틴과 데스크 지시, 그리고 현실</h3>
+
+<p>리콜을 굴리는 건 대단한 관리가 아니라 <b>매주 같은 리듬</b>입니다. 아래 루틴이면 충분합니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Routine</span> 리콜 주간 루틴</div>
+  <div class="tb">
+    <ul class="check">
+      <li><b>월요일 (실장 10분)</b> — 차트에서 이번 주 리스트를 뽑고, 위험순 정렬해 데스크에 넘김</li>
+      <li><b>화~금 (데스크 하루 30분)</b> — 리스트 위에서부터 전화(상위)·문자(하위), 옆에 기호만 ✓△✗</li>
+      <li><b>안 받은 사람(✗)</b> — 따로 관리 안 함. 차트에 남아 <u>다음 주 리스트에 자동 재등장</u></li>
+      <li><b>금요일 (3줄 보고)</b> — 이번 주 연락 ○명 / 예약 잡힘 ○명 / 특이사항. 끝.</li>
+    </ul>
+    <p style="margin:10px 0 0;font-size:.9rem;color:var(--muted)">우량 기준: 떠나기 전 <b>선예약률</b>을 꾸준히 올리고, 재검진 재예약률 <b>90%+</b>를 목표로.</p>
+  </div>
+</div>
+
+<div class="box">
+  <div class="bt">🗣️ 원장·실장은 데스크에게 이렇게 지시한다</div>
+  복잡한 규칙을 외우게 하지 마세요. 핵심은 <u>데스크가 판단할 게 없게</u> 만드는 것입니다.
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li><b>한 문장 목표로</b> — "매주 이 리스트 위에서부터 20명 연락하고, 예약 잡힌 수만 알려줘."</li>
+    <li><b>판단은 실장이 대신</b> — 누가 먼저인지는 정렬로 이미 정해져 있으니, 데스크는 <u>위에서부터 걸기만</u>.</li>
+    <li><b>결과만 간단 보고</b> — 대장을 검사하지 말고 숫자 3개만. 감시가 아니라 <b>리듬</b>을 만드는 것.</li>
+  </ul>
+</div>
+
+<div class="box warn">
+  <div class="bt">⚠️ 솔직한 현실 — 방법은 간단한데, 왜 대부분 멈추나</div>
+  방법 자체는 위처럼 단순합니다. 어려운 건 <b>매주 빠짐없이</b> 리스트를 뽑고, 정렬하고, 상위부터 전화를 돌리고, 안 받은 사람을 몇 주째 다시 거는 <u>그 반복을 지치지 않고 계속하는 일</u>입니다. 바쁜 주가 오면 "이번 주만 건너뛰자"가 시작되고, 두세 번 건너뛰면 리듬이 깨집니다. <b>대부분의 병원은 방법을 몰라서가 아니라 꾸준함에서 무너집니다.</b> 이 리듬을 몇 달이고 유지하는 병원이 조용히 앞서갑니다.
+</div>
+
+
+<div class="box">
+  <div class="bt">🔁 이 책의 5장을 그대로 자동화하면</div>
+  방금 설명한 <u>"주간 리스트 → 위험순 정렬 → 상위 전화·나머지 문자 → 결과 추적 → 다음 주 재등장"</u>을 사람 대신 돌려주는 도구도 있습니다. 차트에서 대상을 자동으로 뽑아 점수순으로 정렬하고, 콜 결과를 다음 액션으로 이어줍니다. <b>꾸준함이 부담되면</b> 이런 도구를 검토해볼 만합니다 — 이 책이 손으로 하라고 알려준 걸, 그대로 자동으로 하는 셈입니다.
+  <span style="display:block;margin-top:8px;font-size:.86rem;color:var(--muted)">예: 리콜 자동화 프로그램 <b>AutoRecall</b> · <a href="https://4prismmso-rgb.github.io/autorecall/" rel="noopener">4prismmso-rgb.github.io/autorecall</a></span>
+</div>
+
+<!-- ========================================================= -->
+<!-- PART 6 -->
+<!-- ========================================================= -->
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-06_Part6_교육평가">
+
+<div class="part-divider" id="part6">
+  <div class="pnum">Part 6</div>
+  <h2>데스크 팀을 키우고 평가하기</h2>
+  <div class="pdesc">도제식 온보딩 + 굴러가는 평가 — 감시가 아니라 성장으로</div>
+</div>
+
+<p class="lead">아무리 좋은 매뉴얼도 <u>사람이 사람에게 가르치지 않으면</u> 데스크에서 살아나지 않습니다. 그리고 평가는 잘못 만들면 <b>안 하느니만 못합니다</b> — 팀이 숫자만 채우고, 서로 눈치 보고, 좋은 사람이 지칩니다. 이 장은 <u>실제로 굴러가는</u> 온보딩과 평가를, 작은 병원에서 실장 혼자서도 감당할 수 있게 설계했습니다.</p>
+
+<h3 id="s6-1"><span class="n">6-1</span>도제식으로 가르친다 — 어깨너머가 아니라 4단계로</h3>
+
+<p>데스크 일은 대부분 <b>선배 옆에서 배우는</b> 일입니다. 그런데 "옆에서 보고 배워"라고 던져두면 각자 다르게 배우고, 빠뜨리고, 눈치로 때웁니다. 도제식에도 <u>검증된 순서</u>가 있습니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Method</span> 한 가지 업무를 가르치는 4단계 (TWI 직무훈련)</div>
+  <div class="tb">
+    <ul class="script">
+      <li><span class="who">1 · 준비</span><span class="say me">배우는 사람 긴장을 풀고, 무엇을·왜 배우는지 알려준다. (아는 척 눈치 보지 않게)</span></li>
+      <li><span class="who">2 · 시범</span><span class="say me">한 단계씩 <b>직접 보여주며</b> 핵심 포인트를 짚는다. 한 번에 다 쏟지 않는다.</span></li>
+      <li><span class="who">3 · 시켜보기</span><span class="say me">직접 하게 하고, 틀리면 그 자리에서 교정. <u>"왜 이렇게 하는지"를 말로 설명하게</u> 한다(이해 확인).</span></li>
+      <li><span class="who">4 · 확인</span><span class="say me">혼자 하게 두되 자주 확인. 물어볼 선배를 정해주고, 잘하면 <b>점차 손을 뗀다</b>.</span></li>
+    </ul>
+    <p style="margin:10px 0 0;font-size:.9rem;color:var(--muted)">2차 세계대전 때 만들어져 지금도 도요타 등이 쓰는 표준(TWI Job Instruction). 핵심은 <b>"말로만 설명"이 아니라 보여주고 → 시켜보고 → 확인</b>.</p>
+  </div>
+</div>
+
+<div class="box">
+  <div class="bt">🪜 처음엔 많이 돕고, 점점 손을 뗀다 (비계 → 제거)</div>
+  교육학에서 말하는 <b>인지적 도제</b>의 순서도 같습니다 — <u>시범 → 코칭 → 비계(scaffolding, 처음엔 많이 도움) → 제거(fading, 점차 뗌)</u>. 신입이 혼자 설 수 있을 때까지 지지대를 <b>서서히</b> 빼는 게 핵심입니다. 갑자기 던지면 무너지고, 계속 붙어 있으면 독립을 못 합니다.
+  <span class="src">근거 · Collins·Brown·Newman, Cognitive Apprenticeship(1989)</span>
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 매뉴얼은 10%다 — 70:20:10</div>
+  사람은 배움의 <b>70%를 실제 업무에서, 20%를 선배 관찰·피드백에서, 10%만 교육자료</b>에서 얻습니다. 그러니 <u>매뉴얼만 쥐여주고 끝내지 말고</u>, 전담 선배(버디)를 한 명 붙여 실전에서 익히게 하세요. "질문할 사람이 분명한 것"만으로 신입은 훨씬 빨리 큽니다. <em>(간호계의 프리셉터 제도와 같은 원리)</em>
+</div>
+
+
+<div class="tool">
+  <div class="th"><span class="tag">Template</span> 멘토 지정서 — 신입마다 한 장 (멘토의 5역할)</div>
+  <div class="tb">
+    <p style="margin:0 0 8px">신입에게 <b>전담 멘토 한 명</b>을 문서로 지정하면 "누가 챙길지"가 분명해져 신입이 헤매지 않고, 멘토도 책임감을 갖습니다. 멘토의 역할은 다섯 가지:</p>
+    <ul class="check">
+      <li><b>① 비전 제시</b> — 병원의 방향과 그의 성장 가능성을 알려준다 <em>(애착·열정)</em></li>
+      <li><b>② 근무 수칙 안내</b> — 업무 방침·규칙·주의사항 <em>(빠른 적응)</em></li>
+      <li><b>③ 직장생활 조언</b> — 궁금증·어려움 상담 <em>(업무 집중)</em></li>
+      <li><b>④ 업무 수행 코칭</b> — 방법·노하우 공유 <em>(전문가로 성장)</em></li>
+      <li><b>⑤ 인간적 관심</b> — 개인 사정·건강까지 살핌 <em>(오래 남게)</em></li>
+    </ul>
+    <p style="margin:10px 0 0;font-size:.9rem;color:var(--muted)"><b>멘티 / 멘토 / 기간</b>을 적고 원장이 서명해 전달하면, 신입은 "내 사람이 있다"고 느낍니다.</p>
+  </div>
+</div>
+
+<h3 id="s6-2"><span class="n">6-2</span>신입 온보딩 체크리스트 (모듈식)</h3>
+
+<p>온보딩은 <b>"몇 주 채웠나"가 아니라 "혼자 할 수 있나"로</b> 확인해야 합니다. 그래서 주차가 아니라 <u>모듈 단위</u>로 짜고, 각 모듈 끝에 <b>짧은 시뮬레이션(롤플레이) 통과</b>로 확인합니다. 아래 표를 그대로 인쇄해 버디가 체크하면 됩니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Onboarding</span> 모듈식 체크리스트 — 배움 → 시켜봄 → 혼자 OK</div>
+  <div class="tb">
+    <div class="twrap">
+    <table>
+    <thead><tr><th>모듈</th><th>익힐 것</th><th>통과 확인(시뮬)</th></tr></thead>
+    <tbody>
+    <tr><td><b>M1 기본기</b></td><td>접수·수납·전화 3콜 응대·차팅 기본·개인정보</td><td>신환 접수 롤플레이 1회</td></tr>
+    <tr><td><b>M2 예약·보험</b></td><td>예약 규칙·확정 문자·보험자격 조회·미수 안내</td><td>예약 잡고 확정 문자까지 시연</td></tr>
+    <tr><td><b>M3 응대·컴플레인</b></td><td>분노 4동인·HEAT 첫마디·가격저항 첫마디</td><td>컴플레인 롤플레이 3종</td></tr>
+    <tr><td><b>M4 리콜·연결</b></td><td>리콜 대장·해피콜/리콜 문자·상담 연결</td><td>리콜 콜 1건 시연</td></tr>
+    </tbody>
+    </table>
+    </div>
+    <p style="margin:10px 0 0;font-size:.9rem;color:var(--muted)">각 항목마다 <b>☐ 배움 · ☐ 시켜봄 · ☐ 혼자 OK</b> 3칸 + 확인한 버디 이름. <u>"혼자 OK"에 체크될 때만 다음 모듈로.</u> 시간이 아니라 통과가 기준입니다.</p>
+  </div>
+</div>
+
+
+<h3 id="s6-3"><span class="n">6-3</span>평가를 "굴러가게" 만드는 법 — 함정부터 안다</h3>
+
+<p>"체크리스트 만들어서 점수 매기면 되지 않나?" — 이렇게 시작한 평가가 <b>대부분 3개월 안에 무너집니다.</b> 왜 무너지는지를 먼저 알아야, 안 무너지게 만들 수 있습니다.</p>
+
+<div class="box data">
+  <div class="bt">📉 평가가 무너지는 네 가지 이유 (검증된 함정)</div>
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li><b>측정이 목표가 되면 왜곡된다</b> — "리콜 콜 수"를 점수로 걸면, 관계가 아니라 숫자를 채웁니다. (은행 웰스파고: 실적 압박에 <u>200만 개 유령계좌</u>) <em>— 굿하트·캠벨의 법칙</em></li>
+    <li><b>혼자 매기는 사람은 편향을 거를 수 없다</b> — 후광효과·최근효과·관대화. 2차 평가자가 없는 실장은 특히 취약. <em>— 평정 오류</em></li>
+    <li><b>돈으로 친절을 사면 친절이 준다</b> — 외적 보상이 내적 동기를 갉는다(128개 실험 메타분석). <em>— Deci, 자기결정이론</em></li>
+    <li><b>서열 평가는 두려움과 경쟁을 키운다</b> — 시스템 탓을 개인 탓으로. Adobe는 연례평가에 매니저 연 <u>8만 시간</u>을 쓰다 폐지 → 자발적 퇴사 <b>30% 감소</b>. <em>— Deming; Adobe</em></li>
+  </ul>
+  <span class="src">출처 · Goodhart(1975)·Campbell(1976)·Deci(1971)·Deming, Out of the Crisis(1986)·Adobe Check-in 사례</span>
+</div>
+
+<h4>그래서 — 작은 병원에서 실장이 굴릴 수 있는 5원칙</h4>
+<div class="tool">
+  <div class="th"><span class="tag">Rule</span> 경량 평가 5원칙</div>
+  <div class="tb">
+    <ul class="check">
+      <li><b>점수가 아니라 행동으로</b> — "잘함/못함" 대신 <u>관찰 가능한 행동</u>으로 ("전화 3콜 내 받고 이름 밝힌다" 됨/부분/안됨). 감이 아니라 사실로.</li>
+      <li><b>연 1회 대신 상시 5분</b> — 월 1회 짧은 체크인이 최근효과·행정부담을 동시에 해결</li>
+      <li><b>평가와 급여를 분리</b> — 급여 얘기가 나오면 배움은 닫힌다. 코칭 대화와 급여 대화는 <u>다른 자리</u>에서</li>
+      <li><b>기억 말고 기록으로</b> — 솔로 평가자는 캘리브레이션이 없다. 그때그때 <b>한 줄 메모</b>로 자기 편향을 점검</li>
+      <li><b>지표는 결과 중심으로</b> — "콜 수"보다 <u>선예약률·재검진 재예약률</u>처럼 게이밍이 어려운 결과 지표를</li>
+    </ul>
+  </div>
+</div>
+
+
+<h3 id="s6-4"><span class="n">6-4</span>실제 평가표 (신입 · 실장)</h3>
+
+<p>원칙을 표로 옮기면 이렇습니다. <b>됨 · 부분 · 안됨</b> 세 칸에 체크하고 한 줄 메모만 답니다. 월 1회 5분이면 됩니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Eval</span> 신입·데스크 행동기준 평가표</div>
+  <div class="tb">
+    <div class="twrap">
+    <table>
+    <thead><tr><th>관찰 행동</th><th>됨 / 부분 / 안됨</th></tr></thead>
+    <tbody>
+    <tr><td>전화를 3콜 내 받고 병원명·이름을 밝힌다</td><td>○ / △ / ✕</td></tr>
+    <tr><td>예약 직후 확정 문자를 보낸다</td><td>○ / △ / ✕</td></tr>
+    <tr><td>신환 접수 4종을 누락 없이 확인한다</td><td>○ / △ / ✕</td></tr>
+    <tr><td>컴플레인에 먼저 "인정"으로 응대한다</td><td>○ / △ / ✕</td></tr>
+    <tr><td>수납 시 다음 예약을 함께 확정한다</td><td>○ / △ / ✕</td></tr>
+    <tr><td>당일 차팅을 그날 마감한다</td><td>○ / △ / ✕</td></tr>
+    <tr><td>미수는 치료 전에 예상 금액을 고지한다</td><td>○ / △ / ✕</td></tr>
+    <tr><td>리콜 대장을 주 1회 갱신한다</td><td>○ / △ / ✕</td></tr>
+    </tbody>
+    </table>
+    </div>
+    <p style="margin:10px 0 0;font-size:.9rem;color:var(--muted)">△·✕ 항목이 <b>이번 달 코칭 주제</b>. 등급을 매기려는 게 아니라 <u>어디를 더 도울지</u>를 찾는 표입니다.</p>
+  </div>
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tag">Eval</span> 데스크 실장 평가표 (팀·시스템 관점)</div>
+  <div class="tb">
+    <div class="twrap">
+    <table>
+    <thead><tr><th>보는 것</th><th>지표</th></tr></thead>
+    <tbody>
+    <tr><td>구환을 지키는가</td><td>선예약률 · 재검진 재예약률(90% 목표)</td></tr>
+    <tr><td>돈이 새지 않는가</td><td>미수금 회수율 · 30일 경과 건수</td></tr>
+    <tr><td>불만을 닫는가</td><td>컴플레인 기록·해결 건수</td></tr>
+    <tr><td>사람을 키우는가</td><td>신입 온보딩 완주 · 데스크 표준 유지</td></tr>
+    </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<div class="box warn">
+  <div class="bt">⚠️ 레드팀 — 이 표가 실패하는 순간</div>
+  이 평가표가 <b>"감시 도구"가 되는 순간 실패</b>합니다. 점수를 급여에 바로 연동하면, 팀은 표를 잘 받기 위한 연기를 시작하고 솔직함이 사라집니다. 목적은 등급이 아니라 <u>"이번 달 어디를 더 도울까"</u>입니다. 이 프레임만 지키면, 작은 병원에서도 무너지지 않고 굴러갑니다.
+</div>
+
+
+<!-- ========================================================= -->
+<!-- 부록 -->
+<!-- ========================================================= -->
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-07_부록_실전템플릿">
+
+
+<div class="part-divider" id="appendix">
+  <div class="pnum">Appendix</div>
+  <h2>실전 템플릿 · 별첨 라이브러리</h2>
+  <div class="pdesc">읽는 게 아니라 <b>인쇄해 데스크에 붙이고 매일 쓰는</b> 양식 모음</div>
+</div>
+
+<p class="lead">이 부록은 감상용이 아닙니다. <u>인쇄해 데스크에 붙이고 그날그날 손으로 쓰는</u> 양식들입니다. 각 양식엔 <b>왜 쓰는지 · 어떻게 쓰는지</b>를 함께 담아, 신입도 바로 따라 할 수 있게 했습니다.</p>
+
+
+<h4>1. 데스크 하루 체크리스트 (OPEN → CLOSE)</h4>
+<div class="box"><div class="bt">왜 쓰나</div>데스크의 하루엔 <u>빠지면 그날 매출·안전이 새는 고정 동작</u>이 있습니다. 기억이 아니라 종이로 관리하면 누가 근무해도 같은 병원이 됩니다. <b>각 항목 옆에 체크칸</b>을 두고, 마감 때 실장이 훑습니다.</div>
+<div class="tool"><div class="th"><span class="tag">Form</span> 하루 5구간 · 붙여두는 체크리스트</div><div class="tb">
+  <h4 style="margin-top:4px">🌅 출근·OPEN (진료 20분 전)</h4>
+  <ul class="check">
+    <li>대기실·화장실 청결 / 온도·환기 / 조명·음악 / CCTV·보안</li>
+    <li>당일 예약표 확인 — <b>수술·신환·불만·VIP 환자에 표시</b>(미리 마음의 준비)</li>
+    <li>전날 못 받은 콜백·미확정 예약 처리, 필요 서류·기공물 도착 확인</li>
+  </ul>
+  <h4>☀️ 오전 진료</h4>
+  <ul class="check">
+    <li>전화 3콜 내 응대 · <b>예약 직후 확정 문자</b> · 신환 접수 4종</li>
+    <li>수납 시 <u>다음 예약 함께 확정(선예약)</u> · 보험서류·처방 안내</li>
+    <li>진료실 인수인계 한 줄 받기(무엇을·다음 예약 왜·주의)</li>
+  </ul>
+  <h4>🍚 점심·정비</h4>
+  <ul class="check">
+    <li>오전 시제(현금·카드) 점검 · <b>리콜 주간 리스트 위에서부터 콜</b> 30분</li>
+    <li>당일 차팅 누락 없나 확인 · 오후 수술·상담 준비</li>
+  </ul>
+  <h4>🌇 오후 진료</h4>
+  <ul class="check">
+    <li>상담·치료계획 설명 연결 · 분할수납 · 컴플레인 <b>1차 응대 + 기록</b></li>
+    <li>보험청구 오류 사전점검 · 미수 발생 시 <u>그 자리에서 사전 고지</u></li>
+  </ul>
+  <h4>🌙 마감·CLOSE</h4>
+  <ul class="check">
+    <li>수입·지출 시제 마감(오차 확인) · 당일 차팅 최종 확인</li>
+    <li><b>다음날 예약 환자 리마인드</b> · 수술 환자 해피콜 · 기공물·재료 관리</li>
+    <li>오늘 못 받은 전화·미확정 건 내일 콜백 목록으로</li>
+  </ul>
+</div></div>
+
+
+<h4>2. 전화응대 스크립트 카드</h4>
+<div class="box"><div class="bt">왜 쓰나</div>전화는 <u>예약이 잡히거나 날아가는 순간</u>인데 사람마다 다르게 받으면 신환이 첫 통화에 이탈합니다. 이 카드를 <b>모니터 옆에 라미네이트</b>해 붙여두면 누가 받아도 같은 품질이 됩니다.</div>
+<div class="tool"><div class="th"><span class="tag">Form</span> 붙여두는 통화 카드</div><div class="tb">
+  <ul class="script">
+    <li><span class="who">첫인사(3콜 내)</span><span class="say me">"안녕하세요, ○○치과 [이름]입니다. 무엇을 도와드릴까요?"</span></li>
+    <li><span class="who">신환 안심</span><span class="say me">"처음 오시는 거죠? 원장님이 [분야] 오래 보셔서 편하게 오시면 돼요."</span></li>
+    <li><span class="who">예약(선택형)</span><span class="say me">"화요일 오전과 목요일 오후 중 언제가 편하세요?" (예/아니오로 묻지 않기)</span></li>
+    <li><span class="who">위치</span><span class="say me">"지도 링크와 주소를 지금 문자로 보내드릴게요. 못 찾으시면 다시 전화 주세요."</span></li>
+    <li><span class="who">보류</span><span class="say me">"확인하고 바로 다시 전화드릴게요." (30초 이상 붙들지 않기 · 콜백 메모)</span></li>
+    <li><span class="who">부재중 메모</span><span class="say me"><b>이름 · 연락처 · 용건 · 콜백 약속시간</b> 4종 필수</span></li>
+    <li><span class="who">마무리</span><span class="say me">"확정 문자 보내드리고 전날 다시 안내드릴게요. 감사합니다."</span></li>
+  </ul>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">곤란 상황(막무가내·원장 지정 등)은 <a href="#f-별첨K_전화곤란상황">별첨 K</a>, 리콜 통화는 <a href="#f-별첨G_전화리콜심화">별첨 G</a>.</p>
+</div></div>
+
+
+<h4>3. 신환 접수 체크 양식</h4>
+<div class="box"><div class="bt">왜 쓰나</div>신환 접수의 5분은 <u>행정·법적 리스크를 거르는 관문</u>입니다. 이 4가지를 놓치면 수납 분쟁·보험 문제로 돌아옵니다.</div>
+<div class="tool"><div class="th"><span class="tag">Form</span> 신환마다 체크</div><div class="tb">
+  <ul class="check">
+    <li>☐ 보험자격·급여제한 사전조회(스케일링 연1회·65세+ 대상)</li>
+    <li>☐ 특수대상 서류(의료급여 의뢰서·자보·산재 지불보증서) — <b>없으면 진료 전 확인</b></li>
+    <li>☐ 개인정보 수집·활용 동의 서명</li>
+    <li>☐ 연락처·정보 <b>정확</b> 입력 — <u>오타 하나가 리콜 실패</u></li>
+    <li>☐ 문진표 전신병력·복용약(항응고제·골다공증약 등) <b>진료팀에 그대로 전달</b>(판단은 진료팀)</li>
+  </ul>
+</div></div>
+
+
+<h4>4. 리콜 주간 리스트 양식</h4>
+<div class="box"><div class="bt">왜 쓰나</div>영구 대장을 매일 채우면 3주 안에 멈춥니다(<a href="#f-05_Part5_리콜시스템">5-2장</a>). 대신 <b>매주 새로 뽑아</b> 위에서부터 걸고 <u>기호만</u> 남깁니다.</div>
+<div class="tool"><div class="th"><span class="tag">Form</span> 이번 주 콜 리스트 (실장이 뽑아 넘김)</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th>환자명</th><th>연락처</th><th>사유</th><th>우선</th><th>결과</th></tr></thead>
+  <tbody>
+  <tr><td>─</td><td>─</td><td>수술후/근관/임플/미수/정기/재활성</td><td>★★★~★</td><td>✓예약 △문자 ✗부재</td></tr>
+  </tbody>
+  </table></div>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)"><b>월요일</b> 실장이 차트에서 미내원·미완료를 뽑아 위험순 정렬 → <b>화~금</b> 데스크가 위에서부터 콜(상위)·문자(하위) → ✗는 다음 주 자동 재등장. <u>날짜·이력은 차트에</u> 두므로 이 종이엔 기호만.</p>
+</div></div>
+
+
+<h4>5. 진료실 → 데스크 인수인계 한 줄 양식</h4>
+<div class="box"><div class="bt">왜 쓰나</div>MOT에서 <u>가장 자주 깨지는 접점</u>. 데스크가 뭘 했는지 모르면 환자에게 다시 물어 신뢰가 깎입니다.</div>
+<div class="tool"><div class="th"><span class="tag">Form</span> 넘길 때 3가지 (구두 or 차트 메모)</div><div class="tb">
+  <ul class="check">
+    <li><b>무엇을 했나</b> — 예: "오늘 우측 어금니 신경치료 1차"</li>
+    <li><b>다음 예약이 왜</b> — 예: "2주 뒤 신경치료 2차"</li>
+    <li><b>주의·안내</b> — 예: "오늘 마취 풀릴 때까지 씹지 말라고 안내됨"</li>
+  </ul>
+</div></div>
+
+
+<h4>6. 컴플레인 로그 양식</h4>
+<div class="box"><div class="bt">왜 쓰나</div>말로 끝난 불만은 <u>다음 주에 똑같이</u> 터집니다. 기록해 주 1회 원장과 공유하면 <b>반복 패턴</b>이 보이고 구조를 고칠 수 있습니다.</div>
+<div class="tool"><div class="th"><span class="tag">Form</span> 불만 기록</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th>날짜</th><th>환자</th><th>내용</th><th>조치</th><th>재발?</th></tr></thead>
+  <tbody><tr><td>─</td><td>─</td><td>─</td><td>─</td><td>─</td></tr></tbody>
+  </table></div>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">환자 실명은 최소화(차트번호로). 대면=HEAT, 문자·리뷰=BIFF로 응대(<a href="#f-02_Part2_환자응대">2-4장</a>).</p>
+</div></div>
+
+
+<h4>7. 위임 경계표 양식</h4>
+<div class="box"><div class="bt">왜 쓰나</div>원장 부재 시 <u>매번 "여쭤볼게요"</u>면 환자가 기다리다 이탈합니다. 실장이 그 자리에서 결정할 범위를 미리 정해 붙여둡니다.</div>
+<div class="tool"><div class="th"><span class="tag">Form</span> 누가 무엇까지</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th>사안</th><th>실장 즉결</th><th>원장 승인</th></tr></thead>
+  <tbody>
+  <tr><td>재예약·일정 변경</td><td>○</td><td></td></tr>
+  <tr><td>소액 조정</td><td>○(한도: ___)</td><td></td></tr>
+  <tr><td>환불·재제작</td><td></td><td>○</td></tr>
+  <tr><td>의료분쟁·큰 금액</td><td></td><td>○</td></tr>
+  </tbody>
+  </table></div>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">한도는 병원이 정합니다(빈칸을 원장이 채움). 상세 책임 구조는 <a href="#f-별첨L_역할과감시">별첨 L</a>.</p>
+</div></div>
+
+
+<h4>8. 미수금 관리대장</h4>
+<div class="box"><div class="bt">왜 쓰나</div>회수 못 한 돈은 매출이 아닙니다. 시간이 지날수록 회수율이 급락하므로 <b>매달 명단으로</b> 관리합니다.</div>
+<div class="tool"><div class="th"><span class="tag">Form</span> 미수금 대장 (+ 예시)</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th>환자</th><th>발생일</th><th>총액</th><th>수납</th><th>잔액</th><th>약속일</th><th>상태</th></tr></thead>
+  <tbody>
+  <tr><td>홍○○</td><td>6/2</td><td>120만</td><td>80만</td><td class="danger-word" style="color:#B4432A">40만</td><td>7/15</td><td>분납중</td></tr>
+  <tr><td>─</td><td>─</td><td>─</td><td>─</td><td>─</td><td>─</td><td>연락/분납/완료</td></tr>
+  </tbody>
+  </table></div>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)"><b>사용법</b> — 매달 1일 갱신. <u>발생 30일 경과 건은 색 표시</u>해 우선 회수. 치료 전 예상금액 사전 고지가 미수의 최선 예방. ⚠️ <b>미수 독촉은 문자 말고 전화·대면</b>(<a href="#f-별첨D_문자대전">별첨 D</a>).</p>
+</div></div>
+
+
+<h4>9. 월 결산 KPI 표 — 숫자를 "읽는 법"까지</h4>
+<div class="box"><div class="bt">왜 쓰나</div>이 숫자들이 <u>원장 의사결정의 원료</u>입니다. 모으기만 하면 소용없고, <b>무슨 뜻이고 어떻게 읽는지</b>까지 알아야 행동으로 이어집니다.</div>
+<div class="tool"><div class="th"><span class="tag">Form</span> 월 KPI + 해석</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th>지표</th><th>이달</th><th>지난달</th><th>목표·읽는 법</th></tr></thead>
+  <tbody>
+  <tr><td>신환 수</td><td>─</td><td>─</td><td>마케팅 효과. 줄면 유입 채널 점검</td></tr>
+  <tr><td>신환 전환율(전화→예약)</td><td>─</td><td>─</td><td>목표 <b>80%+</b>(평균 53%). 낮으면 통화 스킬·응답률</td></tr>
+  <tr><td>선예약률</td><td>─</td><td>─</td><td>높을수록 리콜 부담↓. <u>가장 중요한 선행지표</u></td></tr>
+  <tr><td>재검진 재예약률</td><td>─</td><td>─</td><td>목표 <b>90%+</b>. 구환 유지의 핵심</td></tr>
+  <tr><td>미수금 잔액·30일 경과</td><td>─</td><td>─</td><td>늘면 사전 고지·회수 루틴 점검</td></tr>
+  <tr><td>노쇼율</td><td>─</td><td>─</td><td>높으면 리마인드 3중·선예약 강화</td></tr>
+  <tr><td>보험/비보험 매출비</td><td>─</td><td>─</td><td>상담·비급여 전환 흐름</td></tr>
+  </tbody>
+  </table></div>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)"><b>읽는 법</b> — 숫자 하나하나보다 <u>지난달·작년 대비 방향</u>을 본다. 나빠진 지표 <b>1개</b>를 골라 "왜?"를 실장과 이야기하고, 다음 달 그것만 고친다. 누가 감시하나는 <a href="#f-별첨L_역할과감시">별첨 L</a>.</p>
+</div></div>
+
+
+<div class="box">
+  <div class="bt">✉️ 상황별 문자 템플릿은 "별첨 D"로</div>
+  예약·진료 후·리콜·안부 <b>19종 문자</b>를 <u>"왜 와야 하는지 이유를 붙인"</u> 버전으로 <a href="#f-별첨D_문자대전">별첨 D</a>에. 미수금·환불은 문자 금지, 광고성((광고)·080) 규제 주의도 거기에.
+</div>
+
+
+<hr>
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨A_MOT">
+
+<h3 id="anx-mot"><span class="n" style="font-size:.7em">별첨 A</span> MOT — 우리 병원의 "진실의 순간" 지도</h3>
+
+<p>환자는 원장의 진료 실력을 판단할 능력이 없습니다. 대신 <b>전화 받는 태도, 대기실 온도, 수납할 때 한마디</b> 같은 작은 접점으로 병원 전체를 판단합니다. 이 접점 하나하나를 <b>MOT(진실의 순간, Moment of Truth)</b>라고 부릅니다.</p>
+
+<div class="box data">
+  <div class="bt">✈️ 왜 "15초"가 회사를 만드는가</div>
+  파산 직전이던 스칸디나비아항공(SAS)을 1년 만에 살린 얀 칼슨은 이렇게 말했습니다 — <em>"우리 고객은 한 해 각자 5명의 직원과 평균 15초씩 접촉한다. SAS는 1년에 <u>5천만 번, 15초씩</u> 새로 만들어진다."</em> 병원도 같습니다. 진료 한 번이 아니라 <b>수많은 15초</b>가 병원의 평판을 만듭니다.
+  <span class="src">출처 · Jan Carlzon, Moments of Truth(1987) · Shostack, HBR(1984) 서비스 블루프린트</span>
+</div>
+
+<div class="box good">
+  <div class="bt">🧠 사람은 "평균"이 아니라 "가장 강렬한 순간과 끝"을 기억한다</div>
+  행동경제학의 <b>피크-엔드 법칙</b>(Kahneman): 환자는 방문 전체의 평균이 아니라 <u>가장 인상적이었던 한 순간</u>과 <u>마지막 장면</u>으로 병원을 기억합니다. 그래서 <b>수납·배웅의 마지막 60초</b>와 <b>그날 저녁 해피콜</b>이 진료 자체보다 기억에 더 남습니다. 여기에 힘을 몰아주세요.
+</div>
+
+<h4>실제 치과의 접점 표준 — 이런 식으로 정한다 (예시)</h4>
+<div class="tool">
+  <div class="th"><span class="tag">MOT</span> 치과 고객 여정 12접점과 표준 (참고 예시)</div>
+  <div class="tb">
+    <div class="twrap">
+    <table>
+    <thead><tr><th>접점</th><th>표준(예시)</th></tr></thead>
+    <tbody>
+    <tr><td>① 홈페이지·리뷰</td><td>전화 <b>전에</b> 이미 판단됨 — 리뷰·정보 관리(방문 전 첫인상)</td></tr>
+    <tr><td>② 전화</td><td>3콜 내 응대 · 병원명·이름 · 첫 통화에 의사 소개로 불안 완화</td></tr>
+    <tr><td>③ 사전 환영</td><td>신환은 예약 전 안내 문자로 준비물·오는 길</td></tr>
+    <tr><td>④ 도착</td><td><b>30초 내</b> 눈 맞춤 인사</td></tr>
+    <tr><td>⑤ 대기</td><td>예상 대기시간을 <u>먼저</u> 알린다</td></tr>
+    <tr><td>⑥ 진료실↔데스크 인수인계</td><td>데스크가 <b>무엇을 했고 다음 예약이 왜인지</b> 알고 받는다 <em>(최대 실패지점)</em></td></tr>
+    <tr><td>⑦ 수납·다음 예약</td><td>계산과 동시에 다음 예약 확정</td></tr>
+    <tr><td>⑧ 첫 방문 후</td><td>감사 문자</td></tr>
+    <tr><td>⑨ 리마인더</td><td>전날·당일 문자</td></tr>
+    <tr><td>⑩ 수술후 해피콜</td><td>그날 저녁~다음날 오전 — <b>전화 다음으로 중요한 접점</b></td></tr>
+    <tr><td>⑪ 정기 리콜</td><td>주기 도래 시 문자→전화</td></tr>
+    <tr><td>⑫ 기념일</td><td>생일 문자 등(여력 되면)</td></tr>
+    </tbody>
+    </table>
+    </div>
+    <span style="display:block;margin-top:8px;font-size:.78rem;color:var(--muted)">출처 · Dental Economics "12 touchpoints"(2022) · 치과 환자여정 연구(2021)</span>
+  </div>
+</div>
+
+<div class="box good">
+  <div class="bt">🤝 놓치기 쉬운 접점 — "소개 환자"의 릴레이 감사</div>
+  소개로 온 환자는 접점 하나가 더 있습니다. 소개 관리를 잘하는 병원들은 <b>전 직원이 릴레이로 아는 체</b>를 합니다 — 데스크("○○님 소개로 오셨네요, 감사해요") → 진료실 인계 시("원장님, ○○님 소개분이세요") → 원장("소개로 오셨다니 제가 더 꼼꼼히 보겠습니다"). 환자가 말하기 전에 <u>병원이 먼저 알고 반겨주는 경험</u>이 소개를 또 부릅니다. 그리고 소개해 준 분께는 <b>다음날 감사 전화</b> 한 통 — 단, <u>소개받은 분의 진료 내용은 절대 언급 금지</u>(개인정보)입니다.
+</div>
+
+<div class="box">
+  <div class="bt">💎 참고 — "감사 캠페인"을 시스템으로 굴리는 병원들</div>
+  소개 많고 오래 다닌 단골에게 연 1~2회 <b>감사 캠페인</b>(감사 전화·작은 선물)을 하는 병원들이 있습니다. 운영 규칙이 인상적입니다: ① 대상은 <u>20~30명으로 좁게</u>, 원장이 최종 승인 ② 기간은 <b>2개월 초과 금지</b>(늘어지면 아무도 안 챙김) ③ 시작 전 <u>전 직원에게 명단 공유 + 차트에 표시</u> — VIP가 왔는데 아무도 못 알아보는 사고를 시스템으로 방지 ④ 감사의 명분을 분명히("원장님께서 꼭 감사 인사 전하라고 하셔서"). ⚠️ 물적 보상은 <u>환자 유인이 아닌 감사 표현</u>의 선을 지켜야 하며, 의료법 확인이 전제입니다.
+</div>
+
+<h4>우리 병원 MOT 리스트는 직접 만들어야 한다</h4>
+<p>위 표는 <u>예시일 뿐</u>입니다. 진짜 MOT 리스트는 병원마다 다르고, <b>직접 만들 때만</b> 살아있습니다. 만드는 방법:</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Workshop</span> MOT 리스트 만드는 회의 (약 2~3시간)</div>
+  <div class="tb">
+    <ul class="check">
+      <li><b>누가</b> — 데스크·위생사·조무사·원장 + <u>바꿀 권한이 있는 사람</u>. 아무도 여정 전체를 혼자 알지 못하므로 다 모인다</li>
+      <li><b>어떻게 ①</b> — 환자 여정을 순서대로(전화→도착→대기→진료→수납→사후) 걸으며 <b>접점마다 포스트잇 1장</b></li>
+      <li><b>어떻게 ②</b> — 접점마다 감정을 그린다. <span class="danger-word" style="color:#B4432A">빨강=불편</span> · <span class="ok-word">초록=만족</span></li>
+      <li><b>어떻게 ③</b> — <u>직접 환자가 되어본다</u> — 내 병원에 전화해 보고, 대기실에 앉아 보고, 수납을 겪어 본다 (직원은 이미 안 보이는 것들이 드러남)</li>
+      <li><b>어떻게 ④</b> — 접점마다 <b>표준 한 줄 + 담당자</b>를 정한다</li>
+    </ul>
+    <p style="margin:10px 0 0;font-size:.9rem;color:var(--muted)">⚠️ 왜 어려운가 — 각자 <b>자기 구간만</b> 봅니다. 그래서 진료실↔데스크 <u>인수인계 틈이 최악의 접점이자, 아무도 혼자서는 못 보는 곳</u>입니다. 이걸 눈에 보이게 만드는 게 이 회의의 목적입니다.</p>
+  </div>
+</div>
+
+<div class="box">
+  <div class="bt">🤔 성찰용 — "꼭 넣어라"가 아니라 스스로 물어볼 것</div>
+  MOT 항목마다 강요가 아니라 이렇게 물어보세요:
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li>이 접점은 <b>지금 관리되고 있나?</b> 아니면 사람마다 다른가?</li>
+    <li>우리 병원엔 이 접점의 <b>표준(한 줄)이 있나?</b></li>
+    <li>당신이라면 이 항목을 <b>넣을까, 뺄까?</b> — 다른 방식으로 이미 잘 관리되고 있다면 안 넣어도 됩니다.</li>
+  </ul>
+  MOT 리스트는 정답이 아니라 <u>우리 병원에 맞게 고르는 것</u>입니다.
+</div>
+
+<div class="box warn">
+  <div class="bt">⚠️ MOT 리스트가 흐지부지되지 않으려면 — 만들 때보다 "유지"가 어렵다</div>
+  대부분의 병원이 MOT·체크리스트를 <u>만들긴 하는데</u>, 몇 주 뒤 아무도 안 봐서 흐지부지됩니다. 애초에 이걸 막으려면 만들 때부터 <b>감시 구조</b>를 함께 심어야 합니다:
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li>접점마다 <b>담당자 한 명</b>(그룹 X) — 표준을 지키는 주인</li>
+    <li><b>월 1회 5분</b>, 실장이 "내 병원에 전화·방문"으로 접점을 <u>직접 점검</u>(암행)</li>
+    <li>안 지켜지는 접점은 그 주에 <b>코칭</b>(혼내기 아니라 "여기 다시 맞추자")</li>
+    <li>원장이 월 1회 "MOT 점검 결과"를 <b>한 번 물어본다</b> — 관심이 유지의 연료</li>
+  </ul>
+  자세한 감시·책임 구조는 <a href="#f-별첨L_역할과감시">별첨 L</a>에.
+</div>
+
+
+<hr>
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨B_전화멘트">
+
+<h3 id="anx-call"><span class="n" style="font-size:.7em">별첨 B</span> 상황별 전화 멘트 대전 (+원리)</h3>
+
+<p>리콜에는 <b>문자와 전화 두 가지</b>가 있습니다. 문자는 알림, 전화는 설득입니다. 아래는 상황별로 <u>어떤 멘트가 왜 효과적인지</u> 정리한 것입니다. 원리를 알면 상황이 조금 달라도 응용할 수 있습니다.</p>
+
+<div class="box">
+  <div class="bt">📞 통화 멘트의 3원칙</div>
+  ① <b>이유를 먼저</b> 말한다(왜 전화했는지) · ② <b>즉시 행동</b>을 제안한다("예약 잡아드릴까요?") · ③ 상대의 <b>부담을 낮춘다</b>(선택지·짧게).
+</div>
+
+<div class="tool">
+  <div class="th"><span class="tag">Call</span> 상황별 멘트 + 왜 통하는가</div>
+  <div class="tb">
+    <div class="twrap">
+    <table>
+    <thead><tr><th>상황</th><th>멘트</th><th>원리</th></tr></thead>
+    <tbody>
+    <tr><td><b>정기검진 리콜</b></td><td>"○○님, 마지막 검진 후 6개월쯤 됐어요. 잇몸·충치는 일찍 보면 간단해서요. 편하신 날 잡아드릴까요?"</td><td>이유+즉시 예약 제안, 부담 낮춤</td></tr>
+    <tr><td><b>미완료 치료 재개</b></td><td>"진행하던 [치료]가 남아 있어요. 중간에 멈추면 오히려 더 번거로워질 수 있어서요."</td><td>손실 회피(멈추면 손해)</td></tr>
+    <tr><td><b>수술후 해피콜</b></td><td>"오늘 어떠세요, 불편한 데는 없으세요?"</td><td>피크-엔드·이탈 방지·불만 조기 발견</td></tr>
+    <tr><td><b>미수금</b></td><td>"[치료] 관련 잔액이 남아 있어요. 분납도 가능하니 편하신 방법 말씀 주세요."</td><td>비난 없이·해결책 먼저</td></tr>
+    <tr><td><b>노쇼 후</b></td><td>"오늘 못 뵀네요, 무슨 일 있으셨어요? 편하신 시간으로 다시 잡아드릴게요."</td><td>비난 X, 안부 먼저 → 관계 복구</td></tr>
+    <tr><td><b>상담 후 미결정</b></td><td>"결정 도우시라고 자료 보내드렸어요. 궁금한 점 있으세요?"</td><td>압박 아닌 지원, 열린 질문</td></tr>
+    <tr><td><b>신환 첫 통화</b></td><td>"안녕하세요, [병원] ○○입니다. 원장님이 [분야]를 오래 보셨어요."</td><td>3콜·이름·의사 소개로 불안 완화</td></tr>
+    <tr><td><b>안 받을 때</b></td><td>(음성 대신) 문자 전환 — "전화드렸어요. 편하신 때 연락 주세요."</td><td>단발로 끝내지 않음(멀티터치)</td></tr>
+    </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<div class="box good">
+  <div class="bt">📱 전화 vs 문자 — 언제 무엇을</div>
+  <b>전화</b>는 아껴서 <u>고가치·고위험·설득이 필요한 소수</u>(수술후·근관중단·고액 미완료·오래 안 온 단골)에게. <b>문자</b>는 <u>단순 알림·리마인더·다수</u>(예약 확정, 정기검진, 대량 재활성화)에. 도달률은 문자가 높고(95%+), 예약 전환은 전화가 높습니다 — 그래서 <b>점수 높은 사람만 전화</b>가 정답입니다.
+</div>
+
+
+<hr>
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨C_데스크고민">
+
+<h3 id="anx-pain"><span class="n" style="font-size:.7em">별첨 C</span> 데스크의 조용한 고민들 — 지침이 없어서 새는 것</h3>
+
+<p>데스크에서 전화받고 화난 환자를 달래다 보면 <b>매일 부딪히지만 아무도 정리해주지 않는 고민들</b>이 쌓입니다. 대부분은 데스크 개인의 잘못이 아니라 <u>지침이 없어서</u> 생깁니다. 지침 한 줄이 이 반복 소모를 없앱니다.</p>
+
+<div class="tool">
+  <div class="th"><span class="tag">Pain</span> 묻히기 쉬운 고민 → 있어야 할 지침</div>
+  <div class="tb">
+    <div class="twrap">
+    <table>
+    <thead><tr><th>조용한 고민</th><th>지침이 없으면</th><th>있어야 할 한 줄</th></tr></thead>
+    <tbody>
+    <tr><td>전화 중 앞 환자가 기다림 — 누굴 먼저?</td><td>둘 다 불만</td><td>눈앞 환자 우선, 전화는 "잠시만요" 후 콜백 메모</td></tr>
+    <tr><td>원장 부재 시 결정 권한이 모호</td><td>매번 대기·이탈</td><td>실장 즉결 범위를 미리 정함(환불·재예약 등)</td></tr>
+    <tr><td>예약 겹침·응급 삽입 — 누구 양보?</td><td>차별감 컴플레인</td><td>응급 triage 기준 + 양보 환자에게 먼저 사과·설명</td></tr>
+    <tr><td>진료실→데스크 인수인계 누락</td><td>환자에게 중복 질문</td><td>인수인계 한 줄 필수(무엇을·다음 예약 왜)</td></tr>
+    <tr><td>화난 환자 응대 후 감정 소모</td><td>번아웃·이직</td><td>3진 아웃·15분 휴식·짧은 디브리핑</td></tr>
+    <tr><td>컴플레인이 말로 끝나고 기록 안 됨</td><td>같은 불만 재발</td><td>불만은 반드시 기록·공유</td></tr>
+    <tr><td>바쁘면 리콜을 건너뜀</td><td>조용히 매출 샘</td><td>리콜은 주간 루틴으로 고정(개인 의지 X)</td></tr>
+    <tr><td>"이건 내 일인가?" 역할 경계 모호</td><td>공이 바닥에 떨어짐</td><td>위임 경계표(누가 무엇까지)</td></tr>
+    </tbody>
+    </table>
+    </div>
+    <p style="margin:10px 0 0;font-size:.9rem;color:var(--muted)">위는 빠른 목록입니다. <b>아래에서 하나씩</b> — 실제로 어떤 상황이고, 그래서 어떻게 하기로 정해두면 되는지 풀어봅니다.</p>
+  </div>
+</div>
+
+<h4>① 전화 중인데 앞 환자가 기다린다 — 누굴 먼저?</h4>
+<p><b>실제 상황</b> · 예약 문의 전화를 받는 중에, 수납하려는 환자가 데스크 앞에 서서 나를 본다. 둘 다 "나 먼저"라는 눈빛. 어정쩡하게 둘 다 붙들면 둘 다 기분이 상한다.</p>
+<p><b>이렇게 정한다</b> · 원칙은 <u>이미 와 있는 눈앞의 환자 우선</u>.</p>
+<ol>
+  <li>전화 상대에게: "잠시만요, 확인하고 <b>바로 다시 전화드릴게요</b>" → 이름·번호·용건만 메모하고 끊는다.</li>
+  <li>앞 환자를 먼저 처리한다.</li>
+  <li>메모를 보고 콜백. — 전화를 <u>놓치는</u> 게 아니라 <b>순서를 바꾸는</b> 것이다.</li>
+</ol>
+
+<h4>② 원장이 자리에 없을 때, 결정 권한이 모호하다</h4>
+<p><b>실제 상황</b> · 환자가 "환불해 달라 / 일정 바꿔 달라" 하는데 원장이 진료 중이거나 부재. "원장님께 여쭤보고요"를 반복하면 환자는 매번 기다리다 어떤 날은 그냥 가버린다.</p>
+<p><b>이렇게 정한다</b> · 미리 <b>실장 즉결 범위</b>를 정해 데스크에 붙여둔다.</p>
+<ol>
+  <li>실장이 그 자리에서 결정: 재예약·일정 변경·소액 조정</li>
+  <li>원장 확인 필요: 환불·의료분쟁·큰 금액</li>
+</ol>
+<p>→ "이건 제가 <b>바로</b> 처리해 드릴게요"가 가능해지고, 대기·이탈이 준다.</p>
+
+<h4>③ 예약 환자가 앉아있는데 응급이 왔다 — 누구 양보?</h4>
+<p><b>실제 상황</b> · 예약 맞춰 온 환자가 대기 중인데, 심한 통증·부기로 응급이 왔다. 응급을 먼저 보면 예약 환자가 "왜 새치기냐"며 폭발한다.</p>
+<p><b>이렇게 정한다</b></p>
+<ol>
+  <li>응급 <b>triage 기준</b>을 정해둔다(심한 통증·부기·출혈·외상은 우선).</li>
+  <li>양보하게 되는 예약 환자에게 데스크가 <u>먼저 다가가</u> 사과 + 정확한 지연 시간 + 음료.</li>
+  <li>"새치기가 아니라 응급이라 순서를 조정했다"고 <b>설명</b>한다.</li>
+</ol>
+<p>→ 설명 없는 양보는 컴플레인, 설명 있는 양보는 이해가 된다.</p>
+
+<h4>④ 진료실에서 데스크로 넘어올 때 정보가 빠진다</h4>
+<p><b>실제 상황</b> · 환자가 진료 끝나고 데스크에 왔는데, 데스크는 뭘 했는지·다음에 왜 와야 하는지 모른다. 환자에게 다시 물으면 "아까 다 얘기했는데" 하며 신뢰가 깎인다. (MOT에서 가장 자주 깨지는 지점)</p>
+<p><b>이렇게 정한다</b> · <b>인수인계 한 줄 규칙</b>.</p>
+<ol>
+  <li>진료팀이 데스크로 넘길 때 3개를 전달: <u>무엇을 했나 / 다음 예약이 왜 필요한가 / 주의사항</u>.</li>
+  <li>차트 메모나 구두 한 줄로. 데스크는 그걸 보고 받는다.</li>
+</ol>
+
+<h4>⑤ 화난 환자를 응대한 직후, 바로 다음 환자를 맞아야 한다</h4>
+<p><b>실제 상황</b> · 욕을 먹고 손이 떨리는데 다음 환자가 바로 온다. 감정을 삼키고 웃어야 한다. 이게 쌓이면 번아웃·이직으로 간다.</p>
+<p><b>이렇게 정한다</b> · 감정노동은 개인이 삭이는 게 아니라 <u>팀이 처리</u>한다.</p>
+<ol>
+  <li>3진 아웃(2-4장) 뒤 <b>15분 휴식</b>을 보장한다.</li>
+  <li>짧은 디브리핑: 뭐가 잘됐나 / 뭐가 위험했나 / 다음엔 어떻게.</li>
+  <li>"네 잘못이 아니다"를 팀이 확인해준다.</li>
+</ol>
+
+<h4>⑥ 불만이 말로 끝나고 기록되지 않는다</h4>
+<p><b>실제 상황</b> · 접수·수납·진료 중 불만이 나왔는데 그 순간만 넘기고 기록하지 않는다. 다음 주 같은 환자가 같은 불만으로 또 온다.</p>
+<p><b>이렇게 정한다</b></p>
+<ol>
+  <li>불만 로그 한 줄: <u>날짜·환자·내용·조치</u>.</li>
+  <li>주 1회 원장과 공유. 같은 불만이 반복되면 그건 개인이 아니라 <b>시스템 문제</b> → 구조를 고친다.</li>
+</ol>
+
+<h4>⑦ 바쁘면 리콜을 건너뛴다</h4>
+<p><b>실제 상황</b> · 바쁜 주엔 아무도 리콜 콜을 안 한다. 아무 일도 안 일어난 것 같지만 구환이 조용히 이탈하며 매출이 샌다 — <u>티가 안 나서 더 위험</u>하다.</p>
+<p><b>이렇게 정한다</b></p>
+<ol>
+  <li>리콜을 "여유 있을 때"가 아니라 <b>고정 시간(화~금 하루 30분)</b>에 박아둔다.</li>
+  <li>개인 의지가 아니라 주간 루틴으로(5-5). 바쁜 주에도 그 30분은 지킨다.</li>
+</ol>
+
+<h4>⑧ "이건 내 일인가?" 역할 경계가 모호하다</h4>
+<p><b>실제 상황</b> · 리콜은 누가? 상담 연결은? 기공물 확인은? 애매한 일이 <u>바닥에 떨어진다</u> — 아무도 안 하다가 나중에 문제가 된다.</p>
+<p><b>이렇게 정한다</b></p>
+<ol>
+  <li><b>위임 경계표</b>(1-4장)를 만들어 누가 무엇까지 하는지 적는다.</li>
+  <li>애매한 새 업무는 회의에서 <b>주인</b>을 정한다 — "이건 애매하니 ○○님이 맡기로" 한 줄.</li>
+</ol>
+
+<div class="box good">
+  <div class="bt">✅ 공통 원리</div>
+  이 여덟 가지는 전부 <u>"우리는 이 상황에서 어떻게 하기로 했지?"에 답이 없어서</u> 생깁니다. 답을 <b>한 줄로 정해 붙여두는 것</b>만으로 대부분 사라집니다. 데스크와 함께 이 표를 채우는 30분이, 매달 반복되는 소모를 없앱니다.
+</div>
+
+
+<hr>
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨D_문자대전">
+
+<h3 id="anx-sms2"><span class="n" style="font-size:.7em">별첨 D</span> 상황별 문자 대전 — 이유를 붙여 보낸다</h3>
+
+<p>대부분의 병원이 <u>"정기검진 때가 되었습니다"</u> 한 줄만 보냅니다. 이런 문자는 잘 안 옵니다 — 환자에게 <b>"왜 지금 가야 하는지"</b>가 없기 때문입니다. 좋은 문자는 항상 <b>이유(꿀팁·건강·손해)를 함께</b> 담습니다. 아래는 그 원리로 다시 쓴 문자 모음이고, <b>[ ]만 채우면</b> 바로 발송할 수 있습니다.</p>
+
+<div class="box good">
+  <div class="bt">✅ 오게 만드는 문자의 3원칙</div>
+  ① <b>이유를 붙인다</b> — "왜 지금인가"(초기에 발견하면 간단·저렴, 미루면 손해, 혜택 마감 등) · ② <b>개인화</b> — 이름 + 그 사람 상황을 기억한 한마디 · ③ <b>행동을 쉽게</b> — "예약 도와드릴까요?" 한 줄로 다음 행동을 열어둔다.
+</div>
+
+<div class="box warn">
+  <div class="bt">⚠️ 문자 보내기 전 꼭 알 것 — 광고성 규제</div>
+  <b>순수 안내</b>(예약 확정·리마인더·완료·정기검진 안내)는 비광고라 그대로 보내도 됩니다. 하지만 <u>할인·쿠폰·이벤트·특별혜택</u>이 들어가면 <b>광고성 문자</b>로 분류되어 <b>맨 앞에 (광고), 끝에 무료수신거부 080 번호</b>가 <u>법적으로 필수</u>입니다(안 넣으면 과태료). 그래서 아래 문자는 대부분 <b>"건강 이유" 기반(비광고)</b>으로 썼습니다.
+  <span class="src">근거 · 정보통신망법 광고성 정보 전송 규정</span>
+</div>
+
+<h4>A. 예약·리마인더 (순수 알림)</h4>
+<div class="tool"><div class="th"><span class="tag">SMS</span> 예약 흐름</div><div class="tb">
+  <div class="sms"><span class="lb">① 예약 확정</span>[환자명]님, [병원명] 예약이 잡혔습니다. 📅 [날짜·시간] · [진료 내용]. 변경하실 일 있으면 이 번호로 알려주세요.</div>
+  <div class="sms"><span class="lb">② 전날 리마인드</span>[환자명]님, 내일 [시간]에 뵙기로 했습니다. 혹시 시간이 어려우시면 오늘 중에 편히 말씀해 주세요.</div>
+  <div class="sms"><span class="lb">③ 당일 아침</span>[환자명]님, 오늘 [시간] 예약 잊지 않으셨죠? 조심히 오세요. 🙂</div>
+  <div class="sms"><span class="lb">④ 노쇼 후 재예약</span>[환자명]님, 오늘 뵙지 못해 아쉽습니다. 혹시 무슨 일 있으셨어요? 편하신 시간으로 다시 잡아드릴게요.</div>
+  <div class="sms"><span class="lb">⑤ 신환 첫 예약 환영 (오시는 길 + 기대감)</span>[환자명]님, 처음 뵙게 되어 반갑습니다. 📍 오시는 길: [지도 링크·주차 안내]. 편하게 오시면 저희가 잘 준비하고 기다리겠습니다. 🙂</div>
+  <div class="sms"><span class="lb">⑥ 수술 전날 안심 (동의 환자)</span>[환자명]님, 내일 [시간] 수술 잘 준비하고 있겠습니다. 궁금하신 점 있으면 편하게 연락 주세요.</div>
+  <p style="margin:8px 0 0;font-size:.86rem;color:var(--muted)">💡 체계적인 병원들은 <b>신환 예약엔 "환영·기대감" 문자를 따로</b> 보내고(일반 확정 문자와 구분), 구환 리마인드는 <u>전날 오후 3시 자동 발송</u>으로 고정해 둡니다 — 사람이 잊어도 시스템이 보냅니다.</p>
+</div></div>
+
+<h4>B. 진료 후 안내 (안심 + 다음 관리)</h4>
+<div class="tool"><div class="th"><span class="tag">SMS</span> 시술 직후</div><div class="tb">
+  <div class="sms"><span class="lb">④ 발치 후</span>오늘 발치 잘 받으셨습니다. 물린 거즈는 2시간 뒤 빼시고, 오늘은 침 뱉기·빨대·과한 양치를 피해 주세요. 피가 계속 많이 나거나 심하게 붓고 아프면 연락 주세요.</div>
+  <div class="sms"><span class="lb">⑤ 신경치료 후</span>신경치료 후 며칠간 시큰하거나 불편할 수 있으며 대개 정상입니다. 처방약을 드시고 반대쪽으로 식사해 주세요. 2주 넘게 아프거나 붓고 열이 나면 연락 주세요.</div>
+  <div class="sms"><span class="lb">⑥ 임플란트 수술 후</span>오늘 수술 잘 마치셨습니다. 처방약을 시간 맞춰 드시고, 첫날은 얼음찜질을 해 주세요. 뜨거운 음식·음주·흡연·과한 운동은 며칠 피해 주세요. 실밥은 [날짜]에 뽑습니다.</div>
+  <div class="sms"><span class="lb">⑦ 스케일링·잇몸치료 후</span>시술 후 며칠 이가 시릴 수 있으며 점차 좋아집니다. 잇몸이 자리 잡도록 부드럽게 칫솔질하고 치실을 함께 써 주세요.</div>
+  <div class="sms"><span class="lb">⑧ 임시치아 주의</span>오늘 끼운 임시치아는 접착이 약합니다. 끈적하거나 질긴 음식은 피하시고, 혹시 빠지면 그대로 보관해 연락 주세요. 최종 보철은 [날짜]에 끼웁니다.</div>
+  <div class="sms"><span class="lb">⑨ 보철(크라운) 도착 안내</span>[환자명]님, 맞춤 제작한 보철물이 도착했습니다. 오래 비워두면 옆니가 조금씩 움직여 안 맞을 수 있으니, [날짜]쯤 오셔서 끼우시는 게 좋아요. 언제가 편하실까요?</div>
+</div></div>
+
+<h4>C. 리콜 — "왜 지금 와야 하는지"를 붙인다 ⭐</h4>
+<div class="tool"><div class="th"><span class="tag">SMS</span> 이유가 살아있는 리콜 문자</div><div class="tb">
+  <div class="sms"><span class="lb">⑩ 정기검진 (6개월)</span>[환자명]님, 마지막 검진 후 6개월이 지났습니다. 충치·잇몸병은 <b>초기엔 아프지 않아</b> 놓치기 쉬운데, 지금 보면 간단히 끝나지만 미루면 신경치료까지 갈 수 있어요. 편하신 날 예약 도와드릴까요?</div>
+  <div class="sms"><span class="lb">⑪ 보험 스케일링 (연말 마감 훅)</span>[환자명]님, <b>건강보험 스케일링은 1년에 한 번</b> 받으실 수 있는데, 해가 바뀌면 올해 혜택은 사라집니다. 아직 안 받으셨다면 이번에 챙기시는 걸 권해드려요.</div>
+  <div class="sms"><span class="lb">⑫ 잇몸(치주) 유지관리</span>[환자명]님, 잇몸치료 후 <b>관리를 안 하면 3~6개월이면 다시 나빠지기</b> 쉽습니다. 애써 좋아진 잇몸을 지키시게, 이번 유지관리 시기에 한 번 봐드릴게요.</div>
+  <div class="sms"><span class="lb">⑬ 미완료 치료 재개 (손실 훅)</span>[환자명]님, 진행하던 [치료]가 남아 있습니다. <b>중간에 멈추면 임시 상태가 오래가 오히려 더 손이 가고</b>, 비용도 늘 수 있어요. 이어서 마무리하시게 가까운 날 잡아드릴까요?</div>
+  <div class="sms"><span class="lb">⑭ 정기검진 (1년 이상)</span>[환자명]님, 마지막 방문 후 1년이 넘었습니다. 1년에 한 번 검진·스케일링만 해도 큰 치료를 미리 막을 수 있어요. 오랜만에 한 번 점검받으시겠어요?</div>
+  <div class="sms"><span class="lb">⑮ 재활성화 (오래 안 오신 분·안부형)</span>[환자명]님, 오랜만에 안부 전합니다. 그동안 불편한 곳은 없으셨어요? 예약 없이 상담만도 편히 오실 수 있으니 부담 갖지 마세요.</div>
+</div></div>
+
+<h4>C+. 리콜 문자 응용 3종 (체계적인 병원들의 방식)</h4>
+<div class="tool"><div class="th"><span class="tag">SMS</span> 마무리·재개·부재 응용</div><div class="tb">
+  <div class="sms"><span class="lb">㉐ 리콜 종결 (몇 차례 연락 후 출구)</span>[환자명]님, 그동안 몇 차례 연락드렸는데 계속 연락드리기도 실례가 될 것 같습니다. 치료 일정이 가능해지시면 편하게 연락 주세요 — 저희는 이후 <b>정기검진 안내</b>로 찾아뵙겠습니다. 🙂</div>
+  <div class="sms"><span class="lb">㉑ 상담 요약 재전달 (미결정 환자)</span>[환자명]님, 오늘 상담 내용 정리해 보내드립니다. ▸ 고민: [통증/심미] ▸ 비용: 일시납 [금액] / 분납 [개월]×[금액] ▸ 참고: [기간·주의]. 궁금한 점은 언제든 물어보세요. 다음 주에 한 번 더 연락드리겠습니다.</div>
+  <div class="sms"><span class="lb">㉒ 더블 부재 (전화 두 번 안 닿을 때)</span>[환자명]님, 전화드렸는데 연결이 안 되어 문자 남깁니다. 편하신 시간에 전화 주시거나, <b>통화 가능한 시간을 문자로</b> 알려주시면 그때 맞춰 전화드릴게요.</div>
+  <p style="margin:8px 0 0;font-size:.86rem;color:var(--muted)">㉐의 원리 — 무한 리콜은 스팸이 됩니다. <u>공식적으로 마무리하고 정기검진 트랙으로 전환</u>하면 부담은 사라지고 신뢰는 남습니다. ㉑의 원리 — 구두 상담은 휘발됩니다. <u>문자로 문서화</u>하면 가족과 상의할 때 우리 상담이 기준이 됩니다.</p>
+</div></div>
+
+<h4>D. 관계·경험</h4>
+<div class="tool"><div class="th"><span class="tag">SMS</span> 신뢰를 쌓는 문자</div><div class="tb">
+  <div class="sms"><span class="lb">⑯ 수술후 안부 (문자판 해피콜)</span>[환자명]님, 어제 시술 후 오늘은 좀 어떠세요? 많이 불편하시면 편히 연락 주세요.</div>
+  <div class="sms"><span class="lb">⑰ 후기 요청 (만족 환자만)</span>[환자명]님, 오늘 진료는 어떠셨어요? 괜찮으셨다면 짧은 후기가 다른 분들께 큰 도움이 됩니다. [링크]</div>
+  <div class="sms"><span class="lb">⑱ 생일</span>[환자명]님, 생일 축하드립니다. 건강한 한 해 되시길 바랍니다. — [병원명]</div>
+  <p style="margin:8px 0 0;font-size:.86rem;color:var(--muted)">후기 요청은 <b>만족이 확인된 환자에게만</b>. 불만 가능성이 있는 분께 후기 링크를 보내면 역효과입니다.</p>
+</div></div>
+
+<div class="box warn">
+  <div class="bt">🚫 이건 문자로 보내지 마세요</div>
+  <b>미수금·환불·분납, 진료 결과 불만에 대한 사과</b>는 문자로 보내면 차갑고 오해가 생깁니다 — 돈과 감정이 걸린 일은 <u>전화나 대면</u>이 원칙입니다. 문자는 어디까지나 <b>알림과 안부</b>까지.
+</div>
+
+<div class="box">
+  <div class="bt">💡 더 다양한 "부르는 구실"이 필요하면</div>
+  같은 리콜이라도 계절·상황을 구실 삼아 여러 각도로 부를 수 있습니다. 그 전략 모음은 <a href="#f-별첨E_리콜부르는구실">별첨 E · 리콜 "부르는 구실" 플레이북</a>에 정리했습니다.
+</div>
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨E_리콜부르는구실">
+
+
+<h3 id="anx-hook"><span class="n" style="font-size:.7em">별첨 E</span> 리콜 "부르는 구실" 플레이북</h3>
+
+<p>같은 환자에게 <u>"정기검진 때가 되었습니다"</u> 하나만 반복하면, 환자는 스팸처럼 느끼고 안 옵니다. 잘하는 병원은 <b>그 환자에게 지금 딱 맞는 "구실(이유)"</b>을 골라 부릅니다. 구실이 구체적이고 나에게 맞을수록 <b>"아, 가야겠다"</b>가 됩니다. 아래는 실제로 잘 먹히는 구실들을 각도별로 모은 것입니다.</p>
+
+<div class="box warn">
+  <div class="bt">⚠️ 첫 번째 원칙 — 구실은 반드시 "진짜"여야 한다</div>
+  없는 이유를 지어내면 그 순간은 통해도 <b>신뢰가 깨집니다.</b> "지난번에 지켜보자던 그 치아"는 <u>차트에 실제로 그런 기록이 있을 때만</u> 씁니다. 구실은 마케팅 트릭이 아니라 <b>차트에 있는 진짜 근거를 환자 언어로 꺼내는 것</b>입니다.
+</div>
+
+<div class="box">
+  <div class="bt">📛 두 번째 원칙 — 광고가 되는 순간 규칙이 다르다</div>
+  건강 이유·경과 안내는 <b>비광고</b>라 그대로 보내도 됩니다. 하지만 <u>할인·이벤트·쿠폰·사은품</u>이 끼면 <b>광고성</b>이 되어 <b>(광고) 표시 + 080 수신거부</b>가 필수입니다. 아래 구실은 대부분 <b>건강·경과 기반(비광고)</b>이라 안전합니다. 혜택형(★ 표시)만 광고 규정을 지키세요.
+</div>
+
+<h4>1) 시간·경과 기반 구실</h4>
+<div class="tool"><div class="th"><span class="tag">Hook</span> 차트의 시간이 곧 이유</div><div class="tb">
+  <ul class="script">
+    <li><span class="who">지켜보자던 치아</span><span class="say me">"지난번에 원장님이 <u>6개월 뒤 다시 보자</u>고 하신 [부위], 이제 볼 시기예요." <em>원리 — 과거의 약속 회수, 가장 강력</em></span></li>
+    <li><span class="who">방사선 근거</span><span class="say me">"지난 파노라마에서 <u>지켜보자던 사랑니/초기 충치</u>, 지금쯤 확인하면 좋아요." <em>원리 — 객관적 근거 = 설득력</em></span></li>
+    <li><span class="who">유지관리 주기</span><span class="say me">"잇몸치료 후 [3~6개월] 관리 시기가 됐어요. 지금 안 하면 <u>재발</u>하기 쉬워요." <em>원리 — 손실 회피</em></span></li>
+    <li><span class="who">보철·임플 점검</span><span class="say me">"임플란트/보철도 <u>정기 점검</u>해야 오래 씁니다. 마지막 점검 후 [기간] 됐어요." <em>원리 — 자산 보호</em></span></li>
+  </ul>
+</div></div>
+
+<h4>2) 계절·생활 기반 구실</h4>
+<div class="tool"><div class="th"><span class="tag">Hook</span> 달력이 주는 명분</div><div class="tb">
+  <ul class="script">
+    <li><span class="who">연말 마감 ★</span><span class="say me">"<u>건강보험 스케일링은 연 1회</u>, 해 넘기면 올해 혜택이 사라져요." <em>원리 — 마감 임박 + 혜택(비광고: 제도 안내)</em></span></li>
+    <li><span class="who">환절기</span><span class="say me">"찬바람에 <u>이가 시리다</u>는 분이 늘어요. 시린이 원인부터 한 번 볼까요?" <em>원리 — 계절 증상 공감</em></span></li>
+    <li><span class="who">명절 전</span><span class="say me">"명절에 <u>딱딱하고 질긴 음식</u> 드시기 전에 아픈 데 미리 점검하세요." <em>원리 — 눈앞의 상황</em></span></li>
+    <li><span class="who">새 학기</span><span class="say me">"자녀 <u>새 학기 전 구강검진</u> 챙기실 때예요. 충치는 초기에 잡으면 간단해요." <em>원리 — 자녀 건강 트리거</em></span></li>
+    <li><span class="who">여름 전</span><span class="say me">"여름·행사 전에 <u>스케일링으로 개운하게</u> 정돈하는 분이 많아요." <em>원리 — 자기관리 동기</em></span></li>
+  </ul>
+</div></div>
+
+<h4>3) 관계·생애주기 기반 구실</h4>
+<div class="tool"><div class="th"><span class="tag">Hook</span> 사람과 시기를 엮는다</div><div class="tb">
+  <ul class="script">
+    <li><span class="who">가족 연계</span><span class="say me">"오시는 김에 <u>가족분도 함께</u> 검진하면 편하세요. 같은 날로 잡아드릴까요?" <em>원리 — 한 번 방문의 가치↑</em></span></li>
+    <li><span class="who">생애주기</span><span class="say me">"<u>임신 전 구강관리</u> / 갱년기 잇몸 변화 / 시니어 틀니 점검</u>처럼 시기마다 챙길 게 달라요." <em>원리 — 개인 맞춤</em></span></li>
+    <li><span class="who">미완료 회수</span><span class="say me">"[임시치아/미완 보철]을 오래 두면 <u>옆니가 움직여</u> 다시 맞춰야 할 수 있어요." <em>원리 — 방치 비용</em></span></li>
+    <li><span class="who">안부형(오래 안 옴)</span><span class="say me">"오랜만에 안부 전해요. 불편한 곳 없으셨어요? <u>예약 없이 상담만</u>도 편히 오세요." <em>원리 — 부담 제거, 문을 다시 엶</em></span></li>
+  </ul>
+</div></div>
+
+<h4>4) 교육·인식 기반 구실 (무증상의 함정)</h4>
+<div class="box good">
+  <div class="bt">🧠 "안 아프니까 괜찮다"를 뒤집는다</div>
+  충치와 잇몸병은 <b>아플 때는 이미 늦은</b> 병입니다. "지금 안 아파도 초기일 수 있고, 초기에 보면 간단히 끝나지만 미루면 신경치료·발치까지 간다"는 <u>사실 자체가 강력한 구실</u>입니다. 겁주기가 아니라 <b>정보로 납득</b>시키는 것 — 이게 가장 오래가는 리콜입니다.
+</div>
+
+<h4>어떤 환자에게 어떤 구실을? (매칭 표)</h4>
+<div class="tool"><div class="th"><span class="tag">Match</span> 상태 → 구실 → 채널</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th>환자 상태</th><th>가장 잘 맞는 구실</th><th>채널</th></tr></thead>
+  <tbody>
+  <tr><td>경과관찰 약속 있음</td><td>"지켜보자던 그 치아"</td><td><b>전화</b>(고가치)</td></tr>
+  <tr><td>잇몸치료 후</td><td>유지관리 주기·재발 방지</td><td>전화 or 문자</td></tr>
+  <tr><td>스케일링 미수검</td><td>연말 보험 마감</td><td>문자(다수)</td></tr>
+  <tr><td>미완료 치료</td><td>방치 비용·손실</td><td><b>전화</b></td></tr>
+  <tr><td>6~12개월 미내원</td><td>무증상 교육 + 검진</td><td>문자</td></tr>
+  <tr><td>2년+ 휴면</td><td>안부형 재활성화</td><td>문자(부담 X)</td></tr>
+  </tbody>
+  </table></div>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">원칙은 <a href="#f-05_Part5_리콜시스템">5장</a>과 같습니다 — <b>고가치·고위험·설득 필요 = 전화</b>, <b>단순 안내·다수 = 문자</b>.</p>
+</div></div>
+
+<h4>참고 — 체계적인 병원들의 리콜 설계 3가지</h4>
+<div class="tool"><div class="th"><span class="tag">Case</span> CRM을 정교하게 굴리는 곳들은 이렇게 한다</div><div class="tb">
+  <ul class="script">
+    <li><span class="who">① 강도 매트릭스</span><span class="say me">환자를 <b>니즈 유무 × 치료 확정 유무</b> 2축으로 나눠 리콜 주기를 차등한다 — 니즈도 확정도 없으면(단순 경과) <u>세 달 간격</u>, 니즈가 생겼으면(상담 미동의·미예약) <u>일주일 간격</u>으로 촘촘히. 모두에게 같은 주기 X.</span></li>
+    <li><span class="who">② 출구 설계 — 종결 문자</span><span class="say me">몇 차례 연락 후엔 <b>"계속 연락드리기도 실례일 것 같아 — 이후엔 정기검진 안내로 찾아뵙겠습니다"</b>라는 <u>종결 문자</u>를 보내고 정기검진 트랙으로 전환. 무한 리콜은 스팸이 되고, 공식적 마무리는 오히려 신뢰를 남긴다.</span></li>
+    <li><span class="who">③ 검진 프레임</span><span class="say me">발치 후 방치 환자(임플란트 가망)에겐 "임플란트 하세요"가 아니라 <b>"발치 부위 잇몸·뼈 상태 정기 체크"</b>로 부른다 — 영업이 아니라 <u>임상 검진의 얼굴</u>로. 단, 구실 1원칙(진짜여야 한다)은 그대로: 실제로 상태를 봐드리는 것.</span></li>
+  </ul>
+</div></div>
+
+<div class="box">
+  <div class="bt">✅ 정리 — 구실 3원칙</div>
+  ① <b>진짜여야 한다</b>(차트 근거) · ② <b>혜택형은 광고 규정</b>((광고)·080) · ③ <b>그 환자에 맞게</b> 고른다. 이 셋만 지키면, "정기검진 때 됐어요" 하나로 돌리는 병원과는 <u>재방문율이 확연히 갈립니다.</u>
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨F_대기업vs치과">
+
+
+<h3 id="anx-ent"><span class="n" style="font-size:.7em">별첨 F</span> 대기업은 데스크를 어떻게 관리하나 — 그리고 치과의 현실</h3>
+
+<p>대기업 콜센터·호텔·은행은 <b>고객접점(데스크)</b>을 수십 년간 과학적으로 관리해 왔습니다. 그들의 방법을 알면 <u>치과 데스크가 무엇을 흉내 낼 수 있고, 무엇은 무리인지</u>가 보입니다. 통째로 따라 하면 작은 병원은 무너집니다 — <b>핵심만 경량화</b>해서 가져오는 게 정답입니다.</p>
+
+<h4>대기업이 데스크를 관리하는 6가지 방식</h4>
+<div class="tool"><div class="th"><span class="tag">Enterprise</span> 큰 조직의 표준</div><div class="tb">
+  <ul class="check">
+    <li><b>표준 스크립트</b> — 인사·경청·해결·마무리를 규격화해 <u>누가 받아도 같은 품질</u>. ("안녕하세요, ○○입니다" / "정확히 파악했습니다" / "이렇게 도와드릴게요" / "더 궁금한 점 있으시면…")</li>
+    <li><b>QA 모니터링</b> — 통화를 녹음·샘플 청취해 체크리스트로 <u>품질 점수화</u></li>
+    <li><b>KPI 관리</b> — 응답 속도·해결률·<u>고객만족(CSAT)·추천지수(NPS)</u> 등 지표를 월 단위로</li>
+    <li><b>교육 체계</b> — 신입 표준 교육 + 반복 롤플레이 + 캘리브레이션(평가자 간 기준 맞추기)</li>
+    <li><b>분업</b> — 접수·상담·수납·클레임을 <u>각기 다른 사람</u>이 전담</li>
+    <li><b>대기 관리 시스템</b> — 번호표·예상 대기시간 표시·콜백 예약으로 체감 대기 관리</li>
+  </ul>
+  <span style="display:block;margin-top:8px;font-size:.78rem;color:var(--muted)">참고 · 콜센터 CS 표준·KPI 실무 가이드(CS쉐어링·Lightico 등)</span>
+</div></div>
+
+<h4>치과의 현실은 다르다</h4>
+<div class="box warn">
+  <div class="bt">🏥 동네치과의 조건</div>
+  치과 데스크는 <b>1~2명이 접수·수납·보험청구·상담·리콜을 겸직</b>하고, 바쁘면 <u>진료실에 투입</u>되어 데스크를 비웁니다. 전담 QA 담당도, 통화 녹음 분석팀도, 여러 평가자도 없습니다. 대기업의 "분업·QA·캘리브레이션"은 <b>구조적으로 불가능</b>합니다. 그래서 키오스크·자동 문자·간단 시스템으로 <u>사람의 빈자리를 메우는</u> 방향이 맞습니다.
+</div>
+
+<h4>그래서 — 무엇을 가져오고, 무엇을 버릴까</h4>
+<div class="tool"><div class="th"><span class="tag">Compare</span> 대기업 방식 → 치과 최소 실전</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th>항목</th><th>대기업</th><th>치과 현실</th><th>치과가 취할 최소 실전</th></tr></thead>
+  <tbody>
+  <tr><td>표준 스크립트</td><td>수십 종·정교</td><td>겸직·시간 없음</td><td><b>핵심 3~5개만</b>(전화 첫인사·컴플레인 첫마디·가격저항 첫마디) 카드로</td></tr>
+  <tr><td>QA 모니터링</td><td>녹음·전담 청취</td><td>전담 없음</td><td>실장이 <b>월 1회 5분</b> 행동 체크(6장 평가표)</td></tr>
+  <tr><td>KPI</td><td>수십 개 지표</td><td>다 못 봄</td><td><b>3개만</b> — 선예약률·재검진 재예약률·미수 회수</td></tr>
+  <tr><td>교육</td><td>표준 커리큘럼</td><td>OJT 위주</td><td><b>도제식 4단계 + 모듈 체크리스트</b>(6장)</td></tr>
+  <tr><td>분업</td><td>역할 전담</td><td>겸직 불가피</td><td><b>위임 경계표</b>로 "누가 무엇까지"만 명확히</td></tr>
+  <tr><td>대기 관리</td><td>번호표·시스템</td><td>수기·구두</td><td>대기시간 <b>먼저 말로 안내</b> + 키오스크(여력 시)</td></tr>
+  </tbody>
+  </table></div>
+</div></div>
+
+<h4>병원이 커지면 — "전화 전담" 부서를 만들 때의 교훈</h4>
+<p>규모가 커지면(체어·직원이 늘면) 일부 병원은 전화·리콜을 전담하는 <b>비대면 응대 부서</b>를 둡니다. 이때 잘되는 병원과 망하는 병원이 갈리는 지점이 명확합니다.</p>
+<div class="tool"><div class="th"><span class="tag">Case</span> 전담 부서 — 실패 3패턴 vs 잘하는 방식</div><div class="tb">
+  <ul class="script">
+    <li><span class="who">❌ 실패 3패턴</span><span class="say me">① 데스크 충원 없이 성급하게 사람을 빼서 재배치(양쪽 다 무너짐) ② 콜량 대비 인원 부족 ③ <u>"컴플레인 많던 직원·일 못하던 직원"을 보내버림</u> — 통화 품질이 곧 병원 얼굴인데, 좌천처럼 배치하면 품질도 사기도 무너진다.</span></li>
+    <li><span class="who">✅ 잘하는 방식</span><span class="say me"><b>핵심 우수직원을 선발해</b> 공식적으로 임명하고("우수한 사람이 가는 자리"라는 분위기), 배치 전 1~2주 참관을 거친다. 구조는 <u>신환 전담(역량자) + 재진 전담(친절형)</u> 분리.</span></li>
+    <li><span class="who">환경이 사기다</span><span class="say me">헤드셋·듀얼 모니터·창고와 분리된 독립 공간 — "병원이 신경 쓴 느낌"이 부서의 자부심을 결정한다. 그리고 <u>행정 업무를 얹지 말 것</u>(주객전도).</span></li>
+  </ul>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">작은 병원엔 먼 얘기 같지만 원리는 같습니다 — <b>전화 응대를 "남는 사람 일"로 두는 순간 매출 채널이 무너진다</b>(별첨 M의 미응답 통계). 지금 규모에선 "신환 전화는 숙련자가"(별첨 I의 금지 4수칙) 하나만 지켜도 같은 효과입니다.</p>
+</div></div>
+
+<div class="box good">
+  <div class="bt">✅ 핵심 통찰 — "축소가 아니라 선택"</div>
+  치과가 대기업만큼 못 하는 건 <u>부족</u>이 아니라 <b>구조</b>입니다. 그러니 열등감 가질 필요 없습니다. 대기업 방식의 <b>본질(표준·측정·교육)만 뽑아 3~5개로 경량화</b>하면, 작은 병원이 오히려 <u>더 빠르고 따뜻하게</u> 굴러갑니다. 매뉴얼로 안 되는 <b>호스피탈리티(스스로 판단하는 사람)</b>는 오히려 작은 병원의 강점입니다.
+</div>
+
+<div class="box">
+  <div class="bt">📚 더 넓게 보고 싶다면</div>
+  이 책 전체가 그 "경량화된 대기업 방식"입니다 — 표준(2장)·측정(3·6장)·리콜 시스템(5장)·교육(6장)·접점 관리(별첨 A MOT). 데스크 업무를 체계로 이해하고 싶은 신입·실장에게 <a href="#toc-top">처음부터</a> 한 번 읽히면, 흩어진 감(感)이 <u>하나의 그림</u>으로 정리됩니다.
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨G_전화리콜심화">
+
+
+<h3 id="anx-call2"><span class="n" style="font-size:.7em">별첨 G</span> 전화 리콜 심화 — 받게 만들고, 예약까지 끌어내기</h3>
+
+<p>리콜 전화는 <b>두 개의 관문</b>을 지나야 합니다 — ① <u>전화를 받게</u> 만드는가, ② 받았을 때 <u>예약까지</u> 가는가. 대부분의 병원이 둘 다 놓치고, "돌렸는데 안 오네" 합니다. 이 별첨은 그 두 관문을 하나씩 깊게 봅니다.</p>
+
+
+<h3>관문 ① — 전화를 "받게" 만드는 법</h3>
+
+<p>사람들은 <b>모르는 번호를 안 받습니다.</b> 그러니 "받을 확률" 자체를 올리는 게 먼저입니다.</p>
+
+<div class="tool"><div class="th"><span class="tag">Pickup</span> 받을 확률을 올리는 5가지</div><div class="tb">
+  <ul class="check">
+    <li><b>발신 전 예고 문자</b> — "○○치과입니다. 잠시 후 전화 한 통 드릴게요 🙂" → 낯선 번호 경계를 푼다</li>
+    <li><b>발신번호에 병원 이름 표시</b> — 번호 등록·후이즈넘버 등으로 "○○치과"가 뜨게</li>
+    <li><b>차트 데이터로 시간 맞추기</b> — 이 환자가 <u>과거에 주로 언제 왔는지(시간대·요일)</u>, 통화가 됐던 시간, 연령대를 보고 건다</li>
+    <li><b>일반 응답 최적 시간대(참고)</b> — 오전 10~11시·오후 4~5시가 잘 받고, <u>점심·이른 아침·퇴근 직후는 회피</u>. 화~목이 유리</li>
+    <li><b>안 받으면 음성 대신 문자</b> — "전화드렸어요, 편하실 때 연락 주세요"로 다음 접점을 연다</li>
+  </ul>
+</div></div>
+
+<div class="box data">
+  <div class="bt">📊 근거 — 언제 걸어야 잘 받나</div>
+  콜센터·역학조사 데이터에서 <b>오후 4~5시 응답률이 약 68%로 가장 높고, 오전 10~11시</b>가 그다음입니다. <u>점심시간·이른 아침·퇴근 직후는 최악</u>이고, 화~목이 월·금보다 낫습니다. 리마인더 문자는 <b>오전 9시</b> 발송이 점심보다 응답이 좋습니다.
+  <span class="src">출처 · 콜 응답률 연구(PMC 역학조사)·콜센터 벤치마크(ZoomInfo·Convoso 등)</span>
+</div>
+
+<div class="box warn">
+  <div class="bt">⚠️ 현실 체크 — 있지도 않은 데이터를 가정하지 말 것</div>
+  "환자 직업·거주지·생활패턴으로 최적 시간을 계산한다"는 <u>이상적이지만 현실의 동네치과엔 그 데이터가 없습니다.</u> 덴트웹 같은 차트에 실제로 있는 건 <b>과거 내원 시간대·요일, 통화 이력, 연령대</b> 정도입니다. 그걸로 추정하되, <b>가장 확실한 신호는 따로 있습니다</b> — 아래 ②번, 환자가 <u>직접 말한 시간</u>입니다.
+</div>
+
+
+<h3>관문 사이의 열쇠 ⭐ — "다음 연락 시기를 확정하고 보내는 습관"</h3>
+
+<p>리콜 전화가 잘 안 받히는 진짜 이유는 <b>아무 때나 걸기 때문</b>입니다. 해법은 통화 기술이 아니라 <u>그 전에 심어두는 습관</u>에 있습니다. 상담·진료·통화가 끝날 때마다 <b>"언젠가 오세요"로 끝내지 마세요.</b></p>
+
+<div class="box good">
+  <div class="bt">✅ 이렇게 바꾼다</div>
+  "다음에 또 오세요" ❌ →<br>
+  <b>"몇 월쯤이 가장 오기 편하세요?"</b> → 환자가 시기를 고르면 → <b>"그럼 그때쯤 제가 문자·전화 드릴게요."</b><br>
+  <u>다음 접촉 시기를 환자와 합의하고</u> 보내는 것. 만나서든 통화에서든, 항상 이 확정을 하고 끝냅니다.
+</div>
+
+<div class="box data">
+  <div class="bt">🔬 왜 이게 결정적인가 (근거)</div>
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li><b>환자가 스스로 고른 시간은 지킨다</b> — 일관성 원리(Cialdini). 자기가 정한 약속을 어기기 어렵다.</li>
+    <li><b>그 시간에 걸면 받는다</b> — "그때가 편하다"고 <u>본인이 말한</u> 시간이니까.</li>
+    <li><b>콜 퀄리티가 오른다</b> — 아무 때나 대량으로 거는 게 아니라, "된다고 한 사람"에게만 건다.</li>
+    <li><b>노쇼가 급감한다</b> — 환자가 고른 방식·시간으로 예약·리마인드한 교정 연구(1,193건)에서 노쇼가 <u>4%</u>(문자만은 1.9%). 자가예약이 직원예약보다 노쇼가 적다는 Mayo Clinic 연구도 같은 방향.</li>
+  </ul>
+  <span class="src">출처 · Cialdini 일관성 원리 · 환자선택 리마인더 연구(PMC, 교정 1,193건) · Mayo Clinic 자가예약 연구</span>
+</div>
+
+<p>이건 <a href="#f-05_Part5_리콜시스템">5장의 선예약</a>과 한 몸입니다 — 다음 예약을 바로 못 잡겠으면, 최소한 <b>"다음 연락 시기"라도 합의</b>하고 보내세요. 이 습관 하나가 관문 ①(받게)과 ②(예약까지)를 동시에 쉽게 만듭니다.</p>
+
+<h3>리콜의 정점 ⭐⭐ — 리콜의 주어를 "데스크"에서 "원장"으로 바꾼다</h3>
+
+<p>여기까지의 모든 기술에는 공통의 한계가 있습니다 — <b>병원이 부르는 말은 환자에게 결국 '영업'으로 들린다</b>는 것. 문구를 아무리 다듬어도 이 벽은 남습니다. 이 벽을 없애는 방법은 데스크가 아니라 <u>진료실</u>에 있습니다.</p>
+
+<div class="box good">
+  <div class="bt">✅ 원장이 체어에서 직접 "예고"를 심는다</div>
+  진료가 끝날 때 원장이 환자 눈을 보고 말합니다 —<br>
+  <b>"여기 오른쪽 어금니, 지금은 지켜봐도 되는데 6개월 뒤엔 꼭 봐야 해요. 그때 저희가 연락드릴게요."</b><br><br>
+  이 한 문장이 심어지는 순간, 6개월 뒤의 리콜 문자·전화는 <u>영업이 아니라 "원장님이 보자고 하셨던 약속의 이행"</u>이 됩니다. 데스크는 이렇게 회수만 하면 됩니다 — "원장님이 그때 꼭 보자고 하셨던 그 치아요."
+</div>
+
+<div class="box data">
+  <div class="bt">🔬 왜 이게 차원이 다른가</div>
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li><b>화자가 다르다</b> — 데스크의 말=마케팅, <u>의사의 말=의료</u>. 환자는 의사의 임상적 예고를 거절할 명분이 없다(권위, Cialdini).</li>
+    <li><b>약속이 선재한다</b> — 리콜 시점에 새로 설득하는 게 아니라, <u>이미 한 약속을 상기</u>시킬 뿐(일관성 원리 + Langer의 '이유': 이보다 강한 이유가 없다).</li>
+    <li><b>구체적이다</b> — "정기검진 때 되셨어요"가 아니라 "그 치아". 차트에 남은 원장의 예고 한 줄이 <u>최고의 리콜 사유 데이터</u>가 된다.</li>
+  </ul>
+</div>
+
+<div class="box warn">
+  <div class="bt">⚠️ 작동 조건 — 이건 데스크 혼자 못 만든다</div>
+  ① 원장이 <u>매 환자마다</u> 예고를 습관화해야 하고(체어사이드 10초), ② 그 예고가 <b>차트에 한 줄로 기록</b>되어야 하며("6개월 뒤 #46 F/U 예고함"), ③ 데스크 리콜 리스트가 그 기록을 사유로 쓰게 연결되어야 합니다. 원장·진료실·데스크가 <u>한 팀으로 굴리는 시스템</u> — 그래서 이게 리콜의 정점이자, 흉내 내기 가장 어려운 부분입니다.
+</div>
+
+
+<h3>관문 ② — 받았을 때, 예약까지 끌어내는 통화</h3>
+
+<p>전화를 받았습니다. 여기서 <b>"검진 때 되셔서요~ 예약하시겠어요?"</b>로 물으면 절반은 "생각해볼게요"로 끝납니다. 통화에는 순서와 기술이 있습니다.</p>
+
+<div class="tool"><div class="th"><span class="tag">Before</span> 통화 전 체크 4가지 — "차트 안 보고 전화 금지"</div><div class="tb">
+  <ul class="check">
+    <li>☐ <b>과거 차팅 내용</b> — 무슨 치료, 어디까지 진행됐나</li>
+    <li>☐ <b>미룬 이유</b> — 지난 통화·상담에서 뭐라고 했었나(메모 확인)</li>
+    <li>☐ <b>원장 사전 확인</b> — 통화 중 결정이 필요할 수 있는 건(할인·일정 등)은 미리 물어둔다</li>
+    <li>☐ <b>예약 가능일</b> — 제안할 두 개의 시간을 미리 골라둔다(선택형 클로징 준비)</li>
+  </ul>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">CRM을 체계적으로 굴리는 병원들의 제1원칙이 이것입니다 — <b>준비 없는 전화는 안 거느니만 못하다.</b> 그리고 <u>처음 10초가 통화의 전부</u>라는 걸 전제로 첫 문장을 미리 정해둡니다.</p>
+</div></div>
+
+<div class="tool"><div class="th"><span class="tag">Call</span> 통화 4단계</div><div class="tb">
+  <ul class="script">
+    <li><span class="who">1 · 인사 + 이유</span><span class="say me">"○○님 안녕하세요, [병원] ○○입니다. <b>지난번 지켜보자던 [부위]</b> 볼 시기가 돼서 연락드렸어요." <em>— 이유를 구체적으로</em></span></li>
+    <li><span class="who">2 · 개인화·공감</span><span class="say me">"요즘 [그 부위] 불편하진 않으셨어요?" <em>— 그 사람 상황을 기억한 한마디</em></span></li>
+    <li><span class="who">3 · 부담 낮춤</span><span class="say me">"오래 걸리지 않고, 검진·스케일링은 보험이라 부담도 적어요."</span></li>
+    <li><span class="who">4 · 선택형 클로징</span><span class="say me">"이번 주 <b>화요일 오전</b>과 <b>목요일 오후</b> 중 어느 쪽이 편하세요?" <em>— 예/아니오 대신 둘 중 선택</em></span></li>
+  </ul>
+</div></div>
+
+<div class="box data">
+  <div class="bt">🔬 두 가지 핵심 기술의 근거</div>
+  <b>① "이유를 붙여라"</b> — 하버드 랭어(Langer) 복사기 실험(1978): 이유 없이 부탁하면 <u>60%</u>만 양보했지만, <b>이유("~라서")를 붙이자 94%</b>가 양보했습니다. 리콜도 "정기검진이라서"보다 <u>"지난번 지켜보자던 치아라서"</u>처럼 구체적 이유가 강합니다.<br><br>
+  <b>② "선택형 클로징"</b> — "예약하시겠어요?"(예/아니오, 거절 쉬움)나 "언제 편하세요?"(결정 마비) 대신 <b>구체적 두 시간 중 고르게</b> 하면 전환이 오릅니다. "언젠가 들르겠다"는 방문 20~30%, <u>확정 예약은 65~80%</u>로 벌어집니다.
+  <span class="src">출처 · Langer et al.(1978) placebic information 실험 · 영업 대안선택 클로징(Cialdini 일관성)·약속 show-rate 벤치마크</span>
+</div>
+
+<div class="box">
+  <div class="bt">🚪 거절은 "닫지 말고" 다음 약속으로</div>
+  "지금 좀 바빠요" → "그럼요, 무리하지 마세요. <b>[다음 달]쯤 다시 한 번 연락드릴까요?</b>" — 거절을 <u>다음 접촉 약속</u>으로 바꿔서 문을 열어둡니다. 한 번 거절 = 영영 끝이 아닙니다.
+</div>
+
+<div class="box good">
+  <div class="bt">🏥 리콜 통화를 정교하게 하는 병원들의 현장 노하우 (참고)</div>
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li><b>망설임은 세 갈래로 나눠 대응한다</b> — "안 하신 이유, 비용 때문일까요? 일정? 아니면… 조금 무서우셨을까요?" <u>비용이면</u> 부담 낮은 선택지·분납, <u>일정이면</u> 야간·토요일 슬롯, <u>두려움이면</u> 안심 정보 — 갈래마다 답을 미리 준비해 둔다.</li>
+    <li><b>타병원에서 이미 받았다면 곱게 축하하고 끝낸다</b> — 영업을 접고 <u>주의사항·관리 안내만</u> 하고 좋게 마무리. 매출이 안 되는 통화도 <b>평판 자산</b>으로 마감한다. (다음 치료 땐 우리에게 온다)</li>
+    <li><b>통화의 목표는 멘트가 아니라 "남길 인상 3가지"</b> — ① 내 상황을 이해해주는 사람이다 ② 지금 안 하면 더 힘들어지겠구나 ③ 작은 것부터 시작할 수 있겠구나. 이 셋이 남았으면 예약을 못 잡아도 성공.</li>
+    <li><b>통화 후엔 반드시 문자 1통</b> — 예약이면 확정 문자, 미예약이면 "○일쯤 다시 연락드릴게요" — <u>통화는 끝나도 관계는 계속된다.</u></li>
+    <li><b>상담·통화에서 한 약속은 차트에 남긴다</b> — "야간 가능하다 안내함, ○○ 할인 언급함"까지. 다음 사람(원장·데스크)이 <u>다른 말을 하는 순간</u> 환자는 떠난다 — 설득 스토리의 단절이 이탈을 만든다.</li>
+  </ul>
+</div>
+
+
+<div class="box">
+  <div class="bt">🧠 예약을 잡는 세 가지 심리 지렛대 (설득 심리학의 실무 적용)</div>
+  체계적인 병원들은 설득 심리학(Cialdini)의 원칙 중 <u>딱 세 개</u>를 예약 실무에 씁니다:
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li><b>권위</b> — 데스크가 아니라 <u>원장의 말</u>을 실어 나른다: "원장님께서 N주 간격 치료가 꼭 필요하다고 하셔서, 바로 예약 잡아드릴게요." (별첨 G 앞의 '리콜의 정점'과 같은 원리)</li>
+    <li><b>희소성</b> — 사실일 때만: "이 시즌엔 예약이 빨리 차서요, <u>가예약이라도</u> 잡아두시는 게 좋아요."</li>
+    <li><b>일관성 — 고정예약</b> — 연속 치료는 한 회씩 잡지 말고 <b>"오늘처럼 수요일 2시, 2주 간격으로 3회 미리</b> 잡아드릴까요?" — 스스로 약속한 패턴은 지키게 된다(노쇼↓, 별첨 N의 환자선택 원리와 동일).</li>
+  </ul>
+  그리고 화법 하나 — <b>"예약 도와드릴까요?"(열림) 대신 "예약 해드릴게요, 화·목 중 언제가 편하세요?"(확정+선택)</b>. 열린 질문은 결정을 미루게 하고, 확정형+선택은 다음 행동을 만들어 줍니다.
+</div>
+
+<h3>시나리오 — 잘하는 데스크 vs 못하는 데스크 ⭐</h3>
+
+<p>같은 환자, 같은 전화인데 <b>데스크에 따라 결과가 갈립니다.</b> 못하는 곳은 유도를 못 해 다 놓치고, 잘하는 곳은 상황마다 다른 방식으로 잡습니다. 여덟 가지 상황으로 그 차이를 보여드립니다.</p>
+
+<div class="vs">
+  <h4>상황 1 · 낮에 전화를 못 받는 바쁜 직장인</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — 오후 2시에 한 번 걸고 안 받자 "안 받네" 하고 끝. 다음 주도 같은 시간에 또 안 받음.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — 과거 이 환자가 <u>저녁·토요일</u>에 왔던 걸 보고, 낮엔 <b>예고 문자</b>만 → "편하신 시간 알려주시면 그때 전화드릴게요." 저녁에 통화 성사.</p>
+  <p class="why"><b>왜 갈렸나</b> · 받을 수 없는 시간에 반복해 걸었나, 받을 수 있는 시간을 찾아줬나.</p>
+</div>
+
+<div class="vs">
+  <h4>상황 2 · "지금 안 아파서 괜찮아요"</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — "그래도 오셔야 해요"라고 밀어붙임 → 잔소리로 느껴져 반발, 더 멀어짐.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — "맞아요, 지금 안 아프신 게 정상이에요. 그런데 <u>충치·잇몸은 아플 땐 이미 늦어서</u>, 안 아플 때 보면 간단히 끝나요." + 선택형 클로징.</p>
+  <p class="why"><b>왜 갈렸나</b> · 강요 vs <b>정보로 납득</b>(무증상의 함정 교육).</p>
+</div>
+
+<div class="vs">
+  <h4>상황 3 · 가격이 부담돼 미룬 환자</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — 지난번 비싼 치료 얘기만 다시 꺼냄 → 부담 그대로, "돈 없어요"로 끝.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — "큰 치료 말고, 우선 <u>검진·스케일링만</u> 받으세요. 그건 보험이라 부담 적고, 상태만 봐드릴게요." <em>진입장벽을 낮춘다.</em></p>
+  <p class="why"><b>왜 갈렸나</b> · 큰 결정을 다시 요구했나, <b>작은 첫걸음</b>을 열어줬나.</p>
+</div>
+
+<div class="vs">
+  <h4>상황 4 · 2년 넘게 안 온 휴면 환자</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — "정기검진 때 되셨어요" → 남 얘기처럼 들려 무반응.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — "오랜만이에요, 그동안 불편한 곳 없으셨어요? <u>예약 없이 상담만도</u> 편히 오세요." 안부로 문을 다시 엶.</p>
+  <p class="why"><b>왜 갈렸나</b> · 기계적 통보 vs <b>관계 회복 + 부담 제거</b>.</p>
+</div>
+
+<div class="vs">
+  <h4>상황 5 · 불만이 있어 떠난 환자 (가장 어려움)</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — 아무 일 없던 듯 리콜 문자·전화 → 묵은 화만 돋우고 악평으로.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — 리콜 먼저 X. <u>전화로 먼저 사과·경청</u>("그때 불편하셨죠, 죄송해요"). 관계가 풀린 뒤에야 다음을 얘기. 급하면 원장이 직접.</p>
+  <p class="why"><b>왜 갈렸나</b> · 매출부터 챙겼나, <b>관계 복구를 먼저</b> 했나. 순서가 전부.</p>
+</div>
+
+<div class="vs">
+  <h4>상황 6 · 치료를 중간에 멈춘 환자</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — "치료 마무리하셔야 해요" 통보 → 부담·죄책감만 주고 회피.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — "지금 [임시 상태]로 오래 두면 <u>옆니가 움직여 더 번거로워져요.</u> 남은 [한 단계]만 하면 돼요." + 두 시간 중 선택.</p>
+  <p class="why"><b>왜 갈렸나</b> · 의무를 지웠나, <b>손실을 구체적으로</b> 보여주고 <b>남은 양을 작게</b> 느끼게 했나.</p>
+</div>
+
+<div class="vs">
+  <h4>상황 7 · 노쇼를 반복하는 환자</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — 늘 하던 대로 예약만 잡음 → 또 노쇼 → "이 환자는 원래 그래"라고 포기.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — <u>환자가 고른 시간</u>으로 잡고, <b>확정 문자 → 전날 → 당일 아침</b> 3중 리마인드. "혹시 지난번엔 무슨 일 있으셨어요?"로 이유도 확인.</p>
+  <p class="why"><b>왜 갈렸나</b> · 같은 방식 반복 vs <b>환자 선택 + 다중 리마인드</b>(노쇼를 구조로 막음).</p>
+</div>
+
+<div class="vs">
+  <h4>상황 8 · 통화 중 "생각해볼게요" 하며 망설이는 환자</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — "네, 생각해보시고 연락 주세요" → 열린 채로 끝 → 다시 연락 안 옴.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — "그럼요. 근데 자리가 금방 차서요, <u>일단 화요일로 가볍게 잡아둘까요?</u> 어려우면 편히 변경하시면 돼요." <em>부담 없는 확정.</em></p>
+  <p class="why"><b>왜 갈렸나</b> · 결정을 환자에게 통째로 떠넘겼나, <b>되돌릴 수 있는 확정</b>으로 다음 행동을 만들었나.</p>
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 여덟 상황을 관통하는 한 줄</div>
+  잘하는 데스크는 <b>환자를 이기려 하지 않습니다.</b> 상황마다 <u>부담을 낮추고, 이유를 주고, 다음 행동을 대신 만들어</u> 줍니다. 못하는 데스크는 <b>정보를 전달만 하고 결정을 환자에게 떠넘깁니다.</b> — 리콜의 성패는 "무엇을 말했나"가 아니라 <mark>"다음 행동을 얼마나 쉽게 만들어줬나"</mark>에서 갈립니다.
+</div>
+
+
+<h3>근거 요약 (이 별첨이 기댄 연구·사례)</h3>
+<div class="tool"><div class="th"><span class="tag">Evidence</span> 출처</div><div class="tb">
+  <ul class="check">
+    <li><b>Langer 복사기 실험(1978)</b> — 이유를 붙이면 승낙 60%→94%. "왜 와야 하는지"의 과학적 근거.</li>
+    <li><b>대안선택 클로징 · Cialdini 일관성</b> — 두 시간 중 선택이 예/아니오보다 전환↑. 확정 예약 show-rate 65~80% vs "언젠가" 20~30%.</li>
+    <li><b>환자선택 리마인더(교정 1,193건)</b> — 노쇼 4%, 문자 1.9%. 환자가 고른 방식이 노쇼를 줄인다.</li>
+    <li><b>Mayo Clinic 자가예약 연구</b> — 스스로 잡은 예약이 직원 예약보다 노쇼·취소↓.</li>
+    <li><b>콜 응답률 연구</b> — 오후 4~5시·오전 10~11시 최적, 점심·이른 아침 회피.</li>
+    <li><b>리마인더 시퀀스</b> — 2~3주 전 → 72시간 전 → 당일 3단계가 표준.</li>
+  </ul>
+</div></div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨H_컴플레인대본">
+
+
+<h3 id="anx-complaint"><span class="n" style="font-size:.7em">별첨 H</span> 컴플레인 5대 상황 — 전체 대본</h3>
+
+<p><a href="#f-02_Part2_환자응대">2-4장</a>에서 컴플레인의 원리(분노 4동인·HEAT·BIFF·3진 아웃)를 봤습니다. 여기서는 자주 터지는 <b>5대 상황</b>을 <u>못하는 데스크의 대사 vs 잘하는 데스크의 전체 대본</u>으로 하나씩 보여드립니다. 그대로 외워 쓰셔도 됩니다.</p>
+
+<div class="box">
+  <div class="bt">🧭 잘하는 대본의 뼈대 (모든 상황 공통)</div>
+  <b>① 첫 5초 인정</b>("그럴 만하세요") → <b>② 공감</b>(감정을 언어로) → <b>③ 확인</b>(사실 파악) → <b>④ 해결/전달</b>(구체 행동 + 기록). <u>방어·변명은 항상 지고, 인정은 항상 이깁니다.</u>
+</div>
+
+<div class="vs">
+  <h4>상황 1 · 신경치료 후 통증 — "치료했는데 왜 더 아파요!"</h4>
+  <p><span class="bad">❌ 못하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">환자</span><span class="say pt">"신경치료 했으면 안 아파야 되는 거 아니에요? 돈만 냈는데!"</span></li>
+    <li><span class="who">데스크</span><span class="say me">"원래 좀 아플 수 있어요." <em>(방어·축소 → 환자 폭발)</em></span></li>
+  </ul>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">인정</span><span class="say me">"그럴 만하세요. 치료까지 받으셨는데 아프면 정말 답답하시죠."</span></li>
+    <li><span class="who">공감</span><span class="say me">"많이 불편하셨겠어요. 언제부터, 어느 정도로 아프세요?"</span></li>
+    <li><span class="who">확인·정상화</span><span class="say me">"신경치료 후 1~2주 시큰하거나 불편한 건 흔한 정상 경과예요. 처방약은 드시고 계세요?"</span></li>
+    <li><span class="who">해결</span><span class="say me">"원장님께 지금 상태 바로 전달드릴게요. 2주 넘게 아프거나 붓고 열나면 그건 봐야 하니 꼭 연락 주세요. 오늘 한 번 봐드릴까요?"</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 4동인 = 아픔+억울함. "정상 경과"를 <u>안심시키되</u>, 위험 신호는 명확히. 무책임한 "괜찮아요"(X).</p>
+</div>
+
+<div class="vs">
+  <h4>상황 2 · 보철 결과 불만 — "색이 이상해요 / 씹으면 안 맞아요"</h4>
+  <p><span class="bad">❌ 못하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">데스크</span><span class="say me">"원래 그 색이 자연스러운 거예요. 쓰다 보면 익숙해지세요." <em>(환자 감각을 부정 → 불신)</em></span></li>
+  </ul>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">인정</span><span class="say me">"불편하셨겠어요. 새로 한 게 신경 쓰이시는 게 당연하죠."</span></li>
+    <li><span class="who">확인</span><span class="say me">"어느 부위가 제일 신경 쓰이세요? 색인가요, 씹을 때인가요?"</span></li>
+    <li><span class="who">해결</span><span class="say me">"오늘 사진 다시 찍어서 원장님과 같이 확인할게요. 조정이든 재제작이든, 편하게 쓰실 때까지 봐드릴게요."</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 4동인 = 억울함+불신(영구 결과 두려움). 환자 감각을 <u>부정하지 말고</u> 함께 확인. "재제작 1회는 실장 선에서" 같은 <b>사전 위임 범위</b>가 있으면 즉답 가능.</p>
+</div>
+
+<div class="vs">
+  <h4>상황 3 · 가격 분쟁 — "왜 이렇게 비싸요, 다른 덴 반값이던데"</h4>
+  <p><span class="bad">❌ 못하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">데스크</span><span class="say me">"저희가 원래 좀 비싸요." / "싼 데는 이유가 있죠." <em>(방어·타원 비하 → 사기당하는 느낌)</em></span></li>
+  </ul>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">방어 해체</span><span class="say me">"다른 곳과 비교해 보신 거 정말 잘하셨어요. 어느 부분이 제일 다르게 느껴지셨어요?"</span></li>
+    <li><span class="who">가치 분해</span><span class="say me">"저희 비용은 [고정체·1회용 부품·보철 재료·사후 보증]으로 나뉘어요. 어디서 차이가 나는지 1분만 보여드릴게요."</span></li>
+    <li><span class="who">부담 완화</span><span class="say me">"한 번에 부담되시면 분납도 가능하고, 지금 결정 안 하셔도 자료 보고 천천히 정하셔도 돼요."</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · "비싸다"는 <u>"왜인지 모르겠다"</u>의 신호. 방어 대신 <b>가치 분해</b>. 깊은 대본은 <a href="#f-별첨J_비급여상담">별첨 J</a>.</p>
+</div>
+
+<div class="vs">
+  <h4>상황 4 · 대기시간 폭발 — "예약했는데 왜 안 불러요!"</h4>
+  <p><span class="bad">❌ 못하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">데스크</span><span class="say me">(모니터만 보며) "조금만 더 기다려 주세요…" <em>(모호함·회피 → 분노 가속)</em></span></li>
+  </ul>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">먼저 다가감</span><span class="say me">"○○님, 벌써 20분 넘게 기다리셨죠. 정말 답답하실 거예요."</span></li>
+    <li><span class="who">분 단위 안내</span><span class="say me">"지금 원장님이 앞 진료 마무리 중이세요. 정확히 10분 안에 모실게요."</span></li>
+    <li><span class="who">트리거 차단</span><span class="say me">"기다리시는 동안 따뜻한 물 한 잔 드릴까요?" <em>(공복·갈증 차단)</em></span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 4동인 = 답답함(시간 통제 상실). <u>모호함이 분노를 키운다</u> → 정확한 분 단위. 30분 넘으면 다음 슬롯 양보도 검토.</p>
+</div>
+
+<div class="vs">
+  <h4>상황 5 · 차별감 — "왜 나보다 늦게 온 저 사람을 먼저 봐줘요?"</h4>
+  <p><span class="bad">❌ 못하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">데스크</span><span class="say me">"그게… 순서가 좀 그렇게 됐어요." <em>(불투명 → 무시당한 느낌)</em></span></li>
+  </ul>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">영향 인정</span><span class="say me">"그렇게 느끼셨다면 정말 죄송합니다."</span></li>
+    <li><span class="who">투명 설명</span><span class="say me">"먼저 들어가신 분은 갑자기 통증이 심해진 응급이라 순서를 잠깐 조정한 거예요. 새치기가 아니라 응급 순서였어요."</span></li>
+    <li><span class="who">재발 방지</span><span class="say me">"다음엔 이런 상황이면 미리 말씀드릴게요."</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 4동인 = 불신+억울함(관계). <u>잘못 인정(X) / 영향 인정(O)</u> + 투명한 이유. 깊으면 원장이 직접 라뽀 복구.</p>
+</div>
+
+<div class="box warn">
+  <div class="bt">🚨 이 선을 넘으면 응대가 아니라 "보호"</div>
+  욕설·폭언은 <b>3진 아웃</b>(경고 → 종료 예고 → 종료+휴식), <b>신체위협·성희롱·물건 던짐·신상위협·인종비하 5가지는 즉시 112</b>. 그리고 카톡·리뷰 항의는 대면과 다르게 <b>BIFF</b>(짧게·사실만·마감·사과 금지)로. 전체 프로토콜은 <a href="#f-02_Part2_환자응대">2-4장</a>.
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 5대 상황을 관통하는 한 줄</div>
+  못하는 데스크는 <b>환자의 감정을 부정</b>하고("원래 그래요") 변명합니다. 잘하는 데스크는 <b>먼저 인정</b>하고("그럴 만하세요") 구체적으로 해결합니다. 그리고 <u>모든 불만은 반드시 기록·공유</u> — 말로 끝난 불만은 다음 주에 똑같이 터집니다.
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨I_신환첫방문">
+
+
+<h3 id="anx-newpt"><span class="n" style="font-size:.7em">별첨 I</span> 신환 첫 방문 — 여정 전체 대본</h3>
+
+<p>신환의 <b>첫 방문 하루</b>는 그 환자가 우리 병원에 계속 다닐지를 결정합니다(<a href="#f-별첨A_MOT">MOT</a>). 첫 전화부터 수납·다음 예약까지, 접점마다 <u>못하는 데스크와 잘하는 데스크</u>의 대본을 이어서 봅니다.</p>
+
+<h4>① 첫 전화 — 예약 잡기</h4>
+<div class="vs">
+  <p><span class="bad">❌ 못하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">데스크</span><span class="say me">"네 치과입니다." (성의 없는 톤) / "언제 오실래요?" (열린 질문 → 애매하게 끝남)</span></li>
+  </ul>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">인사</span><span class="say me">"안녕하세요, [병원] ○○입니다. 무엇을 도와드릴까요?"</span></li>
+    <li><span class="who">불안 완화</span><span class="say me">"처음 오시는 거죠? 원장님이 [분야]를 오래 보셔서 편하게 오시면 돼요."</span></li>
+    <li><span class="who">선택형 예약</span><span class="say me">"이번 주 화요일 오전과 목요일 오후 중 언제가 편하세요?"</span></li>
+    <li><span class="who">마무리</span><span class="say me">"성함·연락처 확인할게요. 위치는 지금 문자로 보내드리고, 전날 다시 안내드릴게요."</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 3콜 내·이름·의사 소개(불안↓)·선택형 클로징·위치는 문자. <a href="#f-별첨G_전화리콜심화">별첨 G</a> 참고.</p>
+</div>
+
+<div class="box">
+  <div class="bt">🏥 첫 접점을 정교하게 관리하는 병원들의 기준 (참고)</div>
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li><b>부재중 콜백 데드라인</b> — 오전에 놓친 전화는 <u>점심 전까지</u>, 오후에 놓친 전화는 <u>마감 전까지</u> 반드시 콜백. 아침 출근 직후 첫 업무가 "전날·당일 부재중 확인".</li>
+    <li><b>온라인 문의는 하루 3번 고정 확인</b> — 출근 직후·점심 후·마감 30분 전. 채팅 답변은 10분 내, 가능하면 <u>전화로 전환</u>(예약 성사율이 높다).</li>
+    <li><b>데스크 금지 4수칙</b> — ①마감시간 당겨서 예약 안 받기 금지 ②가장 빠른 예약일 숨기고 늦춰 잡기 금지 ③직원끼리 생긴 "암묵적 예약 상한" 금지 ④신환 문의를 신입이 받게 두기 금지(신환은 숙련자가). — <u>편의를 위한 작은 관행이 매출 구멍</u>이 된다.</li>
+  </ul>
+</div>
+
+<h4>② 도착 — 첫 30초</h4>
+<div class="vs">
+  <p><span class="bad">❌ 못하는 데스크</span> — 문이 열려도 모니터만 보다가 뒤늦게 "…어떻게 오셨어요?"</p>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">눈맞춤</span><span class="say me">(문소리에 바로 고개 들고) "안녕하세요! ○○○ 님 맞으세요?"</span></li>
+    <li><span class="who">안내</span><span class="say me">"처음 오셨으니 간단한 문진표 먼저 작성 도와드릴게요. 이쪽에 편히 앉으세요."</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 첫 30초가 병원 전체 인상. 눈맞춤 → 이름 확인 → 안내. 신환은 짧은 <b>병원 투어</b>도 효과적.</p>
+</div>
+
+<h4>③ 접수 — 데스크가 챙길 4종</h4>
+<div class="tool"><div class="th"><span class="tag">Check</span> 판단은 진료팀, 행정은 데스크</div><div class="tb">
+  <ul class="check">
+    <li><b>보험자격·급여제한</b> 사전조회(스케일링 연1회·65세+ 대상)</li>
+    <li><b>특수대상 서류</b>(의료급여 의뢰서·자보·산재 지불보증서)</li>
+    <li><b>개인정보 동의</b> 서명</li>
+    <li><b>연락처·정보 정확 입력</b> — 리콜·문자가 여기서 시작(오타 하나가 리콜 실패)</li>
+  </ul>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">문진표의 전신병력·복용약(항응고제·골다공증약 등)은 <b>판단하지 말고 빠짐없이 진료팀에 전달</b>. 상세는 <a href="#f-02_Part2_환자응대">2-3장</a>.</p>
+</div></div>
+
+<h4>④ 대기 — 불확실성을 없앤다</h4>
+<div class="vs">
+  <p><span class="bad">❌ 못하는 데스크</span> — 아무 안내 없이 방치 → 환자는 "얼마나 기다려야 하지" 불안.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — "지금 앞에 한 분 계셔서 약 10분 정도 기다리실 수 있어요. 물 한 잔 드릴까요?" <em>예상 시간을 먼저 말한다.</em></p>
+  <p class="why"><b>원리</b> · 대기 자체보다 <u>모르는 게</u> 불만을 만든다. 예고가 곧 서비스.</p>
+</div>
+
+<h4>⑤ 진료 후 — 인수인계 받기 (최대 실패지점)</h4>
+<div class="vs">
+  <p><span class="bad">❌ 못하는 데스크</span> — 진료실에서 넘어온 환자에게 "오늘 뭐 하셨어요?" 되물음 → "아까 다 말했는데" 불신.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — 진료팀에게 <b>무엇을 했나 / 다음 예약이 왜 / 주의사항</b> 한 줄 인수인계를 받고, "오늘 [내용] 잘 받으셨어요. 다음은 [이유]로 오시면 돼요." <em>환자가 다시 설명할 필요 없게.</em></p>
+  <p class="why"><b>원리</b> · 진료실↔데스크 <u>인수인계 한 줄</u>이 신뢰를 지킨다. <a href="#f-별첨C_데스크고민">별첨 C-④</a>.</p>
+</div>
+
+<h4>⑥ 수납 + 다음 예약 (돈이 새거나 고이는 순간)</h4>
+<div class="vs">
+  <p><span class="bad">❌ 못하는 데스크</span> — 결제만 받고 "다음에 또 오세요~" → 환자는 리콜 대상으로 빠지고 매출이 샘.</p>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">확인·수납</span><span class="say me">"오늘 [내용] [금액]이에요. 현금영수증 발행해 드릴게요."</span></li>
+    <li><span class="who">선예약(핵심)</span><span class="say me">"다음은 [이유]로 [시기]쯤 오시면 돼요. <b>지금 미리 잡아둘까요?</b> 화요일 오전과 목요일 오후 중에요."</span></li>
+    <li><span class="who">확정 문자</span><span class="say me">"확정 문자 보내드리고, 전날 다시 안내드릴게요."</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · <u>떠나기 전 선예약</u>이 리콜 부담을 원천에서 없앤다(재방문 80~90% vs 35~45%). <a href="#f-05_Part5_리콜시스템">5-4장</a>.</p>
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 신환 하루를 관통하는 한 줄</div>
+  못하는 데스크는 <b>절차만 처리</b>합니다(접수·수납). 잘하는 데스크는 접점마다 <u>불안을 없애고, 다음 방문을 미리 심습니다.</u> 신환의 첫날은 <b>"이 병원 계속 다녀야겠다"</b>를 만드는 하루입니다.
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨J_비급여상담">
+
+
+<h3 id="anx-price"><span class="n" style="font-size:.7em">별첨 J</span> "왜 이렇게 비싸요?" — 비급여 상담 전체 대본</h3>
+
+<p><a href="#f-02_Part2_환자응대">2-5장</a>의 원리를 <b>환자 유형별 전체 대본</b>으로 풉니다. 핵심은 하나 — <u>방어하지 말고, 가치를 먼저·가격을 나중에.</u> 그리고 <b>과장·단정은 금지</b>(의료라 불법이자 신뢰 훼손).</p>
+
+<div class="box good">
+  <div class="bt">✅ 상담의 뼈대 4단계</div>
+  <b>① 방어 해체</b>("비교 잘하셨어요") → <b>② 가치 먼저</b>(무엇으로 구성됐나) → <b>③ 부담 완화</b>(분납·검진부터) → <b>④ 선택형 클로징</b>. "예/아니오"로 몰지 않습니다.
+</div>
+
+<div class="box data">
+  <div class="bt">🔬 왜 이렇게 하나 (근거)</div>
+  <b>앵커링</b>(Kahneman) — 가격보다 <u>가치를 먼저</u> 말하면 같은 금액이 납득됩니다. <b>Feel–Felt–Found</b> — 공감→동질감→반전의 고전 화법. <b>권위</b>(Cialdini) — 의료에서 가장 강력, 원장 경력·근거를 자연스럽게. ❌ <u>가짜 비교·미끼가격</u>은 신뢰 영역에서 금물.
+  <span class="src">출처 · Tversky·Kahneman 앵커링 · Cialdini 권위·사회적 증거 · 의료법 45조 비급여 공시</span>
+</div>
+
+<div class="vs">
+  <h4>유형 1 · "그냥 비싸네요"</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — "저희가 원래 좀 비싸요." (근거 없는 방어)</p>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">가치 분해</span><span class="say me">"부담되시죠. 저희 [임플란트] 비용이 어떻게 구성되는지 1분만요 — 고정체(검증된 브랜드) + 1회용 멸균 부품 + 보철 재료 + 사후 보증, 이렇게예요."</span></li>
+    <li><span class="who">앵커</span><span class="say me">"한 번 하면 오래 쓰는 거라, 하루로 나눠보면 생각보다 부담이 크지 않아요."</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · "얼마"가 아니라 "무엇으로 이뤄졌나"를 먼저 보여준다.</p>
+</div>
+
+<div class="vs">
+  <h4>유형 2 · "다른 덴 반값이던데요"</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — "싼 데는 다 이유가 있어요." (타원 비하 → 방어적 인상)</p>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">방어 해체</span><span class="say me">"다른 곳과 비교해 보신 거 정말 잘하셨어요. 어느 부분이 제일 다르게 느껴지셨어요?"</span></li>
+    <li><span class="who">Feel-Felt-Found</span><span class="say me">"그 마음 이해해요(Feel). 그렇게 느끼는 분들 많았어요(Felt). 그런데 실제로 [부품·보증] 차이를 보시면 왜 다른지 아시더라고요(Found)."</span></li>
+    <li><span class="who">사실 명시</span><span class="say me">"저희는 [1회용 멸균 부품/검증된 고정체]를 써요. 그게 [장기 생존율/감염 관리]에서 차이가 나요."</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 타원을 깎지 말고 <u>우리의 사실</u>을 명시. 비하는 오히려 신뢰를 깎는다.</p>
+</div>
+
+<div class="vs">
+  <h4>유형 3 · "지금 돈이 좀 부담돼요"</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — "그럼 나중에 오세요." (기회 종료)</p>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">재정</span><span class="say me">"한 번에 부담되시면 <b>월 [금액]부터 분납</b>도 가능해요. 무이자 [개월] 옵션도 있어요."</span></li>
+    <li><span class="who">진입장벽↓</span><span class="say me">"큰 치료를 지금 다 하실 필요는 없어요. 우선 <u>검진·스케일링(보험)</u>만 받으면서 상태 보고 천천히 정하셔도 돼요."</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 큰 결정을 요구하지 말고 <b>작은 첫걸음</b>을 연다. 관계가 이어지면 다음이 있다.</p>
+</div>
+
+<div class="vs">
+  <h4>유형 4 · "이거 보험 안 돼요?"</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — "안 돼요." (단답 → 불신)</p>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">구분 설명</span><span class="say me">"이 치료는 비급여예요. 대신 [검진·스케일링·부분]은 보험이 되니, <b>되는 것과 안 되는 걸 나눠</b> 설명드릴게요."</span></li>
+    <li><span class="who">투명성</span><span class="say me">"비급여 비용은 저희가 다 공시하고 있어요. 편하게 비교하셔도 돼요."</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 급여/비급여를 <u>정확히 구분</u>해 주는 것 자체가 신뢰(의료법 45조 공시를 무기로). ⚠️ 성인 충치 레진·크라운은 비급여, 스케일링·잇몸은 보험 등 <b>사실을 정확히</b>.</p>
+</div>
+
+<div class="vs">
+  <h4>유형 5 · 가격이 1순위인 환자 — "그래도 비싸요"</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — 계속 설득만 반복 → 서로 지침.</p>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">존중(역설)</span><span class="say me">"가격이 가장 중요하시면, 저희가 꼭 맞는 곳이 아닐 수도 있어요. 다만 결정 전에 <u>2차 의견</u> 한 번 받아보시길 권해요. 5년 뒤 후회 없으시게요."</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 붙잡으려 할수록 밀려난다. <b>한 발 물러서는 존중</b>이 오히려 신뢰를 남긴다(희소성·역설).</p>
+</div>
+
+<div class="box">
+  <div class="bt">🏥 참고 — 상담을 체계로 굴리는 병원들의 4가지 장치</div>
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li><b>상담 순서를 고정</b> — ① 상담사 자기소개(신뢰 임팩트) → ② <u>"다른 병원도 알아보셨어요? 어떤 점 때문에 결정을 미루셨어요?"</u>(진짜 장애물 파악) → ③ 우리의 차별점 → ④ 진단·비용. 비용부터 던지지 않는다.</li>
+    <li><b>치료 설명 : 차별성 = 7 : 3</b> — 설명이 8할을 넘으면 강의가 되고, 차별성이 5할을 넘으면 영업이 된다.</li>
+    <li><b>상담자료는 연 2회 갱신, 비동의 케이스는 격주 스터디</b> — 상담이 개인기가 아니라 팀 자산이 되게.</li>
+    <li><b>동의 후엔 수술 전날 "잘 준비하고 있겠습니다" 연락</b> — 결제 후 침묵이 불안(과 취소)을 만든다.</li>
+  </ul>
+</div>
+
+<div class="box data">
+  <div class="bt">📊 참고 — 업계 상담 데이터가 말해주는 것</div>
+  여러 병원의 상담 데이터를 다루는 컨설팅 현장 통계를 보면, <b>임플란트 신환 상담 동의율은 평균 74%</b>, 상위 10% 병원은 <u>80% 이상</u>입니다(범위 52~81%). 흥미로운 건 <b>치아 개수별 곡선</b> — 1개 상담은 82%로 높고, 개수가 늘수록 떨어져 <u>15~19개에서 49%로 바닥</u>을 치는데, <b>20개 이상에서 60%로 반등</b>합니다. 이미 여러 병원을 알아보고 <u>결심하고 오는</u> 분들이기 때문입니다.<br><br>
+  <b>실무 시사점</b> — ① 어려운(치아 많은) 상담일수록 <u>숙련자가</u> 맡고 시간을 더 준다 ② "케이스가 크니 안 될 것"이라는 선입견을 버린다(큰 케이스=결심한 케이스일 수 있음) ③ 우리 병원 동의율을 기록해 <u>이 범위 어디쯤인지</u> 보는 것 자체가 개선의 시작.
+  <span class="src">출처 · 병원 상담 데이터 업계 통계(익명 벤치마크) — 방향값이며 병원별 편차 큼</span>
+</div>
+
+<div class="box warn">
+  <div class="bt">⚠️ 데스크·상담·홈페이지가 같은 답을 해야 한다</div>
+  환자는 데스크·상담실·홈페이지에서 가격을 세 번 마주칩니다. <u>세 곳 설명이 어긋나면</u> 신뢰가 깨집니다. 멘트·자료·공시를 <b>하나의 이야기</b>로 통일하세요. 데스크는 최종 결정을 강요하지 말고, <b>이해와 다음 단계</b>까지만.
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨K_전화곤란상황">
+
+
+<h3 id="anx-phone2"><span class="n" style="font-size:.7em">별첨 K</span> 전화 곤란상황 — 자주 막히는 순간의 대본</h3>
+
+<p>데스크 전화에는 <b>매뉴얼이 없어 매번 당황하는 순간</b>들이 있습니다. 미리 대본을 정해두면 누가 받아도 같은 병원이 됩니다. 여기서는 그 순간들을 <u>못하는 응대 vs 잘하는 대본</u>으로 정리합니다.</p>
+
+<div class="vs">
+  <h4>① 전화 중인데 앞 환자가 기다린다</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — 전화를 붙든 채 앞 환자를 세워둠 → 둘 다 불만.</p>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">전화에</span><span class="say me">"죄송하지만 잠시만요, 확인하고 <b>바로 다시 전화드릴게요.</b>" (이름·번호·용건 메모 후 끊기)</span></li>
+    <li><span class="who">앞 환자</span><span class="say me">"기다리시게 해서 죄송해요, 도와드릴게요." → 처리 후 콜백</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 눈앞 환자 우선, 전화는 <u>순서를 바꾼다</u>(놓치지 않는다). <a href="#f-별첨C_데스크고민">별첨 C-①</a>.</p>
+</div>
+
+<div class="vs">
+  <h4>② "지금 갈 건데 바로 봐줘요?" (예약 없이 방문 예고)</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — "그냥 오세요" → 와서 오래 대기 → 컴플레인.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — "지금 오시면 대기가 [분] 정도 있을 수 있어요. 괜찮으시면 오시고, [시간]에 예약하시면 바로 봐드려요. 어느 쪽이 편하세요?" <em>기대치를 먼저 맞춘다.</em></p>
+  <p class="why"><b>원리</b> · 대기 불만은 대부분 <u>안내 부재</u>에서. 미리 정확히.</p>
+</div>
+
+<div class="vs">
+  <h4>③ "○○ 원장님으로 지정해 주세요"</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — "그건 안 돼요" (단답) 또는 무조건 된다고 했다가 스케줄 꼬임.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — "○○ 원장님 진료를 원하시는군요. [단순 진료]는 그날 계신 원장님이 봐주시고, [임플란트·교정 같은] 치료는 담당을 정해 끝까지 봐드려요. 어떤 진료로 오세요?" <em>기준을 안내.</em></p>
+  <p class="why"><b>원리</b> · "된다/안 된다" 단답 대신 <u>병원의 기준</u>을 설명(연속성이 필요한 치료는 담당제).</p>
+</div>
+
+<div class="vs">
+  <h4>④ 위치·주차 문의</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — 말로 길게 설명 → 헷갈림 → 못 찾고 이탈.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — "지금 <b>지도 링크와 주소</b>를 문자로 보내드릴게요. 주차는 [안내]. 못 찾으시면 다시 전화 주세요." <em>말 대신 문자.</em></p>
+  <p class="why"><b>원리</b> · 위치는 <u>말보다 문자</u>가 정확하고 이탈이 없다.</p>
+</div>
+
+<div class="vs">
+  <h4>⑤ 막무가내·따지는 전화 (대면 아님)</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — 맞받아치거나, 그 자리에서 즉답하려다 말려듦.</p>
+  <p><span class="good">✅ 잘하는 데스크 (BIFF)</span></p>
+  <ul class="script">
+    <li><span class="who">짧게·사실·친근·단호</span><span class="say me">"말씀 감사합니다. [날짜] 기록 확인해서 [날짜]까지 정확히 회신드릴게요. 추가 자료 있으시면 문자로 주세요. 좋은 하루 보내세요."</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 전화·문자 항의는 <b>BIFF</b>(사과·논쟁 금지, 사실+마감만). 즉답보다 <u>확인 후 회신</u>이 안전. <a href="#f-02_Part2_환자응대">2-4장</a>.</p>
+</div>
+
+<div class="vs">
+  <h4>⑥ 당일 취소·변경 전화</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — "네 취소할게요" (그냥 빈 슬롯 방치).</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — "네, 조정해 드릴게요. 그럼 <b>다음은 언제가 편하세요?</b> [두 시간] 중에요." → 취소를 <u>바로 재예약으로</u>. 그리고 빈 슬롯은 <b>대기·리콜 명단</b>에서 채움.</p>
+  <p class="why"><b>원리</b> · 취소를 <u>그냥 비우지</u> 말고 즉시 재예약 + 빈 슬롯 보충(빈 체어는 못 판다).</p>
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 곤란상황을 관통하는 두 가지</div>
+  ① <b>"된다/안 된다" 단답 대신 기준을 설명</b> · ② <b>즉답으로 말려들지 말고, 필요하면 "확인 후 회신"</b>. 그리고 모든 곤란 통화는 <u>메모로 남겨</u> 반복되면 지침으로 만듭니다.
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨L_역할과감시">
+
+
+<h3 id="anx-role"><span class="n" style="font-size:.7em">별첨 L</span> 원장·실장·데스크 — 누가 무엇을 알고, 누가 감시하나</h3>
+
+<p>이 책의 내용을 <b>원장이 아무리 읽어도</b> 병원은 안 바뀝니다. 정작 실행하는 건 <u>데스크</u>이고, 데스크가 그 방향으로 가려면 <b>감시하고·피드백하고·바로잡는 사람(실장)</b>이 있어야 하기 때문입니다. 이 별첨은 <b>누가 무엇을 알아야 하고, 누가 무엇을 감시하는지</b>를 정리합니다.</p>
+
+<div class="pull">아무도 안 보는 표준은 반드시 무너진다. 통제의 실패는 대개 설계가 아니라 "책임이 불명확해서" 온다.</div>
+
+<h4>1) 세 사람이 각각 알아야 할 것</h4>
+<div class="tool"><div class="th"><span class="tag">Role</span> 원장 / 실장 / 데스크</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th></th><th>핵심 역할</th><th>꼭 알아야 할 것</th></tr></thead>
+  <tbody>
+  <tr><td><b>원장</b></td><td>방향·임상·최종 결정</td><td>치료계획·의료분쟁·환불·미수 정책 승인 / <u>데스크 지표를 읽고 판단</u>(세부는 위임, 숫자는 본다)</td></tr>
+  <tr><td><b>실장</b></td><td>이 책의 <b>실제 집행자</b>·감시자</td><td>리콜 리스트·선예약·미수·응대 표준·신입 온보딩·컴플레인 기록을 <u>굴리고 코칭</u></td></tr>
+  <tr><td><b>데스크</b></td><td>매일의 실행</td><td>전화 3콜·확정 문자·접수 4종·리콜 콜·수납+선예약·컴플레인 1차·당일 차팅</td></tr>
+  </tbody>
+  </table></div>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">원장은 "데스크 세부 매뉴얼"을 외울 필요 없습니다. <b>원장의 일은 지표를 보고 실장에게 묻는 것</b>이고, 데스크 실행을 굴리는 건 실장입니다.</p>
+</div></div>
+
+<h4>2) 누가·무엇을·얼마나 자주 감시하나 (핵심)</h4>
+<div class="tool"><div class="th"><span class="tag">Monitor</span> 감시 배분표</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th>지표·행동</th><th>감시자</th><th>주기</th></tr></thead>
+  <tbody>
+  <tr><td>전화 응답률 · 5분 내 콜백</td><td>실장</td><td>주간</td></tr>
+  <tr><td>선예약률 · 재검진 재예약률</td><td>실장</td><td>주간</td></tr>
+  <tr><td>리콜 주간 루틴 실행 여부</td><td>실장</td><td>매주</td></tr>
+  <tr><td>미수금 회수 · 30일 경과 건</td><td>실장</td><td>월간</td></tr>
+  <tr><td>응대 표준(전화·컴플레인 첫마디)</td><td>실장</td><td>월 1회 5분 관찰</td></tr>
+  <tr><td><b>위 지표 종합 → 판단</b></td><td><b>원장</b></td><td>월간(읽고 실장에 질문)</td></tr>
+  </tbody>
+  </table></div>
+</div></div>
+
+<div class="box data">
+  <div class="bt">🔬 왜 "감시하는 사람"이 없으면 무너지나 (근거)</div>
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li><b>오너는 한 사람</b> — 모든 지표엔 <u>한 명의 주인</u>이 있어야 한다("그룹"은 곧 아무도 아님). 통제 실패는 <b>설계보다 '책임 불명확'에서 더 자주</b> 온다.</li>
+    <li><b>점검해야 실행된다</b> — "점검하는 것이 실행된다(what gets inspected gets done)". 주간으로 점검하는 목표는 달성 확률이 <u>30%+ 높다.</u></li>
+    <li><b>흐지부지는 조용히 온다</b> — 담당이 바뀌고, 편법이 일상이 되고, 체크는 여전히 "했다"고 표시되지만 <u>실제 행동은 서서히 드리프트</u>한다.</li>
+  </ul>
+  <span class="src">출처 · 4DX 「Cadence of Accountability」(FranklinCovey)·LSA Global · 통제·컴플라이언스 실패 연구(V-Comply·AssurX)</span>
+</div>
+
+<div class="box warn">
+  <div class="bt">⚠️ 단, "감시 = 혼내기"로 가면 역효과</div>
+  방치하면 표준이 무너지는 건 사실이지만, 감시가 <b>공포·처벌</b>이 되면 팀이 숫자를 꾸미고 솔직함이 사라집니다(<a href="#f-06_Part6_교육평가">6장</a>의 굿하트 법칙·Deming). 그래서 실장의 감시는 <u>"틀렸다 혼내기"가 아니라 "이번 주 어디를 도울까"의 코칭</u>이어야 합니다. 냉정한 사실(아무도 안 보면 무너진다)과 따뜻한 방식(코칭)을 <b>동시에</b>.
+</div>
+
+<div class="box good">
+  <div class="bt">🏥 참고 — 정착을 "등급"으로 진단하는 방식</div>
+  체계적으로 운영하는 병원들은 표준·SOP를 "있다/없다"가 아니라 <b>3단계 정착 등급</b>으로 진단합니다: <b>미진행 → 진행 중 → 내재화</b>. "내재화 = <u>관리·감독 없이도 알아서 굴러가는 상태</u>"가 최종 목표입니다. 이 책의 체크리스트들도 같은 방식으로 쓰세요 — 각 항목 옆에 셋 중 하나를 표시하면, "도입했다"는 착시 없이 <u>진짜 정착도</u>가 보입니다.
+</div>
+
+<div class="box">
+  <div class="bt">🧹 참고 — 실장을 "회색지대 업무"에서 꺼내기</div>
+  리콜·감시가 안 도는 숨은 원인 중 하나는 <b>실장이 잡무에 묻혀 있는 것</b>입니다. 재고 정리·대기실 정돈·통계 취합처럼 <u>책임 소재가 불분명한 "회색지대 업무"</u>가 자연스럽게 실장에게 쌓입니다. 잘 운영하는 병원들은 이런 업무를 데스크·행정 담당에게 명시적으로 이관하고, 실장은 <b>상담·동의율·팀 관리</b>(그리고 이 책의 감시자 역할)에 집중시킵니다 — 단, 채용 면접·퇴사 면담처럼 <u>권위가 필요한 일</u>은 실장에게 남깁니다.
+</div>
+
+<h4>3) 만들어놓고 흐지부지되지 않게 — 5원칙</h4>
+<div class="tool"><div class="th"><span class="tag">Rule</span> 시스템이 죽지 않게 하는 법</div><div class="tb">
+  <ul class="check">
+    <li><b>① 한 사람 오너</b> — 각 지표·루틴에 이름을 붙인다(대개 실장). "다 같이"는 아무도 아니다.</li>
+    <li><b>② 주기를 고정</b> — "여유 될 때"가 아니라 <u>매주 월요일 10분</u>처럼 달력에 박는다.</li>
+    <li><b>③ 과정이 아니라 결과를 본다</b> — "리콜 문자 몇 건 보냈나"(과정)보다 "예약 몇 건 잡혔나"(결과). 체크만 채우는 걸 막는다.</li>
+    <li><b>④ 빠지면 그 주에 피드백</b> — 흐지부지는 <u>작은 누락을 방치</u>할 때 시작된다. 이번 주 안 된 건 이번 주에 짚는다.</li>
+    <li><b>⑤ 원장이 "봤다"고 표시</b> — 원장이 월 1회 지표를 보고 실장에게 한마디 묻는 것만으로 <b>유지의 연료</b>가 된다. 아무도 안 물으면, 아무도 안 한다.</li>
+  </ul>
+</div></div>
+
+<div class="box good">
+  <div class="bt">✅ 한 줄 요약</div>
+  <b>데스크가 알아야 하고 · 실장이 감시·코칭하고 · 원장이 지표를 본다.</b> 이 삼각형 중 <u>하나라도 비면</u> — 특히 감시(실장)와 관심(원장)이 비면 — 좋은 내용은 3주 안에 흐지부지됩니다. 이 책이 실제로 굴러가려면, 읽는 것보다 <mark>"누가 매주 이걸 볼 것인가"</mark>를 먼저 정하세요.
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨M_데스크누수지도">
+
+
+<h3 id="anx-leak"><span class="n" style="font-size:.7em">별첨 M</span> 진료는 훌륭한데 — 데스크에서 환자가 새는 곳 (누수 지도)</h3>
+
+<p>원장은 <b>임상(진료)에 온 신경</b>을 씁니다. 그래서 정작 <u>데스크에서 환자가 조용히 빠져나가는 것</u>은 잘 보이지 않습니다. 진료가 아무리 훌륭해도, 데스크에서 새면 <b>밑 빠진 독</b>입니다. 이 별첨은 그 구멍들을 <u>데이터로</u> 하나씩 보여줍니다.</p>
+
+<div class="pull">병원이 돈을 잃는 건 대개 진료실이 아니라 데스크에서다 — 그리고 그건 티가 안 나서 더 위험하다.</div>
+
+<div class="box data">
+  <div class="bt">💧 누수 ① — 안 받은 전화 (가장 큰 구멍)</div>
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li>평균 치과가 걸려온 전화의 <u><b>20~35%를 못 받는다</b></u> (바쁜 오전 10~11시가 최악).</li>
+    <li>전화가 <b>음성사서함으로 넘어가면 62~67%가 그냥 끊고 다음 치과로</b> 전화한다.</li>
+    <li>첫 통화 실패 시 <b>85%는 다시 전화하지 않는다.</b></li>
+    <li>돈으로: 신환 전화의 1/3을 놓치는 중형 병원은 <u>연 15만 달러(약 2억) 이상</u>이 안 받은 전화로 증발한다는 추정도.</li>
+  </ul>
+  <span class="src">출처 · Scheduling Institute·PatientXpress·JustCall 등 콜 트래킹 데이터</span>
+</div>
+
+<div class="box data">
+  <div class="bt">💧 누수 ② — 5분 늦은 콜백</div>
+  놓친 문의에 <b>5분 안에 다시 연락하면 전환이 최대 80%까지 오르고</b>, <u>5분을 넘기면 전환이 78% 떨어집니다.</u> "이따 한가할 때 콜백하지" 하는 사이 환자는 이미 다른 병원을 예약합니다.
+  <span class="src">출처 · 리드 응답시간 연구·치과 콜 전환 데이터</span>
+</div>
+
+<div class="box data">
+  <div class="bt">💧 누수 ③ — 받았는데 예약으로 못 넘김</div>
+  평균 치과는 신환 전화의 <b>약 53%만 예약으로</b> 전환합니다(상위 5%는 <u>85%+</u>). 답한 전화조차 절반이 "생각해볼게요"로 끝난다는 뜻 — <a href="#f-별첨G_전화리콜심화">별첨 G</a>의 선택형 클로징이 여기서 갈립니다.
+</div>
+
+<div class="box data">
+  <div class="bt">💧 누수 ④ — 떠나기 전 다음 예약을 안 잡음</div>
+  다음 예약 없이 보낸 환자는 재방문 <b>35~45%</b>, 잡고 보낸 환자는 <b>80~90%</b>. 그리고 첫 방문 후 계속 유지되는 환자는 <u>10명 중 4명뿐</u>(JADA). 관리 안 하면 연 <b>15~20%가 이탈</b>합니다.
+</div>
+
+<div class="box data">
+  <div class="bt">💧 누수 ⑤·⑥ — 리콜 미실행 · 불만 미기록 · 노쇼 방치</div>
+  바쁘면 <u>리콜을 건너뛰고</u>(티 안 나는 매출 누수), 불만은 <u>말로만 끝나</u> 조용히 떠나게 두고, 노쇼로 빈 체어는 <u>다시 못 파는 재고</u>로 사라집니다. 모두 데스크에서, 조용히.
+</div>
+
+<h4>⚠️ 무엇에 신경 쓰다가 진짜 누수를 놓치나</h4>
+<div class="box warn">
+  <div class="bt">🎯 방향 착각 — 마케팅 전에 데스크부터</div>
+  많은 원장이 <b>신환을 더 데려오려고 광고·간판에 돈</b>을 씁니다. 그런데 <u>정작 걸려온 전화의 1/3을 놓치고, 온 환자의 절반을 예약으로 못 넘기고, 구환을 리콜 안 하고 있다면</u> — 그건 밑 빠진 독에 물 붓기입니다. <b>같은 돈이면 새는 구멍부터 막는 게 몇 배 싸고 빠릅니다</b>(구환 재활성화가 신환 획득보다 5~25배 저렴). 마케팅은 그다음입니다.
+</div>
+
+<h4>다른 치과·다른 업계는?</h4>
+<div class="tool"><div class="th"><span class="tag">Case</span> 비교로 보면</div><div class="tb">
+  <ul class="check">
+    <li><b>잘하는 치과</b> — 전화 응답률 90%+, 신환 전환 85%+, 선예약 습관. 같은 지역·같은 실력인데 <u>데스크 하나로</u> 매출이 갈린다.</li>
+    <li><b>콜센터·이커머스</b> — "포기콜률(abandon rate)"과 "장바구니 이탈률"을 <u>매일 지표로</u> 본다. 치과의 안 받은 전화 = 콜센터의 포기콜, 예약 못 넘김 = 결제 이탈. 큰 조직은 이걸 <b>측정하고 감시</b>하는데 치과만 방치한다.</li>
+    <li><b>호텔·항공</b> — 접점(MOT)마다 표준을 두고 <u>모니터링</u>한다(<a href="#f-별첨F_대기업vs치과">별첨 F</a>).</li>
+  </ul>
+</div></div>
+
+<div class="box">
+  <div class="bt">📐 참고 — 측정을 한 단계 정교하게 하는 병원들의 방식</div>
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li><b>퍼널로 쪼갠다</b> — "환자가 줄었다"가 아니라 <u>문의 → 예약 → 내원 → 상담 동의</u> 단계별 전환율로. 같은 예약성공률 70%라도 진료 종류별로 쪼개면 두 병원의 문제는 정반대일 수 있다.</li>
+    <li><b>"왜"를 컬럼으로</b> — 미예약·비동의엔 사유(비용/일정/두려움/타병원)를 <u>정형 항목으로 기록</u> — 이탈 이유가 데이터가 된다.</li>
+    <li><b>캠페인 목표는 2단 분해</b> — "예약 ○건"이 아니라 <u>통화 성사율 ○% × 성사 시 예약률 ○%</u>로 나눠야 어디가 막혔는지 보인다.</li>
+    <li><b>채널 보정</b> — 예약 앱처럼 <u>구조적으로 노쇼가 많은 채널</u>은 따로 집계(섞으면 지표가 왜곡).</li>
+  </ul>
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 누수를 막는 건 결국 "감시"</div>
+  이 여섯 구멍은 전부 <b>측정·감시하면 막히고, 방치하면 샙니다.</b> 전화 응답률·5분 콜백·전환율·선예약률·리콜 실행 — 이 다섯 숫자를 <u>실장이 매주 보고 원장이 월 1회 묻는</u> 것만으로 새던 돈이 고이기 시작합니다. <b>누수 지도(이 별첨) + 감시 구조(<a href="#f-별첨L_역할과감시">별첨 L</a>)</b>는 한 세트입니다.
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨N_노쇼취소관리">
+
+
+<h3 id="anx-noshow"><span class="n" style="font-size:.7em">별첨 N</span> 노쇼·취소 관리 시스템</h3>
+
+<p>빈 체어는 <b>다시 못 파는 재고</b>입니다(오늘 비면 오늘 매출은 영영 사라집니다). 노쇼는 데스크가 <u>시스템으로</u> 막을 수 있는데, 대부분은 개인 탓·환자 탓만 하다 방치합니다. 예방 → 회수 → 정책 순으로 봅니다.</p>
+
+<h4>1) 예방이 90% — 3중 리마인드 + 선예약</h4>
+<div class="box data">
+  <div class="bt">🔬 무엇이 노쇼를 줄이나 (근거)</div>
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li><b>리마인드 3단계</b> — 예정 <u>2~3주 전 → 72시간 전(확정) → 당일</u> 아침. 이 시퀀스가 표준.</li>
+    <li><b>문자 리마인더</b>만으로 노쇼가 약 <u>38% 감소</u>.</li>
+    <li><b>환자가 고른 시간·방식</b>으로 잡으면 노쇼 급감 — 교정 1,193건에서 노쇼 <u>4%</u>(문자만 1.9%). 자가예약이 직원예약보다 노쇼가 적다(Mayo).</li>
+  </ul>
+  <span class="src">출처 · 리마인더 RCT·Cochrane · 환자선택 리마인더 연구(PMC) · Mayo Clinic 자가예약</span>
+</div>
+<div class="tool"><div class="th"><span class="tag">System</span> 노쇼 예방 루틴</div><div class="tb">
+  <ul class="check">
+    <li><b>선예약</b> — 떠나기 전 다음 예약을 미리(재방문 80~90% vs 35~45%)</li>
+    <li><b>환자가 시간을 고르게</b> — "화요일 오전 vs 목요일 오후 중?" (스스로 정한 약속은 지킨다)</li>
+    <li><b>확정 문자 → 전날 → 당일</b> 3중 리마인드</li>
+    <li>수술·고액·오래 걸리는 예약은 <b>전화로 한 번 더</b> 확인</li>
+  </ul>
+</div></div>
+
+<h4>2) 노쇼가 났을 때 — 바로 회수</h4>
+<div class="vs">
+  <p><span class="bad">❌ 못하는 데스크</span> — 노쇼를 그냥 빈칸으로 두고, 그 환자는 명단에서 사라짐.</p>
+  <p><span class="good">✅ 잘하는 데스크</span></p>
+  <ul class="script">
+    <li><span class="who">당일 연락</span><span class="say me">"○○님, 오늘 못 뵀네요. 무슨 일 있으셨어요? 편하신 시간으로 다시 잡아드릴게요." (비난 X, 안부 먼저)</span></li>
+    <li><span class="who">빈 슬롯 보충</span><span class="say me">비는 그 시간을 <b>대기·리콜 명단</b>에서 즉시 채운다(당일 빈 슬롯은 리콜 우선순위가 확 오른다).</span></li>
+    <li><span class="who">기록</span><span class="say me">노쇼 사유를 기록 — 반복되는 환자는 다음 예약 방식을 바꾼다.</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 노쇼는 <u>이탈 신호</u>. 비난하면 영영 잃고, 안부로 잡으면 관계가 이어진다.</p>
+</div>
+
+<h4>3) 반복 노쇼 환자 — 방식을 바꾼다</h4>
+<div class="tool"><div class="th"><span class="tag">Rule</span> 상습 노쇼 대응</div><div class="tb">
+  <ul class="check">
+    <li>다음 예약은 <b>환자가 직접 고른 시간</b>으로만(commitment↑)</li>
+    <li>리마인드를 <b>전화 포함</b>으로 강화</li>
+    <li>수술·고액은 <u>예약 보증(간단한 사전 확인 통화)</u>을 조건으로</li>
+    <li>"지난번엔 무슨 일 있으셨어요?" — 이유를 알면 대책이 보인다(교통·시간대·불안 등)</li>
+  </ul>
+</div></div>
+
+<div class="box">
+  <div class="bt">🏥 체계적으로 운영하는 병원들의 실제 방식 (참고)</div>
+  CRM을 정교하게 굴리는 병원들은 노쇼를 <u>한 번의 연락으로 끝내지 않습니다</u>:
+  <ul style="margin:6px 0 0;padding-left:18px">
+    <li><b>감지는 즉시</b> — 예약시간 <u>5~10분 지나면 바로 전화</u>(부재면 문자). 30분 기다렸다 걸면 이미 늦다.</li>
+    <li><b>노쇼 추적 캐스케이드</b> — 당일 즉시 전화 → <u>다음날 오전 메시지 → 3일 뒤 전화 → 7일 → 2주 → 한 달</u>까지 단계적으로. 한 번 안 받았다고 명단에서 지우지 않는다.</li>
+    <li><b>긴 시술은 3-2-1 확인</b> — 수술·긴 예약은 <u>3일 전 확인 전화</u>, 무응답이면 2일 전 → 1일 전 재시도. 큰 슬롯일수록 미리 잠근다.</li>
+    <li><b>부도 전화 첫마디</b> — "왜 안 오셨어요?"가 아니라 <b>"혹시 지금 오시는 중이실까요?"</b> — 환자 체면을 지켜주는 화법이 관계를 살린다.</li>
+    <li><b>취소 예고 → 확정 2단 문자</b> — 수술 전 확인이 안 되면 "연락이 안 되면 예약이 자동 취소됩니다" <u>예고 문자</u> 후, 콜백 없을 때 취소 확정 문자. 슬롯을 문자로 회수한다.</li>
+  </ul>
+</div>
+
+<div class="box warn">
+  <div class="bt">⚠️ "노쇼 위약금"은 한국에선 신중히</div>
+  해외처럼 노쇼 비용을 물리는 건 한국 치과 현실·정서상 <u>분쟁·이탈</u>을 부를 수 있습니다. <b>페널티보다 예방(3중 리마인드·선예약·환자 선택)</b>이 훨씬 효과적이고 안전합니다.<br><br>
+  다만 <b>패널티를 실제로 운영하는 병원들</b>도 있습니다 — 그 방식을 보면: ① 발동 조건을 <u>정량으로</u> 명문화(전날 취소 3회 / 당일 취소 2회 / 부도 1회) ② 벌금이 아니라 <b>"다음 '예약'만 제한, 접수 대기 내원은 가능"</b>의 이원화 ③ 결제 시점에 <u>서명 동의</u>로 받고 ④ 안내 톤은 당연한 규정이 아니라 <b>"저도 이런 안내 드리려니 죄송해요, 약속만 지켜주시면 아무 문제 없어요"</b>의 협조 요청 조. 이 네 가지가 없으면 반감만 삽니다 — 도입한다면 통째로 가져가세요.
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 한 줄 요약</div>
+  노쇼는 <b>혼낼 문제가 아니라 설계할 문제</b>입니다. 선예약 + 환자 선택 + 3중 리마인드로 예방하고, 나면 안부로 회수하고 빈 슬롯을 즉시 채운다. 이게 데스크가 <u>매출을 지키는</u> 가장 조용한 일입니다.
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨O_용어사전">
+
+
+<h3 id="anx-glossary"><span class="n" style="font-size:.7em">별첨 O</span> 데스크 용어·약어 사전</h3>
+
+<p>신입 데스크가 가장 먼저 막히는 건 <b>원장·직원이 쓰는 약어와 용어</b>입니다. 못 알아들으면 응대·차팅·예약이 다 어긋납니다. 자주 만나는 것들을 <u>알아듣는 데 필요한 만큼</u> 정리했습니다.</p>
+
+<div class="box warn">
+  <div class="bt">⚠️ 먼저 알아둘 것 — 약어는 병원마다 다르다</div>
+  아래 진료 약어는 <u>널리 쓰이는 것</u>이지만, <b>병원·원장마다 자기만의 줄임말</b>을 씁니다(예: 우리 병원의 "CR+CU/SC+CaGI" 같은 묶음). <b>입사 첫 주에 우리 병원 약어집을 실장·원장에게 꼭 확인</b>하세요. 이 사전은 "감을 잡는 용도"입니다.
+</div>
+
+<h4>접수·환자 관리</h4>
+<div class="tool"><div class="th"><span class="tag">Term</span> 매일 쓰는 말</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th>말</th><th>뜻</th></tr></thead>
+  <tbody>
+  <tr><td>초진 / 재진</td><td>처음 온 진료 / 다시 온 진료</td></tr>
+  <tr><td>신환 / 구환</td><td>새 환자 / 기존 환자</td></tr>
+  <tr><td>리콜 / 리케어(recare)</td><td>정기검진·재방문을 유도하는 안내</td></tr>
+  <tr><td>해피콜</td><td>시술 직후 안부·불편 확인 연락</td></tr>
+  <tr><td>노쇼(no-show)</td><td>예약하고 안 옴</td></tr>
+  <tr><td>선예약(pre-appoint)</td><td>떠나기 전 다음 예약을 미리 잡음</td></tr>
+  <tr><td>차팅</td><td>진료 내용을 차트에 기록</td></tr>
+  <tr><td>덴트웹</td><td>많이 쓰는 치과 전자차트·청구 프로그램(브랜드)</td></tr>
+  </tbody>
+  </table></div>
+</div></div>
+
+<h4>보험·수납·행정</h4>
+<div class="tool"><div class="th"><span class="tag">Term</span> 돈·보험 관련</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th>말</th><th>뜻</th></tr></thead>
+  <tbody>
+  <tr><td>급여 / 비급여</td><td>건강보험 적용 / 미적용(전액 본인부담)</td></tr>
+  <tr><td>본인부담금</td><td>보험 진료 중 환자가 내는 몫</td></tr>
+  <tr><td>미수금</td><td>아직 못 받은 진료비</td></tr>
+  <tr><td>분납</td><td>나눠서 결제</td></tr>
+  <tr><td>지불보증서</td><td>자보·산재에서 비용을 보장한다는 서류(없으면 진료 보류)</td></tr>
+  <tr><td>의뢰서</td><td>의료급여 등에서 필요한 진료 의뢰 서류</td></tr>
+  <tr><td>삭감 / 심사</td><td>보험청구가 깎임 / 청구 내용을 심사평가원이 검토</td></tr>
+  <tr><td>상대지표</td><td>건당 진료비·내원일수 등 우리 병원이 평균 대비 어떤지(1.0 미만 관리)</td></tr>
+  <tr><td>현금영수증(의무발급)</td><td>일정 금액 이상 발급 의무(미발급 시 리스크)</td></tr>
+  </tbody>
+  </table></div>
+</div></div>
+
+<h4>자주 듣는 진료 약어 (⚠️ 병원마다 다를 수 있음)</h4>
+<div class="tool"><div class="th"><span class="tag">Term</span> 원장·직원이 쓰는 줄임말</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th>약어</th><th>대략의 뜻(확인 필요)</th></tr></thead>
+  <tbody>
+  <tr><td>SC</td><td>스케일링</td></tr>
+  <tr><td>SRP</td><td>잇몸 깊은 부위 스케일링·치근활택</td></tr>
+  <tr><td>Endo / RCT</td><td>신경치료(근관치료)</td></tr>
+  <tr><td>Ext</td><td>발치</td></tr>
+  <tr><td>Imp</td><td>임플란트</td></tr>
+  <tr><td>Cr</td><td>크라운(씌우기)</td></tr>
+  <tr><td>Br</td><td>브릿지</td></tr>
+  <tr><td>In/Onlay</td><td>인레이/온레이(부분 수복)</td></tr>
+  <tr><td>Pano</td><td>파노라마(전체 방사선)</td></tr>
+  <tr><td>PA</td><td>치근단 방사선(작은 X-ray)</td></tr>
+  <tr><td>Prep</td><td>치아를 다듬는 과정(보철 전)</td></tr>
+  <tr><td>Perio</td><td>치주(잇몸)</td></tr>
+  <tr><td>Prosth</td><td>보철</td></tr>
+  <tr><td>Ortho</td><td>교정</td></tr>
+  <tr><td>Tx / CC / F/U</td><td>치료 / 주소증(온 이유) / 경과관찰</td></tr>
+  <tr><td>Rx</td><td>처방(전)</td></tr>
+  </tbody>
+  </table></div>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">⚠️ <b>치식(이 번호)·묶음 약어</b>는 병원마다 크게 다릅니다. 반드시 우리 병원 기준으로 확인하세요.</p>
+</div></div>
+
+<div class="box good">
+  <div class="bt">✅ 신입에게 주는 팁</div>
+  모르는 약어가 나오면 <u>추측하지 말고 바로 물어보세요.</u> "그거 어떤 뜻이에요?"가 <b>차팅·예약 실수보다 100배 낫습니다.</b> 그리고 첫 주에 <b>우리 병원 약어집 한 장</b>을 만들어 데스크에 붙여두면, 다음 신입이 훨씬 빨리 큽니다.
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨P_진료별안내문">
+
+
+<h3 id="anx-aftercare"><span class="n" style="font-size:.7em">별첨 P</span> 진료별 환자 사후관리 안내문 (출력용 카드)</h3>
+
+<p>시술 직후 환자에게 <b>출력해 손에 쥐여주는</b> 안내 카드입니다. 데스크가 말로만 하면 환자는 절반을 잊고, 그 불안이 <u>불필요한 전화·불만</u>으로 돌아옵니다. 종이 한 장이 응대를 줄이고 신뢰를 높입니다. 문투는 <b>담백한 설명체</b>로 통일했습니다.</p>
+
+<div class="box warn">
+  <div class="bt">⚠️ 반드시 원장 검수 후 사용</div>
+  아래는 <b>일반적인 표준 안내</b>입니다. 병원 프로토콜·처방·환자 상태에 따라 다를 수 있으니 <u>원장 검수 후 우리 병원 버전으로</u> 확정해 쓰세요. 과장·단정("절대 안 아파요")은 넣지 않습니다.
+</div>
+
+<h4>🦷 발치 후</h4>
+<div class="tool"><div class="th"><span class="tag">Card</span> 발치 안내</div><div class="tb">
+  <p><b>정상 반응</b> · 첫날 약간의 피·붓기·통증은 정상입니다.</p>
+  <p><b>집에서</b> · 물린 거즈는 <u>약 2시간 뒤</u> 빼세요. 오늘은 침 뱉기·빨대 사용·과한 양치·뜨거운 음식·음주·흡연을 피하고, 반대쪽으로 부드럽게 드세요. 붓기엔 첫날 얼음찜질.</p>
+  <p><b>이러면 연락 주세요</b> · 피가 <u>계속 많이</u> 나거나, 통증·붓기가 <u>점점 심해지거나</u>, 고열이 날 때.</p>
+  <p><b>다음 내원</b> · [실밥 제거/경과 확인] [날짜].</p>
+</div></div>
+
+<h4>🩹 신경치료(근관치료) 후</h4>
+<div class="tool"><div class="th"><span class="tag">Card</span> 신경치료 안내</div><div class="tb">
+  <p><b>정상 반응</b> · 치료 후 <u>며칠~1·2주</u> 시큰하거나 씹을 때 불편할 수 있으며, 대개 정상 경과입니다.</p>
+  <p><b>집에서</b> · 처방약을 드시고, 치료 중인 치아로 <u>단단한 것을 씹지 마세요</u>(임시 재료가 약합니다). 반대쪽으로 식사하세요.</p>
+  <p><b>이러면 연락 주세요</b> · 통증이 <u>2주 넘게</u> 이어지거나, 붓고 열이 나거나, 임시 재료가 빠졌을 때.</p>
+  <p><b>다음 내원</b> · [신경치료 다음 단계/보철] [날짜]. <u>미루면 치아가 약해질 수 있어</u> 제때 오시는 게 좋아요.</p>
+</div></div>
+
+<h4>🔩 임플란트 수술 후</h4>
+<div class="tool"><div class="th"><span class="tag">Card</span> 임플란트 수술 안내</div><div class="tb">
+  <p><b>정상 반응</b> · 첫 2~3일 붓기·멍·약간의 통증은 흔합니다.</p>
+  <p><b>집에서</b> · 처방약을 시간 맞춰 드시고, 첫날 얼음찜질. 뜨거운 음식·음주·흡연·과한 운동·사우나는 며칠 피하세요. 수술 부위는 <u>세게 헹구지 말고</u> 부드럽게 관리하세요.</p>
+  <p><b>이러면 연락 주세요</b> · 붓기·통증이 <u>3일 지나도 심해지거나</u>, 출혈이 멈추지 않거나, 고열·고름이 있을 때.</p>
+  <p><b>다음 내원</b> · 실밥 제거 [날짜], 이후 정기 점검. 임플란트는 <u>정기 관리가 수명</u>을 좌우합니다.</p>
+</div></div>
+
+<h4>🪥 스케일링·잇몸치료 후</h4>
+<div class="tool"><div class="th"><span class="tag">Card</span> 스케일링·잇몸 안내</div><div class="tb">
+  <p><b>정상 반응</b> · 며칠간 이가 시리거나 잇몸에서 약간 피가 날 수 있으며 점차 좋아집니다.</p>
+  <p><b>집에서</b> · 부드럽게 칫솔질하고 <u>치실·치간칫솔</u>을 함께 쓰세요. 시린 증상엔 시린이 완화 치약이 도움됩니다.</p>
+  <p><b>이러면 연락 주세요</b> · 시린 증상이 <u>오래(2주+) 심하게</u> 지속되거나, 잇몸 통증·붓기가 심할 때.</p>
+  <p><b>다음 내원</b> · 잇몸치료 후 <u>정기 유지관리</u>가 재발을 막습니다. [다음 시기] 안내드릴게요.</p>
+</div></div>
+
+<h4>👑 크라운·보철 (임시치아 기간)</h4>
+<div class="tool"><div class="th"><span class="tag">Card</span> 임시치아 안내</div><div class="tb">
+  <p><b>정상 반응</b> · 임시치아는 접착이 약하고, 며칠 이물감·약간의 시림이 있을 수 있습니다.</p>
+  <p><b>집에서</b> · <u>끈적하거나 질긴 음식(껌·엿·오징어 등)</u>은 피하고, 그 부위로 세게 씹지 마세요. 치실은 옆으로 빼세요(위로 당기면 빠질 수 있음).</p>
+  <p><b>이러면 연락 주세요</b> · 임시치아가 <u>빠지거나 깨졌을 때</u>(빠진 것을 보관해 오세요), 심한 통증이 있을 때.</p>
+  <p><b>다음 내원</b> · 최종 보철 장착 [날짜]. 오래 비워두면 옆니가 움직여 <u>안 맞을 수 있어</u> 제때 오세요.</p>
+</div></div>
+
+<div class="box">
+  <div class="bt">📍 참고 — 원내 안내문, 어디에 붙여야 읽히나</div>
+  안내문을 잘 활용하는 병원들의 부착 위치: 데스크 위 · 진료실 책상 · 대기실 벽 · 엘리베이터 버튼 옆 · 그리고 의외의 1등석 — <b>화장실 문 안쪽(변기 정면)</b>. 환자가 <u>혼자, 몇십 초간, 시선 둘 곳 없이</u> 머무는 유일한 자리이기 때문입니다. 노쇼 정책·검진 안내처럼 차분히 읽어야 할 내용일수록 여기가 효과적입니다.
+</div>
+
+<div class="box">
+  <div class="bt">🏥 전달 방식 — 잘하는 병원들의 3채널 운용 (참고)</div>
+  같은 안내라도 <b>채널을 환자에 맞춰</b> 고릅니다: ① <b>종이</b> — 가장 보편, <u>고령층은 종이가 편함</u>, 작고 도톰할수록 고급감(분실 위험은 있음) ② <b>문자·알림톡에 내용 그대로</b> — 시간·장소 없이 다시 확인 가능 ③ <b>링크 첨부</b> — 영상·자세한 페이지까지 연결 가능(단, 클릭 단계가 있어 안 볼 수 있음). 표준은 <u>종이 + 문자 동시</u>이고, 고령 환자는 종이 중심으로.
+</div>
+
+<div class="box">
+  <div class="bt">✍️ 동의서 받을 때 — 설명의 "증거"를 남기는 법 (참고)</div>
+  분쟁에서 중요한 건 "설명했다"가 아니라 <b>"설명한 흔적"</b>입니다. 잘하는 병원들은: 중요 문장에 <u>그 자리에서 밑줄을 긋거나 손글씨 메모</u>를 하며 설명하고(설명의 물증), 중요 단어는 <u>말의 속도·크기를 바꿔</u> 강조하며, 부작용 설명은 "가능성은 낮고, 생기면 저희가 이렇게 대처합니다"로 <b>안심과 함께</b> 전달합니다. 마지막은 "내용을 모두 들으셨다는 서명 부탁드립니다."
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 데스크가 카드를 줄 때</div>
+  그냥 건네지 말고 <u>한 문장</u>을 곁들이세요 — "여기 오늘 시술 관리 안내예요. <b>이런 신호 있으면 꼭 연락 주세요.</b> 다음은 [날짜]에 뵐게요." 카드 + 한마디가 <b>불필요한 불안 전화</b>를 크게 줄이고, 다음 예약을 각인시킵니다.
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨Q_실패해부">
+
+
+<h3 id="anx-fail"><span class="n" style="font-size:.7em">별첨 Q</span> 치과가 무언가 하려다 실패하는 경로 — 정직한 해부</h3>
+
+<p>이 책의 내용은 대부분의 원장이 "맞는 말"이라고 합니다. 그런데 <b>도입한 병원의 다수가 몇 주~몇 달 안에 원점으로</b> 돌아갑니다. 왜일까요. 실패는 우연이 아니라 <u>예측 가능한 경로</u>를 따릅니다. 그 경로를 알면 피할 수 있습니다.</p>
+
+<h4>표준 실패 시나리오 — 6주의 기록</h4>
+<div class="tool"><div class="th"><span class="tag">Anatomy</span> "리콜 시스템 도입"이 죽어가는 과정 (어느 병원이든 비슷하다)</div><div class="tb">
+  <ul class="script">
+    <li><span class="who">W1 · 도입</span><span class="say me">원장이 좋은 방법을 찾아 도입을 결정하고 회의에서 공유한다. 여기까지는 완벽하다 — 다만 <u>실행 구조(오너·주기·바쁜 날 규칙) 없이 내용만</u> 전달된 상태. 직원들은 반신반의: <em>"저번처럼 흐지부지되지 않을까."</em></span></li>
+    <li><span class="who">W2 · 표면 순응</span><span class="say me">다들 시키는 대로 한다. 단, <u>이해해서가 아니라 시켜서</u>. 리콜 콜은 하는데 멘트는 예전 그대로("검진 때 되셨어요").</span></li>
+    <li><span class="who">W3 · 첫 충돌</span><span class="say me">바쁜 날이 온다. 눈앞의 환자 vs 리콜 30분 — 당연히 리콜이 밀린다. <b>아무도 그걸 짚지 않는다.</b> "이번 주는 어쩔 수 없었지."</span></li>
+    <li><span class="who">W4 · 조용한 드리프트</span><span class="say me">체크는 계속 "했음"으로 표시되는데 실제 행동은 줄어든다. 원장은 하루 종일 진료에 묶여 있어 <u>결과를 물어볼 틈 자체가 없다</u> — 누구의 게으름도 아닌, 구조가 만든 공백.</span></li>
+    <li><span class="who">W5 · 학습된 결론</span><span class="say me">직원들이 결론을 내린다 — <mark>"이거 안 봐. 안 해도 아무 일 없어."</mark> 우선순위에서 공식적으로 탈락.</span></li>
+    <li><span class="who">W6 · 사망 + 후유증</span><span class="say me">시스템은 죽었는데 아무도 사망선고를 안 한다. 그리고 진짜 손해는 여기부터 — <b>다음 시도는 더 빨리 죽는다.</b> "저번에도 흐지부지됐잖아."</span></li>
+  </ul>
+</div></div>
+
+<div class="box data">
+  <div class="bt">🔬 이건 치과만의 문제가 아니다 (근거)</div>
+  조직 변화 연구의 오래된 결론 — <b>변화 시도의 약 70%가 실패</b>하며(Kotter·McKinsey 계열 연구), 실패 원인 1위는 계획이 아니라 <u>지속 단계의 방치</u>입니다. 반복 실패는 <b>"변화 냉소주의(change cynicism)"</b>를 만들고, 다음 시도의 성공률을 더 깎습니다. 통제 실패의 주범도 설계가 아니라 <u>책임 불명확 + 점검 부재</u>(별첨 L). 즉 치과의 흐지부지는 게으름이 아니라 <b>구조가 만든 필연</b>입니다.
+  <span class="src">출처 · Kotter 「Leading Change」·McKinsey 변화관리 조사 · 변화 냉소주의 연구(Reichers·Wanous) · 4DX</span>
+</div>
+
+<h4>그 6주 동안, 사람들 마음속에선 무슨 일이</h4>
+<div class="tool"><div class="th"><span class="tag">Psych</span> 직원·실장·원장의 속마음 타임라인</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th></th><th>단기(W1~2)</th><th>중기(W3~4)</th><th>장기(W5~)</th></tr></thead>
+  <tbody>
+  <tr><td><b>데스크 직원</b></td><td>"일이 늘었네. 일단 하는 척은 하자"</td><td>"바쁠 땐 안 해도 되는 거였네"</td><td><b>"시키는 것만 하자"</b> — 새 지시엔 미리 마음을 닫음</td></tr>
+  <tr><td><b>실장</b></td><td>"내가 챙겨야 하나? 내 일인지 애매한데"</td><td>원장이 안 물으니 자기도 안 봄. 눈치껏 페이드</td><td>"원장이 진심 아닌 건 밀지 않는다"는 감각 체득</td></tr>
+  <tr><td><b>원장</b></td><td>"잘 굴러가겠지" — 진료 일정에 다시 매몰(확인할 틈이 구조적으로 없음)</td><td>지표를 챙길 시간이 나지 않음</td><td>"다들 열심히 하는데 왜 정착이 안 되지?" — <em>구조를 짚기 전엔 원인이 보이지 않아 답답함</em></td></tr>
+  </tbody>
+  </table></div>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">주목 — 아무도 악의가 없습니다. <u>합리적인 사람들이 구조 속에서 합리적으로 행동한 결과</u>가 실패입니다.</p>
+</div></div>
+
+<h4>이렇게 형성되는 병원 문화 — 그리고 환자에게 가는 길</h4>
+<div class="box warn">
+  <div class="bt">🧊 "선택적 순응" 문화</div>
+  반복되면 병원엔 이런 공기가 굳습니다 — <b>"원장이 직접 보는 것만 진짜, 나머지는 장식."</b> 직원들은 원장 시야에 있는 일(진료 보조·눈앞 응대)엔 신경 쓰고, 시야 밖 일(리콜·기록·표준)은 홀대합니다. 그 결과: ① 새 제안이 나오면 <u>검토 전에 냉소</u> ② 좋은 직원일수록 "여긴 체계가 안 잡힌다"며 이직 ③ 환자에겐 <u>사람마다·날마다 다른 병원</u>으로 경험됨 — 전화 응대가 어떤 날은 훌륭하고 어떤 날은 무성의한, <b>복불복 병원</b>. 환자는 그 비일관성을 "믿음이 안 간다"로 번역합니다.
+</div>
+
+<h4>대표적인 실패 유형 5가지 (우리 병원은 어느 쪽?)</h4>
+<div class="tool"><div class="th"><span class="tag">Pattern</span> 실패의 다섯 얼굴</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th>유형</th><th>모습</th><th>근본 원인</th></tr></thead>
+  <tbody>
+  <tr><td><b>① 선언형</b></td><td>회의에서 공유하고 끝. 후속 구조 없음</td><td>내용은 전달됐지만 오너·주기가 안 정해짐</td></tr>
+  <tr><td><b>② 과설계형</b></td><td>완벽한 11컬럼 대장·30항목 체크 → 3주 만에 포기</td><td>유지 비용 &gt; 사람의 여력(5-2장의 교훈)</td></tr>
+  <tr><td><b>③ 무주인형</b></td><td>"다 같이 하자" → 아무도 안 함</td><td>오너 없음(별첨 L)</td></tr>
+  <tr><td><b>④ 처벌형</b></td><td>감시를 혼내기로 운용 → 숫자 조작·보고용 연기</td><td>굿하트 법칙·공포(6장)</td></tr>
+  <tr><td><b>⑤ 동시다발형</b></td><td>좋은 시도가 많아 여러 개를 한꺼번에 시작 — 직원은 무엇이 진짜 우선인지 알 수 없음</td><td>우선순위 과다 = 우선순위 없음 ("하나만 한다", 별첨 R)</td></tr>
+  </tbody>
+  </table></div>
+</div></div>
+
+<h4>그래서 — 실패 경로를 끊는 5개의 쐐기</h4>
+<div class="tool"><div class="th"><span class="tag">Fix</span> 위 6주 시나리오의 각 단계를 끊는 법</div><div class="tb">
+  <ul class="check">
+    <li><b>W1을 끊는다</b> — 시작할 때 <u>하나만</u> 시작한다(리콜이면 리콜만). 그리고 "왜 하는지"를 숫자로 공유(새는 매출, 별첨 M) — 시켜서가 아니라 납득해서 하게.</li>
+    <li><b>W3을 끊는다</b> — "바쁜 주" 규칙을 <u>미리</u> 정한다: "바빠도 리콜 30분은 지킨다, 대신 ○○을 뺀다." 예외 상황을 설계해두면 첫 충돌에서 안 죽는다.</li>
+    <li><b>W4를 끊는다</b> — 원장이 <u>매주 한 번, 한 마디</u>만 묻는다: "이번 주 리콜 예약 몇 명?" 이 한 마디가 시스템의 심장박동이다(별첨 L).</li>
+    <li><b>W5를 끊는다</b> — 잘된 주엔 <u>결과를 팀에 되돌려준다</u>: "이번 주 리콜로 6명 왔고 이게 △△△만원이다." 자기 일의 효과가 보이면 시켜서 하는 일이 내 일이 된다.</li>
+    <li><b>W6을 끊는다</b> — 정말 안 되면 <u>공식적으로 접는다</u>("이건 우리에게 안 맞았다, 대신 이것만 남기자"). 조용한 사망 방치가 냉소를 만든다. 명시적 종료는 오히려 신뢰를 지킨다.</li>
+  </ul>
+</div></div>
+
+<div class="box good">
+  <div class="bt">✅ 한 줄 요약</div>
+  치과의 실패는 <b>내용이 틀려서가 아니라, 3주째 바쁜 날 아무도 안 짚어서</b> 옵니다. 사람은 구조대로 행동합니다 — 직원을 탓하기 전에 <u>누가 매주 보는가·바쁜 날 규칙이 있는가·결과가 팀에 돌아가는가</u>를 먼저 물으세요. 이 세 가지가 있으면 같은 직원, 같은 병원에서 같은 시도가 살아남습니다.
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨R_90일로드맵">
+
+
+<h3 id="anx-roadmap"><span class="n" style="font-size:.7em">별첨 R</span> 90일 정착 로드맵 — 실패 경로를 거꾸로 걷기</h3>
+
+<p><a href="#f-별첨Q_실패해부">별첨 Q</a>에서 봤듯 실패는 6주의 예측 가능한 경로를 따릅니다. 그렇다면 정착도 설계할 수 있습니다 — <b>실패가 오는 지점마다 미리 쐐기를 박아둔 90일 캘린더</b>입니다. 무리한 계획이 아니라, <u>주당 원장 5분·실장 30분·데스크 30분</u>이면 굴러가게 짰습니다.</p>
+
+<div class="box warn">
+  <div class="bt">⚠️ 시작 전 단 하나의 규칙 — 하나만 한다</div>
+  이 책엔 좋은 게 많지만 <b>한꺼번에 도입하면 전부 죽습니다</b>(별첨 Q 과설계형). 90일 동안 <u>리콜 시스템 하나만</u> 정착시킵니다. 응대 표준·평가·MOT는 리콜이 몸에 붙은 뒤 순서대로. "다 좋아 보여서 다 시작"이 가장 흔한 사인(死因)입니다.
+</div>
+
+<h4>Phase 0 · 시작 전 1주 — 판을 깐다 (원장의 일)</h4>
+<div class="tool"><div class="th"><span class="tag">Setup</span> 이 주를 건너뛰면 W5에서 죽는다</div><div class="tb">
+  <ul class="check">
+    <li><b>숫자로 시작을 알린다</b> — 회의에서 "리콜 합시다"(선언) 대신, <u>우리 병원의 새는 숫자</u>를 보여준다: "지난달 미내원 ○명, 여기서 △△만원이 조용히 새고 있다"(<a href="#f-별첨M_데스크누수지도">별첨 M</a>의 계산). <em>시켜서가 아니라 납득해서 하게 만드는 유일한 방법.</em></li>
+    <li><b>오너를 지명한다</b> — "리콜 시스템의 주인은 실장님"이라고 <u>공개적으로</u>. 원장 자신의 역할도 선언: "나는 매주 금요일에 숫자 하나만 묻겠다."</li>
+    <li><b>바쁜 날 규칙을 미리 정한다</b> — "아무리 바빠도 리콜 30분은 지킨다. 대신 그날은 [○○]을 미룬다." <em>W3의 첫 충돌은 반드시 오므로, 답을 미리 적어둔다.</em></li>
+    <li><b>원장 예고 습관 시작</b> — 오늘부터 체어에서 "6개월 뒤 이 치아 봐야 해요, 그때 연락드릴게요" + 차트 한 줄(<a href="#f-별첨G_전화리콜심화">별첨 G 리콜의 정점</a>). <u>90일 뒤 리콜 리스트의 질을 결정하는 씨앗</u>이라 첫날부터.</li>
+  </ul>
+</div></div>
+
+<h4>Phase 1 · 1~4주 — 리듬 만들기 (작게, 그러나 빠짐없이)</h4>
+<div class="tool"><div class="th"><span class="tag">Week 1-4</span> 목표: "매주 같은 일이 일어난다"는 감각</div><div class="tb">
+  <ul class="check">
+    <li><b>월요일(실장 10분)</b> — 차트에서 주간 리스트 뽑고 위험순 정렬(<a href="#f-05_Part5_리콜시스템">5장</a>). 첫 주는 <u>딱 20명만</u> — 성공 경험이 우선, 양은 나중.</li>
+    <li><b>화~금(데스크 하루 30분)</b> — 위에서부터 콜, 기호만(✓△✗)</li>
+    <li><b>금요일(원장 5분)</b> — 단 한 가지 질문: <mark>"이번 주 리콜로 예약 몇 명?"</mark> 그리고 한 마디: "고생했어요." <em>이 5분이 시스템의 심장박동.</em></li>
+    <li><b>2주차 예상 위기</b> — 데스크 속마음 "이거 언제까지 하지". 처방: 실장이 콜 옆에서 <u>한 번 같이 앉아</u> 잘한 통화를 짚어준다(코칭, 감시 아님).</li>
+    <li><b>3주차 예상 위기(최대 고비)</b> — 바쁜 날이 온다. 처방: Phase 0에서 정한 <u>바쁜 날 규칙을 그대로 실행</u>하고, 실장이 "오늘 바빴는데도 지켰다"를 <b>소리 내어 인정</b>. 이 한 번이 문화를 가른다.</li>
+  </ul>
+</div></div>
+
+<h4>Phase 2 · 5~8주 — 결과를 되돌려주기 (일이 '내 일'이 되는 구간)</h4>
+<div class="tool"><div class="th"><span class="tag">Week 5-8</span> 목표: "내가 한 콜이 매출이 됐다"를 눈으로</div><div class="tb">
+  <ul class="check">
+    <li><b>월간 결산을 팀에 공개</b> — "이번 달 리콜로 ○명 내원, △△△만원." 숫자를 <u>원장 혼자 보지 말고 팀에 되돌려준다</u>. 효과가 보이면 시켜서 하던 일이 내 일이 된다(별첨 Q의 W5 쐐기).</li>
+    <li><b>이유 붙이기 업그레이드</b> — 이제 리듬이 붙었으니 멘트의 질을 올린다: "정기검진요"→"지난번 지켜보자던 그 치아요"(<a href="#f-별첨E_리콜부르는구실">별첨 E</a>·G). Phase 0부터 심은 <u>원장 예고 기록이 이때부터 리스트에 올라오기 시작</u>한다.</li>
+    <li><b>선예약을 붙인다</b> — 수납 시 "다음 예약 지금 잡아둘까요?" 습관화. 리콜 대상 자체를 줄이는 상류 개입.</li>
+    <li><b>6주차 예상 위기</b> — 정체감("맨날 똑같네"). 처방: 이번 달 <u>가장 극적인 회수 사례 하나</u>를 이야기로 공유("2년 만에 온 그분, 임플란트 상담까지 갔다").</li>
+  </ul>
+</div></div>
+
+<h4>Phase 3 · 9~12주 — 시스템으로 굳히기 (사람이 바뀌어도 돌게)</h4>
+<div class="tool"><div class="th"><span class="tag">Week 9-12</span> 목표: 개인기 → 병원의 자산</div><div class="tb">
+  <ul class="check">
+    <li><b>문서로 굳힌다</b> — 3개월간 실제로 한 방식 그대로를 한 장으로: 리스트 뽑는 법·정렬 기준·멘트 카드·바쁜 날 규칙. <em>이제야 매뉴얼을 쓰는 이유: 처음부터 쓰면 상상으로 쓰고, 지금 쓰면 검증된 것만 남는다.</em></li>
+    <li><b>KPI 기준선 확정</b> — 3개월 데이터로 우리 병원의 정상값을 안다: 주간 콜 수·예약 전환·선예약률. 이후는 <u>이 기준선 대비 방향</u>만 본다(부록 9번 KPI 표).</li>
+    <li><b>90일 회고(30분 회의)</b> — 세 질문: 뭐가 잘됐나 / 뭐가 버거웠나 / <b>뺄 것은 없나</b>. <u>빼는 결정을 공식적으로</u> 하는 게 신뢰를 지킨다(별첨 Q의 W6 쐐기).</li>
+    <li><b>다음 하나를 고른다</b> — 리콜이 자리 잡았으면 그다음 하나만: 응대 표준(2장)이나 온보딩(6장). <em>또 하나만.</em></li>
+  </ul>
+</div></div>
+
+<h4>역할별 한 장 요약 — 90일 동안 각자 뭘 하나</h4>
+<div class="tool"><div class="th"><span class="tag">Role</span> 이대로만</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th></th><th>매일</th><th>매주</th><th>매월</th></tr></thead>
+  <tbody>
+  <tr><td><b>원장</b></td><td>체어 예고 10초 + 차트 한 줄</td><td>금요일 질문 1개 + 인정 한마디</td><td>결산을 팀에 공개</td></tr>
+  <tr><td><b>실장</b></td><td>콜 옆 코칭(초기)</td><td>월 리스트 뽑기·정렬 / 지표 집계</td><td>KPI 정리·회고 준비</td></tr>
+  <tr><td><b>데스크</b></td><td>30분 콜 + 기호 / 수납 시 선예약</td><td>—</td><td>회고 참여(현장 의견)</td></tr>
+  </tbody>
+  </table></div>
+</div></div>
+
+<div class="box data">
+  <div class="bt">🔬 왜 90일이고, 왜 이 순서인가</div>
+  습관 연구에서 새 행동이 자동화되는 데 평균 <u>약 66일</u>(개인차 18~254일, Lally 2010)이 걸립니다 — 한 달로는 안 굳고, 분기면 충분합니다. 순서는 변화관리의 검증된 뼈대를 따랐습니다: <b>위기감을 숫자로(Kotter 1단계) → 단기 승리를 빨리(6단계) → 문화로 굳히기(8단계)</b> + 매주 점검의 리듬(4DX). 그리고 각 주차의 "예상 위기"는 별첨 Q의 실패 시나리오 W2·W3·W5를 그대로 뒤집은 것입니다.
+  <span class="src">출처 · Lally et al.(2010) 습관 형성 연구 · Kotter 8단계 · 4DX Cadence of Accountability</span>
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 한 줄 요약</div>
+  90일 로드맵의 본질은 캘린더가 아니라 <b>"위기가 올 자리를 미리 알고, 답을 미리 적어두는 것"</b>입니다. 3주차 바쁜 날, 6주차 권태, 12주차 문서화 — 이 세 고비만 설계대로 넘기면, 이 책은 읽은 책이 아니라 <u>병원의 일부</u>가 됩니다.
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+<hr>
+<section id="f-별첨S_리뷰평판">
+
+
+<h3><span class="n" style="font-size:.7em">별첨 S</span> 리뷰·온라인 평판 — 전화보다 먼저 만나는 데스크</h3>
+
+<p>환자는 전화하기 전에 <b>리뷰부터</b> 봅니다(별첨 A의 "방문 전 접점"). 그런데 리뷰 관리는 대부분의 병원에서 <u>아무의 일도 아닌 채</u> 방치됩니다. 체계적으로 운영하는 병원들의 방식을 정리했습니다.</p>
+
+<h4>1) 답글에도 "강도"가 있다 — 3등급 운용</h4>
+<div class="tool"><div class="th"><span class="tag">Review</span> 리뷰 답글 3등급 (우리 병원은 어느 급으로?)</div><div class="tb">
+  <div class="twrap"><table>
+  <thead><tr><th>등급</th><th>방식</th><th>주기</th></tr></thead>
+  <tbody>
+  <tr><td><b>약</b></td><td>정형 인사 답글(복붙 수준)</td><td>주 1회 몰아서</td></tr>
+  <tr><td><b>중</b></td><td>감사 + 리뷰 내용에 맞춘 한두 문장(매번 다르게)</td><td>매일</td></tr>
+  <tr><td><b>강</b></td><td>개인화 장문 — 환자의 상황·치료를 언급하며 정성껏</td><td>매일</td></tr>
+  </tbody>
+  </table></div>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">중요한 건 등급 선택보다 <b>일관성</b>입니다 — "어떤 리뷰엔 장문, 어떤 리뷰엔 무반응"이 가장 나쁩니다. 여력에 맞는 등급을 정하고 <u>담당자·주기를 고정</u>하세요(별첨 L의 오너 원칙).</p>
+</div></div>
+
+<h4>2) 부정 리뷰 — 빠르고, 원장 명의로</h4>
+<div class="vs">
+  <p><span class="bad">❌ 못하는 병원</span> — 부정 리뷰를 못 본 척하거나, 반박 댓글로 싸운다 → 구경꾼(예비 환자)에게 최악의 인상.</p>
+  <p><span class="good">✅ 잘하는 병원</span></p>
+  <ul class="script">
+    <li><span class="who">빠르게</span><span class="say me">부정 리뷰엔 <b>당일~익일 답글</b>. 빠른 답글이 달릴수록 새 리뷰에 밀려 <u>노출이 뒤로</u> 간다.</span></li>
+    <li><span class="who">원장 명의</span><span class="say me">"안녕하세요, 대표원장입니다. 시간 내어 방문해 주셨는데 불편을 드려 죄송합니다." — <b>책임자가 직접</b>이 신뢰를 만든다.</span></li>
+    <li><span class="who">논쟁 금지</span><span class="say me">잘잘못을 가리지 않고 <u>불편에 대한 사과 + 개선 의지 + 직접 연락 요청</u>까지만. 세부 반박은 공개 댓글이 아니라 통화로.</span></li>
+    <li><span class="who">현장과 연결</span><span class="say me">대기시간 불만처럼 <u>병원에서 이미 감지한 불만</u>은 리뷰가 달리기 전에 <b>당일 사과 문자</b>를 먼저 — 리뷰로 가기 전에 닫는다.</span></li>
+  </ul>
+  <p class="why"><b>원리</b> · 부정 리뷰 답글의 진짜 독자는 그 환자가 아니라 <u>그걸 읽는 미래 환자</u>다. 컴플레인 문자 원칙(BIFF)은 <a href="#f-02_Part2_환자응대">2-4장</a>.</p>
+</div>
+
+<h4>3) 어떤 리뷰가 신환을 데려오나 — "치료명이 박힌 후기" ⭐</h4>
+
+<p>리뷰 100개보다 중요한 게 <b>어떤 치료의 후기냐</b>입니다. 임플란트를 고민하는 환자는 "○○동 치과"가 아니라 <u>"○○동 임플란트 후기"</u>로 검색합니다. 스케일링 칭찬 후기 100개는 그 검색에 안 잡힙니다 — <b>임플란트·크라운·교정처럼 고가·고민 큰 치료의 후기 3개</b>가 신환을 데려옵니다.</p>
+
+<div class="tool"><div class="th"><span class="tag">Ask</span> 고가치 치료 후기 모으기 — 누구에게·언제·어떻게</div><div class="tb">
+  <ul class="script">
+    <li><span class="who">누구에게</span><span class="say me"><b>임플란트 최종 보철 장착 완료 · 크라운 세팅 · 교정 종료</b> 환자 중 <u>만족이 확인된 분</u>. 치료가 끝나는 순간이 만족의 정점(피크-엔드, 별첨 A)이라 요청 적기.</span></li>
+    <li><span class="who">언제</span><span class="say me">① 최종 세팅 직후 수납대에서("오늘로 다 끝나셨네요, 축하드려요!" 분위기가 최고조일 때) ② 해피콜에서 <u>"덕분에 잘 씹어요"라는 말이 나온 직후</u> — 이 두 타이밍을 놓치면 다시 안 온다.</span></li>
+    <li><span class="who">어떻게 (치료명 유도)</span><span class="say me">"괜찮으셨다면 <b>임플란트 하신 경험</b>을 한 줄 남겨주시면, 지금 같은 고민 하시는 분들께 정말 큰 도움이 돼요." — <u>요청 문장에 치료명을 넣으면</u> 환자도 자연스럽게 치료명을 쓰게 된다(내용 강요는 X, 프라이밍은 O).</span></li>
+    <li><span class="who">부담 낮추기</span><span class="say me">"길게 안 쓰셔도 돼요, <b>한 줄이면 충분해요</b>." + QR 카드나 문자 링크로 <u>그 자리에서 3초 안에</u> 진입하게(집에 가면 잊는다).</span></li>
+  </ul>
+  <p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)">⚠️ <b>선은 명확히</b> — 금전·할인 대가 리뷰는 표시광고법·플랫폼 정책 위반 소지(적발 시 리뷰 전체 삭제 + 병원 제재). 직원·가족 리뷰 금지, 불만 기색이 있는 환자에겐 요청하지 않기(별첨 D ⑰의 원칙). <u>자발적 후기를 잘 "요청"하는 것까지만.</u></p>
+</div></div>
+
+<h4>4) 직원이 실제로 리뷰를 모으게 하려면 — 실전 운영 ⭐</h4>
+
+<p>"리뷰 좀 부탁드려 보세요"라고 회의에서 말하면 <b>첫 주만 하고 끝납니다</b>(별첨 Q의 실패 경로 그대로). 리뷰 수집은 부탁이 아니라 <u>루틴 설계</u>입니다.</p>
+
+<div class="tool"><div class="th"><span class="tag">System</span> 리뷰가 모이는 구조 6가지</div><div class="tb">
+  <ul class="check">
+    <li><b>① 스크립트에 박는다</b> — "만족 확인 → 요청"을 수납 스크립트의 <u>한 줄</u>로: "오늘 치료 어떠셨어요?" → 긍정이면 → "그럼 한 줄 후기 부탁드려도 될까요? (QR 카드 건넴)". <u>개인 재량이 아니라 절차</u>로.</li>
+    <li><b>② 도구를 손에 쥐여준다</b> — 데스크에 <u>QR 카드(스캔→바로 리뷰창)</u> 비치 + 문자 링크 템플릿(별첨 D ⑰). "말로 부탁"만 시키면 민망해서 안 한다 — <b>건넬 물건이 있으면 요청이 쉬워진다.</b></li>
+    <li><b>③ 요청 대상을 정해준다</b> — "아무나 많이"가 아니라 <u>"이번 주 보철 완료 환자"처럼 명단으로</u>. 실장이 주간 리스트(5장)에 "후기 요청 대상 ○명"을 같이 뽑아주면 데스크는 고민 없이 실행만.</li>
+    <li><b>④ 숫자를 되돌려준다</b> — 주간 마감 때 "이번 주 후기 3개, 그중 임플란트 1개" 공유. 특히 <u>리뷰에 직원 이름이 언급되면 회의에서 낭독</u> — "김○○ 선생님이 친절했다"는 후기 한 줄이 최고의 동기부여다.</li>
+    <li><b>⑤ 원장은 월 1회 묻는다</b> — "이번 달 치료 후기 몇 개예요?" (별첨 L의 심장박동 원리). 아무도 안 물으면 아무도 안 모은다.</li>
+    <li><b>⑥ 할당량·개인 인센티브는 걸지 않는다</b> — "1인당 주 3개" 식으로 걸면 <u>불만 환자에게도 조르고, 가짜 리뷰가 생기고, 응대가 영업이 된다</u>(굿하트, 6장). 팀 단위 리듬 + 인정으로 굴리는 게 오래간다.</li>
+  </ul>
+</div></div>
+
+<div class="vs">
+  <h4>같은 병원, 두 데스크 — 후기 요청의 갈림길</h4>
+  <p><span class="bad">❌ 못하는 데스크</span> — 수납 끝나고 등 돌리는 환자에게 "저기… 후기 좀…" (민망 → 곧 안 하게 됨). 혹은 모든 환자에게 기계적으로 → 불만 환자가 그 자리에서 별 1개.</p>
+  <p><span class="good">✅ 잘하는 데스크</span> — 보철 완료 환자가 "이제 잘 씹히네요" 하는 순간: "와, 다행이에요! 혹시 그 얘기 그대로 한 줄만 남겨주실 수 있어요? <b>임플란트 고민하시는 분들이 이런 진짜 경험담을 제일 궁금해하시거든요.</b> (QR 건네며) 여기 찍으면 바로 나와요, 한 줄이면 충분해요."</p>
+  <p class="why"><b>왜 갈렸나</b> · 타이밍(만족의 정점) + 명분(다른 환자에게 도움) + 도구(QR) + 부담 제거(한 줄). 넷 다 시스템이 만들어 주는 것이지, 개인기가 아니다.</p>
+</div>
+
+<h4>5) 걸려온 전화도 접점 — 자동 안내 메시지</h4>
+<div class="box">
+  <div class="bt">📲 참고 — 전화만 걸어도 병원 소개가 도착하게</div>
+  일부 병원은 <b>인터넷전화 부가서비스</b>를 써서, 환자가 병원에 전화를 걸면 <u>자동으로 안내 문자</u>(약도·진료시간·카카오채널 링크)가 발송되게 해둡니다. 통화가 안 됐어도 환자 손엔 <b>길 안내와 연락 수단</b>이 남습니다 — 부재중 전화가 이탈로 끝나는 걸 막는 저비용 안전망(통신사 부가서비스로 신청). 놓친 전화 62~67%가 다음 병원으로 넘어가는 걸(별첨 M) 생각하면 값싼 보험입니다.
+</div>
+
+<div class="box good">
+  <div class="bt">✅ 한 줄 요약</div>
+  리뷰는 <b>미래 환자가 읽는 우리 병원의 데스크</b>입니다. ① 답글은 등급을 정해 일관되게 ② 부정 리뷰는 빠르게 원장 명의로 ③ <b>임플란트·크라운 등 고가치 치료 후기를 만족의 정점에서, 치료명이 담기게</b> 요청하고 ④ 수집은 부탁이 아니라 <u>스크립트·QR·명단·인정의 시스템</u>으로 — 이 넷이면 평판 관리가 굴러갑니다.
+</div>
+
+
+<p style="text-align:right;font-size:.8rem;margin:20px 0"><a href="#toc-top">↑ 목차로</a></p>
+</section>
+</main>
+<footer>
+  『빈틈없는 데스크 — 병원 매출의 숨은 엔진』 · 치과 경영 실무 시리즈 Vol.1<br>
+  발행 · 4Prism × 사계절치과 현장연구 · 2026<br><br>
+  <span style="font-size:.78rem">데이터·이론 출처 · 국세청 국세통계 · 국민건강보험공단 구강검진 수검률 · INTERVAL RCT(BDJ 2021) · ADA·Levin Group·JADA 리콜 벤치마크 · Carlzon 「Moments of Truth」(1987)·Shostack HBR(1984)·Kahneman peak-end · Goodhart(1975)·Campbell(1976)·Deci SDT·Deming 「Out of the Crisis」(1986)·Adobe/Deloitte 평가 개편 · TWI 직무훈련·Collins·Brown 인지적 도제. 업계 벤치마크 수치는 방향값이며 병원별 실측과 다를 수 있습니다.</span><br><br>
+  본 자료는 일반적 운영 가이드입니다. 보험청구·노무·법적 사항은 병원 상황에 맞게 전문가 확인이 필요합니다.
+</footer>
+</div></body></html>
