@@ -820,7 +820,7 @@
     <div class="center">
       <span class="eyebrow">🎬 설치하고 나면 — 진짜 하루</span>
       <h2>프로그램을 깔면, 진료실의 하루가<br><mark>이렇게 흘러갑니다</mark>.</h2>
-      <p class="lead" style="margin:14px auto 0;max-width:38em">환자 <b>이수진 님(47)</b>이 스케일링 받으러 온 화요일. 오른쪽이 <b>실제 설치된 프로그램 화면</b>입니다 — 버튼도 직접 눌러보세요.</p>
+      <p class="lead" style="margin:14px auto 0;max-width:38em">환자 <b>이수진 님(47)</b>의 화요일 — 오른쪽 프로그램 화면의 버튼을 직접 눌러보세요.</p>
     </div>
 
     <div class="dc-stage">
@@ -831,7 +831,6 @@
       </div>
       <div class="dc-body">
         <div class="dc-left">
-          <div class="dc-nar" id="dcNar"></div>
           <div id="dcDlg"></div>
           <div class="dc-easy" id="dcEasy"></div>
         </div>
@@ -942,7 +941,7 @@
     var s=SCENES[i];
     $('dcTime').textContent=s.t;$('dcPlace').textContent=s.p;
     $('dcStep').textContent='장면 '+(i+1)+' / '+SCENES.length;
-    $('dcNar').innerHTML=s.nar;$('dcScrT').textContent=s.st;$('dcScr').innerHTML=s.scr;
+    $('dcScrT').textContent=s.st;$('dcScr').innerHTML=s.scr;
     $('dcSync').textContent='동기화 '+s.t;
     $('dcEasy').innerHTML='<span class="lb">🍀 쉽게 말해서</span>'+(s.easy||'');
     $('dcDlg').innerHTML=s.dlg.map(function(m,k){
@@ -1031,7 +1030,7 @@
     <div class="center">
       <span class="eyebrow">🔔 상황별 알림 미리보기</span>
       <h2>차팅하는 순간,<br>옆에서 <mark>이렇게 속삭입니다</mark>.</h2>
-      <p class="lead" style="margin:14px auto 0;max-width:37em">오늘 할 진료를 눌러보세요. <b>그 진료를 차팅하는 순간 실제로 뜨는 알림</b>이 그대로 재생됩니다 — 찍기 전에 챙길 것, 같이 찍을 것, 다음 내원에 챙길 것까지.</p>
+      <p class="lead" style="margin:14px auto 0;max-width:37em">오늘 할 진료를 눌러보세요 — <b>그 순간 실제로 뜨는 알림</b>이 그대로 재생됩니다.</p>
     </div>
 
     <div class="as-btns" id="asBtns"></div>
@@ -2827,18 +2826,13 @@
     <div class="center">
       <span class="eyebrow t">🖱️ 직접 만져보는 체험존</span>
       <h2>말로는 다 못 믿으시죠.<br><mark>실제 화면 그대로</mark> 지금 만져보세요.</h2>
-      <p class="lead" style="margin:14px auto 0;max-width:36em">설치하면 뜨는 화면을 그대로 옮겨 왔습니다. 아래 버튼을 눌러 바꿔가며 <b>언제 · 무엇이 · 어떻게 뜨는지</b> 직접 클릭해 보세요. 전부 <b>실제 작동하는 데모</b>입니다.</p>
+      <p class="lead" style="margin:14px auto 0;max-width:36em">전부 <b>실제 작동하는 데모</b>입니다 — 버튼으로 바꿔가며 직접 만져보세요.</p>
     </div>
 
     <div class="dz-tabs" id="dzTabs"></div>
 
     <div class="dz-info" id="dzInfo">
       <div class="ttl" id="dzTtl"></div>
-      <div class="dz-3col">
-        <div class="dz-cell"><div class="lb">⏰ 언제 뜨나</div><div class="tx" id="dzWhen"></div></div>
-        <div class="dz-cell"><div class="lb">🖥️ 무엇이 뜨나</div><div class="tx" id="dzWhat"></div></div>
-        <div class="dz-cell"><div class="lb">👆 이렇게 만져보세요</div><ul id="dzTry"></ul></div>
-      </div>
     </div>
     <div class="dz-frame">
       <div class="dz-bar">
@@ -2858,38 +2852,38 @@
 <script>
 (function(){
   var DEMOS=[
-    {f:'실사용시나리오.html',tab:'⭐ 실사용 시나리오',nw:1,bdg:'하루 흐름 전체',ttl:'실사용 시나리오 — 환자 한 명을 데스크→진료실→청구 전까지 따라가기',
+    {f:'실사용시나리오.html',tab:'⭐ 실사용 시나리오',nw:1,bdg:'하루 흐름 전체',ttl:'실사용 시나리오',
      when:'접수 → 진료 중 차팅 → 진료완료 → 송신 전. 하루의 네 순간마다 옆에 붙습니다.',
      what:'덴트웹은 차팅이 곧 청구 — 그래서 차팅하는 그 순간 ①못 챙긴 것 ②근거 빠뜨린 것 ③삭감날 것을 나눠서 알려주는 실제 사용 흐름 전체.',
      try:['위에서 아래로 스크롤하며 환자 여정 따라가기','"○○ 하러 온 김에" 추천청구 리스트 확인','실사용 시연 화면에서 버튼 눌러보기']},
-    {f:'07B_라이브데모.html',tab:'📊 설치 첫날 리포트',bdg:'라이브 데모',ttl:'라이브 데모 — 설치 3분 뒤 원장님이 받는 첫 리포트',
+    {f:'07B_라이브데모.html',tab:'📊 설치 첫날 리포트',bdg:'라이브 데모',ttl:'설치 첫날 리포트',
      when:'설치 직후 과거 차트 전수 분석이 끝나는 3분 뒤, 첫 화면으로 뜹니다.',
      what:'최근 6개월 놓친 청구가 유형별(단순 누락·제안형·그 밖)로 금액 큰 순서대로 정렬된 리포트 화면.',
      try:['숫자가 차오르는 애니메이션 지켜보기','유형별 카드 클릭해 상세 열기']},
-    {f:'차트오픈-추천UX.html',tab:'🔔 차트 열면 뜨는 알림',bdg:'추천안',ttl:'차트 오픈 알림 — 환자 차트를 여는 순간 이렇게 뜹니다',
+    {f:'차트오픈-추천UX.html',tab:'🔔 차트 열면 뜨는 알림',bdg:'추천안',ttl:'차트 열면 뜨는 알림',
      when:'데스크·진료실에서 환자 차트를 여는 바로 그 순간.',
      what:'"오늘 이 환자에게 챙길 청구"가 차트 옆에 조용히 떠서, 클릭 한 번이면 근거와 안내멘트까지 펼쳐지는 추천 UX.',
      try:['알림 카드 클릭해 근거 펼치기','왜 이 방식인지(검증된 원칙) 섹션 읽기']},
-    {f:'덴트웹-오버레이-3안.html',tab:'🪟 덴트웹 오버레이 3안',bdg:'UI 비교',ttl:'덴트웹 오버레이 — 실제 덴트웹 화면 위에 띄우면 이렇게 (3가지 안)',
+    {f:'덴트웹-오버레이-3안.html',tab:'🪟 덴트웹 오버레이 3안',bdg:'UI 비교',ttl:'덴트웹 오버레이 3안',
      when:'덴트웹을 쓰는 내내. 기존 화면을 가리지 않고 위에 얹힙니다.',
      what:'같은 알림을 세 가지 다른 위치·형태로 띄운 시안 3종 — 어떤 방식이 진료 흐름을 가장 덜 방해하는지 비교.',
      try:['3안을 차례로 전환하며 비교하기','실제 덴트웹 화면과의 배치 확인']},
-    {f:'덴트웹-띠.html',tab:'📏 하단 띠 방식',bdg:'UI 시안',ttl:'덴트웹 하단 띠 — 화면 아래 얇은 띠 하나로 항상 대기',
+    {f:'덴트웹-띠.html',tab:'📏 하단 띠 방식',bdg:'UI 시안',ttl:'덴트웹 하단 띠',
      when:'덴트웹 화면 하단에 상시. 챙길 게 생기면 띠가 살아납니다.',
      what:'진료를 전혀 방해하지 않다가, 청구 챙길 순간에만 하단 띠가 색·문구로 신호를 보내는 가장 조용한 방식.',
      try:['띠가 상태에 따라 바뀌는 모습 보기','띠 클릭해 상세 펼치기']},
-    {f:'청구-검토대시보드.html',tab:'✅ 송신 전 검토 대시보드',bdg:'더블체크',ttl:'검토 대시보드 — 송신 버튼 누르기 전, 청구 근거를 한눈에',
+    {f:'청구-검토대시보드.html',tab:'✅ 송신 전 검토 대시보드',bdg:'더블체크',ttl:'송신 전 검토 대시보드',
      when:'청구 송신 직전. 오늘 나갈 청구 전체를 마지막으로 훑는 단계.',
      what:'환자별 청구 건을 색·배지(triage)로 구분해 근거가 약한 건부터 보여주는 검토 화면 — 키보드만으로 넘기며 검토 가능.',
      try:['사용법 안내(화면 띄우는 법·검토 순서) 읽기','색·배지 뜻 확인하고 환자 행 클릭','키보드 ←→로 넘겨보기']},
-    {f:'차트판정-대진표.html',tab:'🗺️ 보험 판정 대진표',bdg:'한 판 정리',ttl:'차트 판정 대진표 — 이 진료, 보험이 되나? 를 한 판에',
+    {f:'차트판정-대진표.html',tab:'🗺️ 보험 판정 대진표',bdg:'한 판 정리',ttl:'보험 판정 대진표',
      when:'애매한 케이스를 만났을 때 펼치는 참고 지도.',
      what:'충전·신경·잇몸·틀니·외과·턱관절·영상·진찰·보철·환자자격까지 A~J 전 영역을 "되는 길 vs 안 되는 길" 대진표로 정리.',
      try:['우리 병원에서 자주 하는 진료 영역부터 찾아보기','환자 자격 유형(J) — 누구는 더 싸게 확인']}
   ];
   var BASE='';
-  var tabs=document.getElementById('dzTabs'),ttl=document.getElementById('dzTtl'),wh=document.getElementById('dzWhen'),wt=document.getElementById('dzWhat'),
-      tr=document.getElementById('dzTry'),ifr=document.getElementById('dzIfr'),ph=document.getElementById('dzPh'),
+  var tabs=document.getElementById('dzTabs'),ttl=document.getElementById('dzTtl'),
+      ifr=document.getElementById('dzIfr'),ph=document.getElementById('dzPh'),
       url=document.getElementById('dzUrl'),op=document.getElementById('dzOpen');
   DEMOS.forEach(function(d,i){
     var b=document.createElement('button');b.type='button';b.className='dz-tab';
@@ -2903,8 +2897,6 @@
     DEMOS.forEach(function(d,j){d._btn.classList.toggle('on',j===i);});
     var d=DEMOS[i];
     ttl.innerHTML=d.ttl+' <span class="bdg">'+d.bdg+'</span>';
-    wh.textContent=d.when;wt.textContent=d.what;
-    tr.innerHTML=d.try.map(function(t){return '<li>'+t+'</li>';}).join('');
     url.textContent='autoclaim://demo/'+d.f.replace('.html','');
     op.href=BASE+d.f;
     ph.style.display='none';ifr.src=BASE+encodeURI(d.f);loaded=true;
