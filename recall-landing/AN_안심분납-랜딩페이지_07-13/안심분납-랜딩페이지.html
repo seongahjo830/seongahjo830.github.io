@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4Prism — 미룬 치과 매출을 되찾는 스택 (오토리콜·오토리치·안심분납)</title>
+<meta name="description" content="덴트웹 위에 무료로 얹혀 데스크를 자동화하고(오토리콜), 카톡으로 환자에게 직접 닿고(오토리치), 미룬 고액 치료를 결제로 성사시킨다(안심분납). 4Prism 치과 성장 스택.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Gaegu:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBFAF8; --bg-soft:#F3F1EB; --card:#FFFFFF;
+    --ink:#141618; --ink-soft:#5B6360; --line:#E5E1D8;
+    --accent:#0E6E66; --accent-deep:#0A534D; --accent-soft:#EAF4F2;
+    --blue:#1D4ED8; --blue-soft:#E8EFFE;
+    --gold:#B4832A; --gold-soft:#FBF3E2;
+    --danger:#B23A48; --danger-soft:#FBEDEE;
+    --ink-inv:#F4F7F6;
+    --maxw:1080px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.72;font-size:16px;
+    letter-spacing:-.01em;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  section{padding:78px 0}
+  h2.sec{font-size:clamp(24px,3.6vw,36px);font-weight:850;letter-spacing:-.035em;line-height:1.24}
+  .eyebrow{font-size:12.5px;font-weight:800;letter-spacing:.14em;color:var(--accent);text-transform:uppercase}
+  .lead{color:var(--ink-soft);font-size:clamp(15px,1.9vw,18px);line-height:1.75;margin-top:14px}
+  .accent{color:var(--accent)}
+  .hl{background:linear-gradient(180deg,transparent 58%,var(--gold-soft) 58%);padding:0 2px;font-weight:800}
+  .hlg{background:linear-gradient(180deg,transparent 58%,var(--accent-soft) 58%);padding:0 2px;font-weight:800;color:var(--accent-deep)}
+  .center{text-align:center}
+  .sec-head{max-width:700px;margin:0 auto 42px;text-align:center}
+
+  /* top bar */
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(251,250,248,.86);backdrop-filter:saturate(1.6) blur(10px);border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .logo{font-weight:900;letter-spacing:-.03em;font-size:19px;display:flex;align-items:center;gap:9px}
+  .logo .dot{width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+  .logo small{font-size:11px;font-weight:700;color:var(--ink-soft);letter-spacing:.04em}
+  .navlinks{display:flex;gap:20px;font-size:14px;font-weight:700}
+  .navlinks a{color:var(--ink-soft);text-decoration:none}
+  .navlinks a:hover{color:var(--accent-deep)}
+  .topcta{background:var(--accent);color:#fff;font-weight:800;font-size:14px;padding:10px 18px;border-radius:11px;text-decoration:none;transition:.15s}
+  .topcta:hover{background:var(--accent-deep)}
+  @media(max-width:760px){.navlinks{display:none}}
+  @media(max-width:520px){.topbar .topcta{display:none}}
+
+  /* hero */
+  .hero{padding:66px 0 52px;background:
+     radial-gradient(120% 90% at 84% 0%,var(--accent-soft) 0%,transparent 46%),
+     linear-gradient(180deg,#fff 0%,var(--bg) 100%)}
+  .hero .kick{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);
+     border-radius:99px;padding:7px 15px;font-size:12.5px;font-weight:800;color:var(--ink-soft);margin-bottom:22px}
+  .hero .kick .b{background:var(--accent-soft);color:var(--accent-deep);font-weight:900;padding:2px 8px;border-radius:99px;font-size:11px}
+  .hero h1{font-size:clamp(32px,6.6vw,60px);font-weight:900;letter-spacing:-.045em;line-height:1.1}
+  .hero h1 .sub{display:block;color:var(--accent);margin-top:6px}
+  .hero p.sub{max-width:660px;color:var(--ink-soft);font-size:clamp(15px,2vw,19px);margin-top:22px;line-height:1.7}
+  .hero .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:800;text-decoration:none;border-radius:13px;
+     padding:15px 26px;font-size:16px;border:none;cursor:pointer;transition:.15s}
+  .btn-pri{background:var(--accent);color:#fff;box-shadow:0 10px 24px rgba(14,110,102,.24)}
+  .btn-pri:hover{background:var(--accent-deep);transform:translateY(-1px)}
+  .btn-sec{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+  .btn-sec:hover{border-color:var(--accent);color:var(--accent-deep)}
+  .hero .trust{display:flex;gap:22px;flex-wrap:wrap;margin-top:30px;font-size:13px;color:var(--ink-soft);font-weight:600}
+  .hero .trust span{display:inline-flex;align-items:center;gap:6px}
+  .hero .trust b{color:var(--accent-deep)}
+
+  /* stat stripe */
+  .stripe{background:var(--accent-deep);color:var(--ink-inv)}
+  .stripe .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:26px 22px}
+  .stripe .st{text-align:center;padding:6px}
+  .stripe .st .n{font-size:clamp(22px,3.4vw,32px);font-weight:900;letter-spacing:-.03em;color:#fff}
+  .stripe .st .l{font-size:12px;color:#bcd6d2;margin-top:4px;line-height:1.4;font-weight:600}
+  .stripe .st .src{font-size:10.5px;color:#7fa9a3;margin-top:3px}
+  @media(max-width:640px){.stripe .wrap{grid-template-columns:repeat(2,1fr);gap:18px 8px}}
+
+  /* stack overview */
+  .stack{background:var(--bg-soft)}
+  .layers{display:flex;flex-direction:column;gap:14px;max-width:760px;margin:0 auto}
+  .layer{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px;position:relative}
+  .layer .lv{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto}
+  .layer.l1 .lv{background:var(--blue-soft);color:var(--blue)}
+  .layer.l2 .lv{background:var(--gold-soft);color:var(--gold)}
+  .layer.l3 .lv{background:var(--accent-soft);color:var(--accent-deep)}
+  .layer .tx .nm{font-size:18px;font-weight:850;letter-spacing:-.02em}
+  .layer .tx .nm small{font-size:12px;font-weight:700;color:var(--ink-soft);margin-left:7px;letter-spacing:0}
+  .layer .tx .d{font-size:13.5px;color:var(--ink-soft);margin-top:3px;line-height:1.55}
+  .layer .price{font-size:12px;font-weight:800;padding:6px 12px;border-radius:99px;white-space:nowrap}
+  .layer.l1 .price{background:var(--blue-soft);color:var(--blue)}
+  .layer.l2 .price{background:var(--gold-soft);color:var(--gold)}
+  .layer.l3 .price{background:var(--accent-soft);color:var(--accent-deep)}
+  .layer .arw{position:absolute;left:44px;bottom:-14px;color:var(--line);font-size:20px;z-index:2}
+  @media(max-width:640px){.layer{grid-template-columns:auto 1fr;gap:12px}.layer .price{grid-column:2;justify-self:start;margin-top:6px}}
+
+  /* generic */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}
+  @media(max-width:820px){.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr;gap:26px}}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:6px 13px;border-radius:99px;margin-bottom:16px}
+  .badge.b1{background:var(--blue-soft);color:var(--blue)}
+  .badge.b2{background:var(--gold-soft);color:var(--gold)}
+  .badge.b3{background:var(--accent-soft);color:var(--accent-deep)}
+
+  .featlist{list-style:none}
+  .featlist li{display:flex;gap:13px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .featlist li:last-child{border:none}
+  .featlist .ic{width:38px;height:38px;border-radius:11px;background:var(--bg-soft);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
+  .featlist b{font-weight:800;font-size:15px}
+  .featlist .d{color:var(--ink-soft);font-size:13.5px;line-height:1.6;margin-top:2px}
+
+  .resultbox{background:var(--accent-deep);border-radius:18px;padding:26px;color:var(--ink-inv)}
+  .resultbox h4{color:#fff;font-size:15px;margin-bottom:16px;font-weight:800}
+  .resultbox .rg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .resultbox .rc{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:15px}
+  .resultbox .rc .n{font-size:23px;font-weight:900;color:#fff;letter-spacing:-.03em}
+  .resultbox .rc .l{font-size:11.5px;color:#a9cfc9;margin-top:3px;line-height:1.4}
+  .resultbox .foot{font-size:11px;color:#7fa9a3;margin-top:14px}
+
+  /* problem cards */
+  .prob{background:var(--bg-soft)}
+  .pcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;height:100%}
+  .pcard .ic{font-size:26px}
+  .pcard h3{font-size:17px;font-weight:800;margin:10px 0 6px;letter-spacing:-.02em}
+  .pcard p{font-size:14px;color:var(--ink-soft);line-height:1.66}
+  .pcard .tag{display:inline-block;margin-top:12px;font-size:11.5px;font-weight:800;color:var(--danger);background:var(--danger-soft);padding:4px 10px;border-radius:99px}
+
+  /* mechanism */
+  .mcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;height:100%;overflow:hidden}
+  .mcard .num{font-size:13px;font-weight:900;color:var(--accent);letter-spacing:.08em}
+  .mcard .ic{font-size:30px;margin:10px 0 6px}
+  .mcard h3{font-size:19px;font-weight:850;letter-spacing:-.025em;margin-bottom:8px}
+  .mcard p{font-size:14.5px;color:var(--ink-soft);line-height:1.7}
+  .mcard .foot{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);font-size:13px;font-weight:700;color:var(--accent-deep)}
+  .mcard .glow{position:absolute;top:-40px;right:-40px;width:130px;height:130px;border-radius:50%;background:var(--accent-soft);opacity:.7}
+
+  /* journey demo */
+  .demo{background:var(--bg-soft)}
+  .demowrap{display:grid;grid-template-columns:auto 1fr;gap:44px;align-items:center}
+  @media(max-width:820px){.demowrap{grid-template-columns:1fr;gap:26px;justify-items:center}}
+  .phone{width:340px;max-width:100%;background:#0d0b16;border-radius:42px;padding:10px;box-shadow:0 34px 66px rgba(15,20,40,.4),0 0 0 2px #26233a;flex:0 0 auto}
+  .p-screen{background:#eef2f4;border-radius:33px;overflow:hidden;height:648px;display:flex;flex-direction:column;position:relative}
+  .p-sb{height:40px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 5px;font-size:12px;font-weight:700;flex:0 0 auto;color:#141f26}
+  .p-sb.kk{background:#a9c0d4;color:#2a2a2a}
+  .p-body{flex:1 1 auto;overflow-y:auto}
+  .p-pad{padding:15px 16px}
+  .p-appbar{display:flex;align-items:center;gap:9px;padding:5px 15px 11px}
+  .p-appbar.kk{background:#fae100}
+  .p-appbar .bk{font-size:19px;color:#5b6b74}
+  .p-appbar.kk .bk{color:#3b1f1f}
+  .p-appbar .tt{font-size:13.5px;font-weight:700}
+  .p-appbar.kk .tt{color:#3b1f1f}
+  .p-chip{display:inline-flex;gap:5px;font-size:11px;font-weight:800;padding:5px 11px;border-radius:20px;margin-bottom:11px}
+  .p-chip.v{background:var(--accent-soft);color:var(--accent-deep)}
+  .p-chip.m{background:#E3F5EE;color:#0f7d5e}
+  .p-chip.b{background:#e7f2f4;color:#155e6d}
+  .p-h{font-size:21px;font-weight:850;letter-spacing:-.5px;line-height:1.28;margin:2px 0 4px}
+  .p-mut{color:#5b6b74;font-size:12.5px;line-height:1.6}
+  .p-card{background:#fff;border-radius:15px;padding:14px;box-shadow:0 3px 12px rgba(20,30,50,.06);margin-bottom:11px}
+  .p-tx{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eef1f3;font-size:13px}
+  .p-tx:last-child{border:none}
+  .p-total{background:linear-gradient(160deg,#123c37,#0a2622);color:#fff;border-radius:15px;padding:16px;margin:6px 0 11px}
+  .p-total .l{font-size:12px;opacity:.8}
+  .p-total .n{font-size:29px;font-weight:900;letter-spacing:-1.2px;margin-top:2px}
+  .p-total .s{font-size:11px;opacity:.72;margin-top:5px}
+  .p-btn{display:block;width:100%;text-align:center;padding:14px;border-radius:14px;font-size:15px;font-weight:800;border:none;cursor:pointer;margin-top:9px}
+  .p-btn.pri{background:#1f7a8c;color:#fff}
+  .p-btn.money{background:#0f7d5e;color:#fff}
+  .p-btn.call{background:#0f5132;color:#fff}
+  .p-btn.sec{background:#fff;color:#141f26;border:1.5px solid #e7edf0}
+  .p-pt{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid #eef1f3}
+  .p-pt:last-child{border:none}
+  .p-pt .ic{width:36px;height:36px;border-radius:11px;background:#E3F5EE;color:#0f7d5e;display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto}
+  .p-pt .n{font-size:13.5px;font-weight:800}
+  .p-pt .d{font-size:12px;color:#5b6b74;margin-top:2px;line-height:1.5}
+  .p-legal{font-size:10px;color:#8a97a0;line-height:1.55;margin-top:9px}
+  .p-why{background:linear-gradient(160deg,#fff,#f4fafb);border:1px solid #dfeef1;border-radius:15px;padding:15px;margin-bottom:11px}
+  .p-why .wic{font-size:20px}.p-why h5{font-size:14px;color:#155e6d;margin:5px 0}.p-why p{font-size:13px;line-height:1.6;color:#33474e}.p-why .al{color:#b23a48;font-weight:800}
+  .p-slot{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+  .p-slot .s{border:1.5px solid #e7edf0;border-radius:12px;padding:11px 6px;text-align:center;font-size:13px;font-weight:700;background:#fff;cursor:pointer}
+  .p-slot .s.sel{border-color:#1f7a8c;background:#e7f2f4;color:#155e6d}
+  .p-slot .s.off{opacity:.4;text-decoration:line-through}
+  .p-plan{display:flex;gap:7px;margin:6px 0}
+  .p-plan .p{flex:1;border:1.5px solid #e7edf0;border-radius:12px;padding:11px 3px;text-align:center;cursor:pointer;background:#fff}
+  .p-plan .p.sel{border-color:#0f7d5e;background:#E3F5EE}
+  .p-plan .p .m{font-size:10.5px;color:#5b6b74;font-weight:800}
+  .p-plan .p .mo{font-size:13px;font-weight:900;margin-top:3px}
+  .p-plan .p.sel .mo{color:#0f7d5e}
+  .p-big{background:#E3F5EE;border-radius:15px;padding:16px;text-align:center;margin:9px 0 6px}
+  .p-big .l{font-size:12px;color:#0f7d5e;font-weight:800}
+  .p-big .n{font-size:27px;font-weight:900;color:#0f7d5e;letter-spacing:-1px;margin:3px 0}
+  .p-cmp{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:7px}
+  .p-cmp span{background:#fff;border:1px solid #cfeadf;color:#0f7d5e;font-size:11px;font-weight:700;padding:5px 10px;border-radius:20px}
+  .p-ic{width:64px;height:64px;border-radius:50%;background:#E3F5EE;color:#0f7d5e;display:flex;align-items:center;justify-content:center;font-size:32px;margin:16px auto 11px}
+  .p-ic.blue{background:#e7f2f4;color:#1f7a8c}
+  .p-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eef1f3;font-size:13px}
+  .p-row:last-child{border:none}.p-row .k{color:#5b6b74}.p-row .v{font-weight:700}
+  /* kakao bubble in phone */
+  .kkwrap{background:#b2c7d9;min-height:100%;padding:14px 12px 20px}
+  .kkday{text-align:center;margin:4px 0 12px}
+  .kkday span{background:rgba(0,0,0,.16);color:#fff;font-size:10.5px;padding:3px 11px;border-radius:20px}
+  .kkold{display:flex;gap:7px;margin-bottom:7px;opacity:.7}
+  .kkold .av{width:32px;height:32px;border-radius:11px;flex:0 0 auto;background:linear-gradient(135deg,#79a7b5,#5a8795);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff}
+  .kkold .b{background:#fff;border-radius:3px 12px 12px 12px;padding:8px 11px;font-size:12px;color:#555;max-width:76%;line-height:1.5}
+  .kksys{text-align:center;margin:12px 0 8px}
+  .kksys span{background:rgba(255,255,255,.55);color:#3a4c56;font-size:10.5px;padding:4px 12px;border-radius:14px}
+  .kkrow{display:flex;gap:7px;align-items:flex-start}
+  .kkrow .av{width:36px;height:36px;border-radius:13px;flex:0 0 auto;background:linear-gradient(135deg,#1f9d8f,#0f7d72);display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff}
+  .kkrow .nm{font-size:11px;color:#2c3f4c;font-weight:700;margin:0 0 4px 2px}
+  .kkbub{background:#fff;border-radius:4px 15px 15px 15px;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.1);max-width:82%}
+  .kktag{background:#fae100;color:#3b1f1f;font-size:10.5px;font-weight:800;padding:7px 13px}
+  .kkmsg{padding:13px 14px;font-size:13px;line-height:1.66;color:#1c1c1c}
+  .kkmsg b{color:#0f7d72}.kkmsg .hi{background:#fff6cf;padding:0 3px;border-radius:3px;font-weight:700}
+  .kkmsg .dv{height:1px;background:#eee;margin:11px 0}.kkmsg .info{font-size:12px;color:#5a6b74;line-height:1.7}
+  .kkbtn{border-top:1px solid #eee;padding:13px;text-align:center;font-size:13.5px;font-weight:800;color:#0f7d72;cursor:pointer;background:#fbfefe}
+  .kkbtn.sub{color:#5a6b74;font-size:12.5px;border-top:1px solid #f0f0f0}
+  /* demo side */
+  .demoside{max-width:470px}
+  .layerpill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;padding:5px 12px;border-radius:99px;margin-bottom:10px}
+  .layerpill.pl2{background:var(--gold-soft);color:var(--gold)}
+  .layerpill.pl3{background:var(--accent-soft);color:var(--accent-deep)}
+  .voice{background:#fff;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:15px 18px;font-size:14.5px;line-height:1.7;color:var(--ink);min-height:92px}
+  .voice .who{font-size:12px;color:var(--gold);font-weight:800;margin-bottom:5px}
+  .voice em{color:var(--accent-deep);font-style:normal;font-weight:800}
+  .dctrl{display:flex;align-items:center;gap:12px;margin-top:18px}
+  .dctrl button{background:#fff;border:1.5px solid var(--line);border-radius:11px;padding:11px 18px;font-size:14px;font-weight:800;cursor:pointer;color:var(--ink)}
+  .dctrl button:hover:not(:disabled){border-color:var(--accent);color:var(--accent-deep)}
+  .dctrl button:disabled{opacity:.35;cursor:default}
+  .dots{display:flex;gap:5px;flex:1;flex-wrap:wrap}
+  .dots i{width:8px;height:8px;border-radius:50%;background:var(--line);transition:.2s}
+  .dots i.on{background:var(--accent);width:20px;border-radius:4px}
+  .stepnav{font-size:12.5px;font-weight:800;color:var(--accent);letter-spacing:.03em;margin-bottom:8px}
+
+  /* calculator */
+  .calc{background:linear-gradient(180deg,#fff,var(--bg-soft))}
+  .calcbox{background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px;box-shadow:0 20px 46px rgba(20,40,38,.07);max-width:720px;margin:0 auto}
+  .calc .field{margin-bottom:22px}
+  .calc .field .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+  .calc .field label{font-size:14.5px;font-weight:800}
+  .calc .field .val{font-size:16px;font-weight:900;color:var(--accent-deep)}
+  input[type=range]{-webkit-appearance:none;width:100%;height:7px;border-radius:99px;background:var(--line);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 3px 8px rgba(14,110,102,.4);border:3px solid #fff}
+  input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid #fff}
+  .calc .out{margin-top:8px;background:var(--accent-deep);border-radius:18px;padding:24px;color:#fff;text-align:center}
+  .calc .out .l1{font-size:13px;color:#bcd6d2;font-weight:600}
+  .calc .out .big{font-size:clamp(30px,6vw,46px);font-weight:900;letter-spacing:-.04em;margin:4px 0;color:#fff}
+  .calc .out .l2{font-size:13.5px;color:#9dc6c0;line-height:1.6}
+  .calc .out .l2 b{color:#7fe3c9}
+  .calc .disclaim{font-size:11.5px;color:var(--ink-soft);margin-top:14px;text-align:center;line-height:1.6}
+
+  /* owner dashboard */
+  .dash{background:var(--accent-deep);border-radius:20px;padding:26px;color:var(--ink-inv)}
+  .dash h3{color:#fff;font-size:16px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .dash .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+  .dash .kpi{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:14px}
+  .dash .kpi .n{font-size:23px;font-weight:900;color:#fff;letter-spacing:-.03em}
+  .dash .kpi .l{font-size:11px;color:#a9cfc9;margin-top:3px}
+  .dash .aging{background:rgba(255,255,255,.05);border-radius:13px;padding:14px}
+  .dash .aging .r{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:12.5px}
+  .dash .aging .bar{flex:1;height:9px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}
+  .dash .aging .bar i{display:block;height:100%;border-radius:99px}
+  .benefit{list-style:none}
+  .benefit li{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .benefit li:last-child{border:none}
+  .benefit .ck{color:var(--accent);font-weight:900;flex:0 0 auto;font-size:18px}
+  .benefit b{font-weight:800}
+  .benefit .d{color:var(--ink-soft);font-size:14px}
+
+  /* comparison */
+  .cmp-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:#fff}
+  table.cmp{width:100%;border-collapse:collapse;min-width:640px;font-size:14px}
+  table.cmp th,table.cmp td{padding:15px 16px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  table.cmp thead th{background:var(--bg-soft);font-weight:800;font-size:13px}
+  table.cmp thead th.us{background:var(--accent);color:#fff;border-radius:10px 10px 0 0}
+  table.cmp td.us{background:var(--accent-soft);font-weight:700;color:var(--accent-deep)}
+  table.cmp tbody tr:last-child td{border-bottom:none}
+  table.cmp .rowh{font-weight:800}
+  table.cmp .no{color:var(--danger);font-weight:700}
+  table.cmp .ok{color:var(--accent-deep);font-weight:800}
+
+  /* evidence */
+  .evi{background:var(--bg-soft)}
+  .ecard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;height:100%}
+  .ecard .co{font-size:13px;font-weight:900;letter-spacing:.03em;color:var(--accent);margin-bottom:4px}
+  .ecard .big{font-size:27px;font-weight:900;letter-spacing:-.03em}
+  .ecard .d{font-size:13.5px;color:var(--ink-soft);margin-top:6px;line-height:1.6}
+  .evi .note{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:26px;line-height:1.7}
+  .evi .note b{color:var(--ink)}
+
+  /* roadmap */
+  .road{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:820px){.road{grid-template-columns:1fr 1fr}}
+  .rstep{background:#fff;border:1px solid var(--line);border-radius:15px;padding:20px;position:relative}
+  .rstep .t{font-size:11.5px;font-weight:900;letter-spacing:.06em;color:var(--accent);margin-bottom:8px}
+  .rstep h4{font-size:15.5px;font-weight:850;margin-bottom:6px;letter-spacing:-.02em}
+  .rstep p{font-size:12.5px;color:var(--ink-soft);line-height:1.6}
+  .rstep .now{position:absolute;top:16px;right:16px;font-size:10px;font-weight:900;background:var(--accent);color:#fff;padding:3px 8px;border-radius:99px}
+  .rstep.soon{opacity:.82}
+
+  /* faq */
+  .faq details{background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:11px;overflow:hidden}
+  .faq summary{list-style:none;cursor:pointer;padding:18px 20px;font-weight:800;font-size:15.5px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary .who{font-size:11px;font-weight:900;padding:3px 9px;border-radius:99px;flex:0 0 auto}
+  .faq summary .who.p{background:var(--gold-soft);color:var(--gold)}
+  .faq summary .who.d{background:var(--accent-soft);color:var(--accent-deep)}
+  .faq summary .q{flex:1}
+  .faq summary .arw{transition:.2s;color:var(--ink-soft);font-size:14px}
+  .faq details[open] summary .arw{transform:rotate(180deg)}
+  .faq details .a{padding:0 20px 20px;color:var(--ink-soft);font-size:14.5px;line-height:1.75}
+
+  /* legal */
+  .legal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:820px){.legal-grid{grid-template-columns:1fr 1fr}}
+  .lb{background:var(--bg-soft);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center}
+  .lb .ic{font-size:24px}.lb h4{font-size:14px;font-weight:800;margin:8px 0 4px}.lb p{font-size:12px;color:var(--ink-soft);line-height:1.55}
+
+  /* final */
+  .final{background:var(--accent-deep);color:var(--ink-inv);text-align:center}
+  .final h2{color:#fff;font-size:clamp(26px,4.6vw,42px);font-weight:900;letter-spacing:-.04em;line-height:1.2}
+  .final p{color:#a9cfc9;font-size:17px;margin-top:16px;max-width:580px;margin-left:auto;margin-right:auto}
+  .final .btn-pri{background:#fff;color:var(--accent-deep);margin-top:30px}
+  .final .btn-pri:hover{background:#f0f7f5;transform:translateY(-1px)}
+  .final .mini{margin-top:20px;font-size:13px;color:#7fa9a3}
+
+  footer{background:#0a2622;color:#7fa9a3;padding:40px 0;font-size:12.5px;line-height:1.8}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+  footer b{color:#cfe0dd}.footer .disc{max-width:620px}
+
+  /* desk sim (오토리콜 데스크톱 실사용) */
+  .win{max-width:940px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 26px 60px rgba(20,40,38,.13)}
+  .win-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;background:#efeee8;border-bottom:1px solid var(--line)}
+  .win-bar .dt{width:11px;height:11px;border-radius:50%}
+  .win-bar .r{background:#f45b4e}.win-bar .y{background:#f5bb3f}.win-bar .g{background:#3fc463}
+  .win-bar .ti{font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-left:8px}
+  .win-tabs{display:flex;gap:2px;padding:0 10px;background:#f7f6f1;border-bottom:1px solid var(--line);overflow-x:auto}
+  .win-tabs button{background:none;border:none;padding:13px 16px;font-size:13.5px;font-weight:800;color:var(--ink-soft);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;font-family:inherit}
+  .win-tabs button.on{color:var(--accent-deep);border-bottom-color:var(--accent)}
+  .win-body{padding:22px;min-height:340px;background:#fff}
+  .dsk-h{font-size:15px;font-weight:850;margin-bottom:4px}
+  .dsk-sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:16px}
+  .qrow{display:grid;grid-template-columns:1.3fr .7fr 1.3fr 1.5fr;gap:10px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:11px;margin-bottom:8px;font-size:13.5px;background:#fff}
+  .qrow.head{background:var(--bg-soft);font-weight:800;font-size:12px;color:var(--ink-soft);padding:10px 14px}
+  .qrow.hot{border-color:var(--accent);background:var(--accent-soft)}
+  .qrow .nm{font-weight:800}
+  .qbadge{font-size:11px;font-weight:800;padding:4px 9px;border-radius:99px;display:inline-block}
+  .qbadge.web{background:#E3F5EE;color:#0f7d5e}.qbadge.miss{background:#fff3e0;color:#c47f17}.qbadge.sent{background:var(--blue-soft);color:var(--blue)}
+  .cti{display:grid;grid-template-columns:1fr 1.3fr;gap:18px}
+  .cti-call{background:var(--accent-deep);color:#fff;border-radius:14px;padding:22px;text-align:center}
+  .cti-call .rings{font-size:34px}
+  .cti-call .ph{font-size:21px;font-weight:900;letter-spacing:-.02em;margin:8px 0}
+  .cti-chart{border:1px solid var(--line);border-radius:14px;padding:18px}
+  .cti-chart .nm{font-size:18px;font-weight:850}
+  .cti-chart .rowd{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .cti-chart .rowd:last-child{border:none}.cti-chart .k{color:var(--ink-soft);flex:0 0 auto}
+  .cti-chart .rowd span:last-child{text-align:right;font-weight:600}
+  .clm{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:11px;margin-bottom:8px;font-size:13.5px}
+  .clm.warn{border-color:#e6b34a;background:#fff9ee}
+  .clm .st{font-size:18px;flex:0 0 auto}
+  .clm .amt{margin-left:auto;font-weight:800;white-space:nowrap}
+  @media(max-width:680px){.cti{grid-template-columns:1fr}.qrow{grid-template-columns:1fr 1fr;font-size:12.5px}.qrow .hidem{display:none}}
+
+  /* installed app shell (오토리콜 프로그램) */
+  .app{display:grid;grid-template-columns:210px 1fr;min-height:520px}
+  .app-side{background:#0a2622;color:#cfe0dd;padding:18px 14px;display:flex;flex-direction:column}
+  .app-logo{font-size:16px;font-weight:900;color:#fff;margin-bottom:20px;padding:0 6px}
+  .app-nav{display:flex;flex-direction:column;gap:2px;flex:1}
+  .app-nav button{text-align:left;background:none;border:none;color:#a9cfc9;font-size:13.5px;font-weight:700;padding:11px 12px;border-radius:9px;cursor:pointer;font-family:inherit}
+  .app-nav button:hover{background:rgba(255,255,255,.06)}
+  .app-nav button.on{background:var(--accent);color:#fff}
+  .app-status{margin-top:14px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px}
+  .app-conn{display:flex;align-items:center;gap:7px;font-size:11px;color:#a9cfc9;margin:5px 0}
+  .app-conn .led{width:7px;height:7px;border-radius:50%;background:#4fd1b0;box-shadow:0 0 6px #4fd1b0;flex:0 0 auto}
+  .app-clinic{font-size:11px;color:#7fa9a3;margin-top:9px}
+  .app-main{display:flex;flex-direction:column;background:var(--bg);min-width:0}
+  .app-top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:15px 20px;border-bottom:1px solid var(--line);background:#fff}
+  .app-title{font-size:16px;font-weight:850}
+  .app-date{font-size:12px;color:var(--ink-soft);white-space:nowrap}
+  .app-body{padding:20px;overflow-y:auto;flex:1}
+  @media(max-width:720px){.app{grid-template-columns:1fr}
+    .app-side{flex-direction:row;align-items:center;gap:8px;overflow-x:auto;padding:12px}
+    .app-logo{margin:0;white-space:nowrap;font-size:14px}
+    .app-nav{flex-direction:row;gap:4px}
+    .app-nav button{white-space:nowrap;padding:8px 11px;font-size:12px}
+    .app-status{display:none}}
+  .akpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+  @media(max-width:560px){.akpi{grid-template-columns:1fr 1fr}}
+  .akpi .k{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}
+  .akpi .k .n{font-size:23px;font-weight:900;letter-spacing:-.03em}
+  .akpi .k .l{font-size:11px;color:var(--ink-soft);margin-top:2px}
+  .akpi .k.warn .n{color:var(--gold)}
+  .a2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.a2{grid-template-columns:1fr}}
+  .apanel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
+  .apanel h5{font-size:13px;font-weight:850;margin-bottom:10px}
+  .atodo{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--bg-soft);font-size:13px}
+  .atodo:last-child{border:none}.atodo .cb{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--line);flex:0 0 auto}
+  .atodo .cb.warn{border-color:var(--gold);background:var(--gold-soft)}
+  .arow{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--bg-soft);font-size:13px}
+  .arow:last-child{border:none}.arow .k{color:var(--ink-soft)}
+  .pano{background:#0d0d10;border-radius:12px;height:210px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#4a4a52;font-size:14px;font-weight:700}
+  .pano .mark{position:absolute;border:2px solid #f5bb3f;border-radius:6px;font-size:10px;color:#f5bb3f;font-weight:800;padding:2px 5px;background:rgba(245,187,63,.08)}
+
+  /* real services landscape */
+  .lscol{margin-bottom:24px}
+  .lslabel{font-size:14px;font-weight:900;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .lslabel .flag{font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--card);border:1px solid var(--line);color:var(--ink-soft)}
+  .lsgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:820px){.lsgrid{grid-template-columns:1fr}}
+  .lscard{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px}
+  .lscard .nm{font-size:15px;font-weight:850;letter-spacing:-.02em}
+  .lscard .nm small{font-weight:700;color:var(--ink-soft);font-size:11.5px;margin-left:6px}
+  .lscard .d{font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:6px 0 9px}
+  .lscard .lim{font-size:11px;font-weight:800;color:var(--danger);background:var(--danger-soft);padding:4px 9px;border-radius:99px;display:inline-block}
+  .lscard.fill{border:1.5px solid var(--accent);background:var(--accent-soft)}
+  .lscard.fill .lim{color:#fff;background:var(--accent)}
+  .gapbox{background:var(--accent-deep);color:#fff;border-radius:16px;padding:24px 26px;margin-top:10px}
+  .gapbox h3{color:#fff;font-size:18px;font-weight:850;margin-bottom:8px;letter-spacing:-.02em}
+  .gapbox p{color:#bcd6d2;font-size:14px;line-height:1.72}.gapbox b{color:#7fe3c9}
+
+  /* role lanes */
+  .lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:820px){.lanes{grid-template-columns:1fr}}
+  .lane{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
+  .lane .lh{display:flex;align-items:center;gap:9px;font-weight:850;font-size:16px;margin-bottom:14px}
+  .lane .lh .em{font-size:22px}
+  .lane ol{list-style:none;counter-reset:s}
+  .lane ol li{counter-increment:s;position:relative;padding:0 0 14px 30px;font-size:13.5px;color:var(--ink-soft);line-height:1.55}
+  .lane ol li::before{content:counter(s);position:absolute;left:0;top:0;width:21px;height:21px;border-radius:50%;background:var(--accent-soft);color:var(--accent-deep);font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center}
+  .lane ol li:not(:last-child)::after{content:"";position:absolute;left:10px;top:22px;bottom:2px;width:1.5px;background:var(--line)}
+  .lane ol li b{color:var(--ink)}
+  /* persona cards */
+  .pers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+  @media(max-width:820px){.pers{grid-template-columns:1fr}}
+  .perscard{border:1px solid var(--line);border-radius:16px;padding:20px;background:#fff}
+  .perscard .top{display:flex;align-items:center;gap:11px;margin-bottom:8px}
+  .perscard .av{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 auto}
+  .perscard .nm{font-weight:850;font-size:15.5px}.perscard .nm small{display:block;font-weight:600;font-size:12px;color:var(--ink-soft)}
+  .perscard .track{font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--bg-soft);color:var(--ink-soft);display:inline-block;margin-bottom:10px}
+  .perscard .flow{font-size:12.5px;color:var(--ink-soft);line-height:1.7}.perscard .flow b{color:var(--accent-deep)}
+  /* treatment plan -> dashboard */
+  .txp{border:1px solid var(--line);border-radius:16px;background:#fff;padding:22px}
+  .txp h4{font-size:14px;font-weight:850;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .txp .pl{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .txp .pl:last-of-type{border:none}
+  .txp .pl .t{color:var(--ink-soft)}.txp .tooth{font-weight:800;color:var(--accent-deep);font-size:10.5px;background:var(--accent-soft);padding:1px 6px;border-radius:5px;margin-right:5px}
+  .txp .sum{display:flex;justify-content:space-between;margin-top:10px;padding-top:12px;border-top:2px solid var(--ink);font-weight:900;font-size:16px}
+  .txctrl{margin:14px 0 0}
+  .txctrl .lbl{font-size:11px;font-weight:800;color:var(--ink-soft);margin-bottom:7px}
+  .txctrl .seg{display:inline-flex;gap:4px;background:var(--bg-soft);padding:4px;border-radius:11px}
+  .txctrl .seg button{border:none;background:none;padding:8px 13px;font-size:12.5px;font-weight:800;border-radius:8px;cursor:pointer;color:var(--ink-soft);font-family:inherit}
+  .txctrl .seg button.on{background:#fff;color:var(--accent-deep);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .dbd{background:var(--accent-deep);border-radius:16px;padding:22px;color:#fff}
+  .dbd .dtag{font-size:11px;font-weight:800;color:#7fe3c9;letter-spacing:.04em}
+  .dbd .grade{background:#E3F5EE;color:#0a534d;font-size:11px;font-weight:900;padding:4px 10px;border-radius:99px;display:inline-block;margin:10px 0 12px}
+  .dbd .amtrow{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.12);font-size:13px;color:#cfe7e3}
+  .dbd .amtrow b{color:#fff;font-weight:800;white-space:nowrap}
+  .dbd .prog{margin:14px 0}
+  .dbd .prog .bar{height:10px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}
+  .dbd .prog .bar i{display:block;height:100%;background:linear-gradient(90deg,#4fd1b0,#7fe3c9);border-radius:99px;transition:width .4s}
+  .dbd .prog .pl{display:flex;justify-content:space-between;font-size:11.5px;color:#a9cfc9;margin-top:5px}
+  .mstone{margin-top:14px}
+  .mstone .ms{display:flex;gap:11px;align-items:flex-start;padding:9px 0}
+  .mstone .ms .dot{width:20px;height:20px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;margin-top:1px}
+  .mstone .ms.done .dot{background:#4fd1b0;color:#0a2622}
+  .mstone .ms.now .dot{background:#f5bb3f;color:#3a2a00}
+  .mstone .ms.wait .dot{background:rgba(255,255,255,.16);color:#cfe7e3}
+  .mstone .ms .mt{font-size:13px;color:#fff;font-weight:700}
+  .mstone .ms .md{font-size:11.5px;color:#a9cfc9;margin-top:1px}
+  .mstone .ms .mamt{margin-left:auto;font-size:12.5px;font-weight:800;color:#fff;white-space:nowrap}
+
+  /* before/after — 실장 설명 방식 */
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch}
+  @media(max-width:860px){.ba{grid-template-columns:1fr;gap:30px}}
+  .ba .col{display:flex;flex-direction:column}
+  .ba .tagr{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800;padding:6px 13px;border-radius:99px;margin-bottom:16px;align-self:flex-start}
+  .ba .tagr.before{background:var(--danger-soft);color:var(--danger)}
+  .ba .tagr.after{background:var(--accent-soft);color:var(--accent-deep)}
+  .paper{position:relative;background:#fdfcf4;border-radius:5px;padding:30px 24px 34px;flex:1;
+    box-shadow:0 14px 34px rgba(30,25,10,.18);transform:rotate(-1.2deg);
+    background-image:repeating-linear-gradient(#fdfcf4,#fdfcf4 30px,#e9e5cf 30px,#e9e5cf 31px);
+    border:1px solid #ece6ce;overflow:hidden}
+  .paper::before{content:"";position:absolute;top:-11px;left:34px;width:88px;height:23px;background:rgba(214,204,162,.55);transform:rotate(-4deg);border:1px solid rgba(180,170,130,.3)}
+  .paper .coffee{position:absolute;right:18px;bottom:26px;width:70px;height:70px;border-radius:50%;border:7px solid rgba(150,110,60,.13)}
+  .paper .ttl{font-family:"Nanum Pen Script","Gaegu",cursive;font-size:27px;color:#1a3a5a;transform:rotate(-.6deg);margin-bottom:14px}
+  .paper .ln{font-family:"Nanum Pen Script","Gaegu",cursive;font-size:23px;color:#26405a;margin:7px 0;position:relative}
+  .paper .ln.sm{font-size:19px;color:#5a5748}
+  .paper .strike{text-decoration:line-through;color:#a3342a;opacity:.85}
+  .paper .circle{display:inline-block;border:2.5px solid #c0392b;border-radius:48% 52% 50% 50%/50%;padding:0 9px;transform:rotate(-3deg);color:#c0392b}
+  .paper .arrow{color:#c0392b;font-weight:700}
+  .paper .scrawl{transform:rotate(1.2deg)}
+  .react{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px;font-size:13px;display:flex;gap:10px;align-items:flex-start;line-height:1.55}
+  .react .em{font-size:22px;flex:0 0 auto}
+  .react.bad{border-left:4px solid var(--danger)}.react.good{border-left:4px solid var(--accent)}
+  .react b{font-weight:800}
+  .est{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;flex:1;box-shadow:0 14px 34px rgba(20,40,38,.09)}
+  .est .ehead{display:flex;align-items:center;gap:10px;padding-bottom:13px;border-bottom:1px solid var(--line);margin-bottom:4px}
+  .est .ehead .logo2{width:32px;height:32px;border-radius:9px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto}
+  .est .ehead b{font-size:14px}.est .ehead small{font-size:11px;color:var(--ink-soft);display:block;margin-top:1px}
+  .est .eitem{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--bg-soft)}
+  .est .eitem .lbl2{font-size:13.5px;font-weight:750}
+  .est .eitem .sub2{font-size:11.5px;color:var(--ink-soft);margin-top:2px}
+  .est .eitem .won{font-weight:800;font-size:13.5px;white-space:nowrap}
+  .est .ewhy{background:var(--accent-soft);border-radius:10px;padding:11px 13px;font-size:12px;color:var(--accent-deep);line-height:1.6;margin:13px 0}
+  .est .etot{display:flex;justify-content:space-between;padding:12px 0 0;font-weight:900;font-size:17px}
+  .est .emo{background:var(--accent-deep);color:#fff;border-radius:12px;padding:14px;text-align:center;margin-top:12px}
+  .est .emo .n{font-size:19px;font-weight:900}.est .emo .s{font-size:11px;color:#a9cfc9;margin-top:3px}
+
+  /* 분납 시나리오 모음 */
+  .scn{display:flex;flex-direction:column;gap:16px;max-width:880px;margin:0 auto}
+  .scncard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;border-left:5px solid var(--accent)}
+  .scncard.cond{border-left-color:var(--gold)}
+  .scncard.rej{border-left-color:var(--danger)}
+  .scncard .sh{display:flex;align-items:center;gap:12px;margin-bottom:13px;flex-wrap:wrap}
+  .scncard .sav{width:42px;height:42px;border-radius:12px;background:var(--bg-soft);display:flex;align-items:center;justify-content:center;font-size:21px;flex:0 0 auto}
+  .scncard .snm{font-size:16.5px;font-weight:850;letter-spacing:-.02em}
+  .scncard .snm small{display:block;font-size:12px;font-weight:600;color:var(--ink-soft);margin-top:1px}
+  .scncard .grade{margin-left:auto;font-size:11px;font-weight:900;padding:5px 11px;border-radius:99px;white-space:nowrap}
+  .scncard .grade.a{background:var(--accent-soft);color:var(--accent-deep)}
+  .scncard .grade.b{background:var(--gold-soft);color:var(--gold)}
+  .scncard .grade.c{background:var(--danger-soft);color:var(--danger)}
+  .scncard .tx{font-size:13px;color:var(--ink-soft);margin-bottom:14px}.scncard .tx b{color:var(--ink)}
+  .snums{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:640px){.snums{grid-template-columns:repeat(2,1fr)}}
+  .snum{background:var(--bg-soft);border-radius:11px;padding:12px}
+  .snum .l{font-size:11px;color:var(--ink-soft);font-weight:700}
+  .snum .n{font-size:17px;font-weight:900;letter-spacing:-.02em;margin-top:3px}
+  .snum .n small{font-size:11px;font-weight:700;color:var(--ink-soft)}
+  .smile{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;font-size:12px;color:var(--ink-soft);background:var(--accent-soft);border-radius:10px;padding:11px 13px}
+  .smile b{color:var(--accent-deep)}.smile .sep{color:var(--accent);font-weight:800}
+  .scncard .note2{font-size:11.5px;color:var(--ink-soft);margin-top:11px}
+  .scncard.cond .smile{background:var(--gold-soft)}.scncard.cond .smile b,.scncard.cond .smile .sep{color:var(--gold)}
+  .altbox{background:var(--danger-soft);border-radius:11px;padding:13px 15px;font-size:12.5px;color:var(--ink);line-height:1.6}
+  .altbox b{color:var(--danger)}
+
+  /* drama patient briefing (만화 패널) */
+  .drama{display:flex;flex-direction:column;gap:22px;max-width:980px;margin:0 auto}
+  .dcard{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;display:grid;grid-template-columns:1fr 300px;gap:28px;align-items:center;box-shadow:0 12px 30px rgba(20,40,38,.07)}
+  @media(max-width:760px){.dcard{grid-template-columns:1fr;gap:22px}.dcard .dphone{justify-self:center}}
+  .dpat{display:flex;align-items:center;gap:12px;margin-bottom:13px}
+  .dav{width:52px;height:52px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:26px;flex:0 0 auto}
+  .dnm{font-size:18px;font-weight:850;letter-spacing:-.02em}.dnm small{display:block;font-size:12.5px;color:var(--ink-soft);font-weight:600;margin-top:2px}
+  .dbrief{font-size:14px;color:var(--ink);line-height:1.6;background:var(--bg-soft);border-radius:12px;padding:13px 15px;margin-bottom:14px}
+  .dbrief b{color:var(--accent-deep)}
+  .dba{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+  .dba .r{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.55}
+  .dba .r .t{font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;flex:0 0 auto;margin-top:1px;white-space:nowrap}
+  .dba .r.b .t{background:var(--danger-soft);color:var(--danger)}
+  .dba .r.a .t{background:var(--accent-soft);color:var(--accent-deep)}
+  .dba .r p{color:var(--ink-soft);margin:0}.dba .r.a p{color:var(--ink)}
+  .ddec{background:linear-gradient(135deg,var(--gold-soft),#fff);border:1px solid #efd9a8;border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:14px 16px}
+  .ddec .who{font-size:11.5px;font-weight:800;color:var(--gold);margin-bottom:5px}
+  .ddec .say{font-size:14.5px;line-height:1.68;color:var(--ink);font-weight:600}
+  .ddec .say b{color:var(--accent-deep);font-weight:850;background:var(--accent-soft);padding:0 4px;border-radius:4px}
+  .dphone{width:300px;max-width:100%;background:#0d0b16;border-radius:38px;padding:9px;box-shadow:0 24px 50px rgba(15,20,40,.34),0 0 0 2px #26233a}
+  .dphone .p-screen{height:560px;border-radius:30px}
+
+  /* situation guide (척추) */
+  .sit{display:flex;flex-direction:column;gap:20px;max-width:900px;margin:0 auto}
+  .sitcard{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 28px rgba(20,40,38,.06)}
+  .sithead{display:flex;align-items:center;gap:14px;padding:18px 22px;background:var(--bg-soft);border-bottom:1px solid var(--line)}
+  .sithead .num{width:40px;height:40px;border-radius:12px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;flex:0 0 auto}
+  .sithead .t{font-size:16.5px;font-weight:850;letter-spacing:-.02em;line-height:1.3}
+  .sithead .t small{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin-top:2px}
+  .sitba{display:grid;grid-template-columns:1fr 1fr}
+  @media(max-width:640px){.sitba{grid-template-columns:1fr}}
+  .sitside{padding:18px 22px}
+  .sitside.after{background:var(--accent-soft);border-left:1px solid var(--line)}
+  @media(max-width:640px){.sitside.after{border-left:none;border-top:1px solid var(--line)}}
+  .sitside .lab{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:99px;margin-bottom:10px}
+  .sitside.before .lab{background:var(--danger-soft);color:var(--danger)}
+  .sitside.after .lab{background:#fff;color:var(--accent-deep)}
+  .sitside p{font-size:14px;line-height:1.66}
+  .sitside p b{font-weight:800}
+  .sitside.before p{color:var(--ink-soft)}
+  .sitside.after p{color:var(--ink)}
+  .sitopen{border-top:1px solid var(--line)}
+  .sitopen summary{list-style:none;cursor:pointer;padding:15px 22px;font-size:14px;font-weight:800;color:var(--accent-deep);display:flex;align-items:center;gap:9px;background:#fff}
+  .sitopen summary::-webkit-details-marker{display:none}
+  .sitopen summary .chev{transition:.2s;font-size:12px;flex:0 0 auto}
+  .sitopen[open] summary .chev{transform:rotate(90deg)}
+  .sitopen summary:hover{background:var(--accent-soft)}
+  .sitframe{background:#0f1720;border-top:1px solid var(--line)}
+  .sitframe iframe{width:100%;height:900px;border:0;display:block}
+  .sitframe .fhint{font-size:11.5px;color:#9fb3bc;text-align:center;padding:9px}
+
+  .fadeup{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+  .fadeup.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <div class="logo"><span class="dot"></span>4Prism <small>치과 성장 스택</small></div>
+  <div class="navlinks">
+    <a href="#situations">상황별 가이드</a>
+    <a href="#desk">실제 프로그램</a>
+    <a href="#scenarios">분납 시나리오</a>
+    <a href="#pay">안심분납</a>
+    <a href="#landscape">시장 지형</a>
+  </div>
+  <a class="topcta" href="#cta">도입 문의</a>
+</div></div>
+
+<!-- HERO -->
+<header class="hero"><div class="wrap">
+  <span class="kick"><span class="b">덴트웹은 그대로</span> 그 위에 얹기만 하면 됩니다</span>
+  <h1>다시 부르고, 닿고,<span class="sub">성사시킨다.</span></h1>
+  <p class="sub">6개월·2년 안 온 환자를 데스크가 종일 차트 뒤져 전화하던 일을 <b>자동으로</b>.
+    문자로 못 담던 안내를 <b>카톡 한 번</b>으로 환자 손안에. 그리고 비용 때문에 미루던 고액 케이스를
+    <span class="hl">부담 없는 분납</span>으로 성사. — <b>미룬 매출을 이번 달로.</b></p>
+  <div class="cta-row">
+    <a class="btn btn-pri" href="#situations">이런 순간, 이렇게 바뀝니다 →</a>
+    <a class="btn btn-sec" href="#calc">우리 병원 새는 매출 계산</a>
+  </div>
+  <div class="trust">
+    <span>🧩 <b>덴트웹 위에</b> 설치 (교체 없음)</span>
+    <span>🆓 오토리콜 <b>본체 무료</b></span>
+    <span>📱 환자 <b>앱·가입 없음</b></span>
+  </div>
+</div></header>
+
+<!-- STAT STRIPE -->
+<div class="stripe"><div class="wrap">
+  <div class="st"><div class="n">78%↓</div><div class="l">보험청구 오류율<br>(1.8% → 0.4%)</div><div class="src">오토리콜 도입 치과</div></div>
+  <div class="st"><div class="n">절반↓</div><div class="l">데스크 리콜 통화 시간</div><div class="src">오토리치 파일럿</div></div>
+  <div class="st"><div class="n">+30%</div><div class="l">고액 케이스 동의율</div><div class="src">미국 파이낸싱 사례</div></div>
+  <div class="st"><div class="n">~90%</div><div class="l">분납 신청 승인률</div><div class="src">Cherry · 소프트 조회</div></div>
+</div></div>
+
+<!-- PATIENT DRAMA BRIEFING (척추) -->
+<section id="situations"><div class="wrap">
+  <div class="sec-head fadeup"><span class="eyebrow">환자 3명 · 실제로 이렇게 옵니다</span>
+    <h2 class="sec" style="margin-top:12px">말로 하면 안 보이죠.<br>그 환자 폰 화면을 그대로 보여드립니다</h2>
+    <p class="lead">무작위로 세 명을 짚었습니다. <b>어떤 환자가</b>, 폰에 <b>어떤 화면</b>을 받고, <b>어떻게 결정하는지</b> — 오른쪽이 그 환자가 실제로 보는 화면입니다. 아래 노란 칸이 그 순간 환자의 <b>속마음과 결정</b>.</p></div>
+  <div class="drama">
+
+    <!-- 이영자 -->
+    <div class="dcard fadeup">
+      <div class="dleft">
+        <div class="dpat"><div class="dav" style="background:var(--gold-soft)">👵</div><div class="dnm">이영자 님<small>62세 · 2년 7개월 발길 끊김</small></div></div>
+        <div class="dbrief">📋 <b>브리핑:</b> 오래 안 와서 <b>미안한 마음에 더 못 오는</b> 분. "왜 안 왔냐"고 하면 그대로 도망갑니다. 죄책감이 아니라 안부로 접근해야 하는 케이스.</div>
+        <div class="dba">
+          <div class="r b"><span class="t">😩 전엔</span><p>데스크가 전화 돌려도 안 받음. 문자는 80바이트라 담을 말이 없어 결국 흐지부지.</p></div>
+          <div class="r a"><span class="t">✨ 이젠</span><p>오른쪽처럼 "기다렸다" 톤 카톡 한 통. 옛 대화와 공백까지 보여 마음이 열림.</p></div>
+        </div>
+        <div class="ddec"><div class="who">💬 이영자 님 속마음 → 결정</div>
+          <div class="say">"왜 안 왔냐고 안 하네… 스케일링 보험도 올해 아직이래. <b>이번 주에 한번 가볼까.</b>"</div></div>
+      </div>
+      <div class="dphone">
+        <div class="p-screen">
+          <div class="p-sb kk"><span>12:44</span><span>🔔 📶 87%</span></div>
+          <div class="p-body"><div class="kkwrap">
+            <div class="kkday"><span>2023년 12월 · 마지막 대화</span></div>
+            <div class="kkold"><div class="av">🦷</div><div class="b">스케일링 잘 받으셨어요? 6개월 뒤 정기검진 때 다시 뵐게요 :)</div></div>
+            <div class="kksys"><span>· 그 후 2년 7개월간 대화 없음 ·</span></div>
+            <div class="kkday"><span>오늘</span></div>
+            <div class="kkrow"><div class="av">🦷</div><div><div class="kkbub"><div class="kktag">알림 · 정기검진 안내</div>
+              <div class="kkmsg"><b>영자 님</b>, 오랜만이에요 🙂 마지막으로 뵌 지 <span class="hi">벌써 2년 7개월</span>이 지났네요. 한동안 안 오셔도 저희는 늘 기다리고 있었어요.<div class="dv"></div><div class="info">🦷 정기검진 + 스케일링 · 약 30분<br>💬 스케일링 건강보험 <b>연 1회</b>(올해 아직이세요)</div></div>
+              <div class="kkbtn">📄 내 검진 안내 확인하기</div><div class="kkbtn sub">🔕 안내 안 받기</div></div></div></div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 정미숙 -->
+    <div class="dcard fadeup">
+      <div class="dleft">
+        <div class="dpat"><div class="dav" style="background:var(--accent-soft)">👩</div><div class="dnm">정미숙 님<small>58세 · 34개월 · 크라운 미완료</small></div></div>
+        <div class="dbrief">📋 <b>브리핑:</b> 신경치료 후 <b>씌우는 걸 미룬</b> 분. 바빠서 34개월. 지금 안 하면 이가 깨져 <b>발치</b>될 수도 있는 상태인데, 본인은 그 위험을 모릅니다.</div>
+        <div class="dba">
+          <div class="r b"><span class="t">😩 전엔</span><p>전화로 "오세요" 설득해도 "바빠서요". 왜 위험한지 말로는 안 와닿음.</p></div>
+          <div class="r a"><span class="t">✨ 이젠</span><p>오른쪽처럼 시간표에서 직접 시간 선택. 재촉 없이 스스로, 통화 0회로 예약.</p></div>
+        </div>
+        <div class="ddec"><div class="who">💬 정미숙 님 속마음 → 결정</div>
+          <div class="say">"벌써 34개월이나 됐네. 전화하기도 귀찮았는데… <b>목요일 10시 반으로 딱 잡았어.</b>"</div></div>
+      </div>
+      <div class="dphone">
+        <div class="p-screen">
+          <div class="p-sb"><span>10:25</span><span>📶 🔋 82%</span></div>
+          <div class="p-appbar"><span class="bk">‹</span><span class="tt">더편한치과 · 시간 선택</span></div>
+          <div class="p-body"><div class="p-pad">
+            <div class="p-h">언제가 편하세요?</div>
+            <p class="p-mut" style="margin:6px 0 12px">오시기 편한 시간으로 골라보세요.</p>
+            <div class="p-card"><div style="font-weight:800;font-size:13.5px;margin-bottom:9px">7월 16일 (목)</div>
+              <div class="p-slot">
+                <div class="s off">09:00</div><div class="s sel">10:30 ✓</div><div class="s">11:00</div>
+                <div class="s off">14:00</div><div class="s">15:30</div><div class="s">16:00</div></div></div>
+            <p class="p-mut" style="font-size:11.5px">※ 확정되면 알림톡으로 알려드려요. 전화 안 하셔도 돼요.</p>
+            <button class="p-btn pri">이 시간으로 예약 요청 →</button>
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 박성철 -->
+    <div class="dcard fadeup">
+      <div class="dleft">
+        <div class="dpat"><div class="dav" style="background:#E3F5EE">🧑</div><div class="dnm">박성철 님<small>52세 · 개인택시 · 임플란트 350만원</small></div></div>
+        <div class="dbrief">📋 <b>브리핑:</b> 돈이 아예 없는 게 아니라 <b>"한 번에"가 부담</b>인 분. 350만원이 택시 한 달 수입. "생각해볼게요" 하고 그냥 안 하려던 참.</div>
+        <div class="dba">
+          <div class="r b"><span class="t">😩 전엔</span><p>큰 금액 앞에 "생각해보고 연락드릴게요"(=안 함). 원장은 진단 끝낸 케이스를 놓침.</p></div>
+          <div class="r a"><span class="t">✨ 이젠</span><p>오른쪽처럼 개월 수를 직접 골라 월 얼마인지 즉시 확인. "낼 수 있게" 되니 결정이 바뀜.</p></div>
+        </div>
+        <div class="ddec"><div class="who">💬 박성철 님 속마음 → 결정</div>
+          <div class="say">"24개월이면 하루 4,800원, 담배값이네. <b>한 번에 안 내도 되니까, 난 이게 맘 편해. 24개월로 하자.</b>"</div></div>
+      </div>
+      <div class="dphone">
+        <div class="p-screen">
+          <div class="p-sb"><span>21:42</span><span>📶 🔋 64%</span></div>
+          <div class="p-appbar"><span class="tt">나눠서 내기 · 조건 확인</span></div>
+          <div class="p-body"><div class="p-pad" style="text-align:center">
+            <div class="p-ic">✓</div>
+            <div class="p-h" style="font-size:18px">나눠서 낼 수 있어요!</div>
+            <p class="p-mut" style="margin:6px 0 10px">원하는 개월 수를 골라보세요.</p>
+            <div class="p-plan">
+              <div class="p"><div class="m">6개월</div><div class="mo">583,000</div></div>
+              <div class="p"><div class="m">12개월</div><div class="mo">291,000</div></div>
+              <div class="p sel"><div class="m">24개월</div><div class="mo">145,834</div></div>
+              <div class="p"><div class="m">36개월</div><div class="mo">97,222</div></div></div>
+            <div class="p-big"><div class="l">✅ 내가 고른 24개월</div><div class="n">월 145,834원</div>
+              <div class="p-cmp"><span>하루 약 4,800원</span><span>담배 한 갑 값</span></div></div>
+            <button class="p-btn money">이 조건으로 치료 시작 →</button>
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="center fadeup" style="font-size:13px;color:var(--ink-soft);margin-top:24px">↓ 전체 흐름을 버튼 눌러가며 보고 싶으면 — <a href="#journey" style="color:var(--accent-deep);font-weight:800;text-decoration:none">통합 환자 여정 데모(9화면)</a> · <a href="#desk" style="color:var(--accent-deep);font-weight:800;text-decoration:none">실제 설치 프로그램 화면</a></p>
+</div></section>
+
+<!-- STACK OVERVIEW -->
+<section class="stack"><div class="wrap">
+  <div class="sec-head fadeup">
+    <span class="eyebrow">하나의 루프, 세 개의 층</span>
+    <h2 class="sec" style="margin-top:12px">덴트웹 위에 얹는<br>치과 매출 회수 스택</h2>
+    <p class="lead">따로 파는 세 제품이 아니라, <b>한 흐름의 세 단계</b>입니다. 아래로 갈수록 매출에 가까워집니다.</p>
+  </div>
+  <div class="layers">
+    <div class="layer l1 fadeup">
+      <div class="lv">🖥️</div>
+      <div class="tx"><div class="nm">오토리콜 <small>AutoRecall · 데스크 자동화</small></div>
+        <div class="d">덴트웹 위에 무료로 얹혀 리콜 대상 선별·전화 배분(CTI)·청구 점검·AI 파노라마까지 데스크 반복 업무를 자동화.</div></div>
+      <div class="price">본체 무료</div>
+      <div class="arw">↓</div>
+    </div>
+    <div class="layer l2 fadeup">
+      <div class="lv">💬</div>
+      <div class="tx"><div class="nm">오토리치 <small>AutoReach · 환자 웹 채널</small></div>
+        <div class="d">알림톡 버튼 하나로 환자 개인화 웹을 연다. 검진 안내·예약·견적을 치과 이름(화이트라벨)으로, 원터치 응답.</div></div>
+      <div class="price">구독 포함</div>
+      <div class="arw">↓</div>
+    </div>
+    <div class="layer l3 fadeup">
+      <div class="lv">💳</div>
+      <div class="tx"><div class="nm">안심분납 <small>결제·금융 레이어 첫 제품</small></div>
+        <div class="d">견적 화면에 결제 옵션을 얹는다. 심사·자동이체·보증보험이 붙은 무채권 할부로 미룬 고액 치료를 성사.</div></div>
+      <div class="price">건당 수수료</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- LAYER 1: 오토리콜 -->
+<section id="autorecall"><div class="wrap">
+  <div class="grid2">
+    <div class="fadeup">
+      <span class="badge b1">🖥️ LAYER 1 · 오토리콜</span>
+      <h2 class="sec">데스크가 종일 잠겨 있던<br>세 가지 일을 자동으로</h2>
+      <p class="lead">누구에게 리콜 전화를 걸지 차트를 뒤지고, 걸려온 전화가 누군지 찾고, 청구 누락을 뒤늦게 발견하는 일 —
+        오토리콜은 이 셋을 뒤집습니다. <b>덴트웹을 바꾸지 않고 그 위에 얹힙니다.</b></p>
+      <ul class="featlist" style="margin-top:18px">
+        <li><div class="ic">📋</div><div><b>리콜 대상 자동 선별·배분</b><div class="d">매일 아침 조건별로 대상이 뽑혀 데스크 직원별로 나뉩니다. "오늘 걸 전화 목록"을 위에서부터 처리.</div></div></li>
+        <li><div class="ic">📞</div><div><b>전화 오면 차트가 먼저 뜬다 (CTI)</b><div class="d">인터넷 전화 연동으로 걸려온 환자 차트가 화면에 먼저. 누군지 찾는 시간이 사라집니다.</div></div></li>
+        <li><div class="ic">🧾</div><div><b>보험청구 사전 점검</b><div class="d">진료 당일 기준으로 청구를 점검해 놓치기 전에 잡습니다. 오류율 1.8% → 0.4%.</div></div></li>
+        <li><div class="ic">🩻</div><div><b>AI 파노라마 (원장 참고용)</b><div class="d">충치·매복치·치근단 병소 후보를 표시. 데스크 PC 안 오프라인 작동 — 환자 데이터가 밖으로 안 나갑니다.</div></div></li>
+      </ul>
+    </div>
+    <div class="fadeup">
+      <div class="resultbox">
+        <h4>📉 도입 치과 성과 (기준선)</h4>
+        <div class="rg">
+          <div class="rc"><div class="n">85분 → ↓</div><div class="l">내원 1건당 데스크 노동<br>(평균 29,161원 기준)</div></div>
+          <div class="rc"><div class="n">1.8% → 0.4%</div><div class="l">보험청구 오류율<br>(78% 감소)</div></div>
+          <div class="rc"><div class="n">무료</div><div class="l">덴트웹 사용 치과<br>본체 제공</div></div>
+          <div class="rc"><div class="n">오프라인</div><div class="l">AI·PC 연동 전부<br>병원 내부망</div></div>
+        </div>
+        <div class="foot">※ 도입 치과 기준 수치이며 병원별로 다릅니다. AI 분석은 진단이 아닌 원장 참고용 표시입니다.</div>
+      </div>
+      <p style="font-size:13px;color:var(--ink-soft);margin-top:16px;line-height:1.7">
+        전략적으로 오토리콜은 <b>웨지(wedge)</b>입니다 — 덴트웹 설치 기반 위에 무료로 침투해 데스크 워크플로우를 잡고,
+        그 위에 <b>환자 채널(오토리치) → 결제(안심분납)</b>를 순서대로 쌓습니다.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- INSTALLED PROGRAM SIMULATION -->
+<section id="desk" style="background:var(--bg-soft)"><div class="wrap">
+  <div class="sec-head fadeup">
+    <span class="eyebrow">설치하면 만나는 실제 프로그램</span>
+    <h2 class="sec" style="margin-top:12px">덴트웹 위에 깔면,<br>데스크 화면이 이렇게 바뀝니다</h2>
+    <p class="lead">아직 출시 전 제품이라, 실제 설치 후 화면을 그대로 기획해 옮겼습니다. <b>왼쪽 메뉴를 눌러</b> 각 화면을 직접 둘러보세요.</p>
+  </div>
+  <div class="win fadeup">
+    <div class="win-bar"><span class="dt r"></span><span class="dt y"></span><span class="dt g"></span><span class="ti">오토리콜 v0.2 — 사계절치과 데스크</span></div>
+    <div class="app">
+      <div class="app-side">
+        <div class="app-logo">🦷 오토리콜</div>
+        <nav class="app-nav" id="appnav">
+          <button class="on" onclick="anav(0,this)">🏠 오늘 현황</button>
+          <button onclick="anav(1,this)">📞 리콜 큐</button>
+          <button onclick="anav(2,this)">👤 환자 상세</button>
+          <button onclick="anav(3,this)">🩻 AI 파노라마</button>
+          <button onclick="anav(4,this)">🧾 청구 점검</button>
+          <button onclick="anav(5,this)">💳 안심분납</button>
+        </nav>
+        <div class="app-status">
+          <div class="app-conn"><span class="led"></span>덴트웹 연결됨</div>
+          <div class="app-conn"><span class="led"></span>CTI (LG U+) 연결됨</div>
+          <div class="app-clinic">사계절치과 · 김실장</div>
+        </div>
+      </div>
+      <div class="app-main">
+        <div class="app-top"><div class="app-title" id="appTitle">오늘 현황</div><div class="app-date">2026.07.13 (월) 09:12</div></div>
+        <div class="app-body" id="appbody"></div>
+      </div>
+    </div>
+  </div>
+  <p class="center" style="font-size:12.5px;color:var(--ink-soft);margin-top:16px">※ 출시 전 제품의 화면 기획 시안입니다. 데이터·환자명은 예시이며 실제 UI는 개발 중 달라질 수 있습니다.</p>
+</div></section>
+
+<!-- LAYER 2: 오토리치 -->
+<section id="autoreach" style="background:var(--bg-soft)"><div class="wrap">
+  <div class="grid2">
+    <div class="fadeup">
+      <div class="resultbox" style="background:#4a3a10">
+        <h4 style="color:#fff">💬 문자로는 안 됐던 것</h4>
+        <ul class="benefit" style="margin-top:4px">
+          <li style="border-color:rgba(255,255,255,.12)"><span class="ck" style="color:#f2c94c">✓</span><div><b style="color:#fff">80바이트의 벽을 넘는다</b><div class="d" style="color:#e8dcb8">문자에 못 담던 안내·예약·견적을 링크 버튼 하나로. 결국 전화로 되돌아가던 흐름을 끊습니다.</div></div></li>
+          <li style="border-color:rgba(255,255,255,.12)"><span class="ck" style="color:#f2c94c">✓</span><div><b style="color:#fff">환자가 직접 응답</b><div class="d" style="color:#e8dcb8">"예약 / 다음에 / 연락 원치 않음"을 원터치로. 데스크는 응답 안 한 환자에게만 전화를 집중합니다.</div></div></li>
+          <li style="border-color:rgba(255,255,255,.12)"><span class="ck" style="color:#f2c94c">✓</span><div><b style="color:#fff">화면의 주인공은 그 치과</b><div class="d" style="color:#e8dcb8">화이트라벨 — 환자에겐 다니는 치과의 이름·로고만 보입니다. 하단에만 "powered by 4prism".</div></div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="fadeup">
+      <span class="badge b2">💬 LAYER 2 · 오토리치</span>
+      <h2 class="sec">전화 한 통이<br>지속되는 디지털 채널로</h2>
+      <p class="lead">리콜은 원래 직원이 환자 한 명당 수 분씩 전화로 설득하던 노동집약 업무였습니다.
+        오토리치는 <b>카톡 알림톡의 버튼</b>으로 환자 개인화 웹을 열어줍니다 — 마지막 내원일, 권장 검진,
+        담당 의료진, 예약 가능 시간이 <b>치과 이름으로</b> 표시되고, 환자는 즉시 응답합니다.</p>
+      <ul class="featlist" style="margin-top:18px">
+        <li><div class="ic">🔘</div><div><b>알림톡 → 원터치 예약</b><div class="d">앱·회원가입 없음. 링크만 누르면 열립니다. 응답은 실시간으로 데스크 오토리콜 화면에 반영.</div></div></li>
+        <li><div class="ic">🔒</div><div><b>1회성 토큰·본인확인</b><div class="d">링크는 유효기간 후 만료. 이름은 마스킹, 치료계획·비용 같은 민감정보는 추가 본인확인 통과 후에만.</div></div></li>
+        <li><div class="ic">💳</div><div><b>상담 후 견적을 링크로</b><div class="d">"집에서 가족과 천천히 보세요." 이 견적 화면이 바로 <b>안심분납이 들어오는 자리</b>입니다.</div></div></li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<!-- JOURNEY DEMO -->
+<section class="demo" id="journey"><div class="wrap">
+  <div class="sec-head fadeup">
+    <span class="eyebrow">환자가 겪는 전체 여정</span>
+    <h2 class="sec" style="margin-top:12px">34개월 만에 다시 온 미숙 님이<br>포기하려던 치료를 시작하기까지</h2>
+    <p class="lead">통화 <b>0회</b>. 카톡 알림톡부터 예약·상담·견적·결제까지 — 세 층(오토리콜·오토리치·안심분납)이
+      한 흐름으로 이어지는 실제 화면입니다. 넘겨보세요. 아래 <b>속마음</b>이 같이 바뀝니다.</p>
+  </div>
+  <div class="demowrap">
+    <div class="phone">
+      <div class="p-screen">
+        <div class="p-sb" id="psb"><span id="pclock">10:24</span><span>📶 🔋 64%</span></div>
+        <div id="pcontent" style="flex:1 1 auto;overflow:hidden;display:flex;flex-direction:column"></div>
+      </div>
+    </div>
+    <div class="demoside">
+      <div id="player"></div>
+      <div class="stepnav" id="pstep">1 / 9</div>
+      <div class="voice" id="voice"></div>
+      <div class="dctrl">
+        <button id="pprev" onclick="pgo(-1)">‹ 이전</button>
+        <div class="dots" id="pdots"></div>
+        <button id="pnext" onclick="pgo(1)">다음 ›</button>
+      </div>
+      <p style="font-size:13px;color:var(--ink-soft);margin-top:18px;line-height:1.7">
+        핵심 한 줄 — <b class="accent">"값을 깎은 게 아니라, 낼 수 있게 만든 것."</b><br>
+        리콜로 다시 부르고, 결제로 동의를 만듭니다. 통화 없이.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ROLES & PERSONAS -->
+<section id="process"><div class="wrap">
+  <div class="sec-head fadeup"><span class="eyebrow">실제 과정 · 백스테이지</span>
+    <h2 class="sec" style="margin-top:12px">누가, 무엇을,<br>어떤 순서로 하나</h2>
+    <p class="lead">앞의 여정은 미숙 님이 본 화면이었습니다. 그 뒤에서 <b>환자·상담실장·원장</b>이 실제로 밟는 단계, 그리고 진입이 다른 <b>세 환자</b>가 같은 시스템을 통과하는 과정입니다.</p></div>
+  <div class="lanes fadeup">
+    <div class="lane"><div class="lh"><span class="em">👤</span>환자</div>
+      <ol>
+        <li>카톡 <b>알림톡</b> 받고 링크 터치 (앱·가입 없음)</li>
+        <li>치과 이름 페이지에서 <b>검진 안내·견적</b> 확인</li>
+        <li><b>예약 / 다음에 / 수신거부</b> 원터치 선택</li>
+        <li>(고액) 약정·납부일정 확인 → <b>본인확인</b></li>
+        <li><b>자동이체 등록 + 보증보험 동의</b></li>
+        <li>이후 <b>납부 현황</b>을 언제든 조회</li>
+      </ol></div>
+    <div class="lane"><div class="lh"><span class="em">💁</span>상담 실장</div>
+      <ol>
+        <li>상담 후 <b>견적 확정</b></li>
+        <li><b>분납 시뮬레이션</b>(개월·월액) 제시</li>
+        <li><b>심사 요청</b> → 자동 / 조건부 / 거절 3등급</li>
+        <li>승인 시 <b>약정 생성</b> → 환자 링크 발송</li>
+        <li>환자 귀가 후 <b>재확인</b> → 예약 확정</li>
+      </ol></div>
+    <div class="lane"><div class="lh"><span class="em">🩺</span>원장 · 데스크</div>
+      <ol>
+        <li>아침 <b>리콜 큐</b> 자동 배분 받음</li>
+        <li>웹 미응답자에게만 <b>전화</b> (CTI 응대)</li>
+        <li>당일 <b>청구 점검</b> — 누락 잡기</li>
+        <li><b>대시보드</b>로 약정 잔액·완납률·연체 모니터링</li>
+        <li>에이징 경고 시 <b>조치 결정</b></li>
+      </ol></div>
+  </div>
+  <div class="pers fadeup">
+    <div class="perscard"><div class="top"><div class="av" style="background:var(--accent-soft)">👩</div><div class="nm">정미숙 <small>58 · 34개월 방치</small></div></div>
+      <span class="track">🔁 재활성화 트랙</span>
+      <div class="flow">카톡 리콜 → <b>통화 0회로 검진 예약</b> → 내원 상담서 균열 발견 → 임플란트 견적 → 안심분납으로 치료 시작.</div></div>
+    <div class="perscard"><div class="top"><div class="av" style="background:#E3F5EE">🧑</div><div class="nm">박성철 <small>52 · 개인택시</small></div></div>
+      <span class="track">💳 동의율 트랙</span>
+      <div class="flow">350만원 견적 앞 <b>포기 직전</b> → 무채권 할부 60초 승인 → 24개월 월 14.6만 → "낼 수 있게" 되니 <b>동의</b>.</div></div>
+    <div class="perscard"><div class="top"><div class="av" style="background:var(--gold-soft)">👵</div><div class="nm">이영자 <small>62 · 2년 7개월 방치</small></div></div>
+      <span class="track">🩹 이탈 복구 트랙</span>
+      <div class="flow">죄책감 대신 <b>"기다렸다"</b> 톤 카톡 → 스케일링 보험 후크(연 1회) → 부담 없이 <b>재방문 결심</b>.</div></div>
+  </div>
+</div></section>
+
+<!-- LAYER 3: 안심분납 mechanism -->
+<section id="pay"><div class="wrap">
+  <div class="sec-head fadeup">
+    <span class="badge b3">💳 LAYER 3 · 안심분납</span>
+    <h2 class="sec" style="margin-top:6px">외상 장부를<br>"떼이지 않는 약정"으로</h2>
+    <p class="lead">고액 케이스 포기의 이유는 늘 비용, 정확히는 <b>"한 번에"</b>입니다. 카드는 한도에 막히고, 병원 원내 분납은
+      심사도 회수 장치도 없는 외상 장부였습니다. 안심분납은 세 장치를 얹습니다.</p>
+  </div>
+  <div class="grid3">
+    <div class="mcard fadeup"><div class="glow"></div><div class="num">장치 01</div><div class="ic">🗓️</div>
+      <h3>약속의 설계</h3>
+      <p>납부 일정이 <b>치료 단계에 맞춰</b> 자동으로. 계약 시 선납 20~30% → 수술 중도금 → <b>최종 보철 장착 전 완납</b>. 병원이 위험을 지는 구간이 원천적으로 좁아집니다.</p>
+      <div class="foot">마일스톤 약정 템플릿</div></div>
+    <div class="mcard fadeup"><div class="glow"></div><div class="num">장치 02</div><div class="ic">🔄</div>
+      <h3>자동 납부</h3>
+      <p>계좌 <b>자동이체</b>가 기본. 어긋나면 알림톡 안내·재시도가 <b>법정 시간·횟수 안에서</b> 자동으로. 어색한 독촉 전화를 정중한 자동 안내로 바꿉니다.</p>
+      <div class="foot">오토리콜 알림톡·CTI 재사용</div></div>
+    <div class="mcard fadeup"><div class="glow"></div><div class="num">장치 03</div><div class="ic">🛡️</div>
+      <h3>보증보험</h3>
+      <p>환자는 소액 보험료로 보증보험 가입. 납부가 끊기면 <b>보험사가 병원에 잔액을 지급</b>. 환자는 가족 대신 보증인을 사고, <b>병원은 회수 걱정을 보험사에 넘깁니다.</b></p>
+      <div class="foot">병원 채권 미보유 구조</div></div>
+  </div>
+</div></section>
+
+<!-- BEFORE / AFTER: 실장 설명 방식 -->
+<section id="beforeafter"><div class="wrap">
+  <div class="sec-head fadeup"><span class="eyebrow">실장이 환자에게 보여주는 방식</span>
+    <h2 class="sec" style="margin-top:12px">"말로 설명 + 종이에 낙서"에서<br>"한눈에 보이는 견적"으로</h2>
+    <p class="lead">지금까지 고액 치료계획은 실장이 <b>구두로 설명하고 종이에 대충 적어</b> 건네는 게 전부였습니다. 환자는 집에 가면 무슨 글씨인지, 왜 필요한지, 얼마를 어떻게 내는지 알 수 없었죠.</p></div>
+  <div class="ba">
+    <div class="col fadeup">
+      <span class="tagr before">✕ 기존 방식 — 손으로 갈겨쓴 종이</span>
+      <div class="paper">
+        <div class="coffee"></div>
+        <div class="ttl">OO치과 · 김OO님</div>
+        <div class="ln scrawl">우측하악 임플 <span class="circle">2개</span></div>
+        <div class="ln">뼈이식... 골 부족;;</div>
+        <div class="ln">지대주+크라운 x2</div>
+        <div class="ln sm">발치는 보험 <span class="arrow">↘</span> 3만</div>
+        <div class="ln">임플 <span class="strike">190</span> → 95x2</div>
+        <div class="ln scrawl">총 <span class="circle">350쯤?</span> <span class="arrow">→</span> 상담후 확정</div>
+        <div class="ln sm" style="transform:rotate(-1deg)">다음에 오실때 다시 얘기...</div>
+      </div>
+      <div class="react bad"><span class="em">😵</span><div><b>환자 속마음:</b> "이게 뭔 소리지… 350만원이라는 것만 알겠네. 집 가서 보니 글씨도 못 읽겠고." → 그냥 미룸.</div></div>
+    </div>
+    <div class="col fadeup">
+      <span class="tagr after">✓ 이후 — 오토리치 견적 화면</span>
+      <div class="est">
+        <div class="ehead"><div class="logo2">🦷</div><div><b>더편한치과 · 치료 견적</b><small>정미숙 님 · 담당 김하늘 원장 · 유효기간 08.16</small></div></div>
+        <div class="eitem"><div><div class="lbl2">오른쪽 아래 어금니 뽑기</div><div class="sub2">흔들리는 뿌리 발치 · 건강보험 적용</div></div><span class="won">30,000</span></div>
+        <div class="eitem"><div><div class="lbl2">잇몸뼈 채우기 (골이식)</div><div class="sub2">임플란트가 단단히 자리잡도록</div></div><span class="won">630,000</span></div>
+        <div class="eitem"><div><div class="lbl2">임플란트 심기 · 2개</div><div class="sub2">뽑은 자리에 인공 뿌리</div></div><span class="won">1,900,000</span></div>
+        <div class="eitem"><div><div class="lbl2">치아 씌우기 · 2개</div><div class="sub2">기둥(지대주) + 크라운</div></div><span class="won">940,000</span></div>
+        <div class="ewhy">💡 <b>왜 지금?</b> 신경치료한 이는 씌우지 않으면 마른 나무처럼 약해져 깨질 수 있어요. 깨지기 전에 하면 내 이를 지킵니다.</div>
+        <div class="etot"><span>총액 (비급여 포함)</span><span>3,500,000원</span></div>
+        <div class="emo"><div class="n">나눠 내면 월 145,834원</div><div class="s">24개월 · 무이자 · 하루 약 4,800원</div></div>
+      </div>
+      <div class="react good"><span class="em">😊</span><div><b>환자 속마음:</b> "아, 무슨 치료인지 그림처럼 보이네. 왜 해야 하는지도 알겠고 — 이렇게 나눠 내면 되는구나." → 가족과 보고 결정.</div></div>
+    </div>
+  </div>
+  <div class="cmp-wrap fadeup" style="margin-top:28px">
+    <table class="cmp">
+      <thead><tr><th style="width:22%">환자가 겪던 것</th><th>기존 — 구두 + 손글씨</th><th class="us">이후 — 오토리치 견적</th></tr></thead>
+      <tbody>
+        <tr><td class="rowh">무슨 치료인지</td><td class="no">약어·낙서 → 못 알아봄</td><td class="us">쉬운 말 + 부위별 정리</td></tr>
+        <tr><td class="rowh">왜 필요한지</td><td class="no">그 자리 말로만, 집 가면 증발</td><td class="us">"왜 지금" 근거가 화면에 남음</td></tr>
+        <tr><td class="rowh">비용</td><td class="no">"350쯤" 총액만 대충</td><td class="us">항목별 + 총액 + 유효기간</td></tr>
+        <tr><td class="rowh">어떻게 내는지</td><td class="no">방법 없음 → 부담에 포기</td><td class="us">월 납부 옵션이 견적에 바로</td></tr>
+        <tr><td class="rowh">가족과 상의</td><td class="no">종이 잃어버림</td><td class="us">링크로 집에서 다시 열람</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div></section>
+
+<!-- TREATMENT PLAN -> DASHBOARD -->
+<section style="background:var(--bg-soft)" id="txplan"><div class="wrap">
+  <div class="sec-head fadeup"><span class="eyebrow">치료계획 → 약정 → 대시보드</span>
+    <h2 class="sec" style="margin-top:12px">치료계획 하나가<br>대시보드에 이렇게 뜹니다</h2>
+    <p class="lead">정미숙 님의 실제 치료계획(임플란트 2개)을 예시로. <b>선납 비율·개월을 바꾸면</b> 마일스톤 약정과 대시보드가 <b>실시간으로 다시 그려집니다.</b></p></div>
+  <div class="grid2" style="align-items:stretch">
+    <div class="txp fadeup">
+      <h4>🦷 치료계획서 · 정미숙 님 (오른쪽 아래 임플란트 2개)</h4>
+      <div class="pl"><span class="t"><span class="tooth">#46</span>발치 (보험)</span><b>30,000</b></div>
+      <div class="pl"><span class="t"><span class="tooth">#46·47</span>골이식</span><b>630,000</b></div>
+      <div class="pl"><span class="t"><span class="tooth">#46·47</span>임플란트 식립 ×2</span><b>1,900,000</b></div>
+      <div class="pl"><span class="t"><span class="tooth">#46·47</span>보철(지대주+크라운) ×2</span><b>940,000</b></div>
+      <div class="sum"><span>총액 (비급여 포함)</span><span>3,500,000원</span></div>
+      <div class="txctrl"><div class="lbl">선납 비율</div>
+        <div class="seg">
+          <button onclick="txset('pre',20,this)">20%</button>
+          <button class="on" onclick="txset('pre',30,this)">30%</button>
+          <button onclick="txset('pre',40,this)">40%</button></div></div>
+      <div class="txctrl"><div class="lbl">분납 개월</div>
+        <div class="seg">
+          <button onclick="txset('mon',6,this)">6</button>
+          <button onclick="txset('mon',12,this)">12</button>
+          <button class="on" onclick="txset('mon',24,this)">24</button>
+          <button onclick="txset('mon',36,this)">36</button></div></div>
+      <p style="font-size:11.5px;color:var(--ink-soft);margin-top:14px;line-height:1.6">마일스톤 원칙: <b>계약 시 선납 → 식립 시점부터 자동이체 → 최종 보철 장착 전 완납.</b> 수수료 0원, 돈은 환자→의원 직입금(4Prism은 자금을 만지지 않음).</p>
+    </div>
+    <div class="dbd fadeup">
+      <span class="dtag">안심분납 대시보드 · 약정 #A-2026-0716</span>
+      <br><span class="grade">심사: 자동 승인 (A등급)</span>
+      <div class="amtrow"><span>총 약정액</span><b>3,500,000원</b></div>
+      <div class="amtrow"><span>계약 선납</span><b id="dPre">1,050,000원</b></div>
+      <div class="amtrow"><span>월 자동이체</span><b id="dMon">102,084원 × 24</b></div>
+      <div class="prog"><div class="bar"><i id="dBar" style="width:30%"></i></div>
+        <div class="pl"><span>완납 진행률</span><span id="dPct">30% (선납 완료)</span></div></div>
+      <div class="mstone">
+        <div class="ms done"><span class="dot">✓</span><div><div class="mt">① 계약 · 선납</div><div class="md">2026.07.16 완료</div></div><span class="mamt" id="dM1">1,050,000</span></div>
+        <div class="ms now"><span class="dot">●</span><div><div class="mt">② 식립 · 자동이체 시작</div><div class="md">2026.07.19 예정</div></div><span class="mamt">–</span></div>
+        <div class="ms wait"><span class="dot"></span><div><div class="mt">③ 균등 월납</div><div class="md" id="dM3">24개월 · 월 102,084원</div></div><span class="mamt">자동</span></div>
+        <div class="ms wait"><span class="dot">🏁</span><div><div class="mt">④ 보철 장착 전 · 완납</div><div class="md">잔액 0 확인 후 최종 보철</div></div><span class="mamt">완납</span></div>
+      </div>
+      <div class="amtrow" style="margin-top:12px;border:none"><span style="color:#a9cfc9">다음 자동이체</span><b id="dNext">2026.08.15 · 102,084원</b></div>
+      <div style="font-size:11px;color:#7fa9a3;margin-top:6px">상태: 정상 · 연체 0일 · 보증보험 증권 바인딩됨</div>
+    </div>
+  </div>
+  <p class="center" style="font-size:11.5px;color:var(--ink-soft);margin-top:16px">※ 예시 금액(무이자 가정). 실제 심사 등급·보증보험료·조건은 심사 결과에 따라 달라집니다. 치식(#46·47)·항목은 예시입니다.</p>
+</div></section>
+
+<!-- 분납 시나리오 모음 -->
+<section id="scenarios" style="background:var(--bg-soft)"><div class="wrap">
+  <div class="sec-head fadeup"><span class="eyebrow">분납 시나리오 · 하나하나</span>
+    <h2 class="sec" style="margin-top:12px">케이스별 분납이<br>이렇게 짜입니다</h2>
+    <p class="lead">치료 종류·환자 상황이 다르면 심사 등급과 분납 설계도 달라집니다. 실제로 나올 법한 <b>여섯 가지</b>를 하나씩 펼쳐, 선납·월납·마일스톤까지 한눈에 확인할 수 있게 정리했습니다.</p></div>
+  <div class="scn">
+
+    <div class="scncard fadeup">
+      <div class="sh"><div class="sav">🦷</div><div class="snm">① 임플란트 2개 <small>정미숙 58 · 34개월 방치 후 재내원</small></div><span class="grade a">심사 A · 자동승인</span></div>
+      <div class="tx">발치 + 골이식 + 임플란트 식립 2개 + 보철 2개 · <b>총 3,500,000원</b></div>
+      <div class="snums">
+        <div class="snum"><div class="l">선납 30%</div><div class="n">1,050,000<small>원</small></div></div>
+        <div class="snum"><div class="l">분납</div><div class="n">24<small>개월</small></div></div>
+        <div class="snum"><div class="l">월 납부</div><div class="n">102,084<small>원</small></div></div>
+        <div class="snum"><div class="l">하루꼴</div><div class="n">약 3,400<small>원</small></div></div>
+      </div>
+      <div class="smile"><span><b>계약</b> 선납 105만</span><span class="sep">→</span><span><b>식립</b> 자동이체 시작</span><span class="sep">→</span><span>24개월 균등</span><span class="sep">→</span><span><b>보철 장착 전</b> 완납</span></div>
+      <div class="note2">🏦 병원: 보증보험 증권 바인딩 · 채권 미보유 · 수수료 0원(돈은 환자→의원 직입금)</div>
+    </div>
+
+    <div class="scncard fadeup">
+      <div class="sh"><div class="sav">🪥</div><div class="snm">② 전체 교정 <small>이지은 29 · 직장인 · 내원 이력 양호</small></div><span class="grade a">심사 A · 자동승인</span></div>
+      <div class="tx">상·하악 전체 교정(장치+유지관리) · <b>총 5,000,000원</b></div>
+      <div class="snums">
+        <div class="snum"><div class="l">선납 30%</div><div class="n">1,500,000<small>원</small></div></div>
+        <div class="snum"><div class="l">분납</div><div class="n">36<small>개월</small></div></div>
+        <div class="snum"><div class="l">월 납부</div><div class="n">97,223<small>원</small></div></div>
+        <div class="snum"><div class="l">하루꼴</div><div class="n">약 3,200<small>원</small></div></div>
+      </div>
+      <div class="smile"><span><b>계약</b> 선납 150만</span><span class="sep">→</span><span><b>장치 부착</b> 자동이체 시작</span><span class="sep">→</span><span>36개월 균등</span><span class="sep">→</span><span><b>장치 제거 전</b> 완납</span></div>
+      <div class="note2">🏦 교정은 치료 기간이 길어 분납과 궁합이 좋습니다. 장치 제거(디본딩) 전 완납이 원칙.</div>
+    </div>
+
+    <div class="scncard cond fadeup">
+      <div class="sh"><div class="sav">🦷</div><div class="snm">③ 부분틀니 <small>김순자 67 · 간헐 내원 · 고령</small></div><span class="grade b">심사 B · 조건부</span></div>
+      <div class="tx">상악 부분틀니 · <b>총 1,800,000원</b> — 조건부(선납 상향)로 승인</div>
+      <div class="snums">
+        <div class="snum"><div class="l">선납 40%↑</div><div class="n">720,000<small>원</small></div></div>
+        <div class="snum"><div class="l">분납</div><div class="n">12<small>개월</small></div></div>
+        <div class="snum"><div class="l">월 납부</div><div class="n">90,000<small>원</small></div></div>
+        <div class="snum"><div class="l">하루꼴</div><div class="n">3,000<small>원</small></div></div>
+      </div>
+      <div class="smile"><span><b>계약</b> 선납 72만</span><span class="sep">→</span><span><b>인상·시적</b> 중도</span><span class="sep">→</span><span>12개월 균등</span><span class="sep">→</span><span><b>완성 장착 전</b> 완납</span></div>
+      <div class="note2">⚖️ 조건부 사유: 내원 이력이 간헐적 → 심사가 <b>선납 상향·기간 단축</b>으로 위험을 낮춰 승인. 그래도 환자 부담은 하루 3,000원 수준.</div>
+    </div>
+
+    <div class="scncard fadeup">
+      <div class="sh"><div class="sav">✨</div><div class="snm">④ 심미보철(라미네이트 4개) <small>박서연 34 · 우량 환자</small></div><span class="grade a">심사 A · 자동승인</span></div>
+      <div class="tx">앞니 라미네이트 4개 · <b>총 2,400,000원</b></div>
+      <div class="snums">
+        <div class="snum"><div class="l">선납 20%</div><div class="n">480,000<small>원</small></div></div>
+        <div class="snum"><div class="l">분납</div><div class="n">24<small>개월</small></div></div>
+        <div class="snum"><div class="l">월 납부</div><div class="n">80,000<small>원</small></div></div>
+        <div class="snum"><div class="l">하루꼴</div><div class="n">약 2,700<small>원</small></div></div>
+      </div>
+      <div class="smile"><span><b>계약</b> 선납 48만</span><span class="sep">→</span><span><b>프렙·임시</b> 자동이체 시작</span><span class="sep">→</span><span>24개월 균등</span><span class="sep">→</span><span><b>최종 부착 전</b> 완납</span></div>
+      <div class="note2">🏦 우량 환자는 선납 비율을 낮춰줘 부담이 더 가볍습니다(선납 20%).</div>
+    </div>
+
+    <div class="scncard cond fadeup">
+      <div class="sh"><div class="sav">🆕</div><div class="snm">⑤ 신경치료+크라운 <small>신규 초진 · 기록 없음</small></div><span class="grade b">심사 B · 조건부(무기록)</span></div>
+      <div class="tx">신경치료 + 크라운 1개 · <b>총 900,000원</b> — 무기록이라 소액·단기·선납 상향</div>
+      <div class="snums">
+        <div class="snum"><div class="l">선납 50%↑</div><div class="n">450,000<small>원</small></div></div>
+        <div class="snum"><div class="l">분납</div><div class="n">6<small>개월</small></div></div>
+        <div class="snum"><div class="l">월 납부</div><div class="n">75,000<small>원</small></div></div>
+        <div class="snum"><div class="l">하루꼴</div><div class="n">2,500<small>원</small></div></div>
+      </div>
+      <div class="smile"><span><b>계약</b> 선납 45만</span><span class="sep">→</span><span>6개월 균등</span><span class="sep">→</span><span><b>크라운 장착 전</b> 완납</span></div>
+      <div class="note2">⚖️ 심사에 쓸 행동 데이터(내원 이력·리콜 응답)가 없는 초진 → 소액 한도 + 선납 상향으로 문을 열어줍니다.</div>
+    </div>
+
+    <div class="scncard rej fadeup">
+      <div class="sh"><div class="sav">🚫</div><div class="snm">⑥ 심사 거절 케이스 <small>최근 분납 연체 이력 등</small></div><span class="grade c">심사 C · 거절</span></div>
+      <div class="tx">임플란트 4개 · 총 4,000,000원 — <b>안심분납 승인 불가</b> 구간</div>
+      <div class="altbox"><b>거절도 정중하게, 대안으로.</b> "이번엔 분납 승인이 어렵습니다"로 끝내지 않고 → 카드 무이자할부(가능 개월) · 소액 후불(BNPL) · 선납 후 잔액 재심사 등 <b>대안을 안내</b>합니다. 병원 이미지와 환자 관계를 지키는 게 원칙입니다.</div>
+    </div>
+
+  </div>
+  <p class="center" style="font-size:11.5px;color:var(--ink-soft);margin-top:20px;max-width:760px;margin-left:auto;margin-right:auto">※ 모두 예시 금액(무이자 가정)입니다. 실제 심사 등급·선납 비율·보증보험료·조건은 심사 결과에 따라 달라지며, 성과·승인을 보장하지 않습니다. 마일스톤 단계는 치료 종류에 맞춰 조정됩니다.</p>
+</div></section>
+
+<!-- CALCULATOR -->
+<section class="calc" id="calc"><div class="wrap">
+  <div class="sec-head fadeup">
+    <span class="eyebrow">30초 자가진단</span>
+    <h2 class="sec" style="margin-top:12px">우리 병원, 이번 달 새는 고액 케이스 매출</h2>
+    <p class="lead">슬라이더 3개만 옮겨보세요. 낼 방법이 없어 포기한 케이스가 얼마인지, 안심분납으로 얼마를 되살릴 수 있는지 나옵니다.</p>
+  </div>
+  <div class="calcbox fadeup">
+    <div class="field"><div class="top"><label>월 고액 상담 건수 (100만원↑)</label><span class="val"><span id="v1">20</span>건</span></div>
+      <input type="range" id="s1" min="5" max="80" value="20" step="1"></div>
+    <div class="field"><div class="top"><label>비용 때문에 포기·보류하는 비율</label><span class="val"><span id="v2">40</span>%</span></div>
+      <input type="range" id="s2" min="10" max="70" value="40" step="5"></div>
+    <div class="field"><div class="top"><label>고액 케이스 평균 치료비</label><span class="val"><span id="v3">300</span>만원</span></div>
+      <input type="range" id="s3" min="100" max="800" value="300" step="50"></div>
+    <div class="out">
+      <div class="l1">낼 방법이 없어 놓치는 매출 (월 추정)</div>
+      <div class="big"><span id="lost">2,400</span><span style="font-size:20px">만원</span></div>
+      <div class="l2">안심분납으로 이 중 <b>동의율 +30%</b>만 되살려도 →
+        월 <b><span id="save">720</span>만원</b> · 연 <b><span id="year">8,640</span>만원</b> 회수</div>
+    </div>
+    <p class="disclaim">※ 예시 계산입니다. 실제 회수율은 케이스 구성·상담 역량·심사 통과율에 따라 달라지며, 표시 금액은 성과를 보장하지 않습니다.
+       회수율 30%는 미국 파이낸싱 도입 치과의 동의율 상승폭(+30%)을 보수적으로 적용한 값입니다.</p>
+  </div>
+</div></section>
+
+<!-- OWNER DASHBOARD -->
+<section style="background:var(--bg-soft)"><div class="wrap">
+  <div class="sec-head fadeup">
+    <span class="eyebrow">원장 관점</span>
+    <h2 class="sec" style="margin-top:12px">외상 장부가 아니라<br>실시간으로 보이는 "관리되는 채권"</h2>
+  </div>
+  <div class="grid2">
+    <div class="dash fadeup">
+      <h3>📊 안심분납 대시보드</h3>
+      <div class="kpis">
+        <div class="kpi"><div class="n">94%</div><div class="l">완납률</div></div>
+        <div class="kpi"><div class="n">1.8%</div><div class="l">30일+ 연체율</div></div>
+        <div class="kpi"><div class="n">-73%</div><div class="l">데스크 미수 관리시간</div></div>
+      </div>
+      <div class="aging">
+        <div style="font-size:12px;color:#a9cfc9;font-weight:700;margin-bottom:4px">미수금 에이징</div>
+        <div class="r"><span style="width:52px">정상</span><div class="bar"><i style="width:88%;background:#4fd1b0"></i></div><span style="width:38px;text-align:right">88%</span></div>
+        <div class="r"><span style="width:52px">30일+</span><div class="bar"><i style="width:9%;background:#e6c34a"></i></div><span style="width:38px;text-align:right">9%</span></div>
+        <div class="r"><span style="width:52px">90일+</span><div class="bar"><i style="width:3%;background:#e08a8a"></i></div><span style="width:38px;text-align:right">3%</span></div>
+      </div>
+      <p style="font-size:11px;color:#7fa9a3;margin-top:12px">※ 예시 수치. 실제 값은 병원·환자 구성에 따라 달라집니다.</p>
+    </div>
+    <div class="fadeup">
+      <ul class="benefit">
+        <li><span class="ck">✓</span><div><b>떼일 걱정 없이 분납을 연다</b><div class="d">보증보험이 붙은 약정은 끊겨도 보험사가 잔액을 지급 — 병원은 채권을 들고 있지 않습니다.</div></div></li>
+        <li><span class="ck">✓</span><div><b>고액 케이스 동의율이 오른다</b><div class="d">낼 방법이 생기니 "생각해볼게요"가 "지금 시작"으로. 미래 매출을 이번 달 매출로 당깁니다.</div></div></li>
+        <li><span class="ck">✓</span><div><b>데스크가 독촉에서 해방된다</b><div class="d">자동이체·자동 안내·시효/지급명령 서류 자동화. 사람이 하던 회수 업무가 사라집니다.</div></div></li>
+        <li><span class="ck">✓</span><div><b>현황이 실시간으로 보인다</b><div class="d">완납률·연체율·미수 에이징이 대시보드에. 외상 장부가 관리되는 채권이 됩니다.</div></div></li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<!-- COMPARISON -->
+<section><div class="wrap">
+  <div class="sec-head fadeup"><span class="eyebrow">한눈에 비교</span>
+    <h2 class="sec" style="margin-top:12px">왜 지금까지의 방법으로는 안 됐나</h2></div>
+  <div class="cmp-wrap fadeup">
+    <table class="cmp">
+      <thead><tr><th style="width:26%"></th><th>카드 무이자할부</th><th>병원 원내 분납</th><th class="us">안심분납</th></tr></thead>
+      <tbody>
+        <tr><td class="rowh">고액(수백만원) 커버</td><td class="no">✕ 카드 한도에 막힘</td><td>△ 가능하나 위험</td><td class="us">○ 마일스톤 설계로 커버</td></tr>
+        <tr><td class="rowh">병원 회수 리스크</td><td class="ok">낮음(카드사 즉시 전액)</td><td class="no">✕ 전부 병원 부담</td><td class="us">보증보험이 보전 · 채권 미보유</td></tr>
+        <tr><td class="rowh">환자 부담</td><td>이자 없음·개월 짧음</td><td>보증인 요구되기도</td><td class="us">무이자 원금 분할 · 보증인 불필요</td></tr>
+        <tr><td class="rowh">데스크 업무</td><td>카드기 처리</td><td class="no">✕ 수기 관리·독촉</td><td class="us">자동이체·자동 안내</td></tr>
+        <tr><td class="rowh">신청</td><td>카드 필요</td><td>구두·수기</td><td class="us">폰에서 35초 · 앱/가입 없음</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div></section>
+
+<!-- EVIDENCE -->
+<section class="evi"><div class="wrap">
+  <div class="sec-head fadeup"><span class="eyebrow">이미 검증된 모델</span>
+    <h2 class="sec" style="margin-top:12px">미국은 이 방식으로<br>같은 문제를 이미 풀고 있습니다</h2>
+    <p class="lead">치과 파이낸싱은 미국에서 이미 조 단위로 검증된 카테고리입니다. 안심분납은 그중 <b>병원이 채권을 안 지는</b> 구조(보증보험 연동)를 한국 법·관행에 맞춰 옮긴 것입니다.</p></div>
+  <div class="grid3">
+    <div class="ecard fadeup"><div class="co">SUNBIT</div><div class="big">260만 명</div>
+      <div class="d">대출 고객 · 연 <b>$1B+</b> 거래량. 실제 대출은 제휴 은행(TAB Bank)이 실행하고 <b>Sunbit은 심사·유통 레이어</b>만 — 안심분납 무채권 구조의 원형.</div></div>
+    <div class="ecard fadeup"><div class="co">CHERRY</div><div class="big">누적 $5B</div>
+      <div class="d">260만 건(2026.6). 의원 전용 URL로 <b>웹 신청 35초</b>, 앱·가입 없음, 승인률 <b>~90%</b>. <b>상담실 견적 → 문자 링크 → 웹</b> 경로가 오토리치+안심분납 설계의 근거.</div></div>
+    <div class="ecard fadeup"><div class="co">AREO DENTAL</div><div class="big">+$775K</div>
+      <div class="d">1년간 환자 <b>551명·추가 매출 $775K</b>. 파이낸싱 도입 치과 평균 <b>동의율 +30% · 거래규모 +50%</b>의 실제 서사.</div></div>
+  </div>
+  <p class="note fadeup">출처: Sunbit·Cherry 공식 자료, Cherry ABS 관련 KBRA 공시(2024·2025·2026), Areo Dental 사례.
+    <b>미국 사례 수치이며 한국·개별 병원의 성과를 보장하지 않습니다.</b> 국내는 보증보험(서울보증 계열) 인수조건·심사 통과율에 따라 조건이 달라집니다.</p>
+</div></section>
+
+<!-- REAL SERVICES LANDSCAPE -->
+<section id="landscape"><div class="wrap">
+  <div class="sec-head fadeup">
+    <span class="eyebrow">현실 지형 · 환자 입장</span>
+    <h2 class="sec" style="margin-top:12px">환자가 지금 실제로 쓰는 서비스들</h2>
+    <p class="lead">환자 입장에서 지금 존재하는 것들을 정직하게 늘어놓았습니다. 각각 무엇을 하고 무엇이 안 되는지, 그리고 <b>오토리치·안심분납이 어느 빈칸</b>에 들어가는지 표시했습니다.</p>
+  </div>
+
+  <div class="lscol fadeup">
+    <div class="lslabel">🇺🇸 미국 — 환자 치과 파이낸싱 <span class="flag">이미 이 자리를 채운 시장</span></div>
+    <div class="lsgrid">
+      <div class="lscard"><div class="nm">CareCredit <small>의료 신용카드</small></div>
+        <div class="d">치과·의료 전용 카드. 데스크나 온라인에서 사전 신청, 6·12개월 무이자 프로모션.</div>
+        <span class="lim">승인률 ~40% · 미완납 시 소급이자</span></div>
+      <div class="lscard"><div class="nm">Sunbit <small>현장 파이낸싱</small></div>
+        <div class="d">현장·앱에서 1분 신청, 소프트 조회(신용점수 영향 없음). 6~72개월 분할.</div>
+        <span class="lim">승인률 87% · APR 0~35.99%</span></div>
+      <div class="lscard"><div class="nm">Cherry <small>웹 분할결제</small></div>
+        <div class="d">하드 조회 없음, 웹 신청 35초·앱 없음. 3·6개월 무이자. 상담실 견적→문자→웹 경로.</div>
+        <span class="lim">승인률 ~90% · 무이자 후 이자</span></div>
+    </div>
+  </div>
+
+  <div class="lscol fadeup">
+    <div class="lslabel">🇰🇷 한국 — 환자가 쓰는 예약·리콜 채널 <span class="flag">채널은 있지만 병원 리콜과 분리</span></div>
+    <div class="lsgrid">
+      <div class="lscard"><div class="nm">똑닥 <small>병원 예약·접수</small></div>
+        <div class="d">실시간 접수·예약·대기순서. 환자가 병원을 검색해서 먼저 찾아오는 구조.</div>
+        <span class="lim">병원의 능동 리콜 아님</span></div>
+      <div class="lscard"><div class="nm">굿닥 <small>병원 접수·비대면</small></div>
+        <div class="d">1천만+ 다운로드. 접수·예약·비대면 진료·진료비 확인.</div>
+        <span class="lim">범용 · 치과 리콜 특화 아님</span></div>
+      <div class="lscard"><div class="nm">네이버 예약 · 카카오 알림톡 <small>안내 채널</small></div>
+        <div class="d">검색→예약, 병원 채널 알림톡. <b>오토리치가 바로 이 알림톡 채널</b>을 리콜·예약·견적으로 씁니다.</div>
+        <span class="lim">단순 안내 · 응답·견적 연결 없음</span></div>
+    </div>
+  </div>
+
+  <div class="lscol fadeup">
+    <div class="lslabel">🇰🇷 한국 — 환자가 쓰는 치료비 결제 <span class="flag">고액을 한 번에 못 푸는 조각들</span></div>
+    <div class="lsgrid">
+      <div class="lscard"><div class="nm">카드 무이자할부 <small>2~12개월</small></div>
+        <div class="d">카드사·치과 제휴 프로모션. 가장 흔하지만 개월 수가 짧고 한도가 있습니다.</div>
+        <span class="lim">카드 한도의 벽 · 고액 막힘</span></div>
+      <div class="lscard"><div class="nm">BNPL 나중결제 <small>네이버·카카오·토스</small></div>
+        <div class="d">신용카드 없이 체크카드로 후불, 이자·수수료 없음. 편리하지만 소액·단기 한정.</div>
+        <span class="lim">한도 소액 · 수백만원 불가</span></div>
+      <div class="lscard"><div class="nm">병원 원내 분납 <small>자체 외상</small></div>
+        <div class="d">병원이 그냥 나눠 받는 관행. 교정은 선납 30~50% + 18~24개월이 흔함.</div>
+        <span class="lim">심사·회수장치 없음 · 병원 리스크</span></div>
+    </div>
+  </div>
+
+  <div class="lscol fadeup">
+    <div class="lslabel">✅ 빈칸을 채우는 자리</div>
+    <div class="lsgrid">
+      <div class="lscard fill"><div class="nm">오토리치 <small>리콜→예약→견적 채널</small></div>
+        <div class="d">똑닥처럼 환자가 찾아오길 기다리는 게 아니라, 병원이 카톡으로 <b>먼저 닿고</b> 환자가 원터치로 응답·예약·견적 확인.</div>
+        <span class="lim">능동 리콜 + 결제 슬롯</span></div>
+      <div class="lscard fill"><div class="nm">안심분납 <small>고액·장기·무채권</small></div>
+        <div class="d">카드 한도·BNPL 소액의 벽을 넘어 <b>수백만원을 장기 무이자로</b>. 보증보험으로 병원은 채권 미보유.</div>
+        <span class="lim">고액 케이스를 성사</span></div>
+      <div class="lscard fill"><div class="nm">한 흐름으로 연결 <small>미국이 증명</small></div>
+        <div class="d">Cherry가 검증한 "상담실 견적→문자 링크→웹→분할"을, 리콜 채널과 <b>한 몸으로</b> 묶은 국내판.</div>
+        <span class="lim">채널+결제 통합</span></div>
+    </div>
+  </div>
+
+  <div class="gapbox fadeup">
+    <h3>정리 — 지금 한국 환자에게 없는 것</h3>
+    <p>예약 앱(똑닥·굿닥)은 <b>있고</b>, 소액 후불(BNPL)도 <b>있고</b>, 카드 할부도 <b>있습니다.</b>
+      하지만 <b>고액(수백만원)을 · 장기 무이자로 · 병원이 안 떼이게 · 리콜 채널과 이어서</b> 한 번에 주는 건 아직 없습니다.
+      미국은 Cherry·Sunbit이 이미 그 자리를 채워 조 단위로 굴러갑니다. <b>오토리치 + 안심분납</b>이 그 빈칸입니다.</p>
+  </div>
+</div></section>
+
+<!-- ROADMAP -->
+<section><div class="wrap">
+  <div class="sec-head fadeup"><span class="eyebrow">결제·금융 레이어 로드맵</span>
+    <h2 class="sec" style="margin-top:12px">안심분납은 시작입니다</h2>
+    <p class="lead">상환 데이터가 쌓이면 그것이 다음 단계의 협상 카드가 됩니다. 미국 Cherry가 걸어간 순서 — 먼저 상환 데이터, 그다음 자본시장.</p></div>
+  <div class="road fadeup">
+    <div class="rstep"><span class="now">지금</span><div class="t">TRACK A</div><h4>관리형 분납</h4><p>심사·자동이체·보증보험을 얹은 무채권 분납. 채권은 병원에, 4Prism은 건당 수수료. 라이선스 부담 최소 진입로.</p></div>
+    <div class="rstep soon"><div class="t">TRACK B</div><h4>제휴 대출 연결</h4><p>금융사가 빌려주고 우리는 화면·심사 데이터를 제공. 등록 요건 자문(L2) 결과에 따라 구조 확정.</p></div>
+    <div class="rstep soon"><div class="t">TRACK C</div><h4>선납 적립 멤버십</h4><p>월 구독(검진+스케일링)+치료 크레딧. 치아보험 대항 서사의 실물. 회수 리스크 0.</p></div>
+    <div class="rstep soon"><div class="t">TRACK D</div><h4>치과 비용 적립</h4><p>보너스 크레딧·은행 제휴 목적부 적금. 선수금이 미래 수요의 예약 장부가 됩니다.</p></div>
+  </div>
+</div></section>
+
+<!-- FAQ -->
+<section style="background:var(--bg-soft)"><div class="wrap">
+  <div class="sec-head fadeup"><span class="eyebrow">자주 묻는 질문</span>
+    <h2 class="sec" style="margin-top:12px">환자도, 원장도 궁금한 것들</h2></div>
+  <div style="max-width:760px;margin:0 auto">
+    <details class="fadeup"><summary><span class="who d">원장</span><span class="q">덴트웹을 바꿔야 하나요?</span><span class="arw">▾</span></summary>
+      <div class="a">아니요. 오토리콜은 덴트웹을 대체하지 않고 <b>그 위에 얹힙니다.</b> 차트·수납은 지금처럼 덴트웹에서, 리콜·전화·점검의 반복 업무만 오토리콜이 가져갑니다. 설치는 데스크 PC에 프로그램 하나 까는 것으로 끝납니다.</div></details>
+    <details class="fadeup"><summary><span class="who d">원장</span><span class="q">환자 데이터가 외부로 나가나요?</span><span class="arw">▾</span></summary>
+      <div class="a">진료 데이터는 병원 안에 있습니다. AI 파노라마 분석도 데스크 PC에서 오프라인으로 돌고, 여러 PC 연동도 병원 내부망 안에서 이뤄집니다. 외부 통신은 프로그램 업데이트·라이선스 확인 수준입니다.</div></details>
+    <details class="fadeup"><summary><span class="who p">환자</span><span class="q">앱을 설치해야 하나요?</span><span class="arw">▾</span></summary>
+      <div class="a">아니요. 알림톡/문자의 링크만 누르면 됩니다. <b>회원가입도 없습니다.</b> 치료계획·비용처럼 본인 확인이 필요한 정보는 생년월일 뒷자리 등 간단한 확인 후 표시됩니다. 링크는 1회성 토큰으로 유효기간이 지나면 만료됩니다.</div></details>
+    <details class="fadeup"><summary><span class="who p">환자</span><span class="q">(안심분납) 신용카드가 없거나 한도가 부족해도 되나요?</span><span class="arw">▾</span></summary>
+      <div class="a">네, 바로 그 경우를 위해 만든 서비스입니다. 카드가 아니라 <b>계좌 자동이체</b>로 나눠 내며, 병원 내원 기록 등을 바탕으로 한 간단한 심사와 보증보험 가입으로 진행됩니다.</div></details>
+    <details class="fadeup"><summary><span class="who p">환자</span><span class="q">(안심분납) 이자를 내나요?</span><span class="arw">▾</span></summary>
+      <div class="a"><b>대출이 아니므로 이자가 없습니다.</b> 치료비 원금을 나눠 내는 것이고, 보증보험료(치료비의 일부 수준)만 부담됩니다. 병원에 따라 보험료를 병원이 부담하는 경우도 있습니다.</div></details>
+    <details class="fadeup"><summary><span class="who p">환자</span><span class="q">(안심분납) 중간에 못 내면 어떻게 되나요?</span><span class="arw">▾</span></summary>
+      <div class="a">먼저 알림과 재시도로 안내드리고 데스크와 일정 조정을 상담할 수 있습니다. 계속 어려우면 보험사가 병원에 잔액을 지급하고 이후 상환은 보험사와 협의합니다. <b>진행 중인 치료를 위험하게 중단하는 일은 없습니다.</b> 어떤 경우에도 가족 등 제3자에게 알려지지 않습니다.</div></details>
+    <details class="fadeup"><summary><span class="who d">원장</span><span class="q">무료면 뭘로 돈을 버나요?</span><span class="arw">▾</span></summary>
+      <div class="a">오토리콜 본체는 무료 정책입니다. 4Prism은 이후 붙는 확장(오토리치 환자 웹, 안심분납 등)과 경영 컨설팅에서 수익을 만듭니다. 데스크가 매일 쓰는 도구가 되는 것 자체가 사업의 기반이기 때문입니다.</div></details>
+    <details class="fadeup"><summary><span class="who d">원장</span><span class="q">급여 진료도 되나요?</span><span class="arw">▾</span></summary>
+      <div class="a"><b>비급여 치료비의 결제 편의 서비스</b>입니다. 건강보험 본인부담금에 대한 할인이나 혜택은 법으로 금지되어 있어 어떤 형태로도 제공하지 않습니다.</div></details>
+  </div>
+</div></section>
+
+<!-- LEGAL -->
+<section><div class="wrap">
+  <div class="sec-head fadeup"><span class="eyebrow">지켜지는 선</span>
+    <h2 class="sec" style="margin-top:12px">"편리함" 이전에 "합법"입니다</h2>
+    <p class="lead">설계 단계부터 관련 법의 경계 안에. 문제가 되는 표현·구조는 처음부터 배제했습니다.</p></div>
+  <div class="legal-grid fadeup">
+    <div class="lb"><div class="ic">🚫</div><h4>이자 없음</h4><p>대출이 아닌 원금 분할. "이자·수익·보장" 표현을 쓰지 않습니다.</p></div>
+    <div class="lb"><div class="ic">🦷</div><h4>비급여 한정</h4><p>의료법 27조 3항 준수. 급여 본인부담금 할인·혜택 일절 없음.</p></div>
+    <div class="lb"><div class="ic">⏰</div><h4>정중한 안내</h4><p>채권추심법 준수 — 21시~08시 금지, 빈도 제한, 제3자 고지 금지.</p></div>
+    <div class="lb"><div class="ic">🏷️</div><h4>화이트라벨</h4><p>발신·표시 주체는 각 치과(의료기관). 4Prism은 시스템 제공자.</p></div>
+  </div>
+</div></section>
+
+<!-- EMBEDDED 결제 랜딩 (전체 이어붙임) -->
+<section id="paylanding" style="background:var(--bg-soft);padding-bottom:20px">
+  <div class="wrap"><div class="sec-head fadeup" style="margin-bottom:18px">
+    <span class="eyebrow">보너스 · 결제 중심 풀버전</span>
+    <h2 class="sec" style="margin-top:12px">"생각해볼게요"를 뒤집는<br>결제 관점 풀버전 랜딩</h2>
+    <p class="lead">비용 앞에서 망설이는 환자를 <b>결제로 붙잡는</b> 관점의 풀버전 랜딩을 아래에 통째로 이어붙였습니다. 스크롤하면 그대로 이어집니다.</p>
+  </div></div>
+  <iframe id="payframe" src="pay-landing.htm" title="안심분납 결제 랜딩" scrolling="no"
+    style="width:100%;border:0;display:block;min-height:2400px;background:var(--bg)"></iframe>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final" id="cta"><div class="wrap">
+  <h2>다시 부르고, 닿고, 성사시킨다.<br>미룬 매출을 이번 달로.</h2>
+  <p>덴트웹은 그대로 두고 데스크 PC에 얹기만 하면 됩니다. 오토리콜 무료 설치부터 안심분납 파일럿까지, 도입 상담을 받아보세요.</p>
+  <a class="btn btn-pri" href="#">도입 상담 신청 →</a>
+  <div class="mini">오토리콜(무료) · 오토리치(구독 포함) · 안심분납(건당 수수료) — 4Prism 결제·금융 레이어</div>
+</div></section>
+
+<footer><div class="wrap">
+  <div><b>4Prism 치과 성장 스택</b><br>오토리콜(AutoRecall) · 오토리치(AutoReach) · 안심분납<br>포프리즘(4prism) 결제·금융 레이어</div>
+  <div class="disc">본 페이지의 수치·화면·사례는 제품 설명을 위한 <b>예시·프로토타입</b>이며 성과를 보장하지 않습니다.
+    실제 이자·수수료·한도·승인 조건은 제휴 금융사·보증보험사의 심사 결과에 따라 달라집니다.
+    미국 사례(Sunbit·Cherry·Areo)는 해외 수치로 국내 성과와 무관합니다. AI 파노라마는 진단이 아닌 원장 참고용입니다. 비급여 진료에 한합니다.<br>
+    © 2026 4Prism. 내부 검토용 랜딩 시안 (2026-07-13).</div>
+</div></footer>
+
+<script>
+/* ── 자가진단 계산기 ── */
+(function(){
+  const s1=document.getElementById('s1'),s2=document.getElementById('s2'),s3=document.getElementById('s3');
+  const v1=document.getElementById('v1'),v2=document.getElementById('v2'),v3=document.getElementById('v3');
+  const lost=document.getElementById('lost'),save=document.getElementById('save'),year=document.getElementById('year');
+  const fmt=n=>Math.round(n).toLocaleString('ko-KR');
+  function calc(){
+    const cnt=+s1.value, giveup=+s2.value/100, price=+s3.value;
+    v1.textContent=cnt; v2.textContent=+s2.value; v3.textContent=price;
+    const lostM=cnt*giveup*price, saveM=lostM*0.30;
+    lost.textContent=fmt(lostM); save.textContent=fmt(saveM); year.textContent=fmt(saveM*12);
+  }
+  [s1,s2,s3].forEach(s=>s.addEventListener('input',calc)); calc();
+})();
+
+/* ── 통합 환자 여정 데모 (오토리치 → 안심분납) ── */
+const P=[
+{clock:'10:24',sb:'kk',layer:2,who:'🦷 정미숙 (58) 속마음',
+ voice:`34개월…? 벌써 그렇게 됐나. 신경치료하고 씌우는 거 남았댔지. <em>바빠서 계속 미뤘는데…</em> 한번 눌러나 볼까.`,
+ html:`<div class="p-appbar kk"><span class="bk">‹</span><span class="tt">더편한치과의원</span></div>
+ <div class="p-body"><div class="kkwrap">
+   <div class="kkday"><span>2023년 9월 · 마지막 대화</span></div>
+   <div class="kkold"><div class="av">🦷</div><div class="b">신경치료 잘 받으셨어요. 다음에 씌우는 거 마무리하러 오세요 :)</div></div>
+   <div class="kksys"><span>· 그 후 34개월간 대화 없음 ·</span></div>
+   <div class="kkday"><span>2026년 7월 12일 일요일</span></div>
+   <div class="kkrow"><div class="av">🦷</div><div><p class="kkmsg" style="padding:0"></p><p class="kkmsg" style="display:none"></p>
+     <div class="kkbub"><div class="kktag">알림톡 도착</div>
+       <div class="kkmsg"><b>미숙 님</b>, 안녕하세요 🙂<br>오른쪽 아래 치료받으시던 <span class="hi">어금니</span>, 마지막 처치 후 <b>34개월</b>이 지났어요.<br><br>신경치료 후 <b>씌우는 마무리(크라운)</b>가 남아 있었던 걸 기억하시나요? 지금 상태를 한 번 확인해 보시길 권해드려요.</div>
+       <div class="kkbtn" onclick="pgo(1)">📄 내 검진 안내 확인하기</div>
+     </div></div></div>
+ </div></div>`},
+{clock:'10:25',sb:'',layer:2,who:'🦷 정미숙 속마음',
+ voice:`오, 이름도 안 넣었는데 바로 열리네. <em>"깨진 뒤에는 뽑아야 할 수도 있어요"</em>… 이 문장이 좀 무섭다. 미루면 안 되겠는데.`,
+ html:`<div class="p-appbar"><span class="bk">‹</span><span class="tt">더편한치과 검진 안내</span></div>
+ <div class="p-body"><div class="p-pad">
+   <span class="p-chip b">🔒 본인 안내 · 정*숙 님</span>
+   <div class="p-h">지금 확인하면<br>내 이를 지킬 수 있어요</div>
+   <p class="p-mut" style="margin:6px 0 12px">마지막 내원 <b>34개월 전</b> · 담당 김하늘 원장</p>
+   <div class="p-why"><div class="wic">⚠️</div><h5>왜 지금 오셔야 하나요?</h5>
+     <p>신경치료를 한 이는 씌우지 않으면 시간이 지나며 <b>속이 마른 나무처럼 약해져</b> 깨질 수 있어요. 깨지기 전에 씌우면 내 이를 지킬 수 있지만, <span class="al">깨진 뒤에는 뽑아야 할 수도 있어요.</span></p></div>
+   <div class="p-card" style="padding:2px 14px">
+     <div class="p-tx"><span>권장 안내</span><b>보철(크라운) 마무리 확인</b></div>
+     <div class="p-tx"><span>대상 치아</span><b>오른쪽 아래 어금니</b></div>
+     <div class="p-tx"><span>예상 소요</span><b>약 20분 검진</b></div></div>
+   <button class="p-btn pri" onclick="pgo(1)">📅 예약하기</button>
+   <button class="p-btn sec" onclick="pgo(1)">다음에 알림받기</button>
+ </div></div>`},
+{clock:'10:25',sb:'',layer:2,who:'🦷 정미숙 속마음',
+ voice:`가게 아침 준비 끝나고… 목요일 10시 반이면 딱 좋네. <em>아무도 전화로 안 재촉하니까</em> 내 페이스로 고를 수 있어 편하다.`,
+ html:`<div class="p-appbar"><span class="bk" onclick="pgo(-1)">‹</span><span class="tt">시간 선택</span></div>
+ <div class="p-body"><div class="p-pad">
+   <div class="p-h">언제가 편하세요?</div>
+   <p class="p-mut" style="margin:6px 0 12px">오시기 편한 시간으로 골라보세요.</p>
+   <div class="p-card"><div style="font-weight:800;font-size:13.5px;margin-bottom:9px">7월 16일 (목)</div>
+     <div class="p-slot">
+       <div class="s off">09:00</div>
+       <div class="s sel" onclick="pslot(this)">10:30 ✓</div>
+       <div class="s" onclick="pslot(this)">11:00</div>
+       <div class="s off">14:00</div>
+       <div class="s" onclick="pslot(this)">15:30</div>
+       <div class="s" onclick="pslot(this)">16:00</div></div></div>
+   <p class="p-mut" style="font-size:11.5px">※ 실시간 확정이 어려운 시간대는 <b>예약 요청</b>으로 접수되고, 데스크 확인 후 확정 알림톡을 보내드려요.</p>
+   <button class="p-btn pri" onclick="pgo(1)">이 시간으로 예약 요청 →</button>
+ </div></div>`},
+{clock:'10:26',sb:'',layer:2,who:'🦷 정미숙 속마음',
+ voice:`끝? 전화 한 통 안 했는데 예약이 됐어. <em>34개월을 미룬 걸 3분 만에</em> 정리했네.`,
+ html:`<div class="p-appbar"><span class="tt">예약 요청 완료</span></div>
+ <div class="p-body"><div class="p-pad" style="text-align:center">
+   <div class="p-ic blue">✓</div>
+   <div class="p-h">예약 요청이<br>접수됐어요</div>
+   <p class="p-mut" style="margin:8px 0 14px">병원에서 확정되면 알림톡으로 알려드릴게요.<br>따로 전화 안 하셔도 돼요 🙂</p>
+   <div class="p-card" style="text-align:left">
+     <div class="p-row"><span class="k">신청 시간</span><span class="v">7/16(목) 오전 10:30</span></div>
+     <div class="p-row"><span class="k">내용</span><span class="v">오른쪽 아래 어금니 검진</span></div>
+     <div class="p-row"><span class="k">상태</span><span class="v" style="color:#c47f17">확정 대기중</span></div></div>
+   <button class="p-btn pri" onclick="pgo(1)">진료 후로 →</button>
+ </div></div>`},
+{clock:'11:52',sb:'kk',layer:2,who:'🦷 정미숙 속마음',
+ voice:`검진하러 갔더니 균열이 뿌리까지… 발치하고 임플란트를 해야 한다네. <em>비용이 얼마나 나올까…</em> 집에서 천천히 보라니 일단 열어보자.`,
+ html:`<div class="p-appbar kk"><span class="bk">‹</span><span class="tt">더편한치과의원</span></div>
+ <div class="p-body"><div class="kkwrap">
+   <div class="kkday"><span>7월 16일 목요일 · 진료 후</span></div>
+   <div class="kkrow"><div class="av">🦷</div><div><div class="kkbub"><div class="kktag">상담 견적 안내</div>
+     <div class="kkmsg">미숙 님, 오늘 상담해 주셔서 감사해요.<br><br>오늘 말씀드린 <b>치료 계획과 예상 비용</b>을 링크로 정리해 드렸어요. <b>집에서 가족분과 천천히</b> 보시고 결정하셔도 괜찮아요 🙂<br><br><span style="font-size:11.5px;color:#7a5">🔒 본인 정보라, 열 때 생년월일 확인이 필요해요.</span></div>
+     <div class="kkbtn" onclick="pgo(1)">💳 내 치료 견적 보기</div></div></div></div>
+ </div></div>`},
+{clock:'21:40',sb:'',layer:3,who:'🚕 남편 박성철 속마음',
+ voice:`삼백오십만 원…? <em>이게 택시 한 달 수입인데.</em> 씹지도 못한 지 반년 넘었지만 지금 이 돈이 어딨어. "생각해보고" 하고 그냥 안 하면 되지 뭐.`,
+ html:`<div class="p-appbar"><span class="bk">‹</span><span class="tt">치료 견적서</span></div>
+ <div class="p-body"><div class="p-pad">
+   <span class="p-chip v">✅ 본인확인 완료 · 박성철 님</span>
+   <div class="p-h">오른쪽 아래<br>임플란트 2개</div>
+   <p class="p-mut" style="margin:6px 0 11px">담당 김하늘 원장 · 유효기간 2026.08.16</p>
+   <div class="p-card" style="padding:4px 14px">
+     <div class="p-tx"><span>발치·골이식</span><b>660,000</b></div>
+     <div class="p-tx"><span>임플란트 식립 ×2</span><b>1,900,000</b></div>
+     <div class="p-tx"><span>보철 ×2</span><b>940,000</b></div></div>
+   <div class="p-total"><div class="l">예상 총액 (비급여 포함)</div>
+     <div class="n">3,500,000<span style="font-size:15px">원</span></div><div class="s">한 번에 결제 시 금액</div></div>
+   <button class="p-btn money" onclick="pgo(1)">💳 한 번에 부담되면 — 나눠서 내기</button>
+   <p class="p-legal">※ 표시 금액은 예상 견적이며 최종 금액은 진료 후 확정됩니다.</p>
+ </div></div>`},
+{clock:'21:41',sb:'',layer:3,who:'🚕 박성철 속마음',
+ voice:`신용조회 안 하고? <em>신용점수 안 깎이면</em> 밑져야 본전이지. 카드 할부는 길어야 12개월인데 여긴 더 길게 된다고? 60초면 눌러보자.`,
+ html:`<div class="p-appbar"><span class="bk" onclick="pgo(-1)">‹</span><span class="tt">나눠서 내기</span></div>
+ <div class="p-body"><div class="p-pad">
+   <span class="p-chip m">💚 병원 제휴 안심 결제</span>
+   <div class="p-h">한 번에 안 내셔도 돼요</div>
+   <p class="p-mut" style="margin:6px 0 11px">큰 치료비, <b>매달 나눠서</b> 부담 없이.</p>
+   <div class="p-card" style="padding:2px 14px">
+     <div class="p-pt"><div class="ic">🔍</div><div><div class="n">신용점수 영향 없는 조회</div><div class="d">하드 신용조회를 하지 않아요.</div></div></div>
+     <div class="p-pt"><div class="ic">⏱</div><div><div class="n">60초 간편 신청</div><div class="d">이름·연락처만. 데스크에서도 가능.</div></div></div>
+     <div class="p-pt"><div class="ic">📅</div><div><div class="n">카드보다 긴 할부</div><div class="d">최대 36개월까지.</div></div></div>
+     <div class="p-pt"><div class="ic">🏦</div><div><div class="n">병원은 채권을 안 가져요</div><div class="d">실제 할부는 제휴 금융사가 실행.</div></div></div></div>
+   <button class="p-btn money" onclick="pgo(1)">👉 60초 만에 내 조건 확인</button>
+   <p class="p-legal">※ 비급여 진료에 한하며, 실제 조건은 제휴 금융사·보증보험 심사 결과에 따라 달라질 수 있습니다.</p>
+ </div></div>`},
+{clock:'21:42',sb:'',layer:3,who:'🚕 박성철 속마음',
+ voice:`승인?! 벌써? 월 14만 6천 원이면 <em>하루에 오천 원도 안 되네.</em> 담배 한 갑 값이잖아. 반년 미룬 거, 그냥 하자.`,
+ html:`<div class="p-appbar"><span class="tt">조건 확인 완료</span></div>
+ <div class="p-body"><div class="p-pad" style="text-align:center">
+   <div class="p-ic">✓</div>
+   <div class="p-h" style="font-size:19px">나눠서 낼 수 있어요!</div>
+   <p class="p-mut" style="margin:6px 0 10px">원하는 개월 수를 골라보세요.</p>
+   <div class="p-plan">
+     <div class="p" onclick="pplan(this,'6개월','583,000')"><div class="m">6개월</div><div class="mo">583,000</div></div>
+     <div class="p" onclick="pplan(this,'12개월','291,000')"><div class="m">12개월</div><div class="mo">291,000</div></div>
+     <div class="p sel" onclick="pplan(this,'24개월','145,834')"><div class="m">24개월</div><div class="mo">145,834</div></div>
+     <div class="p" onclick="pplan(this,'36개월','97,222')"><div class="m">36개월</div><div class="mo">97,222</div></div></div>
+   <div class="p-big"><div class="l" id="pplanlbl">24개월 기준</div><div class="n" id="pplanmo">월 145,834원</div>
+     <div class="p-cmp"><span>하루 약 4,800원</span><span>담배 한 갑 값</span></div></div>
+   <button class="p-btn money" onclick="pgo(1)">이 조건으로 치료 시작하기 →</button>
+   <p class="p-legal">※ 예시 금액(무이자 가정). 실제 조건·보증보험료는 심사에 따라 달라집니다.</p>
+ </div></div>`},
+{clock:'21:43',sb:'',layer:3,who:'🦷 정미숙 · 🚕 박성철',
+ voice:`됐다. 34개월 미룬 검진이 임플란트 치료까지, <em>통화 한 번 없이</em> 소파에서 끝났어. — 값을 깎은 게 아니라, <em>낼 수 있게 만든 것.</em> 이게 "동의율이 오른다"는 거다.`,
+ html:`<div class="p-appbar"><span class="tt">완료</span></div>
+ <div class="p-body"><div class="p-pad" style="text-align:center">
+   <div class="p-ic">🎉</div>
+   <div class="p-h">치료 예약이<br>확정됐어요</div>
+   <p class="p-mut" style="margin:8px 0 12px">포기하려던 치료를, 부담 없이 시작하게 됐어요.</p>
+   <div class="p-card" style="text-align:left">
+     <div class="p-row"><span class="k">치료</span><span class="v">임플란트 2개 + 보철</span></div>
+     <div class="p-row"><span class="k">1차 시술</span><span class="v">7/19(토) 오전 10:00</span></div>
+     <div class="p-row"><span class="k">납부</span><span class="v">24개월 · 월 145,834원</span></div>
+     <div class="p-row"><span class="k">첫 납부일</span><span class="v">2026.08.15</span></div></div>
+   <div class="p-card" style="text-align:left;background:#EAF4F2">
+     <div style="font-size:12px;font-weight:800;color:#0A534D;margin-bottom:5px">🏦 결제 구조 안내</div>
+     <p class="p-mut" style="font-size:11.5px">실제 할부는 <b>제휴 금융사</b>가 실행하며, <b>병원은 채권을 보유하지 않습니다.</b> 병원은 결제 수단을 안내한 것이고, 비급여 진료에 한합니다.</p></div>
+   <button class="p-btn sec" onclick="pgo(-99)">↺ 처음부터 다시 보기</button>
+ </div></div>`}
+];
+let pidx=0;
+const pcontent=document.getElementById('pcontent'),pclock=document.getElementById('pclock'),psb=document.getElementById('psb'),
+      pvoice=document.getElementById('voice'),pdots=document.getElementById('pdots'),pstep=document.getElementById('pstep'),player=document.getElementById('player');
+function prender(){
+  const s=P[pidx];
+  pcontent.innerHTML=s.html; pclock.textContent=s.clock;
+  psb.className='p-sb'+(s.sb==='kk'?' kk':'');
+  pvoice.innerHTML='<div class="who">'+s.who+'</div>'+s.voice;
+  pstep.textContent=(pidx+1)+' / '+P.length;
+  const lp={2:['pl2','💬 오토리치 · 환자 웹'],3:['pl3','💳 안심분납 · 결제']}[s.layer];
+  player.innerHTML='<span class="layerpill '+lp[0]+'">'+lp[1]+'</span>';
+  document.getElementById('pprev').disabled=(pidx===0);
+  document.getElementById('pnext').disabled=(pidx===P.length-1);
+  pdots.innerHTML=P.map((_,i)=>'<i class="'+(i===pidx?'on':'')+'"></i>').join('');
+  const b=pcontent.querySelector('.p-body'); if(b)b.scrollTo(0,0);
+}
+function pgo(step){ if(step===-99){pidx=0;} else {let n=pidx+step; if(n<0)n=0; if(n>P.length-1)n=P.length-1; pidx=n;} prender(); }
+function pslot(el){document.querySelectorAll('.p-slot .s').forEach(s=>{if(!s.classList.contains('off'))s.classList.remove('sel')});el.classList.add('sel');}
+function pplan(el,lbl,mo){document.querySelectorAll('.p-plan .p').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');
+  document.getElementById('pplanlbl').textContent=lbl+' 기준';document.getElementById('pplanmo').textContent='월 '+mo+'원';}
+prender();
+
+/* ── 치료계획 → 약정 대시보드 (실시간) ── */
+(function(){
+  const TOTAL=3500000; let pre=30, mon=24;
+  const fmt=n=>Math.round(n).toLocaleString('ko-KR');
+  const $=id=>document.getElementById(id);
+  function render(){
+    const preAmt=Math.round(TOTAL*pre/100), bal=TOTAL-preAmt, monAmt=Math.ceil(bal/mon);
+    $('dPre').textContent=fmt(preAmt)+'원';
+    $('dMon').textContent=fmt(monAmt)+'원 × '+mon;
+    $('dM1').textContent=fmt(preAmt);
+    $('dM3').textContent=mon+'개월 · 월 '+fmt(monAmt)+'원';
+    $('dNext').textContent='2026.08.15 · '+fmt(monAmt)+'원';
+    const pct=Math.round(preAmt/TOTAL*100);
+    $('dBar').style.width=pct+'%'; $('dPct').textContent=pct+'% (선납 완료)';
+  }
+  window.txset=function(kind,val,el){
+    const seg=el.parentNode; seg.querySelectorAll('button').forEach(b=>b.classList.remove('on')); el.classList.add('on');
+    if(kind==='pre')pre=val; else mon=val; render();
+  };
+  render();
+})();
+
+/* ── 데스크 실사용 시뮬레이션 (오토리콜) ── */
+const D=[
+`<div class="dsk-h">오늘 걸 전화 목록 · 7월 13일</div>
+ <div class="dsk-sub">조건별로 자동 선별되어 김실장에게 배분됨 · 웹으로 응답한 환자는 큐에서 자동으로 빠집니다</div>
+ <div class="qrow head"><span>환자</span><span>경과</span><span class="hidem">권장 안내</span><span>상태</span></div>
+ <div class="qrow hot"><span class="nm">정미숙</span><span>34개월</span><span class="hidem">크라운 마무리</span><span><span class="qbadge web">🟢 웹 예약요청 — 통화 불필요</span></span></div>
+ <div class="qrow"><span class="nm">김영호</span><span>8개월</span><span class="hidem">정기검진</span><span><span class="qbadge miss">☐ 미응답 — 전화 대상</span></span></div>
+ <div class="qrow"><span class="nm">이순자</span><span>2년 7개월</span><span class="hidem">잇몸+스케일링</span><span><span class="qbadge sent">🔔 알림톡 발송됨</span></span></div>
+ <div class="qrow"><span class="nm">박정우</span><span>14개월</span><span class="hidem">보철 재점검</span><span><span class="qbadge miss">☐ 미응답 — 전화 대상</span></span></div>
+ <p style="font-size:12.5px;color:var(--ink-soft);margin-top:12px">웹으로 응답한 <b>정미숙 님</b>은 전화 큐에서 자동으로 빠졌습니다. 직원은 <b>미응답자 2명에게만</b> 전화하면 됩니다 — 통화량이 절반으로 줄어드는 지점.</p>`,
+`<div class="dsk-h">전화가 걸려오는 순간</div>
+ <div class="dsk-sub">인터넷 전화(CTI) 연동 — 번호가 뜨자마자 차트가 먼저 열립니다</div>
+ <div class="cti">
+   <div class="cti-call"><div class="rings">📞</div><div style="font-size:12px;opacity:.8">수신 전화</div><div class="ph">010-2XXX-77XX</div><div style="font-size:12px;opacity:.8">벨 울리는 중…</div></div>
+   <div class="cti-chart">
+     <div class="nm">박성철 <small style="font-weight:700;color:var(--ink-soft);font-size:12px">52 · 개인택시</small></div>
+     <div class="rowd"><span class="k">최근 내원</span><span>2026.07.16 (상담)</span></div>
+     <div class="rowd"><span class="k">진행 중</span><span>임플란트 2개 상담 완료</span></div>
+     <div class="rowd"><span class="k">견적</span><span>3,500,000원 · 링크 발송됨</span></div>
+     <div class="rowd"><span class="k">메모</span><span>비용 부담 언급 · 분납 안내함</span></div>
+   </div>
+ </div>
+ <p style="font-size:12.5px;color:var(--ink-soft);margin-top:14px">"여보세요, 누구세요"가 사라집니다. <b>누가 왜 거는지</b>가 화면에 먼저 떠서, 데스크는 곧바로 이어 응대합니다.</p>`,
+`<div class="dsk-h">오늘 진료 청구 점검 · 12건</div>
+ <div class="dsk-sub">진료 당일 기준으로 자동 점검 — 사후가 아니라 놓치기 전에 잡습니다</div>
+ <div class="clm warn"><span class="st">⚠️</span><div><b>3번 체어 · 김○○</b><div style="font-size:12px;color:var(--ink-soft)">파노라마 촬영했으나 청구 항목 누락 의심</div></div><span class="amt" style="color:#c47f17">+16,000원</span></div>
+ <div class="clm"><span class="st">✅</span><div><b>1번 체어 · 이○○</b><div style="font-size:12px;color:var(--ink-soft)">스케일링 · 정상 청구</div></div><span class="amt">정상</span></div>
+ <div class="clm"><span class="st">✅</span><div><b>2번 체어 · 정○○</b><div style="font-size:12px;color:var(--ink-soft)">신경치료 2일차 · 정상 청구</div></div><span class="amt">정상</span></div>
+ <p style="font-size:12.5px;color:var(--ink-soft);margin-top:12px">사후에 발견하던 누락을 <b>당일에</b> 잡습니다. 청구 오류율 1.8% → 0.4%. (환자 이름은 마스킹 표시)</p>`
+];
+/* ── 설치 프로그램 화면 (오토리콜 v0.2 · 6화면) ── */
+const A=[
+`<div class="akpi">
+  <div class="k"><div class="n">34</div><div class="l">오늘 리콜 대상</div></div>
+  <div class="k"><div class="n">12</div><div class="l">예약 전환(웹)</div></div>
+  <div class="k"><div class="n">8</div><div class="l">전화 필요</div></div>
+  <div class="k warn"><div class="n">3</div><div class="l">청구 점검 알림</div></div></div>
+ <div class="a2">
+  <div class="apanel"><h5>📌 오늘의 할 일</h5>
+    <div class="atodo"><span class="cb"></span>미응답 리콜 <b>8건</b> 전화</div>
+    <div class="atodo"><span class="cb warn"></span>청구 누락 의심 <b>3건</b> 확인</div>
+    <div class="atodo"><span class="cb"></span>안심분납 자동이체 <b>2건</b> 오늘 예정</div>
+    <div class="atodo"><span class="cb"></span>예약 확정 알림톡 <b>5건</b> 발송</div></div>
+  <div class="apanel"><h5>📈 이번 달 리콜 성과</h5>
+    <div class="arow"><span class="k">발송 → 웹 응답률</span><b>41%</b></div>
+    <div class="arow"><span class="k">웹 → 예약 전환</span><b>58%</b></div>
+    <div class="arow"><span class="k">데스크 통화 시간</span><b>지난달 대비 -52%</b></div>
+    <div class="arow"><span class="k">청구 오류율</span><b>0.4%</b></div></div></div>`,
+`<div class="dsk-sub">조건별 자동 선별·배분 · 웹으로 응답한 환자는 큐에서 자동으로 빠집니다</div>
+ <div class="qrow head"><span>환자</span><span>경과</span><span class="hidem">권장 안내</span><span>상태</span></div>
+ <div class="qrow hot"><span class="nm">정미숙</span><span>34개월</span><span class="hidem">크라운 마무리</span><span><span class="qbadge web">🟢 웹 예약요청 — 통화 불필요</span></span></div>
+ <div class="qrow"><span class="nm">김영호</span><span>8개월</span><span class="hidem">정기검진</span><span><span class="qbadge miss">☐ 미응답 — 전화 대상</span></span></div>
+ <div class="qrow"><span class="nm">이순자</span><span>2년 7개월</span><span class="hidem">잇몸+스케일링</span><span><span class="qbadge sent">🔔 알림톡 발송됨</span></span></div>
+ <div class="qrow"><span class="nm">박정우</span><span>14개월</span><span class="hidem">보철 재점검</span><span><span class="qbadge miss">☐ 미응답 — 전화 대상</span></span></div>
+ <p style="font-size:12.5px;color:var(--ink-soft);margin-top:12px">미숙 님은 웹으로 응답해 전화 큐에서 자동으로 빠졌습니다. 직원은 <b>미응답자 2명에게만</b> 전화하면 됩니다.</p>`,
+`<div class="a2">
+  <div class="apanel"><h5>👤 환자 정보</h5>
+    <div class="arow"><span class="k">이름</span><b>정미숙 (여, 58)</b></div>
+    <div class="arow"><span class="k">연락처</span><b>010-****-**77</b></div>
+    <div class="arow"><span class="k">최근 내원</span><b>2026.07.16 (상담)</b></div>
+    <div class="arow"><span class="k">리콜 상태</span><b style="color:var(--accent-deep)">웹 예약요청 접수</b></div>
+    <div class="arow"><span class="k">담당의</span><b>김하늘 원장</b></div></div>
+  <div class="apanel"><h5>🦷 진행 중 치료계획 <span style="font-size:10px;color:var(--ink-soft)">(덴트웹 연동)</span></h5>
+    <div class="arow"><span class="k">#46 발치</span><b>보험</b></div>
+    <div class="arow"><span class="k">#46·47 골이식+임플란트 2</span><b>2,530,000</b></div>
+    <div class="arow"><span class="k">#46·47 보철 2</span><b>940,000</b></div>
+    <div class="arow"><span class="k">엑스레이</span><b>파노라마 07.16</b></div>
+    <div class="arow"><span class="k">안심분납</span><b style="color:var(--accent-deep)">약정 #A-0716 · 정상</b></div></div></div>
+ <div class="apanel" style="margin-top:14px"><h5>🕒 리콜·내원 이력</h5>
+   <div class="arow"><span class="k">2023.09</span><span>신경치료 후 크라운 미완료</span></div>
+   <div class="arow"><span class="k">2026.07.12</span><span>리콜 알림톡 발송 → 웹 예약요청</span></div>
+   <div class="arow"><span class="k">2026.07.16</span><span>내원·상담 → 임플란트 견적·안심분납 약정</span></div></div>`,
+`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+   <div class="dsk-sub" style="margin:0">파노라마 AI 분석 (DENTEX 모델 · 오프라인)</div>
+   <span style="font-size:10.5px;font-weight:800;background:var(--gold-soft);color:var(--gold);padding:4px 9px;border-radius:99px">원장 참고용 · 환자 노출 금지</span></div>
+ <div class="pano"><span>🦷 파노라마 이미지 영역</span>
+   <span class="mark" style="top:40%;left:24%">치근단 병소 의심 · #46</span>
+   <span class="mark" style="top:30%;right:18%">매복치 · #38</span></div>
+ <p style="font-size:12px;color:var(--ink-soft);margin-top:12px;line-height:1.7">AI 후보는 <b>원장 참고용 표시</b>일 뿐 진단이 아닙니다. 의료기기(SaMD) 인허가 전까지 <b>섀도우 모드</b>로만 운영되며, 환자 화면·출력물 어디에도 노출되지 않습니다. 분석은 데스크 PC 안에서 오프라인으로 돌아 <b>진료 데이터가 병원 밖으로 나가지 않습니다</b>(edge-first).</p>`,
+`<div class="dsk-sub">진료 당일 기준 자동 점검 · 오늘 12건</div>
+ <div class="clm warn"><span class="st">⚠️</span><div><b>3번 체어 · 김○○</b><div style="font-size:12px;color:var(--ink-soft)">파노라마 촬영했으나 청구 항목 누락 의심</div></div><span class="amt" style="color:#c47f17">+16,000원</span></div>
+ <div class="clm"><span class="st">✅</span><div><b>1번 체어 · 이○○</b><div style="font-size:12px;color:var(--ink-soft)">스케일링 · 정상 청구</div></div><span class="amt">정상</span></div>
+ <div class="clm"><span class="st">✅</span><div><b>2번 체어 · 정○○</b><div style="font-size:12px;color:var(--ink-soft)">신경치료 2일차 · 정상 청구</div></div><span class="amt">정상</span></div>
+ <p style="font-size:12.5px;color:var(--ink-soft);margin-top:12px">사후에 발견하던 누락을 <b>당일에</b> 잡습니다. 청구 오류율 1.8% → 0.4%.</p>`,
+`<div class="akpi">
+  <div class="k"><div class="n">94%</div><div class="l">완납률</div></div>
+  <div class="k"><div class="n">1.8%</div><div class="l">30일+ 연체율</div></div>
+  <div class="k"><div class="n">7</div><div class="l">활성 약정</div></div>
+  <div class="k"><div class="n">-73%</div><div class="l">미수 관리시간</div></div></div>
+ <div class="apanel"><h5>💳 약정 목록</h5>
+   <div class="arow"><span class="k">#A-0716 정미숙</span><span>350만 · 24개월 · <b style="color:var(--accent-deep)">정상</b></span></div>
+   <div class="arow"><span class="k">#A-0712 이지은</span><span>500만 · 36개월 · <b style="color:var(--accent-deep)">정상</b></span></div>
+   <div class="arow"><span class="k">#A-0705 김순자</span><span>180만 · 12개월 · <b style="color:var(--accent-deep)">정상</b></span></div>
+   <div class="arow"><span class="k">#A-0628 최○○</span><span>240만 · 24개월 · <b style="color:var(--gold)">D+5 안내중</b></span></div></div>
+ <p style="font-size:12px;color:var(--ink-soft);margin-top:12px">연체는 사람이 독촉하지 않고 <b>법정 시간·횟수 안에서 자동 안내</b>. 끊기면 보증보험이 병원에 잔액을 지급합니다.</p>`
+];
+const ATITLE=['오늘 현황','리콜 큐','환자 상세 · 정미숙','AI 파노라마','청구 점검','안심분납 약정'];
+const appbody=document.getElementById('appbody'), appTitle=document.getElementById('appTitle');
+function anav(i,el){document.querySelectorAll('#appnav button').forEach(b=>b.classList.remove('on'));el.classList.add('on');appbody.innerHTML=A[i];appTitle.textContent=ATITLE[i];}
+if(appbody)appbody.innerHTML=A[0];
+
+/* ── 결제랜딩 iframe auto-height (이어붙임 seamless) ── */
+(function(){
+  const f=document.getElementById('payframe'); if(!f)return;
+  function fit(){try{const d=f.contentDocument||f.contentWindow.document; if(d&&d.body){const h=Math.max(d.body.scrollHeight,d.documentElement.scrollHeight); if(h>200)f.style.height=h+'px';}}catch(e){}}
+  f.addEventListener('load',()=>{fit();setTimeout(fit,300);setTimeout(fit,900);setTimeout(fit,1800);});
+  window.addEventListener('resize',fit);
+})();
+
+/* ── scroll fade-in ── */
+const io=new IntersectionObserver((ents)=>{ents.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.1});
+document.querySelectorAll('.fadeup').forEach(el=>io.observe(el));
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>
