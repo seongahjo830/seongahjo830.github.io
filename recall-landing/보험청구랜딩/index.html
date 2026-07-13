@@ -723,6 +723,402 @@
   #cases-deep .cd .was{font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:2px 0 8px}
   #cases-deep svg{width:100%;height:auto;display:block}
 </style>
+<!-- ══════════ 설치 후 실제 하루 : 7장면 시네마 v2 — 실제 설치된 프로그램 룩 (2026-07-13) ══════════ -->
+<style>
+  #daycine .dc-stage{max-width:1020px;margin:30px auto 0;background:var(--card);border:1.6px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  #daycine .dc-top{display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--bg-soft)}
+  #daycine .dc-time{font-size:13px;font-weight:900;color:var(--accent-deep);background:var(--accent-soft);padding:5px 13px;border-radius:99px;white-space:nowrap}
+  #daycine .dc-place{font-size:13.5px;font-weight:800}
+  #daycine .dc-step{margin-left:auto;font-size:11.5px;font-weight:800;color:var(--ink-soft);white-space:nowrap}
+  #daycine .dc-body{display:grid;grid-template-columns:.88fr 1.12fr;min-height:420px}
+  @media(max-width:820px){#daycine .dc-body{grid-template-columns:1fr}}
+  #daycine .dc-left{padding:18px 20px;border-right:1px solid var(--line);display:flex;flex-direction:column}
+  @media(max-width:820px){#daycine .dc-left{border-right:0;border-bottom:1px solid var(--line)}}
+  #daycine .dc-nar{font-size:12.5px;font-weight:750;color:var(--ink-soft);margin:0 0 13px;display:flex;gap:6px;align-items:baseline}
+  #daycine .dc-nar::before{content:"▶";font-size:9px;color:var(--accent)}
+  @keyframes dcSlide{from{transform:translateY(10px)}to{transform:none}}
+  #daycine .dc-msg{display:flex;gap:9px;margin-bottom:11px;animation:dcSlide .4s ease both}
+  #daycine .dc-msg .av{flex:0 0 30px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff}
+  #daycine .dc-msg.w-pt .av{background:#8E7CC3} #daycine .dc-msg.w-st .av{background:var(--teal)} #daycine .dc-msg.w-dr .av{background:var(--navy-2)} #daycine .dc-msg.w-ai .av{background:var(--accent)}
+  #daycine .dc-msg .bub{background:#fff;border:1.4px solid var(--line);border-radius:4px 14px 14px 14px;padding:9px 13px;font-size:13px;line-height:1.6;font-weight:620;box-shadow:var(--shadow-sm)}
+  #daycine .dc-msg .bub small{display:block;font-size:10px;font-weight:800;color:var(--ink-soft);margin-bottom:2px}
+  #daycine .dc-msg.w-ai .bub{background:var(--accent-soft);border-color:#C9D8F8}
+  #daycine .dc-easy{margin-top:auto;background:var(--green-soft);border-radius:12px;padding:11px 14px;font-size:13px;font-weight:660;line-height:1.65}
+  #daycine .dc-easy .lb{display:block;font-size:10px;font-weight:900;letter-spacing:.06em;color:var(--green);margin-bottom:3px}
+  #daycine .dc-easy b{color:var(--green)}
+  /* ── 오른쪽 : 설치된 프로그램 창 ── */
+  #daycine .dc-right{padding:18px 18px 20px;background:radial-gradient(130% 120% at 75% 0%,#E9E6DE 0%,#DFDCD2 75%)}
+  #daycine .dc-scr{border:1px solid #C9C4B8;border-radius:10px;box-shadow:0 18px 44px rgba(20,20,20,.18),0 2px 8px rgba(0,0,0,.08);background:#F6F5F1;overflow:hidden}
+  #daycine .tbar{display:flex;align-items:center;gap:7px;background:linear-gradient(180deg,#FDFDFC,#EFEDE7);border-bottom:1px solid #DDD8CC;padding:7px 8px 7px 12px}
+  #daycine .tbar .logo{width:18px;height:18px;border-radius:5px;background:var(--accent);color:#fff;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center}
+  #daycine .tbar .app{display:flex;align-items:center;gap:6px;font-weight:870;font-size:11.5px}
+  #daycine .tbar .app small{color:var(--ink-soft);font-weight:700;font-size:10px}
+  #daycine .tbar .ttl{margin-left:6px;color:var(--ink-soft);font-weight:750;font-size:11px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #daycine .winb{width:26px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:5px;color:#8b8577;font-size:9px;font-weight:900}
+  #daycine .winb.x{color:#b3564c}
+  #daycine .dc-in{padding:12px;min-height:300px}
+  #daycine .sbar{display:flex;gap:14px;align-items:center;border-top:1px solid #DDD8CC;background:#EFEDE7;padding:5px 12px;font-size:10px;font-weight:780;color:var(--ink-soft)}
+  #daycine .sbar .ok{color:var(--green)}
+  /* 위젯 */
+  #daycine .stt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+  #daycine .st{background:#fff;border:1px solid #E3DFD4;border-radius:9px;padding:8px 11px}
+  #daycine .st .l{font-size:9.5px;font-weight:850;color:var(--ink-soft)}
+  #daycine .st .v{font-size:19px;font-weight:900;letter-spacing:-.02em;line-height:1.2}
+  #daycine .st .v.b{color:var(--accent-deep)} #daycine .st .v.t{color:var(--teal-deep)} #daycine .st .v.r{color:var(--red)}
+  #daycine .wpanel{background:#fff;border:1px solid #E3DFD4;border-radius:9px;overflow:hidden;margin-bottom:8px}
+  #daycine .wph{display:flex;align-items:center;gap:6px;padding:7px 11px;border-bottom:1px solid #EEEAE0;font-size:10.5px;font-weight:870;color:var(--ink-soft);background:#FBFAF7}
+  #daycine .wrow{display:flex;align-items:center;gap:8px;padding:8px 11px;border-bottom:1px solid #F1EEE6;font-size:12px;font-weight:660}
+  #daycine .wrow:last-child{border-bottom:0}
+  #daycine .wrow .tm{font-size:10px;font-weight:850;color:#B3AB98;flex:0 0 36px}
+  #daycine .wrow .nm{font-weight:830}
+  #daycine .wrow .arr{margin-left:auto;color:#C9C2B2;font-weight:900}
+  #daycine .wc{font-size:9px;font-weight:870;padding:2px 7px;border-radius:99px;white-space:nowrap}
+  #daycine .wc.t{background:var(--teal-soft);color:var(--teal-deep)} #daycine .wc.r{background:var(--red-soft);color:var(--red)} #daycine .wc.b{background:var(--accent-soft);color:var(--accent-deep)} #daycine .wc.a{background:#FBF0DC;color:var(--amber)}
+  #daycine .wtoast{display:flex;gap:9px;background:#fff;border:1px solid #E3DFD4;border-radius:10px;box-shadow:0 8px 22px rgba(20,20,20,.10);padding:10px 11px;margin-bottom:8px;position:relative;animation:dcSlide .4s ease both}
+  #daycine .wtoast .tic{flex:0 0 26px;width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;background:var(--accent)}
+  #daycine .wtoast.k-teal .tic{background:var(--teal)} #daycine .wtoast.k-red .tic{background:var(--red)} #daycine .wtoast.k-amber .tic{background:var(--amber)}
+  #daycine .wtoast .tt{font-size:12.5px;font-weight:840;line-height:1.35;padding-right:14px}
+  #daycine .wtoast .ds{font-size:10.5px;color:var(--ink-soft);font-weight:660;margin-top:2px;line-height:1.5}
+  #daycine .wtoast .xx{position:absolute;top:7px;right:10px;color:#C9C2B2;font-size:10px;font-weight:900}
+  #daycine .wbtns{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+  #daycine .wbtn{font-family:inherit;font-size:10.5px;font-weight:830;border-radius:7px;padding:5px 11px;cursor:pointer;border:1px solid #D8D2C4;background:#fff;color:var(--ink);transition:.12s}
+  #daycine .wbtn:hover{border-color:var(--accent)}
+  #daycine .wbtn.p{background:var(--accent);border-color:var(--accent);color:#fff}
+  #daycine .wbtn.p:hover{background:var(--accent-deep)}
+  #daycine .wbtn.done{background:var(--green-soft);border-color:var(--green);color:var(--green);pointer-events:none}
+  #daycine .wsay{background:#FFFBEB;border:1px dashed #E3D9B0;border-radius:9px;padding:9px 11px;font-size:11.5px;font-weight:690;line-height:1.6;margin-bottom:8px}
+  #daycine .wmodal{background:#fff;border:1px solid #E3DFD4;border-radius:12px;box-shadow:0 16px 40px rgba(20,20,20,.16);padding:16px 16px 13px;max-width:330px;margin:10px auto}
+  #daycine .wmodal .big{width:40px;height:40px;border-radius:50%;background:var(--green-soft);color:var(--green);font-size:19px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+  #daycine .wmodal .mt{text-align:center;font-size:13.5px;font-weight:870;margin-bottom:8px}
+  #daycine .wchk{display:flex;gap:7px;align-items:center;font-size:11.5px;font-weight:720;padding:4px 2px}
+  #daycine .wchk .c{width:15px;height:15px;border-radius:4px;background:var(--green);color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:900;flex:0 0 auto}
+  #daycine .wchk.a .c{background:var(--amber)}
+  /* 히스토리 타임라인 */
+  #daycine .hs-row{display:flex;align-items:center;gap:8px;padding:6px 11px;font-size:11.5px;font-weight:670;border-bottom:1px solid #F1EEE6}
+  #daycine .hs-row:last-child{border-bottom:0}
+  #daycine .hs-dot{width:9px;height:9px;border-radius:50%;background:#CFC9BC;flex:0 0 auto}
+  #daycine .hs-row.k-g .hs-dot{background:var(--green)} #daycine .hs-row.k-r .hs-dot{background:var(--red)} #daycine .hs-row.k-b .hs-dot{background:var(--accent)}
+  #daycine .hs-when{flex:0 0 62px;font-size:9.5px;font-weight:870;color:var(--ink-soft)}
+  #daycine .hs-sum{background:var(--red-soft);border-radius:0 0 8px 8px;padding:8px 11px;font-size:11px;font-weight:730;line-height:1.55}
+  #daycine .hs-sum b{color:var(--red)}
+  #daycine .sc-sum{display:flex;justify-content:space-between;align-items:center;background:var(--navy);color:#fff;border-radius:10px;padding:10px 14px;font-size:12.5px;font-weight:760;margin-top:8px}
+  #daycine .sc-sum .v{color:#FFE39C;font-weight:900}
+  /* 컨트롤 */
+  #daycine .dc-ctrl{display:flex;align-items:center;gap:10px;justify-content:center;padding:15px 18px;border-top:1px solid var(--line);background:var(--bg-soft);flex-wrap:wrap}
+  #daycine .dc-btn{border:1.6px solid var(--line);background:#fff;font-family:inherit;font-size:14px;font-weight:820;padding:11px 20px;border-radius:12px;cursor:pointer;transition:.15s}
+  #daycine .dc-btn:hover{border-color:var(--accent);color:var(--accent-deep)}
+  #daycine .dc-btn.main{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 6px 18px rgba(29,78,216,.28)}
+  #daycine .dc-btn.main:hover{background:var(--accent-deep);color:#fff}
+  #daycine .dc-btn:disabled{opacity:.35;cursor:default}
+  #daycine .dc-dots{display:flex;gap:6px;align-items:center}
+  #daycine .dc-dot{width:9px;height:9px;border-radius:50%;background:#D8D2C4;border:0;padding:0;cursor:pointer;transition:.15s}
+  #daycine .dc-dot.on{background:var(--accent);transform:scale(1.35)}
+  #daycine .dc-note{font-size:12px;color:var(--ink-soft);font-weight:600;text-align:center;margin-top:14px}
+</style>
+<section id="daycine">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">🎬 설치하고 나면 — 진짜 하루</span>
+      <h2>프로그램을 깔면, 진료실의 하루가<br><mark>이렇게 흘러갑니다</mark>.</h2>
+      <p class="lead" style="margin:14px auto 0;max-width:38em">환자 <b>이수진 님(47)</b>이 스케일링 받으러 온 화요일. 오른쪽이 <b>실제 설치된 프로그램 화면</b>입니다 — 버튼도 직접 눌러보세요.</p>
+    </div>
+
+    <div class="dc-stage">
+      <div class="dc-top">
+        <span class="dc-time" id="dcTime"></span>
+        <span class="dc-place" id="dcPlace"></span>
+        <span class="dc-step" id="dcStep"></span>
+      </div>
+      <div class="dc-body">
+        <div class="dc-left">
+          <div class="dc-nar" id="dcNar"></div>
+          <div id="dcDlg"></div>
+          <div class="dc-easy" id="dcEasy"></div>
+        </div>
+        <div class="dc-right">
+          <div class="dc-scr">
+            <div class="tbar">
+              <span class="app"><span class="logo">A</span>AutoClaim <small>v2.4</small></span>
+              <span class="ttl" id="dcScrT"></span>
+              <span class="winb">─</span><span class="winb">▢</span><span class="winb x">✕</span>
+            </div>
+            <div class="dc-in" id="dcScr"></div>
+            <div class="sbar"><span class="ok">● 덴트웹 연결됨</span><span id="dcSync"></span><span style="margin-left:auto">사계절치과 · 데스크PC</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="dc-ctrl">
+        <button type="button" class="dc-btn" id="dcPrev">← 이전</button>
+        <div class="dc-dots" id="dcDots"></div>
+        <button type="button" class="dc-btn main" id="dcNext">다음 장면 →</button>
+        <button type="button" class="dc-btn" id="dcAuto">▶ 자동 재생</button>
+      </div>
+    </div>
+    <p class="dc-note">장면·화면·이름·수치는 전부 <b>시연용 예시</b>입니다(프로그램 화면 구성안) · 실제 설치 시 우리 병원 차트·예약 데이터로 채워집니다</p>
+  </div>
+</section>
+
+<script>
+(function(){
+  function wc(k,t){return '<span class="wc '+k+'">'+t+'</span>'}
+  function toast(k,ic,tt,ds,btns){return '<div class="wtoast k-'+k+'"><span class="tic">'+ic+'</span><div style="flex:1"><div class="tt">'+tt+'</div>'+(ds?'<div class="ds">'+ds+'</div>':'')+(btns||'')+'</div><span class="xx">✕</span></div>'}
+  function btn(t,p,done){return '<button type="button" class="wbtn'+(p?' p':'')+'"'+(done?' data-done="'+done+'"':'')+'>'+t+'</button>'}
+  function hs(when,tx,k){return '<div class="hs-row k-'+k+'"><span class="hs-dot"></span><span class="hs-when">'+when+'</span><span>'+tx+'</span></div>'}
+  var SCENES=[
+   {t:'08:50',p:'데스크 — 출근',st:'아침 브리핑',
+    nar:'컴퓨터를 켜면 이 창이 먼저 떠 있습니다.',
+    dlg:[['st','김실장','오늘 챙길 사람 3명 — 이수진 님 오시면 말씀드려야지.']],
+    scr:'<div class="stt"><div class="st"><div class="l">오늘 예약</div><div class="v">12명</div></div><div class="st"><div class="l">챙길 청구</div><div class="v b">3명</div></div><div class="st"><div class="l">예상 회수</div><div class="v t">+9.2만</div></div></div>'
+      +'<div class="wpanel"><div class="wph">📋 오늘 예약 — 챙길 것 있는 순</div>'
+      +'<div class="wrow"><span class="tm">09:10</span><span class="nm">이수진 (47)</span>'+wc('t','스케일링 미사용')+wc('r','잇몸치료 끊김')+'<span class="arr">›</span></div>'
+      +'<div class="wrow"><span class="tm">10:30</span><span class="nm">김O식 (61)</span>'+wc('a','발치 후 소독')+'<span class="arr">›</span></div>'
+      +'<div class="wrow"><span class="tm">11:00</span><span class="nm">박O래 (33)</span>'+wc('b','치근단 재평가')+'<span class="arr">›</span></div></div>',
+    easy:'아침에 컴퓨터가 <b>“오늘 올 손님 중에 챙길 게 있는 사람 3명이에요”</b>라고 미리 알려주는 겁니다. 직원이 기억할 필요가 없어요.'},
+   {t:'09:10',p:'데스크 — 이수진 님 접수',st:'접수 알림',
+    nar:'접수 버튼을 누르는 순간, 우하단에 뜹니다.',
+    dlg:[['pt','이수진 님','스케일링 예약한 이수진인데요.'],
+         ['st','김실장','지난번 잇몸 검사 이어서 오늘 같이 하실 수 있어요 — 보험 돼요.']],
+    scr:'<div class="wpanel"><div class="wph">📂 이수진 님 차트 — 30초 브리핑</div>'
+      +hs('작년 11월','스케일링 받고 감 (보험)','g')
+      +hs('3개월 전','잇몸 검사 — <b>깊은 주머니 6군데</b>','r')
+      +hs('그 후','치료 안 이어짐 ← <b>끊긴 지점</b>','r')
+      +hs('오늘','스케일링 예약으로 다시 옴','b')
+      +'<div class="hs-sum">한 줄 상황: <b>잇몸이 안 좋은 걸 알고도 치료가 끊긴 환자.</b> 오늘이 기회.</div></div>'
+      +toast('teal','!','이수진 님 — 오늘 챙길 2가지','① 올해 보험 스케일링 미사용 ② 잇몸치료 3개월 끊김',
+        '<div class="wbtns">'+btn('멘트 확인',1,'✓ 확인함')+btn('나중에')+'</div>')
+      +'<div class="wsay">💬 “지난번 잇몸 검사에서 수치가 좀 있으셨어요. <b>오늘 오신 김에 이어서</b> 치료받으실 수 있고, 보험 적용돼요.”</div>',
+    easy:'손님이 오자마자 컴퓨터가 <b>“이 분, 지난번에 하다 만 치료가 있어요. 이렇게 말해보세요”</b>라고 귀띔해주는 겁니다.'},
+   {t:'09:20',p:'진료실 — 체어 착석',st:'차트 사이드 패널',
+    nar:'원장이 차트를 열면 오른쪽에 이 패널이 붙습니다.',
+    dlg:[['dr','원장','지난번 잇몸 수치가 좋지 않았어요. 오늘 같이 시작하죠.'],
+         ['pt','이수진 님','네 — 오른쪽 아래 시린 것도 봐주세요.']],
+    scr:'<div class="wrow" style="background:#fff;border:1px solid #E3DFD4;border-radius:9px;margin-bottom:8px"><span class="nm">이수진 (47·F)</span><span style="font-size:10px;color:var(--ink-soft)">최근 내원 2026-04-11</span><span class="arr">차트 열림</span></div>'
+      +'<div class="wpanel"><div class="wph">🩺 지난 방문 요약</div>'
+      +'<div class="wrow">치주낭 4mm+ — 6부위 (#44~46 집중)'+wc('r','후속 없음')+'</div></div>'
+      +'<div class="wpanel"><div class="wph">💡 오늘 추천</div>'
+      +'<div class="wrow">치주치료(SC) 시작<span style="margin-left:auto">'+btn('계획에 추가',1,'✓ 추가됨')+'</span></div>'
+      +'<div class="wrow">급여 치석제거 동시 진행<span style="margin-left:auto">'+btn('계획에 추가',1,'✓ 추가됨')+'</span></div></div>',
+    easy:'의사가 예전 기록을 뒤질 필요 없이, 컴퓨터가 <b>“지난번에 잇몸이 안 좋았어요. 오늘 이거 하시면 돼요”</b>라고 요약해주는 겁니다.'},
+   {t:'09:35',p:'진료실 — 차팅하는 순간',st:'차팅 감지',
+    nar:'차팅하는 순간, 옆에 이렇게 뜹니다.',
+    dlg:[['dr','원장','치경부가 패여 있네요. 사진 한 장 찍고 갈게요.']],
+    scr:'<div class="wpanel"><div class="wph">✏️ 지금 차팅</div><div class="wrow"><span class="tm">10:05</span><b>#46 치경부 마모 — 레진 · 하악 SC</b></div></div>'
+      +toast('','📷','치근단 촬영 먼저','근거가 남아야 안전 · 촬영+판독 같이 산정','<div class="wbtns">'+btn('촬영 오더',1,'✓ 오더 넣음')+btn('나중에')+'</div>')
+      +toast('teal','💉','마취 산정 잊지 마세요','수복만 찍고 마취 빠뜨리는 게 단골 누락','<div class="wbtns">'+btn('추가',1,'✓ 추가됨')+'</div>')
+      +toast('teal','🦷','시림 호소 — 지각과민 처치','오늘 처치했다면 산정 기준 확인','<div class="wbtns">'+btn('기준 보기')+'</div>'),
+    easy:'의사가 치료 내용을 적는 순간 <b>“사진 먼저 찍으세요, 마취비 빼먹지 마세요”</b>라고 옆에서 챙겨주는 겁니다. 의사는 평소대로 일할 뿐이에요.'},
+   {t:'09:55',p:'진료실 — 진료완료 버튼',st:'진료완료 확인',
+    nar:'완료 버튼을 누르면 마지막 확인 창이 뜹니다.',
+    dlg:[['ai','AutoClaim','오늘 산정 4건 확인 — 놓친 항목 0건.']],
+    scr:'<div class="wmodal"><div class="big">✓</div><div class="mt">이수진 님 — 4건 모두 확인</div>'
+      +'<div class="wchk"><span class="c">✓</span>치주치료(SC) + 급여 치석제거 동시</div>'
+      +'<div class="wchk"><span class="c">✓</span>#46 레진 + 치근단 촬영·판독</div>'
+      +'<div class="wchk"><span class="c">✓</span>마취 산정</div>'
+      +'<div class="wchk"><span class="c">✓</span>지각과민 처치</div>'
+      +'<div class="wchk a"><span class="c">⏰</span>다음 내원: 치주 후처치 자동 알림 등록</div>'
+      +'<div class="wbtns" style="justify-content:center;margin-top:10px">'+btn('송신 대기로 보내기',1,'✓ 보냄')+btn('다시 보기')+'</div></div>',
+    easy:'치료 끝 버튼을 누르면 <b>“오늘 받을 돈 다 챙겼어요, 빠뜨린 것 없어요”</b>라고 마지막으로 검사해주는 겁니다.'},
+   {t:'13:00',p:'데스크 — 수납',st:'수납 도우미',
+    nar:'수납 화면 옆에 이게 떠 있습니다.',
+    dlg:[['st','김실장','오늘 치료는 보험 적용이라 부담 크지 않으세요. 다음 주 같은 시간 어떠세요?'],
+         ['pt','이수진 님','네, 그때로 할게요. 생각보다 저렴하네요?']],
+    scr:'<div class="wpanel"><div class="wph">💬 환자 안내 문구 — 자동 생성</div><div style="padding:9px 11px"><div class="wsay" style="margin:0">“오늘 치료는 <b>보험 적용</b>이라 부담금이 크지 않아요. 잇몸치료는 이어서 받으셔야 효과가 있어서, <b>다음 예약</b> 잡아드릴게요.”</div><div class="wbtns">'+btn('복사',1,'✓ 복사됨')+'</div></div></div>'
+      +'<div class="wpanel"><div class="wph">📅 다음 예약 — 치주치료 2회차</div><div style="padding:9px 11px"><div class="wbtns" style="margin:0 0 7px">'+btn('화 09:00')+btn('화 09:30')+btn('화 10:00')+'</div>'+btn('이 시간으로 예약',1,'✓ 예약됨')+'</div></div>',
+    easy:'계산할 때 <b>손님에게 뭐라고 설명할지 문장까지 만들어줍니다.</b> 손님은 “여기 꼼꼼하네”라고 느끼고, 다음 예약까지 잡고 갑니다.'},
+   {t:'18:30',p:'데스크 — 마감',st:'송신 전 검토',
+    nar:'퇴근 전 마지막 화면입니다.',
+    dlg:[['ai','AutoClaim','오늘 23건 중 확인 필요 1건 — 김O식 님 발치 건.'],
+         ['dr','원장','버 썼으니 난발치 맞아요. 송신 진행하세요.']],
+    scr:'<div class="stt"><div class="st"><div class="l">오늘 청구</div><div class="v">23건</div></div><div class="st"><div class="l">자동 확인</div><div class="v t">22건</div></div><div class="st"><div class="l">확인 필요</div><div class="v r">1건</div></div></div>'
+      +toast('red','!','김O식 님 — 단순발치로 입력됨','차트에 골삭제(버) 기록 있음 → 난발치 전환 검토','<div class="wbtns">'+btn('원장 확인 요청',1,'✓ 확인 완료 — 난발치 전환')+'</div>')
+      +'<div class="sc-sum"><span>오늘 지킨 청구 (예시)</span><span class="v">+18.4만원</span></div>'
+      +'<div class="sc-sum" style="background:var(--navy-2)"><span>이번 달 누적 (예시)</span><span class="v">+212만원</span></div>',
+    easy:'퇴근 전에 <b>오늘 서류(청구)를 전부 검사</b>해서 실수 1건을 잡아낸 겁니다. 이렇게 하루 십몇만 원씩, 한 달이면 이백만 원 넘게 쌓입니다(예시).'}
+  ];
+  var i=0,auto=null;
+  var $=function(id){return document.getElementById(id)};
+  var WHO={pt:['환','환자'],st:['실','데스크'],dr:['원','원장'],ai:['A','AutoClaim']};
+  function render(){
+    var s=SCENES[i];
+    $('dcTime').textContent=s.t;$('dcPlace').textContent=s.p;
+    $('dcStep').textContent='장면 '+(i+1)+' / '+SCENES.length;
+    $('dcNar').innerHTML=s.nar;$('dcScrT').textContent=s.st;$('dcScr').innerHTML=s.scr;
+    $('dcSync').textContent='동기화 '+s.t;
+    $('dcEasy').innerHTML='<span class="lb">🍀 쉽게 말해서</span>'+(s.easy||'');
+    $('dcDlg').innerHTML=s.dlg.map(function(m,k){
+      var w=WHO[m[0]];
+      return '<div class="dc-msg w-'+m[0]+'" style="animation-delay:'+(k*.18)+'s"><span class="av">'+w[0]+'</span><span class="bub"><small>'+m[1]+'</small>'+m[2]+'</span></div>';
+    }).join('');
+    [].forEach.call(document.querySelectorAll('#dcDots .dc-dot'),function(d,k){d.classList.toggle('on',k===i)});
+    $('dcPrev').disabled=(i===0);
+    $('dcNext').textContent=(i===SCENES.length-1)?'처음부터 다시 ↻':'다음 장면 →';
+  }
+  /* 프로그램 창 안 버튼 — 실제 앱처럼 눌리면 상태 변경 */
+  $('dcScr').addEventListener('click',function(e){
+    var b=e.target.closest('.wbtn');if(!b)return;
+    var d=b.getAttribute('data-done');
+    if(d){b.classList.remove('p');b.classList.add('done');b.textContent=d;}
+  });
+  var dots=$('dcDots');
+  SCENES.forEach(function(_,k){
+    var d=document.createElement('button');d.type='button';d.className='dc-dot';d.title='장면 '+(k+1);
+    d.addEventListener('click',function(){stopAuto();i=k;render();});dots.appendChild(d);
+  });
+  function step(dir){i=(i+dir+SCENES.length)%SCENES.length;render();}
+  function stopAuto(){if(auto){clearInterval(auto);auto=null;$('dcAuto').textContent='▶ 자동 재생';}}
+  $('dcPrev').addEventListener('click',function(){stopAuto();step(-1);});
+  $('dcNext').addEventListener('click',function(){stopAuto();step(1);});
+  $('dcAuto').addEventListener('click',function(){
+    if(auto){stopAuto();return;}
+    $('dcAuto').textContent='⏸ 정지';
+    auto=setInterval(function(){if(i===SCENES.length-1){stopAuto();return;}step(1);},4600);
+  });
+  render();
+})();
+</script>
+
+<!-- ══════════ 상황별 알림 시뮬레이터 : 차팅하면 옆에서 이렇게 뜹니다 ══════════ -->
+<style>
+  #alertsim .as-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:28px 0 0}
+  #alertsim .as-btn{border:1.6px solid var(--line);background:#fff;color:var(--ink);font-weight:790;font-size:14px;
+    padding:11px 18px;border-radius:13px;cursor:pointer;font-family:inherit;transition:.15s;box-shadow:var(--shadow-sm)}
+  #alertsim .as-btn:hover{border-color:var(--accent);transform:translateY(-2px)}
+  #alertsim .as-btn.on{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 8px 20px rgba(29,78,216,.3)}
+  #alertsim .as-win{max-width:860px;margin:26px auto 0;background:var(--card);border:1.6px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);overflow:hidden}
+  #alertsim .as-head{display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,#F4F2EC,#EDEAE1);border-bottom:1px solid var(--line);padding:10px 16px}
+  #alertsim .as-head .ic{width:26px;height:26px;border-radius:8px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
+  #alertsim .as-head .t{font-size:13px;font-weight:820}
+  #alertsim .as-head .t small{display:block;font-size:10.5px;font-weight:650;color:var(--ink-soft)}
+  #alertsim .as-head .live{margin-left:auto;font-size:10px;font-weight:850;color:var(--teal-deep);background:var(--teal-soft);
+    padding:3px 10px;border-radius:99px;display:inline-flex;align-items:center;gap:5px}
+  #alertsim .as-head .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);animation:asPulse 1.6s ease-in-out infinite}
+  @keyframes asPulse{0%,100%{opacity:1}50%{opacity:.3}}
+  #alertsim .as-body{display:grid;grid-template-columns:1fr 1.1fr;min-height:320px}
+  @media(max-width:720px){#alertsim .as-body{grid-template-columns:1fr}}
+  #alertsim .as-chart{padding:18px 20px;border-right:1px solid var(--line)}
+  @media(max-width:720px){#alertsim .as-chart{border-right:0;border-bottom:1px solid var(--line)}}
+  #alertsim .as-chart .lb{font-size:10.5px;font-weight:850;letter-spacing:.07em;color:var(--ink-soft);margin-bottom:10px}
+  #alertsim .as-row{font-size:13px;font-weight:650;color:var(--ink-soft);padding:9px 12px;border-bottom:1px dashed var(--line);display:flex;gap:8px;align-items:center}
+  #alertsim .as-row .tm{font-size:10.5px;color:#B3AB98;font-weight:700;flex:0 0 auto}
+  #alertsim .as-row.new{background:var(--accent-soft);border-radius:9px;border-bottom:0;color:var(--ink);font-weight:780;
+    opacity:0;transform:translateY(6px);transition:.4s}
+  #alertsim .as-row.new.show{opacity:1;transform:none}
+  #alertsim .as-row.new .cur{display:inline-block;width:2px;height:14px;background:var(--accent);margin-left:2px;animation:asPulse 1s infinite}
+  #alertsim .as-alerts{padding:18px 20px;background:radial-gradient(140% 120% at 80% 0%,#F7F5EF 0%,var(--bg-soft) 70%)}
+  #alertsim .as-alerts .lb{font-size:10.5px;font-weight:850;letter-spacing:.07em;color:var(--teal-deep);margin-bottom:10px}
+  @keyframes asIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+  #alertsim .as-alert{background:#fff;border:1.4px solid var(--line);border-left-width:4px;border-radius:12px;box-shadow:var(--shadow-sm);
+    padding:12px 14px;margin-bottom:10px;animation:asIn .45s cubic-bezier(.2,.7,.2,1) both}
+  #alertsim .as-alert .bd{font-size:9.5px;font-weight:900;letter-spacing:.05em;padding:2px 8px;border-radius:99px;display:inline-block;margin-bottom:6px}
+  #alertsim .as-alert.k-blue{border-left-color:var(--accent)} #alertsim .as-alert.k-blue .bd{background:var(--accent-soft);color:var(--accent-deep)}
+  #alertsim .as-alert.k-teal{border-left-color:var(--teal)} #alertsim .as-alert.k-teal .bd{background:var(--teal-soft);color:var(--teal-deep)}
+  #alertsim .as-alert.k-red{border-left-color:var(--red)} #alertsim .as-alert.k-red .bd{background:var(--red-soft);color:var(--red)}
+  #alertsim .as-alert.k-amber{border-left-color:var(--amber)} #alertsim .as-alert.k-amber .bd{background:#FBF0DC;color:var(--amber)}
+  #alertsim .as-alert .tt{font-size:14px;font-weight:830;letter-spacing:-.015em;line-height:1.4}
+  #alertsim .as-alert .ds{font-size:12px;color:var(--ink-soft);font-weight:600;line-height:1.6;margin-top:4px}
+  #alertsim .as-add{font-family:inherit;font-size:11px;font-weight:840;border-radius:8px;padding:6px 13px;cursor:pointer;border:1.4px solid var(--accent);background:var(--accent);color:#fff;margin-top:9px;transition:.12s}
+  #alertsim .as-add:hover{background:var(--accent-deep)}
+  #alertsim .as-alert.claimed{border-color:var(--green);border-left-color:var(--green);background:var(--green-soft)}
+  #alertsim .as-alert.claimed .as-add{background:#fff;border-color:var(--green);color:var(--green);cursor:default}
+  #alertsim .as-alerts .lb{display:flex;align-items:center;gap:8px}
+  #alertsim .as-cnt{margin-left:auto;font-size:10px;font-weight:870;color:var(--ink-soft);background:#fff;border:1.4px solid var(--line);padding:3px 11px;border-radius:99px;transition:.2s}
+  #alertsim .as-cnt.hot{color:var(--green);border-color:var(--green);background:var(--green-soft)}
+  #alertsim .as-note{font-size:12px;color:var(--ink-soft);font-weight:600;text-align:center;margin-top:14px}
+</style>
+<section id="alertsim" style="background:var(--bg-soft)">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">🔔 상황별 알림 미리보기</span>
+      <h2>차팅하는 순간,<br>옆에서 <mark>이렇게 속삭입니다</mark>.</h2>
+      <p class="lead" style="margin:14px auto 0;max-width:37em">오늘 할 진료를 눌러보세요. <b>그 진료를 차팅하는 순간 실제로 뜨는 알림</b>이 그대로 재생됩니다 — 찍기 전에 챙길 것, 같이 찍을 것, 다음 내원에 챙길 것까지.</p>
+    </div>
+
+    <div class="as-btns" id="asBtns"></div>
+
+    <div class="as-win">
+      <div class="as-head">
+        <span class="ic">A</span>
+        <span class="t">차트 · 김민준 님 (34)<small>덴트웹 차팅 화면이라고 생각하세요</small></span>
+        <span class="live">AutoClaim 감지 중</span>
+      </div>
+      <div class="as-body">
+        <div class="as-chart">
+          <div class="lb">📋 오늘 차팅</div>
+          <div class="as-row"><span class="tm">09:40</span>초진 · 구강검진</div>
+          <div class="as-row"><span class="tm">09:52</span>파노라마 촬영</div>
+          <div class="as-row new" id="asNew"><span class="tm" id="asTm">10:05</span><span id="asLine"></span><span class="cur"></span></div>
+        </div>
+        <div class="as-alerts">
+          <div class="lb">🔔 이 순간 옆에 뜨는 알림<span class="as-cnt" id="asCnt">🧾 담은 청구 0건</span></div>
+          <div id="asStack"></div>
+        </div>
+      </div>
+    </div>
+    <p class="as-note">알림 문구는 <b>예시</b>이며, 실제 산정 가능 여부는 건강보험 산정기준(심평원 고시)을 따릅니다 · 실제 설치 시 우리 병원 차팅에 맞춰 뜹니다</p>
+  </div>
+</section>
+
+<script>
+(function(){
+  var CASES=[
+    {b:'🦷 인레이 충전',line:'#26 원심 우식 — 인레이 충전',al:[
+      {k:'blue',bd:'찍기 전에',tt:'충전 전, 치근단 촬영 하셨나요?',ds:'와동 깊이·치수 근접 근거가 차트에 남아야 나중에 문제가 없습니다. 촬영하면 촬영·판독까지 같이 산정됩니다.'},
+      {k:'teal',bd:'같이 산정',tt:'마취했다면 마취 산정도 같이',ds:'충전만 찍고 마취를 빠뜨리는 게 가장 흔한 누락입니다.'}]},
+    {b:'🔩 임플란트 식립',line:'#36 임플란트 1차 식립',al:[
+      {k:'teal',bd:'식립 전 체크',tt:'주변 치아에 치석 없는지 먼저 확인해 보세요',ds:'치석이 있으면 오늘 치석제거를 같이 진행할지 검토 — 올해 급여 치석제거를 안 쓴 환자라면 환자도 이득입니다.'},
+      {k:'blue',bd:'근거 남기기',tt:'식립 전후 방사선 촬영·판독 산정 확인',ds:'파노라마·치근단 판독이 자주 빠지는 항목입니다.'},
+      {k:'amber',bd:'다음 내원',tt:'수술후처치 — 다음 내원 때 다시 알려드릴게요',ds:'소독·발사 청구가 끊기지 않게 재내원 시 자동으로 다시 뜹니다.'}]},
+    {b:'👑 크라운 본뜨기',line:'#11 크라운 — 지대치 형성 · 인상채득',al:[
+      {k:'teal',bd:'본뜨기 전 체크',tt:'인상 전, 주변 치아 치석부터 확인해 보세요',ds:'치석 위로 본을 뜨면 정밀도가 떨어집니다. 필요하면 치석제거 먼저 — 보철 퀄리티와 청구를 같이 챙깁니다.'},
+      {k:'amber',bd:'다음 내원',tt:'세팅 내원 날, 놓치기 쉬운 항목은 그때 다시',ds:'세팅일에 챙길 산정 항목을 그날 아침 다시 알려드립니다.'}]},
+    {b:'🪥 치주치료',line:'전악 치주낭측정 · 하악 스케일링',al:[
+      {k:'red',bd:'연계 끊김 방지',tt:'치주낭측정 → 치주치료로 이어지고 있나요?',ds:'측정만 하고 끊기면 치료도, 청구도 사라집니다. 후속 계획이 없으면 여기서 잡아둡니다.'},
+      {k:'amber',bd:'다음 내원',tt:'치주치료 후처치 — 다음 내원 때 자동 알림',ds:'후처치는 리포트 기준으로 가장 많이 새는 항목입니다.'}]},
+    {b:'🦷 발치',line:'#38 발치 (매복 소견)',al:[
+      {k:'teal',bd:'같이 산정',tt:'마취 산정 확인',ds:'발치는 찍고 마취는 안 찍는 케이스가 많습니다.'},
+      {k:'blue',bd:'수가 확인',tt:'버(Burr) 썼다면 난발치로',ds:'단순발치로 두면 그 차액이 그대로 사라집니다. 골삭제 여부를 확인해 보세요.'},
+      {k:'amber',bd:'다음 내원',tt:'발치 후 소독 — 재내원 알림 예약됨',ds:'수술후처치가 끊기지 않게 다음 내원 때 다시 뜹니다.'}]},
+    {b:'⚡ 신경치료',line:'#15 근관세척 2회차',al:[
+      {k:'teal',bd:'같이 산정',tt:'러버댐 걸었다면 가산 확인',ds:'러버댐은 걸고 가산은 안 찍는 게 단골 누락입니다.'},
+      {k:'blue',bd:'근거 남기기',tt:'세척 횟수 기록 — 5회 넘으면 사유 메모',ds:'횟수 초과는 근거가 없으면 삭감 대상입니다. 지금 한 줄 남겨두세요.'},
+      {k:'amber',bd:'다음 내원',tt:'근관충전까지 — 다음 예약 잡혔는지 확인',ds:'중간에 끊기면 치료도 청구도 미완성으로 남습니다.'}]}
+  ];
+  var btns=document.getElementById('asBtns'),stack=document.getElementById('asStack'),
+      line=document.getElementById('asLine'),row=document.getElementById('asNew');
+  var timers=[],claimed=0;
+  CASES.forEach(function(c,i){
+    var b=document.createElement('button');b.type='button';b.className='as-btn';b.textContent=c.b;
+    b.addEventListener('click',function(){play(i);});
+    btns.appendChild(b);c._btn=b;
+  });
+  function play(i){
+    timers.forEach(clearTimeout);timers=[];
+    CASES.forEach(function(c,j){c._btn.classList.toggle('on',j===i);});
+    var c=CASES[i];
+    stack.innerHTML='';row.classList.remove('show');line.textContent='';
+    timers.push(setTimeout(function(){row.classList.add('show');line.textContent=c.line;},120));
+    timers.push(setTimeout(function(){if(getComputedStyle(row).opacity==='0'){row.style.transition='none';row.style.opacity='1';row.style.transform='none';}},700));
+    c.al.forEach(function(a,k){
+      timers.push(setTimeout(function(){
+        var d=document.createElement('div');d.className='as-alert k-'+a.k;
+        d.innerHTML='<span class="bd">'+a.bd+'</span><div class="tt">'+a.tt+'</div><div class="ds">'+a.ds+'</div>'
+          +'<button type="button" class="as-add">➕ 청구에 담기</button>';
+        d.querySelector('.as-add').addEventListener('click',function(){
+          if(d.classList.contains('claimed'))return;
+          d.classList.add('claimed');this.textContent='✓ 청구에 담김';
+          claimed++;var c=document.getElementById('asCnt');c.textContent='🧾 담은 청구 '+claimed+'건';c.classList.add('hot');
+        });
+        stack.appendChild(d);
+        /* 애니메이션이 막힌 환경(구형 브라우저·절전 등)에서도 알림이 반드시 보이게 */
+        timers.push(setTimeout(function(){if(getComputedStyle(d).opacity==='0'){d.style.animation='none';d.style.opacity='1';d.style.transform='none';}},900));
+      },650+k*620));
+    });
+  }
+  play(0);
+})();
+</script>
+
 <section id="cases-deep">
   <div class="wrap">
     <span class="eyebrow t" style="display:table;margin:0 auto 20px">실사용 사례 · 병원명은 가렸습니다</span>
@@ -2425,389 +2821,6 @@
   #library .lib-card .go:hover{background:var(--teal);color:#fff}
   #library .lib-card .nw{position:absolute;top:14px;right:14px;font-size:10px;font-weight:900;background:var(--red);color:#fff;padding:3px 8px;border-radius:99px;letter-spacing:.04em}
 </style>
-
-<!-- ══════════ 설치 후 실제 하루 : 7장면 시네마 v2 — 실제 설치된 프로그램 룩 (2026-07-13) ══════════ -->
-<style>
-  #daycine .dc-stage{max-width:1020px;margin:30px auto 0;background:var(--card);border:1.6px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-  #daycine .dc-top{display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--bg-soft)}
-  #daycine .dc-time{font-size:13px;font-weight:900;color:var(--accent-deep);background:var(--accent-soft);padding:5px 13px;border-radius:99px;white-space:nowrap}
-  #daycine .dc-place{font-size:13.5px;font-weight:800}
-  #daycine .dc-step{margin-left:auto;font-size:11.5px;font-weight:800;color:var(--ink-soft);white-space:nowrap}
-  #daycine .dc-body{display:grid;grid-template-columns:.88fr 1.12fr;min-height:420px}
-  @media(max-width:820px){#daycine .dc-body{grid-template-columns:1fr}}
-  #daycine .dc-left{padding:18px 20px;border-right:1px solid var(--line);display:flex;flex-direction:column}
-  @media(max-width:820px){#daycine .dc-left{border-right:0;border-bottom:1px solid var(--line)}}
-  #daycine .dc-nar{font-size:12.5px;font-weight:750;color:var(--ink-soft);margin:0 0 13px;display:flex;gap:6px;align-items:baseline}
-  #daycine .dc-nar::before{content:"▶";font-size:9px;color:var(--accent)}
-  @keyframes dcSlide{from{transform:translateY(10px)}to{transform:none}}
-  #daycine .dc-msg{display:flex;gap:9px;margin-bottom:11px;animation:dcSlide .4s ease both}
-  #daycine .dc-msg .av{flex:0 0 30px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff}
-  #daycine .dc-msg.w-pt .av{background:#8E7CC3} #daycine .dc-msg.w-st .av{background:var(--teal)} #daycine .dc-msg.w-dr .av{background:var(--navy-2)} #daycine .dc-msg.w-ai .av{background:var(--accent)}
-  #daycine .dc-msg .bub{background:#fff;border:1.4px solid var(--line);border-radius:4px 14px 14px 14px;padding:9px 13px;font-size:13px;line-height:1.6;font-weight:620;box-shadow:var(--shadow-sm)}
-  #daycine .dc-msg .bub small{display:block;font-size:10px;font-weight:800;color:var(--ink-soft);margin-bottom:2px}
-  #daycine .dc-msg.w-ai .bub{background:var(--accent-soft);border-color:#C9D8F8}
-  #daycine .dc-easy{margin-top:auto;background:var(--green-soft);border-radius:12px;padding:11px 14px;font-size:13px;font-weight:660;line-height:1.65}
-  #daycine .dc-easy .lb{display:block;font-size:10px;font-weight:900;letter-spacing:.06em;color:var(--green);margin-bottom:3px}
-  #daycine .dc-easy b{color:var(--green)}
-  /* ── 오른쪽 : 설치된 프로그램 창 ── */
-  #daycine .dc-right{padding:18px 18px 20px;background:radial-gradient(130% 120% at 75% 0%,#E9E6DE 0%,#DFDCD2 75%)}
-  #daycine .dc-scr{border:1px solid #C9C4B8;border-radius:10px;box-shadow:0 18px 44px rgba(20,20,20,.18),0 2px 8px rgba(0,0,0,.08);background:#F6F5F1;overflow:hidden}
-  #daycine .tbar{display:flex;align-items:center;gap:7px;background:linear-gradient(180deg,#FDFDFC,#EFEDE7);border-bottom:1px solid #DDD8CC;padding:7px 8px 7px 12px}
-  #daycine .tbar .logo{width:18px;height:18px;border-radius:5px;background:var(--accent);color:#fff;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center}
-  #daycine .tbar .app{display:flex;align-items:center;gap:6px;font-weight:870;font-size:11.5px}
-  #daycine .tbar .app small{color:var(--ink-soft);font-weight:700;font-size:10px}
-  #daycine .tbar .ttl{margin-left:6px;color:var(--ink-soft);font-weight:750;font-size:11px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  #daycine .winb{width:26px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:5px;color:#8b8577;font-size:9px;font-weight:900}
-  #daycine .winb.x{color:#b3564c}
-  #daycine .dc-in{padding:12px;min-height:300px}
-  #daycine .sbar{display:flex;gap:14px;align-items:center;border-top:1px solid #DDD8CC;background:#EFEDE7;padding:5px 12px;font-size:10px;font-weight:780;color:var(--ink-soft)}
-  #daycine .sbar .ok{color:var(--green)}
-  /* 위젯 */
-  #daycine .stt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
-  #daycine .st{background:#fff;border:1px solid #E3DFD4;border-radius:9px;padding:8px 11px}
-  #daycine .st .l{font-size:9.5px;font-weight:850;color:var(--ink-soft)}
-  #daycine .st .v{font-size:19px;font-weight:900;letter-spacing:-.02em;line-height:1.2}
-  #daycine .st .v.b{color:var(--accent-deep)} #daycine .st .v.t{color:var(--teal-deep)} #daycine .st .v.r{color:var(--red)}
-  #daycine .wpanel{background:#fff;border:1px solid #E3DFD4;border-radius:9px;overflow:hidden;margin-bottom:8px}
-  #daycine .wph{display:flex;align-items:center;gap:6px;padding:7px 11px;border-bottom:1px solid #EEEAE0;font-size:10.5px;font-weight:870;color:var(--ink-soft);background:#FBFAF7}
-  #daycine .wrow{display:flex;align-items:center;gap:8px;padding:8px 11px;border-bottom:1px solid #F1EEE6;font-size:12px;font-weight:660}
-  #daycine .wrow:last-child{border-bottom:0}
-  #daycine .wrow .tm{font-size:10px;font-weight:850;color:#B3AB98;flex:0 0 36px}
-  #daycine .wrow .nm{font-weight:830}
-  #daycine .wrow .arr{margin-left:auto;color:#C9C2B2;font-weight:900}
-  #daycine .wc{font-size:9px;font-weight:870;padding:2px 7px;border-radius:99px;white-space:nowrap}
-  #daycine .wc.t{background:var(--teal-soft);color:var(--teal-deep)} #daycine .wc.r{background:var(--red-soft);color:var(--red)} #daycine .wc.b{background:var(--accent-soft);color:var(--accent-deep)} #daycine .wc.a{background:#FBF0DC;color:var(--amber)}
-  #daycine .wtoast{display:flex;gap:9px;background:#fff;border:1px solid #E3DFD4;border-radius:10px;box-shadow:0 8px 22px rgba(20,20,20,.10);padding:10px 11px;margin-bottom:8px;position:relative;animation:dcSlide .4s ease both}
-  #daycine .wtoast .tic{flex:0 0 26px;width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;background:var(--accent)}
-  #daycine .wtoast.k-teal .tic{background:var(--teal)} #daycine .wtoast.k-red .tic{background:var(--red)} #daycine .wtoast.k-amber .tic{background:var(--amber)}
-  #daycine .wtoast .tt{font-size:12.5px;font-weight:840;line-height:1.35;padding-right:14px}
-  #daycine .wtoast .ds{font-size:10.5px;color:var(--ink-soft);font-weight:660;margin-top:2px;line-height:1.5}
-  #daycine .wtoast .xx{position:absolute;top:7px;right:10px;color:#C9C2B2;font-size:10px;font-weight:900}
-  #daycine .wbtns{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
-  #daycine .wbtn{font-family:inherit;font-size:10.5px;font-weight:830;border-radius:7px;padding:5px 11px;cursor:pointer;border:1px solid #D8D2C4;background:#fff;color:var(--ink);transition:.12s}
-  #daycine .wbtn:hover{border-color:var(--accent)}
-  #daycine .wbtn.p{background:var(--accent);border-color:var(--accent);color:#fff}
-  #daycine .wbtn.p:hover{background:var(--accent-deep)}
-  #daycine .wbtn.done{background:var(--green-soft);border-color:var(--green);color:var(--green);pointer-events:none}
-  #daycine .wsay{background:#FFFBEB;border:1px dashed #E3D9B0;border-radius:9px;padding:9px 11px;font-size:11.5px;font-weight:690;line-height:1.6;margin-bottom:8px}
-  #daycine .wmodal{background:#fff;border:1px solid #E3DFD4;border-radius:12px;box-shadow:0 16px 40px rgba(20,20,20,.16);padding:16px 16px 13px;max-width:330px;margin:10px auto}
-  #daycine .wmodal .big{width:40px;height:40px;border-radius:50%;background:var(--green-soft);color:var(--green);font-size:19px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
-  #daycine .wmodal .mt{text-align:center;font-size:13.5px;font-weight:870;margin-bottom:8px}
-  #daycine .wchk{display:flex;gap:7px;align-items:center;font-size:11.5px;font-weight:720;padding:4px 2px}
-  #daycine .wchk .c{width:15px;height:15px;border-radius:4px;background:var(--green);color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:900;flex:0 0 auto}
-  #daycine .wchk.a .c{background:var(--amber)}
-  /* 히스토리 타임라인 */
-  #daycine .hs-row{display:flex;align-items:center;gap:8px;padding:6px 11px;font-size:11.5px;font-weight:670;border-bottom:1px solid #F1EEE6}
-  #daycine .hs-row:last-child{border-bottom:0}
-  #daycine .hs-dot{width:9px;height:9px;border-radius:50%;background:#CFC9BC;flex:0 0 auto}
-  #daycine .hs-row.k-g .hs-dot{background:var(--green)} #daycine .hs-row.k-r .hs-dot{background:var(--red)} #daycine .hs-row.k-b .hs-dot{background:var(--accent)}
-  #daycine .hs-when{flex:0 0 62px;font-size:9.5px;font-weight:870;color:var(--ink-soft)}
-  #daycine .hs-sum{background:var(--red-soft);border-radius:0 0 8px 8px;padding:8px 11px;font-size:11px;font-weight:730;line-height:1.55}
-  #daycine .hs-sum b{color:var(--red)}
-  #daycine .sc-sum{display:flex;justify-content:space-between;align-items:center;background:var(--navy);color:#fff;border-radius:10px;padding:10px 14px;font-size:12.5px;font-weight:760;margin-top:8px}
-  #daycine .sc-sum .v{color:#FFE39C;font-weight:900}
-  /* 컨트롤 */
-  #daycine .dc-ctrl{display:flex;align-items:center;gap:10px;justify-content:center;padding:15px 18px;border-top:1px solid var(--line);background:var(--bg-soft);flex-wrap:wrap}
-  #daycine .dc-btn{border:1.6px solid var(--line);background:#fff;font-family:inherit;font-size:14px;font-weight:820;padding:11px 20px;border-radius:12px;cursor:pointer;transition:.15s}
-  #daycine .dc-btn:hover{border-color:var(--accent);color:var(--accent-deep)}
-  #daycine .dc-btn.main{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 6px 18px rgba(29,78,216,.28)}
-  #daycine .dc-btn.main:hover{background:var(--accent-deep);color:#fff}
-  #daycine .dc-btn:disabled{opacity:.35;cursor:default}
-  #daycine .dc-dots{display:flex;gap:6px;align-items:center}
-  #daycine .dc-dot{width:9px;height:9px;border-radius:50%;background:#D8D2C4;border:0;padding:0;cursor:pointer;transition:.15s}
-  #daycine .dc-dot.on{background:var(--accent);transform:scale(1.35)}
-  #daycine .dc-note{font-size:12px;color:var(--ink-soft);font-weight:600;text-align:center;margin-top:14px}
-</style>
-<section id="daycine">
-  <div class="wrap">
-    <div class="center">
-      <span class="eyebrow">🎬 설치하고 나면 — 진짜 하루</span>
-      <h2>프로그램을 깔면, 진료실의 하루가<br><mark>이렇게 흘러갑니다</mark>.</h2>
-      <p class="lead" style="margin:14px auto 0;max-width:38em">환자 <b>이수진 님(47)</b>이 스케일링 받으러 온 화요일. 오른쪽이 <b>실제 설치된 프로그램 화면</b>입니다 — 버튼도 직접 눌러보세요.</p>
-    </div>
-
-    <div class="dc-stage">
-      <div class="dc-top">
-        <span class="dc-time" id="dcTime"></span>
-        <span class="dc-place" id="dcPlace"></span>
-        <span class="dc-step" id="dcStep"></span>
-      </div>
-      <div class="dc-body">
-        <div class="dc-left">
-          <div class="dc-nar" id="dcNar"></div>
-          <div id="dcDlg"></div>
-          <div class="dc-easy" id="dcEasy"></div>
-        </div>
-        <div class="dc-right">
-          <div class="dc-scr">
-            <div class="tbar">
-              <span class="app"><span class="logo">A</span>AutoClaim <small>v2.4</small></span>
-              <span class="ttl" id="dcScrT"></span>
-              <span class="winb">─</span><span class="winb">▢</span><span class="winb x">✕</span>
-            </div>
-            <div class="dc-in" id="dcScr"></div>
-            <div class="sbar"><span class="ok">● 덴트웹 연결됨</span><span id="dcSync"></span><span style="margin-left:auto">사계절치과 · 데스크PC</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="dc-ctrl">
-        <button type="button" class="dc-btn" id="dcPrev">← 이전</button>
-        <div class="dc-dots" id="dcDots"></div>
-        <button type="button" class="dc-btn main" id="dcNext">다음 장면 →</button>
-        <button type="button" class="dc-btn" id="dcAuto">▶ 자동 재생</button>
-      </div>
-    </div>
-    <p class="dc-note">장면·화면·이름·수치는 전부 <b>시연용 예시</b>입니다(프로그램 화면 구성안) · 실제 설치 시 우리 병원 차트·예약 데이터로 채워집니다</p>
-  </div>
-</section>
-
-<script>
-(function(){
-  function wc(k,t){return '<span class="wc '+k+'">'+t+'</span>'}
-  function toast(k,ic,tt,ds,btns){return '<div class="wtoast k-'+k+'"><span class="tic">'+ic+'</span><div style="flex:1"><div class="tt">'+tt+'</div>'+(ds?'<div class="ds">'+ds+'</div>':'')+(btns||'')+'</div><span class="xx">✕</span></div>'}
-  function btn(t,p,done){return '<button type="button" class="wbtn'+(p?' p':'')+'"'+(done?' data-done="'+done+'"':'')+'>'+t+'</button>'}
-  function hs(when,tx,k){return '<div class="hs-row k-'+k+'"><span class="hs-dot"></span><span class="hs-when">'+when+'</span><span>'+tx+'</span></div>'}
-  var SCENES=[
-   {t:'08:50',p:'데스크 — 출근',st:'아침 브리핑',
-    nar:'컴퓨터를 켜면 이 창이 먼저 떠 있습니다.',
-    dlg:[['st','김실장','오늘 챙길 사람 3명 — 이수진 님 오시면 말씀드려야지.']],
-    scr:'<div class="stt"><div class="st"><div class="l">오늘 예약</div><div class="v">12명</div></div><div class="st"><div class="l">챙길 청구</div><div class="v b">3명</div></div><div class="st"><div class="l">예상 회수</div><div class="v t">+9.2만</div></div></div>'
-      +'<div class="wpanel"><div class="wph">📋 오늘 예약 — 챙길 것 있는 순</div>'
-      +'<div class="wrow"><span class="tm">09:10</span><span class="nm">이수진 (47)</span>'+wc('t','스케일링 미사용')+wc('r','잇몸치료 끊김')+'<span class="arr">›</span></div>'
-      +'<div class="wrow"><span class="tm">10:30</span><span class="nm">김O식 (61)</span>'+wc('a','발치 후 소독')+'<span class="arr">›</span></div>'
-      +'<div class="wrow"><span class="tm">11:00</span><span class="nm">박O래 (33)</span>'+wc('b','치근단 재평가')+'<span class="arr">›</span></div></div>',
-    easy:'아침에 컴퓨터가 <b>“오늘 올 손님 중에 챙길 게 있는 사람 3명이에요”</b>라고 미리 알려주는 겁니다. 직원이 기억할 필요가 없어요.'},
-   {t:'09:10',p:'데스크 — 이수진 님 접수',st:'접수 알림',
-    nar:'접수 버튼을 누르는 순간, 우하단에 뜹니다.',
-    dlg:[['pt','이수진 님','스케일링 예약한 이수진인데요.'],
-         ['st','김실장','지난번 잇몸 검사 이어서 오늘 같이 하실 수 있어요 — 보험 돼요.']],
-    scr:'<div class="wpanel"><div class="wph">📂 이수진 님 차트 — 30초 브리핑</div>'
-      +hs('작년 11월','스케일링 받고 감 (보험)','g')
-      +hs('3개월 전','잇몸 검사 — <b>깊은 주머니 6군데</b>','r')
-      +hs('그 후','치료 안 이어짐 ← <b>끊긴 지점</b>','r')
-      +hs('오늘','스케일링 예약으로 다시 옴','b')
-      +'<div class="hs-sum">한 줄 상황: <b>잇몸이 안 좋은 걸 알고도 치료가 끊긴 환자.</b> 오늘이 기회.</div></div>'
-      +toast('teal','!','이수진 님 — 오늘 챙길 2가지','① 올해 보험 스케일링 미사용 ② 잇몸치료 3개월 끊김',
-        '<div class="wbtns">'+btn('멘트 확인',1,'✓ 확인함')+btn('나중에')+'</div>')
-      +'<div class="wsay">💬 “지난번 잇몸 검사에서 수치가 좀 있으셨어요. <b>오늘 오신 김에 이어서</b> 치료받으실 수 있고, 보험 적용돼요.”</div>',
-    easy:'손님이 오자마자 컴퓨터가 <b>“이 분, 지난번에 하다 만 치료가 있어요. 이렇게 말해보세요”</b>라고 귀띔해주는 겁니다.'},
-   {t:'09:20',p:'진료실 — 체어 착석',st:'차트 사이드 패널',
-    nar:'원장이 차트를 열면 오른쪽에 이 패널이 붙습니다.',
-    dlg:[['dr','원장','지난번 잇몸 수치가 좋지 않았어요. 오늘 같이 시작하죠.'],
-         ['pt','이수진 님','네 — 오른쪽 아래 시린 것도 봐주세요.']],
-    scr:'<div class="wrow" style="background:#fff;border:1px solid #E3DFD4;border-radius:9px;margin-bottom:8px"><span class="nm">이수진 (47·F)</span><span style="font-size:10px;color:var(--ink-soft)">최근 내원 2026-04-11</span><span class="arr">차트 열림</span></div>'
-      +'<div class="wpanel"><div class="wph">🩺 지난 방문 요약</div>'
-      +'<div class="wrow">치주낭 4mm+ — 6부위 (#44~46 집중)'+wc('r','후속 없음')+'</div></div>'
-      +'<div class="wpanel"><div class="wph">💡 오늘 추천</div>'
-      +'<div class="wrow">치주치료(SC) 시작<span style="margin-left:auto">'+btn('계획에 추가',1,'✓ 추가됨')+'</span></div>'
-      +'<div class="wrow">급여 치석제거 동시 진행<span style="margin-left:auto">'+btn('계획에 추가',1,'✓ 추가됨')+'</span></div></div>',
-    easy:'의사가 예전 기록을 뒤질 필요 없이, 컴퓨터가 <b>“지난번에 잇몸이 안 좋았어요. 오늘 이거 하시면 돼요”</b>라고 요약해주는 겁니다.'},
-   {t:'09:35',p:'진료실 — 차팅하는 순간',st:'차팅 감지',
-    nar:'차팅하는 순간, 옆에 이렇게 뜹니다.',
-    dlg:[['dr','원장','치경부가 패여 있네요. 사진 한 장 찍고 갈게요.']],
-    scr:'<div class="wpanel"><div class="wph">✏️ 지금 차팅</div><div class="wrow"><span class="tm">10:05</span><b>#46 치경부 마모 — 레진 · 하악 SC</b></div></div>'
-      +toast('','📷','치근단 촬영 먼저','근거가 남아야 안전 · 촬영+판독 같이 산정','<div class="wbtns">'+btn('촬영 오더',1,'✓ 오더 넣음')+btn('나중에')+'</div>')
-      +toast('teal','💉','마취 산정 잊지 마세요','수복만 찍고 마취 빠뜨리는 게 단골 누락','<div class="wbtns">'+btn('추가',1,'✓ 추가됨')+'</div>')
-      +toast('teal','🦷','시림 호소 — 지각과민 처치','오늘 처치했다면 산정 기준 확인','<div class="wbtns">'+btn('기준 보기')+'</div>'),
-    easy:'의사가 치료 내용을 적는 순간 <b>“사진 먼저 찍으세요, 마취비 빼먹지 마세요”</b>라고 옆에서 챙겨주는 겁니다. 의사는 평소대로 일할 뿐이에요.'},
-   {t:'09:55',p:'진료실 — 진료완료 버튼',st:'진료완료 확인',
-    nar:'완료 버튼을 누르면 마지막 확인 창이 뜹니다.',
-    dlg:[['ai','AutoClaim','오늘 산정 4건 확인 — 놓친 항목 0건.']],
-    scr:'<div class="wmodal"><div class="big">✓</div><div class="mt">이수진 님 — 4건 모두 확인</div>'
-      +'<div class="wchk"><span class="c">✓</span>치주치료(SC) + 급여 치석제거 동시</div>'
-      +'<div class="wchk"><span class="c">✓</span>#46 레진 + 치근단 촬영·판독</div>'
-      +'<div class="wchk"><span class="c">✓</span>마취 산정</div>'
-      +'<div class="wchk"><span class="c">✓</span>지각과민 처치</div>'
-      +'<div class="wchk a"><span class="c">⏰</span>다음 내원: 치주 후처치 자동 알림 등록</div>'
-      +'<div class="wbtns" style="justify-content:center;margin-top:10px">'+btn('송신 대기로 보내기',1,'✓ 보냄')+btn('다시 보기')+'</div></div>',
-    easy:'치료 끝 버튼을 누르면 <b>“오늘 받을 돈 다 챙겼어요, 빠뜨린 것 없어요”</b>라고 마지막으로 검사해주는 겁니다.'},
-   {t:'13:00',p:'데스크 — 수납',st:'수납 도우미',
-    nar:'수납 화면 옆에 이게 떠 있습니다.',
-    dlg:[['st','김실장','오늘 치료는 보험 적용이라 부담 크지 않으세요. 다음 주 같은 시간 어떠세요?'],
-         ['pt','이수진 님','네, 그때로 할게요. 생각보다 저렴하네요?']],
-    scr:'<div class="wpanel"><div class="wph">💬 환자 안내 문구 — 자동 생성</div><div style="padding:9px 11px"><div class="wsay" style="margin:0">“오늘 치료는 <b>보험 적용</b>이라 부담금이 크지 않아요. 잇몸치료는 이어서 받으셔야 효과가 있어서, <b>다음 예약</b> 잡아드릴게요.”</div><div class="wbtns">'+btn('복사',1,'✓ 복사됨')+'</div></div></div>'
-      +'<div class="wpanel"><div class="wph">📅 다음 예약 — 치주치료 2회차</div><div style="padding:9px 11px"><div class="wbtns" style="margin:0 0 7px">'+btn('화 09:00')+btn('화 09:30')+btn('화 10:00')+'</div>'+btn('이 시간으로 예약',1,'✓ 예약됨')+'</div></div>',
-    easy:'계산할 때 <b>손님에게 뭐라고 설명할지 문장까지 만들어줍니다.</b> 손님은 “여기 꼼꼼하네”라고 느끼고, 다음 예약까지 잡고 갑니다.'},
-   {t:'18:30',p:'데스크 — 마감',st:'송신 전 검토',
-    nar:'퇴근 전 마지막 화면입니다.',
-    dlg:[['ai','AutoClaim','오늘 23건 중 확인 필요 1건 — 김O식 님 발치 건.'],
-         ['dr','원장','버 썼으니 난발치 맞아요. 송신 진행하세요.']],
-    scr:'<div class="stt"><div class="st"><div class="l">오늘 청구</div><div class="v">23건</div></div><div class="st"><div class="l">자동 확인</div><div class="v t">22건</div></div><div class="st"><div class="l">확인 필요</div><div class="v r">1건</div></div></div>'
-      +toast('red','!','김O식 님 — 단순발치로 입력됨','차트에 골삭제(버) 기록 있음 → 난발치 전환 검토','<div class="wbtns">'+btn('원장 확인 요청',1,'✓ 확인 완료 — 난발치 전환')+'</div>')
-      +'<div class="sc-sum"><span>오늘 지킨 청구 (예시)</span><span class="v">+18.4만원</span></div>'
-      +'<div class="sc-sum" style="background:var(--navy-2)"><span>이번 달 누적 (예시)</span><span class="v">+212만원</span></div>',
-    easy:'퇴근 전에 <b>오늘 서류(청구)를 전부 검사</b>해서 실수 1건을 잡아낸 겁니다. 이렇게 하루 십몇만 원씩, 한 달이면 이백만 원 넘게 쌓입니다(예시).'}
-  ];
-  var i=0,auto=null;
-  var $=function(id){return document.getElementById(id)};
-  var WHO={pt:['환','환자'],st:['실','데스크'],dr:['원','원장'],ai:['A','AutoClaim']};
-  function render(){
-    var s=SCENES[i];
-    $('dcTime').textContent=s.t;$('dcPlace').textContent=s.p;
-    $('dcStep').textContent='장면 '+(i+1)+' / '+SCENES.length;
-    $('dcNar').innerHTML=s.nar;$('dcScrT').textContent=s.st;$('dcScr').innerHTML=s.scr;
-    $('dcSync').textContent='동기화 '+s.t;
-    $('dcEasy').innerHTML='<span class="lb">🍀 쉽게 말해서</span>'+(s.easy||'');
-    $('dcDlg').innerHTML=s.dlg.map(function(m,k){
-      var w=WHO[m[0]];
-      return '<div class="dc-msg w-'+m[0]+'" style="animation-delay:'+(k*.18)+'s"><span class="av">'+w[0]+'</span><span class="bub"><small>'+m[1]+'</small>'+m[2]+'</span></div>';
-    }).join('');
-    [].forEach.call(document.querySelectorAll('#dcDots .dc-dot'),function(d,k){d.classList.toggle('on',k===i)});
-    $('dcPrev').disabled=(i===0);
-    $('dcNext').textContent=(i===SCENES.length-1)?'처음부터 다시 ↻':'다음 장면 →';
-  }
-  /* 프로그램 창 안 버튼 — 실제 앱처럼 눌리면 상태 변경 */
-  $('dcScr').addEventListener('click',function(e){
-    var b=e.target.closest('.wbtn');if(!b)return;
-    var d=b.getAttribute('data-done');
-    if(d){b.classList.remove('p');b.classList.add('done');b.textContent=d;}
-  });
-  var dots=$('dcDots');
-  SCENES.forEach(function(_,k){
-    var d=document.createElement('button');d.type='button';d.className='dc-dot';d.title='장면 '+(k+1);
-    d.addEventListener('click',function(){stopAuto();i=k;render();});dots.appendChild(d);
-  });
-  function step(dir){i=(i+dir+SCENES.length)%SCENES.length;render();}
-  function stopAuto(){if(auto){clearInterval(auto);auto=null;$('dcAuto').textContent='▶ 자동 재생';}}
-  $('dcPrev').addEventListener('click',function(){stopAuto();step(-1);});
-  $('dcNext').addEventListener('click',function(){stopAuto();step(1);});
-  $('dcAuto').addEventListener('click',function(){
-    if(auto){stopAuto();return;}
-    $('dcAuto').textContent='⏸ 정지';
-    auto=setInterval(function(){if(i===SCENES.length-1){stopAuto();return;}step(1);},4600);
-  });
-  render();
-})();
-</script>
-
-<!-- ══════════ 상황별 알림 시뮬레이터 : 차팅하면 옆에서 이렇게 뜹니다 ══════════ -->
-<style>
-  #alertsim .as-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:28px 0 0}
-  #alertsim .as-btn{border:1.6px solid var(--line);background:#fff;color:var(--ink);font-weight:790;font-size:14px;
-    padding:11px 18px;border-radius:13px;cursor:pointer;font-family:inherit;transition:.15s;box-shadow:var(--shadow-sm)}
-  #alertsim .as-btn:hover{border-color:var(--accent);transform:translateY(-2px)}
-  #alertsim .as-btn.on{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 8px 20px rgba(29,78,216,.3)}
-  #alertsim .as-win{max-width:860px;margin:26px auto 0;background:var(--card);border:1.6px solid var(--line);border-radius:var(--radius);
-    box-shadow:var(--shadow);overflow:hidden}
-  #alertsim .as-head{display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,#F4F2EC,#EDEAE1);border-bottom:1px solid var(--line);padding:10px 16px}
-  #alertsim .as-head .ic{width:26px;height:26px;border-radius:8px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
-  #alertsim .as-head .t{font-size:13px;font-weight:820}
-  #alertsim .as-head .t small{display:block;font-size:10.5px;font-weight:650;color:var(--ink-soft)}
-  #alertsim .as-head .live{margin-left:auto;font-size:10px;font-weight:850;color:var(--teal-deep);background:var(--teal-soft);
-    padding:3px 10px;border-radius:99px;display:inline-flex;align-items:center;gap:5px}
-  #alertsim .as-head .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);animation:asPulse 1.6s ease-in-out infinite}
-  @keyframes asPulse{0%,100%{opacity:1}50%{opacity:.3}}
-  #alertsim .as-body{display:grid;grid-template-columns:1fr 1.1fr;min-height:320px}
-  @media(max-width:720px){#alertsim .as-body{grid-template-columns:1fr}}
-  #alertsim .as-chart{padding:18px 20px;border-right:1px solid var(--line)}
-  @media(max-width:720px){#alertsim .as-chart{border-right:0;border-bottom:1px solid var(--line)}}
-  #alertsim .as-chart .lb{font-size:10.5px;font-weight:850;letter-spacing:.07em;color:var(--ink-soft);margin-bottom:10px}
-  #alertsim .as-row{font-size:13px;font-weight:650;color:var(--ink-soft);padding:9px 12px;border-bottom:1px dashed var(--line);display:flex;gap:8px;align-items:center}
-  #alertsim .as-row .tm{font-size:10.5px;color:#B3AB98;font-weight:700;flex:0 0 auto}
-  #alertsim .as-row.new{background:var(--accent-soft);border-radius:9px;border-bottom:0;color:var(--ink);font-weight:780;
-    opacity:0;transform:translateY(6px);transition:.4s}
-  #alertsim .as-row.new.show{opacity:1;transform:none}
-  #alertsim .as-row.new .cur{display:inline-block;width:2px;height:14px;background:var(--accent);margin-left:2px;animation:asPulse 1s infinite}
-  #alertsim .as-alerts{padding:18px 20px;background:radial-gradient(140% 120% at 80% 0%,#F7F5EF 0%,var(--bg-soft) 70%)}
-  #alertsim .as-alerts .lb{font-size:10.5px;font-weight:850;letter-spacing:.07em;color:var(--teal-deep);margin-bottom:10px}
-  @keyframes asIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
-  #alertsim .as-alert{background:#fff;border:1.4px solid var(--line);border-left-width:4px;border-radius:12px;box-shadow:var(--shadow-sm);
-    padding:12px 14px;margin-bottom:10px;animation:asIn .45s cubic-bezier(.2,.7,.2,1) both}
-  #alertsim .as-alert .bd{font-size:9.5px;font-weight:900;letter-spacing:.05em;padding:2px 8px;border-radius:99px;display:inline-block;margin-bottom:6px}
-  #alertsim .as-alert.k-blue{border-left-color:var(--accent)} #alertsim .as-alert.k-blue .bd{background:var(--accent-soft);color:var(--accent-deep)}
-  #alertsim .as-alert.k-teal{border-left-color:var(--teal)} #alertsim .as-alert.k-teal .bd{background:var(--teal-soft);color:var(--teal-deep)}
-  #alertsim .as-alert.k-red{border-left-color:var(--red)} #alertsim .as-alert.k-red .bd{background:var(--red-soft);color:var(--red)}
-  #alertsim .as-alert.k-amber{border-left-color:var(--amber)} #alertsim .as-alert.k-amber .bd{background:#FBF0DC;color:var(--amber)}
-  #alertsim .as-alert .tt{font-size:14px;font-weight:830;letter-spacing:-.015em;line-height:1.4}
-  #alertsim .as-alert .ds{font-size:12px;color:var(--ink-soft);font-weight:600;line-height:1.6;margin-top:4px}
-  #alertsim .as-note{font-size:12px;color:var(--ink-soft);font-weight:600;text-align:center;margin-top:14px}
-</style>
-<section id="alertsim" style="background:var(--bg-soft)">
-  <div class="wrap">
-    <div class="center">
-      <span class="eyebrow">🔔 상황별 알림 미리보기</span>
-      <h2>차팅하는 순간,<br>옆에서 <mark>이렇게 속삭입니다</mark>.</h2>
-      <p class="lead" style="margin:14px auto 0;max-width:37em">오늘 할 진료를 눌러보세요. <b>그 진료를 차팅하는 순간 실제로 뜨는 알림</b>이 그대로 재생됩니다 — 찍기 전에 챙길 것, 같이 찍을 것, 다음 내원에 챙길 것까지.</p>
-    </div>
-
-    <div class="as-btns" id="asBtns"></div>
-
-    <div class="as-win">
-      <div class="as-head">
-        <span class="ic">A</span>
-        <span class="t">차트 · 김민준 님 (34)<small>덴트웹 차팅 화면이라고 생각하세요</small></span>
-        <span class="live">AutoClaim 감지 중</span>
-      </div>
-      <div class="as-body">
-        <div class="as-chart">
-          <div class="lb">📋 오늘 차팅</div>
-          <div class="as-row"><span class="tm">09:40</span>초진 · 구강검진</div>
-          <div class="as-row"><span class="tm">09:52</span>파노라마 촬영</div>
-          <div class="as-row new" id="asNew"><span class="tm" id="asTm">10:05</span><span id="asLine"></span><span class="cur"></span></div>
-        </div>
-        <div class="as-alerts">
-          <div class="lb">🔔 이 순간 옆에 뜨는 알림</div>
-          <div id="asStack"></div>
-        </div>
-      </div>
-    </div>
-    <p class="as-note">알림 문구는 <b>예시</b>이며, 실제 산정 가능 여부는 건강보험 산정기준(심평원 고시)을 따릅니다 · 실제 설치 시 우리 병원 차팅에 맞춰 뜹니다</p>
-  </div>
-</section>
-
-<script>
-(function(){
-  var CASES=[
-    {b:'🦷 인레이 충전',line:'#26 원심 우식 — 인레이 충전',al:[
-      {k:'blue',bd:'찍기 전에',tt:'충전 전, 치근단 촬영 하셨나요?',ds:'와동 깊이·치수 근접 근거가 차트에 남아야 나중에 문제가 없습니다. 촬영하면 촬영·판독까지 같이 산정됩니다.'},
-      {k:'teal',bd:'같이 산정',tt:'마취했다면 마취 산정도 같이',ds:'충전만 찍고 마취를 빠뜨리는 게 가장 흔한 누락입니다.'}]},
-    {b:'🔩 임플란트 식립',line:'#36 임플란트 1차 식립',al:[
-      {k:'teal',bd:'식립 전 체크',tt:'주변 치아에 치석 없는지 먼저 확인해 보세요',ds:'치석이 있으면 오늘 치석제거를 같이 진행할지 검토 — 올해 급여 치석제거를 안 쓴 환자라면 환자도 이득입니다.'},
-      {k:'blue',bd:'근거 남기기',tt:'식립 전후 방사선 촬영·판독 산정 확인',ds:'파노라마·치근단 판독이 자주 빠지는 항목입니다.'},
-      {k:'amber',bd:'다음 내원',tt:'수술후처치 — 다음 내원 때 다시 알려드릴게요',ds:'소독·발사 청구가 끊기지 않게 재내원 시 자동으로 다시 뜹니다.'}]},
-    {b:'👑 크라운 본뜨기',line:'#11 크라운 — 지대치 형성 · 인상채득',al:[
-      {k:'teal',bd:'본뜨기 전 체크',tt:'인상 전, 주변 치아 치석부터 확인해 보세요',ds:'치석 위로 본을 뜨면 정밀도가 떨어집니다. 필요하면 치석제거 먼저 — 보철 퀄리티와 청구를 같이 챙깁니다.'},
-      {k:'amber',bd:'다음 내원',tt:'세팅 내원 날, 놓치기 쉬운 항목은 그때 다시',ds:'세팅일에 챙길 산정 항목을 그날 아침 다시 알려드립니다.'}]},
-    {b:'🪥 치주치료',line:'전악 치주낭측정 · 하악 스케일링',al:[
-      {k:'red',bd:'연계 끊김 방지',tt:'치주낭측정 → 치주치료로 이어지고 있나요?',ds:'측정만 하고 끊기면 치료도, 청구도 사라집니다. 후속 계획이 없으면 여기서 잡아둡니다.'},
-      {k:'amber',bd:'다음 내원',tt:'치주치료 후처치 — 다음 내원 때 자동 알림',ds:'후처치는 리포트 기준으로 가장 많이 새는 항목입니다.'}]},
-    {b:'🦷 발치',line:'#38 발치 (매복 소견)',al:[
-      {k:'teal',bd:'같이 산정',tt:'마취 산정 확인',ds:'발치는 찍고 마취는 안 찍는 케이스가 많습니다.'},
-      {k:'blue',bd:'수가 확인',tt:'버(Burr) 썼다면 난발치로',ds:'단순발치로 두면 그 차액이 그대로 사라집니다. 골삭제 여부를 확인해 보세요.'},
-      {k:'amber',bd:'다음 내원',tt:'발치 후 소독 — 재내원 알림 예약됨',ds:'수술후처치가 끊기지 않게 다음 내원 때 다시 뜹니다.'}]},
-    {b:'⚡ 신경치료',line:'#15 근관세척 2회차',al:[
-      {k:'teal',bd:'같이 산정',tt:'러버댐 걸었다면 가산 확인',ds:'러버댐은 걸고 가산은 안 찍는 게 단골 누락입니다.'},
-      {k:'blue',bd:'근거 남기기',tt:'세척 횟수 기록 — 5회 넘으면 사유 메모',ds:'횟수 초과는 근거가 없으면 삭감 대상입니다. 지금 한 줄 남겨두세요.'},
-      {k:'amber',bd:'다음 내원',tt:'근관충전까지 — 다음 예약 잡혔는지 확인',ds:'중간에 끊기면 치료도 청구도 미완성으로 남습니다.'}]}
-  ];
-  var btns=document.getElementById('asBtns'),stack=document.getElementById('asStack'),
-      line=document.getElementById('asLine'),row=document.getElementById('asNew');
-  var timers=[];
-  CASES.forEach(function(c,i){
-    var b=document.createElement('button');b.type='button';b.className='as-btn';b.textContent=c.b;
-    b.addEventListener('click',function(){play(i);});
-    btns.appendChild(b);c._btn=b;
-  });
-  function play(i){
-    timers.forEach(clearTimeout);timers=[];
-    CASES.forEach(function(c,j){c._btn.classList.toggle('on',j===i);});
-    var c=CASES[i];
-    stack.innerHTML='';row.classList.remove('show');line.textContent='';
-    timers.push(setTimeout(function(){row.classList.add('show');line.textContent=c.line;},120));
-    timers.push(setTimeout(function(){if(getComputedStyle(row).opacity==='0'){row.style.transition='none';row.style.opacity='1';row.style.transform='none';}},700));
-    c.al.forEach(function(a,k){
-      timers.push(setTimeout(function(){
-        var d=document.createElement('div');d.className='as-alert k-'+a.k;
-        d.innerHTML='<span class="bd">'+a.bd+'</span><div class="tt">'+a.tt+'</div><div class="ds">'+a.ds+'</div>';
-        stack.appendChild(d);
-        /* 애니메이션이 막힌 환경(구형 브라우저·절전 등)에서도 알림이 반드시 보이게 */
-        timers.push(setTimeout(function(){if(getComputedStyle(d).opacity==='0'){d.style.animation='none';d.style.opacity='1';d.style.transform='none';}},900));
-      },650+k*620));
-    });
-  }
-  play(0);
-})();
-</script>
 
 <section id="demozone">
   <div class="wrap">
