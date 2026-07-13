@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>청구 케이스북 — 환자 하나하나 따라 읽는 보험청구</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --card:#ffffff; --ink:#1e2634; --sub:#5a6575;
+    --line:#e4e9f0; --accent:#1a6ff2; --accent2:#0e9488;
+    --ok:#0a7a54; --okbg:#eafaf3; --okln:#bfe6d3;
+    --warn:#9a5a00; --warnbg:#fff7ea; --warnln:#f3dcae;
+    --bad:#b41f1f; --badbg:#fdf0f0; --badln:#f2c4c4;
+    --money:#7a4bd0; --moneybg:#f4eefe; --moneyln:#ddc9f6;
+    --say:#0b5aa8; --saybg:#eaf3fe; --sayln:#c6ddf8;
+    --shadow:0 1px 3px rgba(20,40,80,.06),0 6px 22px rgba(20,40,80,.05);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.72;font-size:16px;-webkit-text-size-adjust:100%}
+  .wrap{max-width:820px;margin:0 auto;padding:0 15px 90px}
+  header.hero{background:linear-gradient(135deg,#1a6ff2,#0e9488);color:#fff;padding:32px 20px 28px;border-radius:0 0 24px 24px;box-shadow:var(--shadow)}
+  header.hero .in{max-width:820px;margin:0 auto}
+  header.hero h1{margin:0 0 8px;font-size:28px;letter-spacing:-.5px}
+  header.hero p{margin:0;opacity:.94;font-size:15px;line-height:1.6}
+  header.hero .src{margin-top:14px;font-size:12.5px;opacity:.9;background:rgba(255,255,255,.15);padding:9px 13px;border-radius:11px;display:inline-block}
+
+  .readme{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin:18px 0;box-shadow:var(--shadow)}
+  .readme h2{margin:0 0 10px;font-size:17px}
+  .legend{display:grid;grid-template-columns:1fr;gap:8px;margin-top:6px}
+  .legband{border-radius:10px;padding:9px 12px;font-size:14px;border:1px solid}
+  .lg-ok{background:var(--okbg);border-color:var(--okln);color:var(--ok)}
+  .lg-money{background:var(--moneybg);border-color:var(--moneyln);color:var(--money)}
+  .lg-say{background:var(--saybg);border-color:var(--sayln);color:var(--say)}
+  .lg-bad{background:var(--badbg);border-color:var(--badln);color:var(--bad)}
+  .legband b{font-weight:800}
+
+  .search{position:sticky;top:0;z-index:20;background:var(--bg);padding:12px 0 8px}
+  .search input{width:100%;padding:13px 15px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;background:#fff;box-shadow:var(--shadow)}
+  .search input:focus{outline:none;border-color:var(--accent)}
+
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:6px 0 20px;box-shadow:var(--shadow)}
+  .toc b{display:block;font-size:13px;color:var(--sub);margin-bottom:9px;letter-spacing:.3px}
+  .toc a{display:inline-block;font-size:13.5px;color:var(--accent);text-decoration:none;background:#eef4ff;
+    padding:6px 11px;border-radius:20px;margin:0 6px 7px 0;border:1px solid #dbe7ff}
+  .toc a:hover{background:#dce9ff}
+
+  .chap{font-size:14px;font-weight:800;color:var(--accent2);letter-spacing:.5px;margin:30px 0 8px;padding-left:2px;
+    display:flex;align-items:center;gap:8px}
+  .chap::before{content:"";width:22px;height:3px;background:var(--accent2);border-radius:3px}
+
+  section.case{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:0 0 15px;box-shadow:var(--shadow);overflow:hidden}
+  section.case>h2{margin:0;padding:16px 18px;font-size:17.5px;cursor:pointer;display:flex;align-items:center;gap:11px;
+    border-bottom:1px solid transparent;user-select:none;line-height:1.4}
+  section.case>h2 .no{background:var(--accent);color:#fff;font-size:12.5px;min-width:30px;height:26px;border-radius:8px;padding:0 7px;
+    display:inline-flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+  section.case>h2 .arw{margin-left:auto;color:var(--sub);font-size:13px;transition:transform .2s;flex-shrink:0}
+  section.case.open>h2{border-bottom-color:var(--line)}
+  section.case.open>h2 .arw{transform:rotate(90deg)}
+  .body{padding:4px 18px 18px;display:none}
+  section.case.open .body{display:block}
+
+  .scene{background:#f8fafc;border-left:4px solid var(--accent);border-radius:0 10px 10px 0;padding:11px 15px;margin:12px 0;font-size:15px}
+  .scene .who{font-weight:800;color:var(--accent);font-size:12.5px;letter-spacing:.4px;display:block;margin-bottom:3px}
+
+  .block{border-radius:12px;padding:12px 15px;margin:11px 0;border:1px solid;font-size:14.5px}
+  .block .hd{font-weight:800;font-size:13.5px;letter-spacing:.2px;margin-bottom:6px;display:flex;align-items:center;gap:7px}
+  .b-ok{background:var(--okbg);border-color:var(--okln)} .b-ok .hd{color:var(--ok)}
+  .b-money{background:var(--moneybg);border-color:var(--moneyln)} .b-money .hd{color:var(--money)}
+  .b-say{background:var(--saybg);border-color:var(--sayln)} .b-say .hd{color:var(--say)}
+  .b-bad{background:var(--badbg);border-color:var(--badln)} .b-bad .hd{color:var(--bad)}
+  .block ul{margin:5px 0 2px;padding-left:19px}
+  .block li{margin:3px 0}
+  .block p{margin:4px 0}
+
+  .chart{background:#eef2f7;border:1px dashed #c3cedd;border-radius:9px;padding:9px 12px;margin:7px 0;
+    font-family:"D2Coding","Consolas",monospace;font-size:13px;color:#243b5e;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+  .chart .cl{display:block;font-family:"Pretendard",sans-serif;font-size:11px;font-weight:800;color:var(--sub);letter-spacing:.5px;margin-bottom:4px}
+  .say{background:#fff;border:1px solid var(--sayln);border-radius:9px;padding:9px 13px;margin:6px 0;font-size:14.5px;color:#123}
+  .say::before{content:"🗣️ ";}
+  .dx{display:inline-block;background:#eaf1ff;color:#0b4aa2;border:1px solid #cfe0fb;border-radius:6px;
+    padding:1px 7px;margin:2px 4px 2px 0;font-size:12.5px;font-weight:700;font-family:"D2Coding",monospace}
+  .tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:middle}
+  .t-100{background:#eafaf3;color:var(--ok)} .t-50{background:#fff7ea;color:var(--warn)} .t-x{background:#fdf0f0;color:var(--bad)}
+  .keyline{background:linear-gradient(90deg,#fffbe8,#fff);border:1px solid #f0e4b0;border-left:4px solid #e0b400;
+    border-radius:0 10px 10px 0;padding:9px 14px;margin:12px 0 2px;font-size:14.5px;font-weight:700;color:#6a5200}
+  .keyline::before{content:"📌 한 줄 정리 · ";font-weight:800;color:#9a7b00}
+
+  table{width:100%;border-collapse:collapse;margin:9px 0;font-size:13.5px}
+  th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  th{background:#f0f5fc;color:#2a3a52;font-weight:700}
+  .tbl-scroll{overflow-x:auto}
+  b.hi{color:var(--bad)}
+  .ctrls{display:flex;gap:8px;margin:2px 0 14px}
+  .ctrls button{flex:1;padding:10px;border:1px solid var(--line);background:#fff;border-radius:10px;font-size:13px;color:var(--sub);cursor:pointer}
+  .ctrls button:hover{background:#eef5ff;color:var(--accent)}
+  .nohit{display:none;text-align:center;color:var(--sub);padding:34px}
+  mark{background:#ffe98a;padding:0 1px;border-radius:3px}
+  .foot{text-align:center;color:var(--sub);font-size:12.5px;margin-top:30px;line-height:1.8}
+  @media(max-width:620px){header.hero h1{font-size:23px}body{font-size:15.5px}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="in">
+  <h1>🦷 청구 케이스북</h1>
+  <p>환자 한 명 한 명 따라가며 읽는 보험청구.<br>그냥 위에서 아래로 읽기만 하면 <b>“이렇게 하면 되고 · 이렇게 하면 최대로 받고 · 이렇게 하면 삭감된다”</b>가 손에 잡힙니다.</p>
+  <div class="src">바탕: 덴탈씨드 「보험청구 메뉴얼 북」(108p) · 「의무챠팅 기록사항」 · 「송신 전 필수 확인사항」 &nbsp;|&nbsp; 딱딱한 표 버전은 → <b>청구메뉴얼.html</b></div>
+</div></header>
+
+<div class="wrap">
+
+  <div class="readme">
+    <h2>📖 케이스 읽는 법 — 색깔만 보세요</h2>
+    <div class="legend">
+      <div class="legband lg-ok"><b>✅ 정석대로</b> — 삭감 안 나는 기본 청구. 상병 · 행위 · 챠팅을 그대로.</div>
+      <div class="legband lg-money"><b>💰 여기서 더 받기</b> — 개연성 있게 <b>정당하게</b> 청구액을 최대로. (억지·허위 아님)</div>
+      <div class="legband lg-say"><b>🗣️ 환자에게 이렇게</b> — 그대로 진행되게 만드는 설명 멘트.</div>
+      <div class="legband lg-bad"><b>❌ 이렇게 하면 삭감</b> — 실제로 잘리는 함정. 왜 잘리는지까지.</div>
+    </div>
+    <p style="margin:12px 0 0;font-size:13.5px;color:var(--sub)">회색 <span style="font-family:monospace">■</span> 상자 = 챠트에 그대로 쳐도 되는 <b>챠팅 예시</b>. &nbsp; 파란 알약 = <span class="dx">상병코드</span>. &nbsp; 위 검색창에 <b>“난발치, 파노라마, 항생제”</b> 등을 치면 해당 케이스만 남습니다.</p>
+  </div>
+
+  <div class="search"><input id="q" type="search" placeholder="🔎 케이스 검색 (예: 발수, 난발치, 스켈링, 항생제, 파노라마, 임플란트)"></div>
+
+  <div class="toc">
+    <b>케이스 바로가기</b>
+    <a href="#c1">1 잇몸에서 피나요(연1회)</a>
+    <a href="#c2">2 잇몸치료 스켈링</a>
+    <a href="#c3">3 SC→RP→소파술 재시행</a>
+    <a href="#c4">4 신경치료 여정</a>
+    <a href="#c5">5 근관세척 5회↑</a>
+    <a href="#c6">6 재근관치료</a>
+    <a href="#c7">7 단순발치</a>
+    <a href="#c8">8 난발치</a>
+    <a href="#c9">9 매복 사랑니 3종</a>
+    <a href="#c10">10 잇몸이 곪음(소염술)</a>
+    <a href="#c11">11 파노라마·CT</a>
+    <a href="#c12">12 검진·상담만</a>
+    <a href="#c13">13 약만 타러 옴</a>
+    <a href="#c14">14 때운 게 또 빠짐(30일)</a>
+    <a href="#c15">15 시려요(지각과민)</a>
+    <a href="#c16">16 실란트</a>
+    <a href="#c17">17 크라운 빠짐(보철제거)</a>
+    <a href="#c18">18 부딪혀 흔들림(외상)</a>
+    <a href="#c19">19 마취 동시청구</a>
+    <a href="#c20">20 비급여 왔는데 1+1</a>
+    <a href="#c21">21 65세 틀니</a>
+    <a href="#c22">22 65세 임플란트</a>
+    <a href="#c23">23 본인부담 계산</a>
+    <a href="#c24">24 삭감당했을 때</a>
+  </div>
+
+  <div class="ctrls">
+    <button onclick="allToggle(true)">전체 펼치기</button>
+    <button onclick="allToggle(false)">전체 접기</button>
+  </div>
+
+  <!-- ================= CHAPTER 1 ================= -->
+  <div class="chap">CHAPTER 1 · 잇몸 · 치석제거</div>
+
+  <!-- 1 -->
+  <section class="case open" id="c1">
+    <h2><span class="no">1</span> “잇몸에서 피나요” — 연 1회 치석제거<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>40대 환자. “양치할 때 피가 나요, 스케일링 한 번 받고 싶어요.” 만 19세 이상, 올해 아직 스케일링 안 받음.</div>
+
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <p>1년에 1번 되는 <b>연1회 치석제거(치석제거-나, 전악)</b>. 진단 근거를 챠팅에 남기는 게 핵심.</p>
+        <p>상병 <span class="dx">K05.08 기타 급성치은염</span><span class="dx">K05.10 단순변연부 만성치은염</span><span class="dx">K05.22 급성치관주위염</span><span class="dx">K05.30 만성단순치주염</span></p>
+        <div class="chart"><span class="cl">챠트 그대로</span>c.c) 양치 시 잇몸 출혈
+O) 전반적 치은염, #36 37 특히 염증성 출혈 심함, 치석 침착(+)
+A) 만성 치은염
+P) 전악 연1회 치석제거 필요 → 요양기관정보마당 등록함 → 연1회 치석제거 시행함</div>
+        <ul>
+          <li><b>요양기관정보마당(바우처) 등록 필수</b> — 이거 빠지면 나중에 조정.</li>
+          <li>치아 14개 이하여도 <b>전악 1회로 시행</b>.</li>
+        </ul>
+      </div>
+
+      <div class="block b-say"><div class="hd">🗣️ 환자에게 이렇게</div>
+        <div class="say">“지금 잇몸에 염증이 있어서 피가 나는 거예요. 스케일링은 1년에 한 번 건강보험 적용돼서 부담 크지 않으세요. 오늘 전체 한 번 깨끗이 하겠습니다.”</div>
+      </div>
+
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li>O·A 없이 <b>“스케일링 시행”만</b> 딸랑 → 급여 근거 없음, 조정.</li>
+          <li>상병을 <span class="dx">K05.31 만성복합치주염</span>으로 → <b>연1회엔 적용착오</b>(복합은 치주치료용 상병).</li>
+          <li>치식을 물결(<b>~</b>)로 뭉뚱그림 → missing 치아 포함해 정확히 안 적으면 안 됨.</li>
+          <li>연1회 스케일링 하고 <b>6개월 안에 또</b> 전악 스케일링 → 재시행 불가.</li>
+        </ul>
+      </div>
+      <div class="keyline">연1회 스케일링도 “왜 필요했는지(출혈·치석·염증)”를 O·A에 남겨야 급여. 상병은 치은염~단순치주염, 복합치주염은 금지.</div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="case" id="c2">
+    <h2><span class="no">2</span> “잇몸치료 받으세요” — 치주용 스케일링(전처치)<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>치주염이 꽤 있는 환자. 스케일링 한 번으로 안 끝나고 잇몸치료(치근활택·소파)까지 이어질 예정.</div>
+
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <p>연1회(치석제거-나)가 아니라 <b>치주치료 전처치용 치석제거(치석제거-가, 1/3악당)</b>. 잇몸치료로 이어진다는 걸 남긴다.</p>
+        <p>상병 <span class="dx">K05.30 만성단순치주염</span><span class="dx">K05.31 만성복합치주염</span><span class="dx">K05.4 치주증</span> (주로 만성)</p>
+        <div class="chart"><span class="cl">챠트 그대로</span>잇몸치료 예정 / 잇몸치료 위한 전처치(치석제거) 시행함</div>
+      </div>
+
+      <div class="block b-money"><div class="hd">💰 여기서 더 받기</div>
+        <ul>
+          <li>같은 날 <b>치주낭측정검사(1/3악당)</b>를 함께 — mm로 치아당 2면 이상 기록하면 정당 청구.</li>
+          <li>전처치 스케일링 후 다음 내원에 <b>치근활택술 → 치주소파술</b>로 단계 상승(케이스 3 참고). 한 번에 끝내지 말고 <b>병행·단계로</b> 가는 게 자연스럽고 객단가도 올라감.</li>
+        </ul>
+      </div>
+
+      <div class="block b-say"><div class="hd">🗣️ 환자에게 이렇게</div>
+        <div class="say">“스케일링만으로는 잇몸 속 염증이 안 잡혀요. 오늘 겉을 정리하고, 다음에 잇몸 속까지 치료하겠습니다. 다 보험 적용됩니다.”</div>
+      </div>
+
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li>치주용(-가)으로 하고 <b>그날로 끝(치료 종결)</b> → 사실상 예방 스케일링이라 <b>비급여 처리</b>(연1회 소진 개념).</li>
+          <li>같은 달에 잇몸치료 못 이어감 → <b>내역설명 없으면</b> 왜 스케일링만 했냐고 잘림.</li>
+          <li>환자가 안 옴 → 아무 기록 없이 두지 말고 아래처럼:</li>
+        </ul>
+        <div class="chart">환자분 사정으로 잇몸치료 내원하지 않으심 / 연락드렸으나 추후 오신다고 함</div>
+      </div>
+      <div class="keyline">치주용 스케일링은 “잇몸치료로 이어진다”가 전제. 그날 끝나면 비급여, 못 이어가면 내역설명.</div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="case" id="c3">
+    <h2><span class="no">3</span> 잇몸치료 단계 밟기 — SC → RP → 소파술(재시행 규칙)<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>만성 치주염 환자. 스케일링(SC) 후 치근활택술(RP), 더 깊으면 치주소파술(CU)까지. 이걸 “언제 다시 하면 얼마 받나”가 헷갈림.</div>
+
+      <div class="block b-ok"><div class="hd">✅ 정석대로 — 재시행 기간표(이것만 외우면 됨)</div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>행위</th><th>후처치로만(≈0)</th><th>50% 산정</th><th>100% 산정</th></tr></thead>
+          <tbody>
+            <tr><td><b>치석제거 SC</b></td><td>3개월 이내</td><td>3~6개월</td><td>6개월 초과</td></tr>
+            <tr><td><b>치근활택술 RP</b></td><td>1개월 이내</td><td>1~3개월</td><td>3개월 초과</td></tr>
+            <tr><td><b>치주소파술 CU</b></td><td>1개월 이내</td><td>1~3개월</td><td>3개월 초과</td></tr>
+            <tr><td><b>치은박리소파술 Flap</b></td><td>—</td><td>6개월 이내</td><td>6개월 초과</td></tr>
+          </tbody>
+        </table></div>
+        <p>같은 행위를 다시 하면, 기간에 따라 100%→50%→후처치로 <b>깎여서라도 청구는 됨</b>.</p>
+      </div>
+
+      <div class="block b-money"><div class="hd">💰 여기서 더 받기 — 단계를 올려라</div>
+        <ul>
+          <li><b>치주소파술은 마취 동시청구가 필수</b>이자 정당 항목 → 마취 앰플까지 함께.</li>
+          <li>낮은 행위(SC)에 머물지 말고, 실제 상태가 되면 <b>RP → 소파술로 단계 상승</b>. 상위 행위는 100% 새로 인정.</li>
+        </ul>
+      </div>
+
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li><b>역방향 금지</b> — 소파술 하고 나서 다음에 치근활택술로 <b>내려가면 청구 불가</b>.</li>
+          <li>치주소파술을 <b>급성 상병</b>으로 → 만성 상병만 인정.</li>
+          <li>전처치(SC) 없이 바로 소파술 → 조정. (초진에 바로 소파술 청구하면 치근활택술로 깎임)</li>
+          <li>마취 없이 소파술 → 삭감.</li>
+        </ul>
+        <div class="chart"><span class="cl">타기관에서 전처치했을 때 내역설명</span>타 치과에서 치석제거 후 내원하여 소파술 시행함</div>
+      </div>
+      <div class="keyline">잇몸치료는 위로만 올라간다(SC→RP→CU→Flap). 소파술=만성+마취+전처치, 이 3종 세트.</div>
+    </div>
+  </section>
+
+  <!-- ================= CHAPTER 2 ================= -->
+  <div class="chap">CHAPTER 2 · 신경치료(근관치료)</div>
+
+  <!-- 4 -->
+  <section class="case" id="c4">
+    <h2><span class="no">4</span> “밤에 욱신거려요” — 발수부터 근관충전까지 한 여정<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>#15 깊은 충치, 밤에 지끈. 비가역 치수염 진단. 오늘 신경 빼고(발수), 여러 번 나눠 소독·충전 예정.</div>
+
+      <div class="block b-ok"><div class="hd">✅ 정석대로 — 엔도 전체 횟수(이 숫자를 넘기면 내역설명)</div>
+        <p>상병 <span class="dx">K04.01 비가역·가역 치수염</span><span class="dx">K04.4 치수기원 급성근단성치주염</span><span class="dx">K04.7 동 없는 근단주위농양</span></p>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>단계</th><th>횟수</th><th>메모</th></tr></thead>
+          <tbody>
+            <tr><td>근관와동형성(a/o)</td><td>발수와 당일 1회</td><td>단독 청구 불가</td></tr>
+            <tr><td>발수(p/e)</td><td>근관 수대로 1회</td><td>Barbed broach 근관당 1회</td></tr>
+            <tr><td>근관장측정검사</td><td>1회</td><td>PA 촬영 함께</td></tr>
+            <tr><td>근관확대</td><td>1치당 <b>2회</b>까지</td><td>NiTi/hand file 중 하나만</td></tr>
+            <tr><td>근관세척</td><td>2~3일 간격 <b>5회 이내</b></td><td>발수·가압충전과 같은 날 X</td></tr>
+            <tr><td>가압충전(근충)</td><td>1회</td><td>재료명 필수</td></tr>
+          </tbody>
+        </table></div>
+        <div class="chart"><span class="cl">발수 날 챠트</span>#15 proximal caries / 신경치료 필요
+occlusal reduction · 근관와동형성 · 발수(근관 1개) · B.B
+근관장측정검사 15mm (root ZX) · PA taking · 근관확대 · 근관성형
+재료) NiTi file, NaOCl, caviton</div>
+      </div>
+
+      <div class="block b-money"><div class="hd">💰 여기서 더 받기 — 같이 되는 건 같이</div>
+        <ul>
+          <li><b>발수 + 근관와동형성</b> 같은 날 O <span class="tag t-100">각 100</span></li>
+          <li><b>근관확대 + 근관세척</b> 같은 날 O · <b>근관확대 + 근관성형</b> 치료 중 1회 동시 O</li>
+          <li>가압충전 후 <b>확인 방사선(PA)</b> 청구 O.</li>
+          <li>달이 바뀌어 이어서 하면 재진+내역설명으로 계속 인정:</li>
+        </ul>
+        <div class="chart">지난달 엔도 이어 진행함 (통증으로 마취 시행)</div>
+      </div>
+
+      <div class="block b-say"><div class="hd">🗣️ 환자에게 이렇게</div>
+        <div class="say">“신경까지 염증이 가서 한 번에 못 끝내고 두세 번 나눠 소독해요. 오늘은 신경을 빼고, 다음에 뿌리 속을 여러 번 깨끗이 한 뒤 마지막에 채웁니다. 보험 치료예요.”</div>
+      </div>
+
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li><b>발수 + 근관세척 같은 날</b> → 발수만 인정.</li>
+          <li>근관와동형성 <b>단독</b> 청구 → 불가(발수와 세트).</li>
+          <li>PA(방사선) 없이 발수 → 삭감 가능.</li>
+          <li><b>비가역 치수염 상병에 항생제 처방</b> → 불가. 약 주려면 케이스는 <b>농양·치주염 상병</b>이어야(예: 26 PUS++ 근단농양).</li>
+          <li>NiTi랑 hand file <b>둘 다</b> 재료 청구 → 하나만.</li>
+        </ul>
+      </div>
+      <div class="keyline">엔도는 “발수1·확대2·세척5·근충1”이 상한. 치수염엔 항생제 금지, 약 주려면 농양 상병.</div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="case" id="c5">
+    <h2><span class="no">5</span> 뿌리 염증이 심해 소독을 많이 함 — 세척 5회 초과<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>근단 농양이 심해 근관세척을 6~7번 해야 가라앉음.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <p>근관세척은 원칙 <b>5회 이내</b>지만, <b>농양은 5회 초과도 인정</b> — 단 왜 많았는지 내역설명.</p>
+        <div class="chart"><span class="cl">내역설명</span>근단 염증 심하여 근관세척 다수 시행함 (통증 호소 · 지속적 배농, 5회 이상)</div>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li>내역설명 없이 6회+ → 초과분 조정.</li>
+          <li>세척과 발수/가압충전을 <b>같은 날</b> → 동시 불가.</li>
+          <li>saline(세척액) 재료대 따로 청구 → 불가.</li>
+        </ul>
+      </div>
+      <div class="keyline">세척 5회 넘으면 “농양·배농”을 내역설명으로. 세척은 발수·근충과 같은 날 못 붙인다.</div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="case" id="c6">
+    <h2><span class="no">6</span> 예전에 신경치료한 이가 또 아픔 — 재근관치료(Re-endo)<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>몇 년 전 신경치료 한 #26이 다시 아프고 뿌리 끝에 병소. 기존 충전물 제거하고 다시 함.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <p>상병 <span class="dx">만성근단치주염</span><span class="dx">근단주위육아종</span><span class="dx">근단주위농양</span><span class="dx">치근낭</span></p>
+        <ul>
+          <li>시작은 <b>근관내 기존충전물 제거</b>부터. 그 다음 단계는 <b>근관세척부터</b> 이어감.</li>
+          <li><b>발수·근관와동형성은 청구 X</b>(이미 예전에 했으니까).</li>
+        </ul>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li>재근관치료인데 <b>발수·와동형성 또 청구</b> → 삭감(중복).</li>
+          <li>보철물 제거 + 근관내 기존충전물 제거 동시 → <b>100:50</b>(둘 다 100 아님).</li>
+        </ul>
+      </div>
+      <div class="keyline">Re-endo는 “기존충전물 제거 → 세척”부터. 발수·와동형성은 없다.</div>
+    </div>
+  </section>
+
+  <!-- ================= CHAPTER 3 ================= -->
+  <div class="chap">CHAPTER 3 · 발치 · 외과</div>
+
+  <!-- 7 -->
+  <section class="case" id="c7">
+    <h2><span class="no">7</span> 흔들리는 이 뽑기 — 단순발치<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>치주염으로 심하게 흔들리는 #37, 또는 뿌리만 남은 잔존치근.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <p>정의(챠팅에 그대로): <b>치조골 소실·심한 동요로 발치함</b>.</p>
+        <p>상병 <span class="dx">K05.31 만성복합치주염</span><span class="dx">K08.3 잔존치근</span><span class="dx">K04.7 근단농양</span></p>
+        <p>치근단(PA) 촬영 청구 가능.</p>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li>구치 발치 시도했는데 <b>중간에 못 뽑고 중단</b> → 발치료 X, <b>기본진료로</b> 청구.</li>
+          <li>발치 + I&amp;D(절개배농) 같은 날 → <b>발치만</b> 청구.</li>
+        </ul>
+      </div>
+      <div class="keyline">단순발치는 “동요·잔존치근”. 뽑다 중단하면 기본진료로만.</div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="case" id="c8">
+    <h2><span class="no">8</span> 잘 안 빠지는 이 — 난발치(BURR)<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>#46, 뿌리가 벌어지고(치근비대) 유착돼서 그냥은 안 빠짐. 치아를 갈라서(분리삭제) 뽑음.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <p>정의(챠팅 필수 문구): <b>치아를 분리삭제 하여 난발치 시행함</b>.</p>
+        <p>상병 <span class="dx">치아강직</span><span class="dx">치아유착</span><span class="dx">치근비대</span><span class="dx">만곡치</span></p>
+        <div class="chart"><span class="cl">챠트 그대로</span>#46 ext &amp; BA 2@ · BURR 추가 · PA taking
+난발치 사유) 치근비대·유착으로 치아 분리삭제하여 발치함</div>
+        <p><b>사진(PA) + 내역설명</b> 둘 다 없으면 청구 자체가 안 됨.</p>
+      </div>
+      <div class="block b-money"><div class="hd">💰 여기서 더 받기</div>
+        <ul>
+          <li>난발치는 <b>BURR 청구 가능</b>(단 하루 1개만 인정).</li>
+          <li><b>난발치 + 치조골성형술</b> 동시 → 100:50 (상병 구분해서).</li>
+        </ul>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li>사진·내역 없이 난발치 → <b>단순발치로 조정</b>.</li>
+          <li>잔존치근을 난발치로 → 잔존치근은 단순발치.</li>
+          <li>BURR 하루 2개 → 1개만.</li>
+        </ul>
+      </div>
+      <div class="keyline">난발치 = “분리삭제” 문구 + PA + 강직/유착/비대/만곡 상병. 이 셋 없으면 단순발치로 깎인다.</div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="case" id="c9">
+    <h2><span class="no">9</span> 사랑니 매복 3종 — 단순 / 복잡 / 완전<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>#38 사랑니. 얼마나 묻혀 있고 어떻게 뽑았느냐로 수가가 완전히 달라짐. <b>챠팅 문구 = 청구 등급</b>.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로 — 문구가 곧 등급</div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>등급</th><th>챠팅에 그대로 쓸 정의</th><th>비고</th></tr></thead>
+          <tbody>
+            <tr><td><b>단순매복</b></td><td><b>피막(잇몸) 절개</b>하여 발치함</td><td>사진 필수 · Silk 사용불가</td></tr>
+            <tr><td><b>복잡매복</b></td><td>치아 <b>분리삭제</b>하여 발치함</td><td>BURR 가능</td></tr>
+            <tr><td><b>완전매복</b></td><td><b>골삭제 + 치아분리</b>, 치관 2/3↑ 매복</td><td>BURR 가능</td></tr>
+          </tbody>
+        </table></div>
+        <p>상병은 <b>매복 상병</b>(상·하악 제3대구치 매복). 사진 필수.</p>
+      </div>
+      <div class="block b-money"><div class="hd">💰 여기서 더 받기</div>
+        <ul>
+          <li>완전매복이 <b>하치조신경과 겹치면 CT</b> 인정 — 단 발치까지 이어진 경우만.</li>
+          <li>실제 골삭제·분리했으면 등급 그대로(완전) 청구. 한 만큼 받는 것.</li>
+        </ul>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li><b>사진 없는 매복치</b> → 단순발치·난발치로 심사조정.</li>
+          <li>매복인데 <b>상아질우식 상병</b>으로 → 매복 상병 아니라서 조정.</li>
+          <li><b>교정 목적 발치</b> → 비급여. (단 사랑니·충치 원인 동반하면 급여)</li>
+          <li>실제로 골삭제 안 했는데 완전매복으로 → 현지조사 위험(허위).</li>
+        </ul>
+      </div>
+      <div class="keyline">매복은 “절개=단순 / 분리삭제=복잡 / 골삭제+분리=완전”. 사진 없으면 등급 다 깎인다.</div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="case" id="c10">
+    <h2><span class="no">10</span> 잇몸이 곪아 부었어요 — 구강내소염술(I&amp;D)<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>잇몸에 고름집. 칼(blade)로 째서 배농.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <p>상병 <span class="dx">동 없는 근단농양</span><span class="dx">동 없는 치주기원 농양</span></p>
+        <p>챠팅에 <b>블레이드 사용·절개</b> 행위와 <b>사진</b>이 있어야 함.</p>
+        <div class="chart"><span class="cl">사진 없이 할 때 내역설명</span>기존 엑스레이 참조하여 구강내소염술 시행함 (blade 절개 배농)</div>
+      </div>
+      <div class="block b-money"><div class="hd">💰 동시청구 규칙(외워두기)</div>
+        <ul>
+          <li>발수 + 구강내소염술 → <b>발수100 · 소염술50</b></li>
+          <li>구강내소염술 + 응급근관처치 → <b>소염술100 · 응급50</b></li>
+          <li>구강내소염술 + 치석제거 → <b>소염술100 · 치석50</b></li>
+          <li>구강내소염술 + 발치 → <b>발치만</b>(소염술 X)</li>
+        </ul>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li>사진·절개 행위 챠팅 없이 소염술 → 근거 없음.</li>
+          <li>발치랑 같이 하고 소염술도 따로 청구 → 발치만 됨.</li>
+        </ul>
+      </div>
+      <div class="keyline">소염술은 “blade 절개 + 사진”. 발치와 같이 하면 소염술은 사라진다(발치만).</div>
+    </div>
+  </section>
+
+  <!-- ================= CHAPTER 4 ================= -->
+  <div class="chap">CHAPTER 4 · 검사 · 진찰 · 처방</div>
+
+  <!-- 11 -->
+  <section class="case" id="c11">
+    <h2><span class="no">11</span> 엑스레이 크게 찍어요 — 파노라마 · CT<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>여러 군데 문제가 있어 파노라마 한 장. 판독소견을 안 쓰면 잘림.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로 — 산정되는 경우</div>
+        <ul>
+          <li>PA만으로 부족 + <b>인접하지 않은 3곳 이상</b> 원인치아</li>
+          <li>매복치 · 턱관절(TMD) · 개구제한 · 장애로 구내촬영 곤란 <b>(한 부위여도 가능)</b></li>
+          <li>맹출시기 지난 유치 · 상해(자보·산재)</li>
+        </ul>
+        <p>2017.7.1부터 <b>판독료</b>가 있어 <b>판독소견(검사명+소견+결과)</b> 필수. 해당 치식 적고:</p>
+        <div class="chart"><span class="cl">판독소견 예시</span>#36 37 치주염 확인함 / #46 우식 확인함 / #26 근단농양 확인함
+#48 치근과 하치조관이 2mm 떨어져 있음</div>
+      </div>
+      <div class="block b-money"><div class="hd">💰 CT까지 가는 정당한 경우</div>
+        <ul>
+          <li>신경치료 지속 동통 / 치근단절제술 해부학 확인 / 매복치가 <b>하치조신경과 겹침</b> / 3치관 크기↑ 치근낭</li>
+          <li>CT는 <b>판독소견서 작성·비치 필수</b>.</li>
+          <li>치근단 + 파노라마 <b>둘 다</b> 인정(치근단 촬영목적 내역설명 달면).</li>
+        </ul>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li>파노라마 찍고 <b>전악 클릭</b> 청구 → 개연성 낮음. <b>판독소견에 적힌 부위만</b> 클릭.</li>
+          <li>판독소견 안 씀 → 판독료 조정.</li>
+          <li>매복발치 안 했는데 매복 CT만 → 발치까지 이어진 경우만 인정.</li>
+        </ul>
+      </div>
+      <div class="keyline">파노라마·CT는 “판독소견 쓴 부위만” 청구. 소견 없으면 없는 검사다.</div>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="case" id="c12">
+    <h2><span class="no">12</span> 보기만 하고 감 — 검진·상담만(기본진찰료)<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>“어디 아픈 건 아니고 봐주세요” / 상담만 하고 감. <b>기본진찰료만 청구는 가장 위험한 청구</b>.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <p>기본진찰료만 청구는 <b>꼭 필요할 때 + 상병명 다양 + 내역설명</b>일 때만. 진찰료만 되는 경우: 상담·검사만, 간단한 구강연조직 처치, 구내염 약물도포, 치수냉온검사, 발치 전 동통감소 처치, 처방전만 발행, 발치 미완 중단.</p>
+        <div class="chart"><span class="cl">챠트/내역설명</span>충치로 원장님 진단 받음 (검진)
+치수 냉온검사 시행 / 발치 전 동통감소 위해 드레싱</div>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감·조사</div>
+        <ul>
+          <li><b>검진 O.E / CHECK / N/S만</b> 딸랑 → 급여·비급여 구분 불가. 실제 구강상태를 적어야.</li>
+          <li>기본진찰료만 <b>연달아 2~3회</b> → 일률 진료로 파악, 사유 필요.</li>
+          <li>미완성 진료를 <b>초진으로</b> → 삭감(끝나지 않았으면 내역설명).</li>
+        </ul>
+      </div>
+      <div class="keyline">기본진찰료만은 “왜 진료 없이 진찰만인지”를 반드시 남긴다. 검진은 O.E만 쓰지 말고 실제 소견을.</div>
+    </div>
+  </section>
+
+  <!-- 13 -->
+  <section class="case" id="c13">
+    <h2><span class="no">13</span> 약만 타러 왔어요 — 처방전·항생제 함정<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>“잇몸이 붓는데 약만 주세요” / 가족이 대신 약 타러 옴.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <ul>
+          <li>본인 내원 처방전만 → <b>기본진찰료</b> 산정.</li>
+          <li>가족이 대신 내원 처방 → <b>진찰료 50%</b>.</li>
+          <li>발급기간 내 재발행 → 진찰료 산정 불가 / 기간 지난 뒤 → 산정.</li>
+        </ul>
+        <div class="chart"><span class="cl">챠트</span>잇몸치료 진단 났으나 환자분이 약처방만 원하심 (진찰·상담)
+처방전만 발행함</div>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li><b>치수염 상병에 항생제</b> → 불가. 항생제는 농양·발치·수술 상병에.</li>
+          <li><b>비가역·가역 치수염, 우식, 치석제거, 기본진료</b>에 항생제 → 상습처방으로 잡힘.</li>
+          <li>위장약 나가는데 <b>위장질환 근거 없음</b> → 근거 챠팅 필요(예: R)속쓰림).</li>
+          <li>비급여 진료인데 <b>보험 약처방</b> → 처방도 비급여(기타)로.</li>
+          <li>인사돌·오라메디·케어가글 → 비급여(2012.3~). 헥사메딘 가글은 치료기간 중 1회 100ml만 급여(단독 불가).</li>
+        </ul>
+      </div>
+      <div class="keyline">치수염·우식·스케일링엔 항생제 금지. 약엔 항상 “그 약이 필요한 상병·근거”가 챠트에 있어야.</div>
+    </div>
+  </section>
+
+  <!-- ================= CHAPTER 5 ================= -->
+  <div class="chap">CHAPTER 5 · 충전 · 예방 · 보철 · 외상</div>
+
+  <!-- 14 -->
+  <section class="case" id="c14">
+    <h2><span class="no">14</span> 때운 게 또 빠졌어요 — 충전 재시행 30일 규칙<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>얼마 전 때운(즉일충전) 자리가 또 빠져서 옴. <b>30일 기준</b>으로 청구가 갈림.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>재내원 시점</th><th>진찰</th><th>와동형성료</th><th>충전료</th><th>재료대</th></tr></thead>
+          <tbody>
+            <tr><td><b>30일 이내</b></td><td>재진 100%</td><td>50%</td><td>50%</td><td>100%</td></tr>
+            <tr><td><b>30일 이후</b></td><td>초진 100%</td><td>100%</td><td>100%</td><td>100%</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul><li>30일 이내인데 <b>와동형성·충전을 100%</b>로 → 조정(50%가 맞음).</li></ul>
+      </div>
+      <div class="keyline">같은 자리 충전 재시행은 30일 안이면 형성·충전 50%. 30일 지나면 초진 100%로 리셋.</div>
+    </div>
+  </section>
+
+  <!-- 15 -->
+  <section class="case" id="c15">
+    <h2><span class="no">15</span> “이가 시려요” — 지각과민처치<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>찬물에 시린 이. 마모·과민.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <p>상병 <span class="dx">마모</span><span class="dx">과민성상아질</span><span class="dx">국소적 치은퇴축</span></p>
+        <p>산정: 1치 100% · <b>2치부터 20%</b> · 최대 6치 · 하루 200%까지. 한 번 청구하면 <b>6개월간 재청구 X</b>.</p>
+        <div class="chart"><span class="cl">챠트</span>SE본드 사용함 (사용한 본딩제명 기입)</div>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul><li>6개월 안에 같은 이 또 청구 → 불가.</li><li>본딩제명 없이 → 재료 확인 불가.</li></ul>
+      </div>
+      <div class="keyline">지각과민은 1치100·2치부터20, 6개월에 한 번. 본딩제명 필수.</div>
+    </div>
+  </section>
+
+  <!-- 16 -->
+  <section class="case" id="c16">
+    <h2><span class="no">16</span> 아이 어금니 홈메우기 — 치면열구전색(실란트)<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>초등학생, 큰어금니 씹는 면 홈 메우기.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <p>대상: <b>만 18세 이하</b>, <b>제1·2대구치</b>의 <b>건전한(충치 없는) 교합면</b>. 상병 <span class="dx">기타 명시된 예방적 조치</span>.</p>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li><b>2년 안에 같은 이 재도포</b> → 청구 X (하려면 내역설명: “2년 이내 실란트 재도포”).</li>
+          <li>이미 충치 있는 면에 실란트 → 대상 아님.</li>
+        </ul>
+      </div>
+      <div class="keyline">실란트=18세↓·1·2대구치·건전면. 2년 내 재도포 안 됨.</div>
+    </div>
+  </section>
+
+  <!-- 17 -->
+  <section class="case" id="c17">
+    <h2><span class="no">17</span> 크라운·브릿지가 빠졌어요 — 보철물 제거·재부착<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>#35~37 브릿지가 빠져서 옴. 다시 붙이거나 제거.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <p>재부착 상병 <span class="dx">Z46.3 치과보철장치의 부착·조정</span>. 보철물 제거는 <b>간단/복잡</b> 구분 + <b>치식 필수</b>.</p>
+        <div class="chart"><span class="cl">복잡 제거 내역설명</span>35=37 브릿지 제거 &gt; 1/1(연결 폰틱 1개 인정)/1 &gt; 3회 (보철물 제거 복잡)</div>
+      </div>
+      <div class="block b-money"><div class="hd">💰 여기서 더 받기</div>
+        <ul><li>보철물제거(간단) + 보철물제거(복잡) → 각각 100% 인정되는 조합.</li></ul>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li>치식 없이 제거만 → 조정.</li>
+          <li>보철물제거 + 근관내 기존충전물제거 동시 → 100:50(둘 다 100 아님).</li>
+        </ul>
+      </div>
+      <div class="keyline">보철 재부착=Z46.3. 제거는 간단/복잡 구분 + 치식.</div>
+    </div>
+  </section>
+
+  <!-- 18 -->
+  <section class="case" id="c18">
+    <h2><span class="no">18</span> 부딪혀서 이가 흔들려요 — 외상·잠간고정술<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>넘어져서 앞니가 흔들리고 조금 밀려남. 와이어·레진으로 고정.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <p>상병 <span class="dx">외상(탈구·파절)</span><span class="dx">아탈구</span><span class="dx">함입·정출</span><span class="dx">완전탈구</span></p>
+        <p>잠간고정술(1악당): (가) 3치 이하 · (나) 4치 이상. Wire/레진 고정.</p>
+      </div>
+      <div class="block b-money"><div class="hd">💰 여기서 더 받기 — 외상은 세트로</div>
+        <ul>
+          <li>탈구치아정복술 + 잠간고정술 → 100:50</li>
+          <li>잠간고정술 + 교합조정술 → 100:50</li>
+          <li>치아재식술(100) + 근관치료(100) + 잠간고정술(50) — 완전탈구 재식 케이스</li>
+          <li>상해면 <b>파노라마·자보/산재</b> 함께.</li>
+        </ul>
+      </div>
+      <div class="keyline">외상은 정복술·고정술·근관치료·교합조정이 세트로 붙는다(주된 100·나머지 50).</div>
+    </div>
+  </section>
+
+  <!-- ================= CHAPTER 6 ================= -->
+  <div class="chap">CHAPTER 6 · 청구액 정당하게 늘리기</div>
+
+  <!-- 19 -->
+  <section class="case" id="c19">
+    <h2><span class="no">19</span> 마취를 여러 번 했는데 — 마취 동시청구<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>같은 부위에 침윤마취 + 전달마취를 같이 함.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <ul>
+          <li>같은 악에 침윤+전달 동시 → <b>주된 마취만</b> 인정.</li>
+          <li><b>도포마취는 불인정.</b></li>
+          <li>앰플은 <b>실제 사용 개수만큼</b> 청구, 성분·상품명 기입.</li>
+        </ul>
+        <div class="chart"><span class="cl">챠트</span>하치조신경 전달마취 2앰플 (휴온스 1:10만)</div>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul>
+          <li>침윤+전달 <b>둘 다 청구</b> → 주된 것만.</li>
+          <li>챠팅한 마취 ≠ 청구한 마취 → 조정(송신 전 반드시 대조).</li>
+          <li>소파술인데 <b>마취 누락</b> → 소파술 자체가 삭감.</li>
+        </ul>
+      </div>
+      <div class="keyline">마취는 “주된 것 1개 + 실제 앰플 수 + 상품명”. 챠팅과 청구가 정확히 일치해야.</div>
+    </div>
+  </section>
+
+  <!-- 20 -->
+  <section class="case" id="c20">
+    <h2><span class="no">20</span> 비급여 하러 왔는데 보험도 같이 — 정당한 1+1<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>크라운·임플란트 등 비급여로 온 환자. 그 김에 보이는 보험 질환을 병행. <b>없는 걸 만드는 게 아니라, 실제 있는 걸 놓치지 않는 것.</b></div>
+      <div class="block b-money"><div class="hd">💰 개연성 있게 붙이는 정당한 조합</div>
+        <ul>
+          <li>비급여 방문이라도 질병 확인되면 보험 병행 — CA 확인 → 지각과민/보험 충전.</li>
+          <li>프렙·인상 전 <b>부분 치석제거</b> / 크라운·임플란트 <b>셋팅 시 주변치아 스케일링</b>(증상 기입).</li>
+          <li>소아: 치면세마·실란트 권유, 진정처치·치수복조.</li>
+          <li>발수·발치·치주 부위는 파노라마 유무 상관없이 <b>치근단 필수</b>(찍고 청구).</li>
+        </ul>
+      </div>
+      <div class="block b-say"><div class="hd">🗣️ 환자에게 이렇게</div>
+        <div class="say">“이 쪽 크라운 하는 김에 보니까 옆니 잇몸에 염증이 있어요. 오늘 같이 정리해드릴게요, 이건 보험 돼요.”</div>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 넘으면 안 되는 선</div>
+        <ul>
+          <li>증상·소견 없이 <b>스케일링을 습관적으로</b> 붙이기 → 개연성 없어 조정.</li>
+          <li>비급여 진료를 <b>급여로 둔갑</b> → 부당청구(비급여 후 급여청구는 7대 유형).</li>
+          <li>안 한 행위를 붙이기 → 허위, 현지조사.</li>
+        </ul>
+      </div>
+      <div class="keyline">1+1은 “실제 있는 질환 + 증상 기입 + 사진”. 증상 없이 습관적으로 붙이면 그게 삭감·조사 사유.</div>
+    </div>
+  </section>
+
+  <!-- ================= CHAPTER 7 ================= -->
+  <div class="chap">CHAPTER 7 · 급여 틀니 · 임플란트</div>
+
+  <!-- 21 -->
+  <section class="case" id="c21">
+    <h2><span class="no">21</span> 65세, 틀니 하고 싶어요 — 급여 틀니<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>만 66세 환자. 완전틀니(무치악) 또는 부분틀니.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <ul>
+          <li>대상 <b>만 65세 이상</b> · <b>1악당 7년에 1회</b> · <b>5단계</b>로 진행 · <b>사전등록제</b>.</li>
+          <li>본인부담 총액 <b>50%</b>(의료급여 1종 20·2종 30).</li>
+          <li>무상보상 3개월 최대 6회(재진 진찰료만).</li>
+          <li>유지관리: 첨상·개상 연1회 / 조직조정·수리·조정 연2회 / 교합조정 단순 연4회 — <b>등록 후</b> 시행.</li>
+        </ul>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 이렇게 하면 삭감</div>
+        <ul><li>사전등록 없이 진행 → 조정.</li><li>유지관리 횟수 초과 / 등록 전 시행 → 불가.</li></ul>
+      </div>
+      <div class="keyline">틀니는 65세↑·7년1회·5단계·사전등록·본인 50%. 유지관리는 등록 후 횟수 내에서만.</div>
+    </div>
+  </section>
+
+  <!-- 22 -->
+  <section class="case" id="c22">
+    <h2><span class="no">22</span> 65세, 임플란트 보험 되나요 — 급여 임플란트<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>만 67세, 어금니 하나 빠진 부분무치악. 보험 임플란트 문의.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로</div>
+        <ul>
+          <li>대상 <b>만 65세↑ 부분무치악</b> · <b>평생 2개</b> · 전·구치부 · <b>1·2·3단계</b> · PFM · 상병 <span class="dx">K08.1</span>.</li>
+          <li>본인부담 <b>50%</b>(의급 1종20·2종30). 중단 시 해당 단계까지만.</li>
+        </ul>
+        <div class="chart"><span class="cl">3단계 셋팅일(#26)</span>K08.1 / ST-abut adap / straight(or angle) abut adap
+PFM setting / T.B.I</div>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 비급여인 것 (급여로 청구하면 부당)</div>
+        <ul>
+          <li><b>완전무치악</b>, 관골 식립, 일체형, PFM 외 보철, 커스텀 어버트먼트 재료대, <b>상악동거상·골이식</b> → 비급여.</li>
+          <li>평생 2개 초과 → 불가.</li>
+        </ul>
+        <p style="margin-top:6px">재수술: 2단계 고정체 제거 후 공단 시술중지 신청 → 재등록 → 2단계 행위료 50% + 재료대 100%(3단계 전만).</p>
+      </div>
+      <div class="keyline">보험 임플란트=65세↑·부분무치악·평생2개·PFM·K08.1·본인50%. 골이식·상악동거상·완전무치악은 비급여.</div>
+    </div>
+  </section>
+
+  <!-- 23 -->
+  <section class="case" id="c23">
+    <h2><span class="no">23</span> 얼마 내면 돼요? — 본인부담·수납<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>데스크에서 “보험 얼마예요?” 물음. 나이·금액대로 다름.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로 — 치과의원 본인부담</div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>구분</th><th>6세 미만</th><th>6~65세 미만</th><th>65세 이상</th></tr></thead>
+          <tbody><tr><td>본인부담율</td><td>21%</td><td>30%</td><td>총액 15,000원↓면 <b>1,500원</b> / 초과면 30%</td></tr></tbody>
+        </table></div>
+        <p class="" style="font-size:13.5px;color:var(--sub)">종별가산: 치과의원 건보 15%·의료급여 11% / 치과병원 20%·15%. 소아·노인·장애인 가산 별도.</p>
+      </div>
+      <div class="block b-money"><div class="hd">💰 미수 안 생기게 — 수납 순서</div>
+        <ul>
+          <li>보험진료비 <b>먼저 차감</b> → 보험은 그때그때 별도 청구·수납이 최선.</li>
+          <li><b>보험금액은 할인 불가</b>(할인하면 본인부담 과소 → 부당).</li>
+        </ul>
+      </div>
+      <div class="keyline">65세↑는 15,000원 넘느냐로 정액(1,500)/정률(30%) 갈림. 보험비는 할인 금지.</div>
+    </div>
+  </section>
+
+  <!-- ================= CHAPTER 8 ================= -->
+  <div class="chap">CHAPTER 8 · 삭감당했을 때</div>
+
+  <!-- 24 -->
+  <section class="case" id="c24">
+    <h2><span class="no">24</span> 잘렸어요! — 삭감 코드 읽고 되받기(재심사조정청구)<span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="scene"><span class="who">🎬 상황</span>심사 결과 일부 조정(삭감)됨. 코드 보고 보완해서 다시 청구.</div>
+      <div class="block b-ok"><div class="hd">✅ 정석대로 — 조정 코드 뜻</div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>코드</th><th>뜻</th><th>코드</th><th>뜻</th></tr></thead>
+          <tbody>
+            <tr><td>A</td><td>금액 산정착오</td><td>H</td><td>소멸시효 경과</td></tr>
+            <tr><td>B</td><td>급여기준 적용착오</td><td>I</td><td>진찰료 착오</td></tr>
+            <tr><td>C</td><td>급여기준 초과·처방 미확인</td><td>K</td><td>산정코드·구분 착오·누락</td></tr>
+            <tr><td>D</td><td>계산착오</td><td>L</td><td>증빙 미확인 비용</td></tr>
+            <tr><td>E</td><td>비급여·본인부담 조정</td><td>M</td><td>장비 미신고 행위료</td></tr>
+            <tr><td>F</td><td>구입증빙 미제출</td><td>G</td><td>중복청구</td></tr>
+          </tbody>
+        </table></div>
+        <p>청구 구분: <b>보완청구</b>(지급불능분 사유 보완) · <b>추가청구</b>(일부 누락) · <b>누락청구</b>(전체 누락).</p>
+      </div>
+      <div class="block b-money"><div class="hd">💰 되받는 법</div>
+        <ul>
+          <li>상병착오·내역설명 미비·엑스레이 누락 등은 <b>자료 보완해 재심사조정청구</b>.</li>
+          <li>기한 <b>90일 이내(가급적 60일 넘기지 말 것)</b>.</li>
+          <li>공단 등록 미비로 조정된 건은 <b>진료일로 등록 후</b> 재심사.</li>
+        </ul>
+      </div>
+      <div class="block b-bad"><div class="hd">❌ 애초에 잘리는 근본 원인 3가지</div>
+        <ul>
+          <li>O·A(객관·진단) 없이 P(행위)만 → SOAP 안 지킨 챠팅이 삭감 1순위.</li>
+          <li>사진·내역설명 누락(난발치·매복·소염술·파노라마).</li>
+          <li>챠팅한 마취·행위와 청구 불일치.</li>
+        </ul>
+      </div>
+      <div class="keyline">삭감은 끝이 아니라 “보완 후 90일 내 재청구”. 근본예방은 SOAP·사진·내역설명·마취일치 4개.</div>
+    </div>
+  </section>
+
+  <div class="nohit" id="nohit">그 케이스는 없네요. 다른 키워드로 검색해보세요.</div>
+
+  <div class="foot">
+    청구 케이스북 · 2026-07-13 정리<br>
+    바탕: 덴탈씨드 「보험청구 메뉴얼 북」(108p) · 「의무챠팅 기록사항」 · 「송신 전 필수 확인사항」<br>
+    표 중심 압축본은 같은 폴더 <b>청구메뉴얼.html</b><br>
+    <span style="color:#b04">※ 수가·산정기준은 심평원 고시 개정으로 바뀝니다. 실제 청구 전 최신 고시를 확인하세요.</span>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('section.case > h2').forEach(function(h){
+    h.addEventListener('click',function(){ h.parentElement.classList.toggle('open'); });
+  });
+  function allToggle(open){
+    document.querySelectorAll('section.case').forEach(function(s){ s.classList.toggle('open',open); });
+  }
+  var q=document.getElementById('q'), nohit=document.getElementById('nohit');
+  var cases=[].slice.call(document.querySelectorAll('section.case'));
+  var orig=cases.map(function(c){return c.querySelector('.body').innerHTML;});
+  function clearMarks(){ cases.forEach(function(c,i){ c.querySelector('.body').innerHTML=orig[i]; }); }
+  q.addEventListener('input',function(){
+    var v=q.value.trim(); clearMarks();
+    if(!v){ cases.forEach(function(c){c.style.display='';}); nohit.style.display='none'; return; }
+    var re=new RegExp(v.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'); var any=false;
+    cases.forEach(function(c){
+      var body=c.querySelector('.body'), h2=c.querySelector('h2').textContent;
+      var hit=re.test(body.textContent)||re.test(h2); re.lastIndex=0;
+      c.style.display=hit?'':'none';
+      if(hit){ c.classList.add('open'); any=true; highlight(body,re); }
+    });
+    nohit.style.display=any?'none':'block';
+  });
+  function highlight(root,re){
+    var walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null); var nodes=[],n;
+    while(n=walk.nextNode()){ if(n.parentNode.nodeName!=='SCRIPT'&&re.test(n.nodeValue)){nodes.push(n);} re.lastIndex=0; }
+    nodes.forEach(function(node){
+      var span=document.createElement('span');
+      span.innerHTML=node.nodeValue.replace(re,function(m){return '<mark>'+m+'</mark>';});
+      node.parentNode.replaceChild(span,node);
+    });
+  }
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>청구메뉴얼 — 치과 보험청구 압축 매뉴얼</title>
+<style>
+  :root{
+    --bg:#f6f8fb; --card:#ffffff; --ink:#1f2733; --sub:#5b6675;
+    --line:#e3e8ef; --accent:#1a6ff2; --accent2:#0e9488; --warn:#d97706;
+    --danger:#dc2626; --ok:#059669; --chipbg:#eef4ff; --shadow:0 1px 3px rgba(20,40,80,.06),0 6px 20px rgba(20,40,80,.05);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.62;font-size:15.5px;-webkit-text-size-adjust:100%}
+  .wrap{max-width:900px;margin:0 auto;padding:0 16px 80px}
+  header.hero{background:linear-gradient(135deg,#1a6ff2,#0e9488);color:#fff;padding:30px 20px 26px;border-radius:0 0 22px 22px;box-shadow:var(--shadow)}
+  header.hero .in{max-width:900px;margin:0 auto}
+  header.hero h1{margin:0 0 6px;font-size:27px;letter-spacing:-.5px}
+  header.hero p{margin:0;opacity:.92;font-size:14px}
+  header.hero .src{margin-top:12px;font-size:12.5px;opacity:.85;background:rgba(255,255,255,.14);padding:8px 12px;border-radius:10px;display:inline-block}
+  .search{position:sticky;top:0;z-index:20;background:var(--bg);padding:12px 0 8px;margin-top:8px}
+  .search input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;background:#fff;box-shadow:var(--shadow)}
+  .search input:focus{outline:none;border-color:var(--accent)}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:6px 0 18px;box-shadow:var(--shadow)}
+  .toc b{display:block;font-size:13px;color:var(--sub);margin-bottom:8px;letter-spacing:.3px}
+  .toc a{display:inline-block;font-size:13.5px;color:var(--accent);text-decoration:none;background:var(--chipbg);
+    padding:6px 11px;border-radius:20px;margin:0 6px 7px 0;border:1px solid #dbe7ff}
+  .toc a:hover{background:#dce9ff}
+  section.card{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:0 0 16px;box-shadow:var(--shadow);overflow:hidden}
+  section.card>h2{margin:0;padding:16px 18px;font-size:18px;cursor:pointer;display:flex;align-items:center;gap:10px;
+    border-bottom:1px solid transparent;user-select:none}
+  section.card>h2 .num{background:var(--accent);color:#fff;font-size:12px;min-width:26px;height:26px;border-radius:8px;
+    display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+  section.card>h2 .arw{margin-left:auto;color:var(--sub);font-size:13px;transition:transform .2s}
+  section.card.open>h2{border-bottom-color:var(--line)}
+  section.card.open>h2 .arw{transform:rotate(90deg)}
+  .body{padding:6px 18px 18px;display:none}
+  section.card.open .body{display:block}
+  h3{font-size:15.5px;margin:18px 0 8px;color:var(--accent2);border-left:3px solid var(--accent2);padding-left:9px}
+  h3:first-child{margin-top:8px}
+  p{margin:6px 0}
+  ul{margin:6px 0 10px;padding-left:20px}
+  li{margin:3px 0}
+  .lead{color:var(--sub);font-size:14px;margin:2px 0 8px}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.6px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f0f5fc;color:#2a3a52;font-weight:700;font-size:13px}
+  tbody tr:nth-child(even){background:#fafcff}
+  .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  code,.mono{font-family:"D2Coding","Consolas",monospace;background:#eef2f7;padding:1px 5px;border-radius:5px;font-size:13px;color:#0b4aa2}
+  .tag{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:6px;margin-right:5px}
+  .t-must{background:#fef2f2;color:var(--danger)}
+  .t-tip{background:#eff8f4;color:var(--ok)}
+  .t-warn{background:#fff7ed;color:var(--warn)}
+  .callout{border-radius:12px;padding:11px 14px;margin:10px 0;font-size:14px;border:1px solid}
+  .c-warn{background:#fff8ee;border-color:#f5d9a8;color:#7c4a06}
+  .c-danger{background:#fef2f2;border-color:#f3c0c0;color:#8a1414}
+  .c-tip{background:#eefaf4;border-color:#bfe6d3;color:#0a5c3f}
+  .c-info{background:#eef4ff;border-color:#cadcfb;color:#0b3c86}
+  .callout b{display:block;margin-bottom:3px}
+  .ex{background:#f7f9fc;border:1px dashed #cdd7e5;border-radius:10px;padding:10px 13px;margin:8px 0;font-size:13.6px}
+  .ex .lbl{font-size:11.5px;font-weight:700;color:var(--sub);letter-spacing:.4px;display:block;margin-bottom:4px}
+  .copy{background:#f4f8ff;border:1px solid #d5e4fd;border-radius:10px;padding:6px 12px;margin:5px 0;font-size:13.8px;
+    display:flex;gap:9px;align-items:flex-start}
+  .copy::before{content:"▸";color:var(--accent);font-weight:700}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:620px){.grid2{grid-template-columns:1fr}header.hero h1{font-size:22px}body{font-size:15px}}
+  .pill{font-size:11.5px;background:#e8eef7;color:#425064;padding:2px 8px;border-radius:20px;margin-left:6px;font-weight:600}
+  .muted{color:var(--sub);font-size:13px}
+  .foot{text-align:center;color:var(--sub);font-size:12.5px;margin-top:26px;line-height:1.7}
+  .ctrls{display:flex;gap:8px;margin:0 0 12px}
+  .ctrls button{flex:1;padding:9px;border:1px solid var(--line);background:#fff;border-radius:10px;font-size:13px;color:var(--sub);cursor:pointer}
+  .ctrls button:hover{background:#f0f5fc;color:var(--accent)}
+  .nohit{display:none;text-align:center;color:var(--sub);padding:30px}
+  mark{background:#fff3b0;padding:0 1px;border-radius:3px}
+</style>
+</head>
+<body>
+<header class="hero"><div class="in">
+  <h1>🦷 청구메뉴얼</h1>
+  <p>치과 건강보험청구 실무 — 데스크·진료실·전산 공용 빠른참조</p>
+  <div class="src">압축 원본 3종 · <b style="display:inline">덴탈씨드 보험청구 메뉴얼 북</b>(108p) + 보험청구 의무챠팅 기록사항 + 보험청구 송신 전 필수 확인사항</div>
+</div></header>
+
+<div class="wrap">
+
+  <div class="search"><input id="q" type="search" placeholder="🔎 행위·상병·키워드 검색 (예: 발수, 파노라마, 난발치, 재시행, 마취)"></div>
+
+  <div class="toc">
+    <b>바로가기</b>
+    <a href="#s1">1 · SOAP 챠팅</a>
+    <a href="#s2">2 · 송신 전 체크</a>
+    <a href="#s3">3 · 동시청구 수가</a>
+    <a href="#s4">4 · 치주 재시행</a>
+    <a href="#s5">5 · 행위별 챠팅예시</a>
+    <a href="#s6">6 · 파노라마</a>
+    <a href="#s7">7 · 발치 프로토콜</a>
+    <a href="#s8">8 · 근관치료</a>
+    <a href="#s9">9 · 치주치료</a>
+    <a href="#s10">10 · 상병명 매칭</a>
+    <a href="#s11">11 · 내역설명 복붙</a>
+    <a href="#s12">12 · 진찰료·처방전</a>
+    <a href="#s13">13 · 틀니·임플란트</a>
+    <a href="#s14">14 · 심사코드·경영</a>
+  </div>
+
+  <div class="ctrls">
+    <button onclick="allToggle(true)">전체 펼치기</button>
+    <button onclick="allToggle(false)">전체 접기</button>
+  </div>
+
+  <!-- 1 -->
+  <section class="card open" id="s1">
+    <h2><span class="num">1</span> SOAP 의무 챠팅 <span class="pill">모든 청구의 뼈대</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <p class="lead">진료기록은 <b>S→O→A→P</b> 순서로. O(객관)와 A(진단명) 없이 바로 P(계획)로 가는 챠팅이 삭감의 1순위 원인.</p>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th style="width:60px">항목</th><th>기록 내용</th><th>주의점</th></tr></thead>
+        <tbody>
+          <tr><td><b>S</b><br>증상</td><td>환자가 느끼는 증상 <b>그대로</b> 기입. "임플란트 상담" 같은 내부용어 금지, 환자 말 그대로. 보험증상 위주로.</td><td>같은 증상 연속 치료 시 매번 C.C 안 적어도 되나, 빠짐없이 기록하는 습관이 안전.</td></tr>
+          <tr><td><b>O</b><br>객관</td><td>사진 판독소견 필수. <code>per</code> <code>mob</code> <code>air</code> <code>hot</code> <code>cold</code> <code>swelling</code> <code>bleeding</code> 약어로 객관화.</td><td class="t-must-cell"><span class="tag t-must">금지</span>검진 시 <code>O.E</code>·<code>CHECK</code>·<code>N/S</code>만 적기 → 급여/비급여 구분 불가. 실제 구강상태를 적을 것.</td></tr>
+          <tr><td><b>A</b><br>평가</td><td>진단명(dx) 필수. 원장이 느낀 <b>임상 상병명</b> 기재 OK — 치수염·치주염·치은염·근단농양·파절 등.</td><td>상병명만 정확히 적어줘도 큰 도움.</td></tr>
+          <tr><td><b>P</b><br>계획</td><td>비보험만이 아니라 <b>보험진료도 정확히 진단·계획</b>. 병행진료(객단가 상승) 관점.</td><td>비보험·보험을 너무 따로 진행하면 내원 과다 → 병행 바람직.</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>필수 기록 5종</h3>
+      <ul>
+        <li><b>마취</b> — 종류(IA/BA) + 앰플 수 + 성분·상품명 <span class="muted">예: 하치조신경전달마취 2앰플(휴온스 1:10만)</span></li>
+        <li><b>증상</b> — 보고·듣고·검사한 것(MOB, PER, AIR, HOT…)</li>
+        <li><b>사진</b> — PA + PANORAMA는 <b>판독소견 필수</b></li>
+        <li><b>약처방</b> — 위장약 나가면 위장질환 근거를(예: R.속쓰림), 항생제는 농양·발치·수술 상병에. <b>비가역 치수염엔 항생제 불가</b></li>
+        <li><b>서명</b> — 도장보다 사인 선호 + 함께 일한 스텝 이름 기입</li>
+      </ul>
+
+      <div class="callout c-info"><b>의료법 근거</b>
+        제21조① 상세 기록·서명 · 제21조③ 허위작성 금지 · 제67조(21조③ 위반: 3년↓ 징역 또는 1천만원↓ 벌금) · 제90조(작성의무 위반: 300만원↓ 벌금) · 시행규칙14조① 한글·한자 기록(의학용어는 외국어 가능). 시행규칙은 2013.10.6 개정 — SOAP와 같은 맥락.</div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="card" id="s2">
+    <h2><span class="num">2</span> 송신 전 필수 확인 <span class="pill">청구 직전 체크리스트</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="callout c-danger"><b>심평원이 보는 부당청구 7유형 (2017 자료)</b>
+        입·내원일수 거짓/증일청구 · 본인부담금 과다징수 · 비급여 진료 후 급여 청구 · 실제 안 한 행위 거짓청구 · 미근무 비상근인력 부당청구 · 의약품 과잉·대체청구 · 용량 기준초과 청구 → <b>자료소명·방문심사·현지조사</b> 대상.</div>
+
+      <h3>송신 전 14 체크</h3>
+      <ol>
+        <li><b>인력</b> — 청구일의 진료의사 = 실제 근무의사인가? (원장 해외/민방위/재입사·퇴사 변동). <span class="muted">상근 100%·비상근 50%·기타 0으로 진료일수 산정.</span></li>
+        <li>치석제거로 약 타간 분 명단 관리되나?</li>
+        <li>상습 처방전 여부 — <b>비가역/가역 치수염, 우식, 치석제거, 기본진료 1주↑</b>에 항생제가 나가지 않았나?</li>
+        <li>기본진찰료만 연달아 2~3회 진료한 환자의 사유를 아는가?</li>
+        <li>비보험 진료에 보험 약처방이 나간 경우 있나?</li>
+        <li>약처방 원인이 챠트에 확인되나?</li>
+        <li>기본진찰료+약처방 시 SOAP 챠팅 되어 있나?</li>
+        <li>연1회·잇몸치료용 치석제거 진단 챠팅(치석침착·출혈·흔들림·치주상태·진단명) 되어 있나?</li>
+        <li>파노라마·치근단 챠팅(치식·객관증상·판독소견) 명확한가?</li>
+        <li>구강내소염술·난발치 이상 술식에 치근단 사진 있나?</li>
+        <li>전처치 없이 치주소파술 청구하지 않았나?</li>
+        <li>연1회 치석제거 후 1달 이내 치주소파술 등 했나?</li>
+        <li>구강내소염술에 사진·행위("블레이드 사용") 챠팅 있나?</li>
+        <li>실제 챠팅과 청구된 마취가 정확히 일치하나?</li>
+      </ol>
+      <div class="callout c-warn"><b>미완성 진료를 초진으로</b> 청구하면 삭감. 끝나지 않은 진료엔 반드시 내역설명.</div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="card" id="s3">
+    <h2><span class="num">3</span> 동시 청구 수가 규칙 <span class="pill">100:100 vs 100:50</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="grid2">
+        <div>
+          <h3>100% + 100% (각각 인정)<br><span class="muted">단, 상위개념이면 주된 처치만</span></h3>
+          <ul>
+            <li>치수절단 + 충전(즉처X)</li>
+            <li>근관충전 + 충전</li>
+            <li>근관충전 + 치근단절제술</li>
+            <li>치석제거 + 교합조정술</li>
+            <li>발수 + 치아파절편제거</li>
+            <li>근관치료 + 치주치료</li>
+            <li>골융기절제술 + 상고정장치</li>
+            <li>치아진정처치 + 충전</li>
+            <li>치수복조 + 즉일충전처치</li>
+            <li>보철물제거(간단)+(복잡)</li>
+            <li>구강내소염술 + 발치 <span class="muted">→ 실제론 발치만</span></li>
+            <li>응급근관처치 + 발수 <span class="muted">→ 발수만</span></li>
+            <li>치아재식술(100)+근관치료(100)+잠간고정술(50)</li>
+          </ul>
+        </div>
+        <div>
+          <h3>높은수가 100% + 낮은수가 50%</h3>
+          <ul>
+            <li>발수 + 구강내소염술</li>
+            <li>근관세척 + 구강내소염술(절개시)</li>
+            <li>발치 + 치조골성형술</li>
+            <li>발치 + 치근낭적출술</li>
+            <li>치근낭적출술 + 치근단절제술</li>
+            <li>보철물제거 + 근관내기존충전물제거</li>
+            <li>탈구치아정복술 + 잠간고정술</li>
+            <li>난발치(100) + 치조골성형술(50)</li>
+            <li>구강내소염술(100) + 치석제거(50)</li>
+            <li>구강내소염술(100) + 응급근관처치(50)</li>
+            <li>치은박리소파술(100) + 발치(50)</li>
+            <li>잠간고정술(100) + 교합조정술(50)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout c-info"><b>마취</b> 침윤+전달 동일악 동시 시행 시 <b>주된 마취만</b> 인정 · 도포마취 불인정 · 앰플은 사용 개수만큼 청구.</div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="card" id="s4">
+    <h2><span class="num">4</span> 치주치료 재시행 기간 <span class="pill">외워두면 삭감 없음</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>행위</th><th>후처치로 산정</th><th>50% 산정</th><th>100% 산정</th></tr></thead>
+        <tbody>
+          <tr><td><b>치석제거 (S/C)</b></td><td>3개월 이내</td><td>3~6개월</td><td>6개월 초과</td></tr>
+          <tr><td><b>치근활택술 (R/P)</b></td><td>1개월 이내</td><td>1~3개월</td><td>3개월 초과</td></tr>
+          <tr><td><b>치주소파술 (C/U)</b></td><td>1개월 이내</td><td>1~3개월</td><td>3개월 초과</td></tr>
+          <tr><td><b>치은박리소파술 (Flap)</b></td><td>—</td><td>6개월 이내</td><td>6개월 초과</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout c-warn"><b>역방향 불가</b> 높은 행위 후 낮은 행위로 되돌아갈 수 없음(치주소파술→치근활택술 ✗). 단, 같은 행위 <b>재시행</b>은 가능 — 100%가 안 되면 후처치·50%로 청구.</div>
+      <ul>
+        <li><b>연1회 치석제거</b> — 만 19세↑, 기준연월 <b>7/1~다음해 6/30 연 1회</b>. 요양기관정보마당 등록(바우처) 필수. 치아 14개↓는 전악 시행. 연1회↔전악 치석제거는 6개월 내 재시행 불가.</li>
+        <li><b>치주소파술</b> — 만성 상병만, 마취 동시청구 필수, 전처치(SC) 필수. 초진 산정 치주소파술은 치근활택술로 조정됨.</li>
+        <li><b>치근활택술</b> — 급·만성 모두, 마취 선택, 초진 일률 청구 시 현지조사 위험.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="card" id="s5">
+    <h2><span class="num">5</span> 행위별 챠팅 예시 <span class="pill">상병·내역설명·챠팅</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <p class="lead">자주 하는 행위의 <b>적용상병 / 내역설명 / 챠팅 포인트</b>. 그대로 응용.</p>
+
+      <h3>연1회 치석제거</h3>
+      <p><b>상병</b> K05.08 기타명시급성치은염 · K05.10 단순변연부만성치은염 · K05.22 급성치관주위염 · K05.30 만성단순치주염 <span class="tag t-warn">주의</span>K05.31 만성복합치주염은 적용착오</p>
+      <div class="ex"><span class="lbl">챠팅 예시</span>c.c 잇몸에서 피가나요 / 치은염 심하심 · 36.37 특히 염증성 출혈 심함 / 전체적 연1회 치석제거 필요 / 요양기관정보마당 신청함 / 연1회 치석제거 시행함<br><span class="muted">치식 물결표시(~) 안 됨 · missing 치아 종합해 정확히</span></div>
+
+      <h3>기본진찰료 <span class="tag t-warn">위험</span></h3>
+      <p class="muted">기본진찰료만 청구는 매우 위험(일률 진료로 파악). 꼭 필요한 경우+다양한 상병명+내역설명일 때만.</p>
+      <div class="copy">충치로 인해 원장님 진단 받음</div>
+      <div class="copy">잇몸치료 진단 났으나 환자분이 약처방만 원하심(진찰·상담)</div>
+      <div class="copy">지치주위염으로 간단한 소독 / 발치전 동통감소 위해 드레싱 / 치수냉온검사 시행 / 처방전만 발행함</div>
+
+      <h3>발수</h3>
+      <p><b>상병</b> K04.01 비가역·가역적치수염 · K04.4 치수기원 급성근단성치주염 · K04.7 동이없는근단주위농양 · S02.54 치수침범 치관파절</p>
+      <ul>
+        <li>근관세척과 <b>동시청구 불가</b> · 근관와동형성(A/O)과 함께 청구 <b>(a/o=근관와동형성, p/e=발수)</b></li>
+        <li>Barbed broach는 근관당 1회 청구 · 방사선 없으면 삭감 가능</li>
+        <li>비가역적 치수염엔 <b>항생제 처방 불가</b> · I&D 동시 시 발수100·I&D50</li>
+      </ul>
+      <div class="ex"><span class="lbl">챠팅 예시</span>#15 PROXIMAL caries / 신경치료 필요 / occlusal reduction · 근관와동형성 · 발수(근관1개) · B.B · 근관장측정검사 15mm(ROOT Z-X) · PA taking · 근관확대 · 근관성형 / Niti file, naocl, caviton</div>
+
+      <h3>근관확대 · 세척 · 가압충전</h3>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>행위</th><th>횟수·규칙</th><th>내역설명(달 바뀌면)</th></tr></thead>
+        <tbody>
+          <tr><td><b>확대</b></td><td>치료기간 중 1치 <b>2회</b>까지 · 근관성형 1회 동시 · NiTi/file 중 <b>하나만</b>(NiTi=치당)</td><td>지난달 엔도 이어 진행함 / 마취 시 "통증으로 마취 시행"</td></tr>
+          <tr><td><b>세척</b></td><td>2~3일 간격 <b>5회 이내</b>(농양은 5회↑ 인정) · 발수·가압충전과 동시 불가 · saline 재료 청구불가</td><td>뿌리끝 염증 심하여 근관세척 다수 시행함(5회↑)</td></tr>
+          <tr><td><b>가압충전</b></td><td>재료 명시 필수 <code>C/F, G.P cone, sealer, AC cone</code> · MTA는 비급여 · 세척과 동시 불가</td><td>열가압충전 함 / 단순근관충전(vitapex)과 구분</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>난발치</h3>
+      <p><b>상병</b> 치아강직 · 치아유착 · 치근비대 · 만곡치 <span class="tag t-must">필수</span>사진 + 내역설명 없으면 청구 불가</p>
+      <div class="copy">치아를 분리삭제 하여 난발치 시행함</div>
+      <div class="ex"><span class="lbl">챠팅 예시</span>46 ext &amp; BA 2@ · BURR 추가 · PA taking <span class="muted">(BURR는 하루 1개만 인정, 잔존치근은 단순발치)</span></div>
+
+      <h3>치주치료용 치석제거</h3>
+      <p><b>상병</b> K05.30 만성단순 · K05.31 만성복합 · K05.09 상세불명급성치은염 · K05.4 치주증 · K05.5 기타 (주로 만성)</p>
+      <div class="copy">잇몸치료 예정 / 잇몸치료 위한 전처치 시행함</div>
+      <div class="copy">(안 오면) 환자분 사정으로 잇몸치료 내원하지 않으심 / 연락드렸으나 추후 오신다고 함</div>
+      <div class="callout c-info"><b>횟수 0.5 산정</b> 구치부 1~2개·전치부 1~3개만 시행 시 50%. 1/3악에서 다른 악으로 이어진 1개 치아까지는 별도 산정 X.</div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="card" id="s6">
+    <h2><span class="num">6</span> 파노라마 산정·판독 <span class="pill">판독소견 필수</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <h3>산정 요건 (아래 중 하나)</h3>
+      <ul>
+        <li>PA만으로 진단 불충분 · <b>인접하지 않은 3곳 이상</b> 원인치아 <span class="muted">(치근단 4장↑이면 파노라마가 더 저렴)</span></li>
+        <li>매복치 · TMD · 개구제한 · 장애 등 구내촬영 곤란 <b>(한 부위여도 청구 가능)</b></li>
+        <li>맹출시기 지난 유치 확인 · 상해(자보·산재)</li>
+      </ul>
+      <div class="callout c-warn"><b>부당청구 주의</b> 파노라마는 전악 클릭 청구가 흔한데 개연성 낮음 → <b>판독소견에 적힌 부위만 클릭</b>. 여러 상병이면 가장 큰 원인상병으로 지정+내역설명.</div>
+      <h3>판독소견 원칙 <span class="muted">(2017.7.1 영상판독료 신설)</span></h3>
+      <p>검사명 + 판독소견 + 결과가 있어야 함. <b>해당 치식 기입 후</b> 예시:</p>
+      <div class="copy">치주염 확인함 / 우식 확인함 / 근단농양 확인함 / 상악동염 확인함 / 치근과 하치조관이 2mm 떨어져 있음</div>
+      <div class="callout c-info"><b>치근단 + 파노라마</b> 둘 다 인정(단 치근단 촬영목적 내역설명 필요). 동시 2매는 목적 동일 시, 각각은 목적 다를 때.</div>
+      <h3>CT 인정조건</h3>
+      <p>반드시 판독소견서 작성·비치. ① 신경치료 지속 동통 ② 치근단절제술 해부학 ③ 매복치가 하치조신경과 겹침 ④ 3치관 크기↑ 치근낭. <span class="muted">매복발치 CT는 발치까지 이어진 경우만.</span></p>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="card" id="s7">
+    <h2><span class="num">7</span> 발치 프로토콜 <span class="pill">단순·난·매복</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>구분</th><th>정의(챠팅에 그대로)</th><th>상병·비고</th></tr></thead>
+        <tbody>
+          <tr><td><b>단순발치</b></td><td>치조골 소실·심한 동요</td><td>치주염, 잔존치근. 치근단 청구 가능</td></tr>
+          <tr><td><b>난발치</b></td><td>치아 <b>분리삭제</b>하여 발치함</td><td>유착·강직·치근비대·만곡치. <b>BURR 청구 가능</b>. 사진·내역 필수</td></tr>
+          <tr><td><b>단순매복</b></td><td><b>피막(잇몸) 절개</b>하여 발치함</td><td>제3대구치 매복. 사진 필수, Silk 사용불가</td></tr>
+          <tr><td><b>복잡매복</b></td><td>치아 <b>분리삭제</b>하여 발치함</td><td>비스듬히 누운 매복. BURR 가능</td></tr>
+          <tr><td><b>완전매복</b></td><td><b>골삭제 + 치아분리, 치관 2/3↑ 매복</b></td><td>BURR 가능. CT는 하치조관 겹침 시</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout c-warn"><b>사진 없는 매복치</b>는 단순발치·난발치로 심사조정. 매복치는 매복 상병명 사용(상아질우식 상병 ✗). 교정목적 발치는 비급여(단 사랑니·충치 원인 동반 시 급여).</div>
+      <ul>
+        <li>발치 + 치조골성형술 동시 → 100:50 (상병 구분해 청구)</li>
+        <li>근관치료 중 치아파절로 발치 → 각각 100% (내역설명 필수)</li>
+        <li>발치 + I&amp;D 동시 → 발치만 청구</li>
+        <li>구치 발치 중단 시 → 기본진료로 청구</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="card" id="s8">
+    <h2><span class="num">8</span> 근관치료 상세 <span class="pill">엔도 횟수 규칙</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="callout c-tip"><b>엔도 전과정 횟수</b> 발수 1회 · 확대 <b>2회</b> · 세척 <b>5회</b>(초과 시 내역설명) · 근관장측정검사 1회 · 가압충전 1회. NiTi/hand file 중 하나만(NiTi=치당).</div>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>행위</th><th>핵심 규칙</th></tr></thead>
+        <tbody>
+          <tr><td>치수절단</td><td>치근만곡·미성숙영구치·유치. FC교환·ZOE임충은 보통처치. 당일 충전 시 각각 100%</td></tr>
+          <tr><td>발수</td><td>실제 근관수대로. B.B 1회 청구. 발수+근확 동시O / 발수+근세 동시X(발수만)</td></tr>
+          <tr><td>근관와동형성</td><td>발수와 당일 1회만. 단독 산정 불가</td></tr>
+          <tr><td>근관확대</td><td>1치 2회까지. 근확+근세 동시O. 근확+성형 치료중 1회 동시</td></tr>
+          <tr><td>근관세척</td><td>2~3일 간격 5회 이내(농양 5회↑). 발수·가압충전과 동시X. 30일 후 내원도 계속 재진</td></tr>
+          <tr><td>근관충전</td><td>타원 중도내원 시 내역설명. 근충 후 확인 방사선 청구. 당일 충전처치 각각 100%</td></tr>
+          <tr><td>응급근관처치</td><td>급성근단치주염·동없는근단농양. 발수와 동시X(발수만). 마취 청구O</td></tr>
+          <tr><td>당일발수근충</td><td>와동형성·근관장·확대·성형·세척·충전 비용 모두 포함(외 행위 청구X). BB·NiTi 외 재료대X</td></tr>
+          <tr><td>재근관치료(Re-endo)</td><td>근관내기존충전물제거부터. 발수·근관와동형성 청구X. 첫단계는 근관세척부터</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout c-info"><b>엔도 중 약처방</b> 치수염·우식 상병으론 항생제 불가 → <b>치주염·농양</b> 상병 적용 (예: 26 PUS++ 근단농양).</div>
+      <h3>즉일충전처치 / 충전 재시행</h3>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th></th><th>진찰</th><th>와동형성료</th><th>충전료</th><th>재료대</th></tr></thead>
+        <tbody>
+          <tr><td><b>30일 이내</b></td><td>재진 100%</td><td>50%</td><td>50%</td><td>100%</td></tr>
+          <tr><td><b>30일 이후</b></td><td>초진 100%</td><td>100%</td><td>100%</td><td>100%</td></tr>
+        </tbody>
+      </table></div>
+      <p class="muted">지각과민처치(나): 1치 100%·2치부터 20%, 최대 6치·일 200%. 한 번 청구 시 6개월간 청구X. 치면열구전색: 만18세↓ 1·2대구치 건전교합면, 2년내 재도포 청구X.</p>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="card" id="s9">
+    <h2><span class="num">9</span> 치주치료 상세 <span class="pill">SC·RP·CU·Flap</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <ul>
+        <li><b>치주낭측정검사</b>(1/3악당) — mm 단위, 치아당 <b>2면 이상</b> 측정·기록</li>
+        <li><b>치석제거-가</b>(1/3악당) — 당일 전악 원칙. 치석제거만으로 종결 시 비급여(연1회 소진). 동일월 치주치료 못하면 내역설명</li>
+        <li><b>치석제거-나</b>(전악·연1회) — 만19세↑, 7/1~6/30 연1회, 등록절차 필수</li>
+        <li><b>치근활택술</b>(1/3악당) — 1일 최대 1악, 마취 선택, 초진 산정 가능(일률 청구 삭감 위험)</li>
+        <li><b>치주소파술</b>(1/3악당) — <b>마취 동시청구 필수</b>, 급성 상병 청구X, 전처치(SC) 후, 타기관 전처치는 내역설명</li>
+        <li><b>치은박리소파술</b> — (가)절개·박리해 1~2치 SC·RP / (나)골성형·골삭제 동반</li>
+        <li><b>치관확장술</b>(1치당) — 근관치료 후 치관길이 연장 목적만. (가)치은절제 (나)근단변위판막 (다)판막+치조골삭제</li>
+        <li><b>잠간고정술</b>(1악당) — (가)3치↓ (나)4치↑. Wire/레진 고정. +교합조정 동시 시 100:50</li>
+      </ul>
+      <h3>치은 절제 3형 구분 <span class="muted">(삭감 잦음)</span></h3>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>행위</th><th>산정단위</th><th>적용</th></tr></thead>
+        <tbody>
+          <tr><td>차-66 치은판절제술</td><td><b>1구강당</b></td><td>맹출 중 치관주위·부분맹출 우식치료 시 덮인 치은 제거(소아·성인 맹출치)</td></tr>
+          <tr><td>차-104 치은절제술</td><td>1/3악당</td><td>깊은 만성치주염 치주낭 감소(전처치 필요) / 치은연하우식·파절 수복 위한 노출(전처치 불요, 내역설명)</td></tr>
+          <tr><td>처-101 치관확장술 가</td><td>1치당</td><td>임상치관 짧아 보철 유지 위해 치은절제(근관치료 후)</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="card" id="s10">
+    <h2><span class="num">10</span> 상병명 빠른 매칭 <span class="pill">행위 → 추천상병</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>행위</th><th>추천 상병명</th></tr></thead>
+        <tbody>
+          <tr><td>기본진료(검진)</td><td>우식, 치수염, 치주염, 동(무/유)있는 농양, 파절, 전위, 턱관절</td></tr>
+          <tr><td>보통처치</td><td>치수염 등</td></tr>
+          <tr><td>진정처치(즉처)</td><td>치약마모, 습관성마모, 우식, 파절</td></tr>
+          <tr><td>응급근관처치</td><td>치수기원 급성치수염(K04.4)</td></tr>
+          <tr><td>지각과민처치</td><td>마모, 과민성상아질, 국소적 치은퇴축</td></tr>
+          <tr><td>교합조정술</td><td>부정교합, 치주염, 치아위치이상(전위·변위·회전·정출)</td></tr>
+          <tr><td>치수절단</td><td>치수염, 치수괴사, 치수변성</td></tr>
+          <tr><td>근관치료</td><td>비가역치수염, 치수괴사, 농양, 백악질우식, 파절·아탈구</td></tr>
+          <tr><td>재근관치료</td><td>만성근단치주염, 근단주위육아종, 근단주위농양, 치근낭</td></tr>
+          <tr><td>잠간고정술</td><td>외상(탈구·파절), 치주염, 아탈구, 함입·정출, 완전탈구</td></tr>
+          <tr><td>치석제거(연1회)</td><td>K05.08/10/22/30 (치은염~단순치주염)</td></tr>
+          <tr><td>치석제거(치주용)</td><td>K05.30/31 만성단순·복합치주염, K05.4/5</td></tr>
+          <tr><td>치근활택술·소파술</td><td>K05.30/31/38 만성치주염 계열</td></tr>
+          <tr><td>단순발치</td><td>K05.31, K08.3 잔존치근, K04.7, 우식, 치주염</td></tr>
+          <tr><td>난발치</td><td>강직, 유착, 치근비대, 만곡치</td></tr>
+          <tr><td>매복치</td><td>상·하악 제3대구치 매복, 과잉매복치</td></tr>
+          <tr><td>구강내소염술</td><td>동없는 근단농양, 동없는 치주기원 농양</td></tr>
+          <tr><td>치근단절제술</td><td>만성근단성치주염, 근단주위농양·치근낭</td></tr>
+          <tr><td>치조골성형술</td><td>불규칙한 치조돌기</td></tr>
+          <tr><td>골융기절제술</td><td>턱의 발달장애, 치조융기 비대</td></tr>
+          <tr><td>보철물 제거·재부착</td><td>기타 치아우식, 보철물 파절·상실 (재부착 Z46.3)</td></tr>
+          <tr><td>실란트</td><td>기타 명시된 예방적 조치</td></tr>
+          <tr><td>임플란트·틀니</td><td>치아상실 K08.1</td></tr>
+          <tr><td>보철물재부착</td><td>Z46.3</td></tr>
+          <tr><td>무상유지관리(임플·틀니)</td><td>Z46.3</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="card" id="s11">
+    <h2><span class="num">11</span> 내역설명 복붙 모음 <span class="pill">상황별 문구</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <h3>초진 시</h3>
+      <div class="copy">타치과에서 발수 후 내원함 / 타치과에서 발치 후 내원함 / 타치과에서 즉처 후 내원함</div>
+      <h3>재진 시</h3>
+      <div class="copy">전월진료 이어 진행함 (전월 발수 후 확대 등)</div>
+      <div class="copy">연1회 치석제거 시행했던 치아임 (연1회 후 RP 들어가는 경우 — 급·만성 구분, 종결여부 파악)</div>
+      <h3>사진 없이 외과 술식</h3>
+      <div class="copy">기존 엑스레이 참조하여 진행함 / 기존 사진 참조하여 구강내소염술 시행함</div>
+      <div class="copy">난발치 사유: 유착·강직·비대로 치아분리삭제하여 발치함</div>
+      <h3>치주·치석제거</h3>
+      <div class="copy">잇몸치료 예정 / 전처치 시행함 / 잇몸치료 예정된 치석제거 시행함</div>
+      <div class="copy">(안 옴) 연락두절 / 환자분이 내원하지 않으심 / 00 예약했으나 내원하지 않으심</div>
+      <div class="copy">기존 치석제거 이후 잇몸치료 시행함 / 염증 심하시어 RP 시행함</div>
+      <h3>동시·다수 행위</h3>
+      <div class="copy">치조골성형술과 발치 동시시행함 / 골융기절제술과 발치 동시시행함</div>
+      <div class="copy">근관세척 + I&amp;D 동시시행함 / 근관농양 심하여 근관세척 다수 시행함(통증호소·지속적 배농)</div>
+      <div class="copy">동일악 치석제거 재시행함 (후처치 내용 명시: s/o)</div>
+      <h3>발치 후처치 많을 때 / 엔도 중 발치</h3>
+      <div class="copy">출혈 심함 / 염증소견 심함 / 통증 심함</div>
+      <div class="copy">통증호소·염증 심하시어 발치함 / 엔도 도중 파절되어 발치함 / 엔도 중 수직파절</div>
+      <h3>기본진찰료만·다수진료·유치</h3>
+      <div class="copy">상담만하고 가심 / 발치전 사전처방 / 처방전만 발행함 / 2년이내 실란트 재도포</div>
+      <div class="copy">2주 뒤 출국함 / 1주 뒤 군대감 (한꺼번에 많은 진료 사유)</div>
+      <div class="copy">감염근관, 후속영구치 미맹출, 교환시기 많음 (유치 근관확대)</div>
+      <h3>지각과민·보철물 제거</h3>
+      <div class="copy">SE본드 사용함 (사용 본딩제명 기입)</div>
+      <div class="copy">35=37 브릿지 제거 &gt; 1/1(연결 폰틱 1개 인정)/1 &gt; 3회 (보철물 제거 복잡, 치식 필수)</div>
+      <h3>파노라마·CT</h3>
+      <div class="copy">전체적 치주염/우식 확인차 파노라마 촬영함 / 매복정도 확인 / 개구제한으로 촬영함 / 상해로 촬영함(자보·산재)</div>
+      <div class="copy">치근과 하치조관 겹쳐보여 CT 촬영함</div>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="card" id="s12">
+    <h2><span class="num">12</span> 진찰료·처방전 <span class="pill">초·재진 / 약</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <h3>초진 / 재진 판정</h3>
+      <ul>
+        <li><b>초진</b> — 처음 내원 / 치료종결 후 <b>1개월</b> 경과 재내원 / 치주환자는 종결 후 <b>90일</b> 경과</li>
+        <li><b>재진</b> — 일반진료 후 다음 내원 보험진료 / 근관치료 1개월↑ 중단 후 동일치아 계속 / 발치목적 촬영 후 1개월↑ 내원 발치 / 만성치주 90일 내 재내원 / 치주치료 연계 재시행</li>
+        <li><b>야간진료</b> — 초·재진 30% 가산 (평일 18:00~익일 09:00)</li>
+      </ul>
+      <h3>진찰료만 산정</h3>
+      <p class="muted">진찰·상담만 / 간단한 구강연조직 처치 / 구강건조증·구내염 약물도포 / 치수냉온검사 / 발치전 동통감소 처치 / 처방전만 발행 / 발치 미완 중단 / 고정장치 제거 후 드레싱</p>
+      <h3>처방전 규칙</h3>
+      <ul>
+        <li>항생제·소화제 일률처방 지양 · 고가약·저함량 배수처방 지양 · 비급여 진료 시 처방도 비급여(기타)</li>
+        <li><b>치수염 상병엔 항생제 불가</b> · 교부번호 약국 일치</li>
+        <li>가족 대신 내원 처방 → 진찰료 <b>50%</b> · 환자 내원 처방전만 → 기본진찰료 · 발급기간 내 재발행 → 진찰료 산정불가 / 기간 경과 후 → 산정</li>
+        <li>헥사메딘 가글 치료기간 중 1회 100ml 급여(단독 불가) · 인사돌·오라메디·케어가글 비급여(2012.3~)</li>
+      </ul>
+      <h3>본인부담 (치과의원)</h3>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>구분</th><th>6세미만</th><th>6~65세미만</th><th>65세↑</th></tr></thead>
+        <tbody>
+          <tr><td>본인부담율</td><td>21%</td><td>30%</td><td>총액 15,000원↓ 1,500원 / 초과 30%</td></tr>
+        </tbody>
+      </table></div>
+      <p class="muted">종별가산율: 치과의원 건보 15%·의료급여 11% / 치과병원 20%·15%. 소아·노인·장애인 가산 별도.</p>
+    </div>
+  </section>
+
+  <!-- 13 -->
+  <section class="card" id="s13">
+    <h2><span class="num">13</span> 틀니·임플란트 <span class="pill">급여 요약</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <h3>급여 틀니</h3>
+      <ul>
+        <li>대상 만 <b>65세↑</b> · 완전틀니(무치악)/부분틀니(잔존치로 가능) · <b>5단계</b> · <b>1악당 7년 1회</b></li>
+        <li>본인부담 총액 <b>50%</b>(의료급여 1종20·2종30) · 사전등록제 · 무상보상 3개월 최대 6회(재진진찰료만)</li>
+        <li>유지관리: 첨상·개상 연1회, 조직조정·수리·조정 연2회, 교합조정 단순 연4회. <b>등록 후</b> 시행</li>
+      </ul>
+      <h3>보험 임플란트</h3>
+      <ul>
+        <li>만 <b>65세↑ 부분무치악</b> · 1인 평생 <b>2개</b> · 전·구치부 · <b>1·2·3단계</b> · PFM · 상병 <b>K08.1</b></li>
+        <li>본인부담 50%(의급 1종20·2종30) · 중단 시 해당단계까지만</li>
+        <li><b>비급여</b>: 완전무치악, 관골 식립, 일체형, PFM 외 보철, 커스텀 어버트먼트 재료대, 상악동거상·골이식</li>
+        <li>재수술: 2단계 고정체 제거 후 공단 시술중지 신청 → 재등록 → 2단계 행위료 50%+재료대 100%(3단계 전만)</li>
+        <li>무상유지관리: 보철 후 3개월 내 진찰료만, 초과 시 주위 치주질환 처치는 급여</li>
+      </ul>
+      <h3>3단계 챠팅 예시</h3>
+      <div class="ex"><span class="lbl">셋팅일 (#26)</span>k08.1 / ST-abut adap / straight(or angle) abut adap PFM setting / T.B.I</div>
+      <div class="callout c-info"><b>수납 순서</b> 보험진료비 먼저 차감 → 보험은 그때그때 별도 청구·수납이 최선(미수 방지). 보험금액은 할인 불가.</div>
+    </div>
+  </section>
+
+  <!-- 14 -->
+  <section class="card" id="s14">
+    <h2><span class="num">14</span> 심사코드·청구구분·경영 <span class="pill">삭감 사유 / 재청구</span><span class="arw">▶</span></h2>
+    <div class="body">
+      <h3>심사조정 사유 코드</h3>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>코드</th><th>내용</th><th>코드</th><th>내용</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><td>금액 산정착오</td><td>H</td><td>소멸시효 경과</td></tr>
+          <tr><td>B</td><td>급여기준 적용착오</td><td>I</td><td>진찰료 착오</td></tr>
+          <tr><td>C</td><td>급여기준 범위초과·처방미확인</td><td>J</td><td>차등수가 적용착오</td></tr>
+          <tr><td>D</td><td>계산착오</td><td>K</td><td>산정코드·구분 착오·누락</td></tr>
+          <tr><td>E</td><td>비급여·본인부담 항목 조정</td><td>L</td><td>증빙 미확인 비용</td></tr>
+          <tr><td>F</td><td>구입증빙 미제출</td><td>M</td><td>의료장비 미신고 행위료</td></tr>
+          <tr><td>G</td><td>중복청구</td><td></td><td></td></tr>
+        </tbody>
+      </table></div>
+      <h3>청구 구분</h3>
+      <ul>
+        <li><b>보완청구</b> — 지급불능 처리된 진료비를 사유 보완해 재청구</li>
+        <li><b>추가청구</b> — 진료내역 <b>일부</b> 누락분만 추가</li>
+        <li><b>누락청구</b> — 진료내역 <b>전체</b> 누락분 추가</li>
+      </ul>
+      <div class="callout c-tip"><b>재심사조정청구</b> 상병착오·내역설명 미비·엑스레이 누락 등 조정 시 자료 보완해 <b>90일 이내(가급적 60일 넘기지 말고)</b> 재청구. 공단 등록 미비로 조정 시 진료일로 등록 후 재심사.</div>
+      <h3>1+1 청구 늘리기 (개연성 있게)</h3>
+      <ul>
+        <li>비급여 방문에도 질병 확인되면 보험 병행 — CA확인→지각과민/보험CA, 프렙·인상 전 부분치석제거, 전처치 없이 치근활택술</li>
+        <li>크라운·임플란트 인상 전, 셋팅 시 주변치아 스켈링(증상 기입)</li>
+        <li>소아: 치면세마·치면열구전색 권유 / 진정처치·치수복조 늘리기</li>
+        <li>발수·발치·치주 부위는 파노라마 유무 상관없이 <b>치근단 필수</b></li>
+      </ul>
+      <div class="callout c-warn"><b>크로스체크</b> 의사가 빠짐없이 기록 → 옆 직원이 누락 확인 → 접수대에서 재점검 후 입력. 누수 없는 시스템이면 청구액은 저절로 늘어남. 챠트 상담란은 볼펜, 수정은 두 줄(연필·수정액 금지).</div>
+    </div>
+  </section>
+
+  <div class="nohit" id="nohit">검색 결과가 없습니다. 다른 키워드로 시도하세요.</div>
+
+  <div class="foot">
+    청구메뉴얼 · 압축 정리 2026-07-13<br>
+    원본: 덴탈씨드 「보험청구 메뉴얼 북」(108p) · 「보험청구 의무챠팅 기록사항」 · 「보험청구 송신 전 필수 확인사항」<br>
+    <span style="color:#c05">※ 산정기준·수가는 고시 개정으로 변동됩니다. 실제 청구 전 최신 심평원 고시를 확인하세요.</span>
+  </div>
+</div>
+
+<script>
+  // 아코디언
+  document.querySelectorAll('section.card > h2').forEach(function(h){
+    h.addEventListener('click',function(){ h.parentElement.classList.toggle('open'); });
+  });
+  function allToggle(open){
+    document.querySelectorAll('section.card').forEach(function(s){ s.classList.toggle('open',open); });
+  }
+  // 검색 필터 + 하이라이트
+  var q=document.getElementById('q'), nohit=document.getElementById('nohit');
+  var cards=[].slice.call(document.querySelectorAll('section.card'));
+  var origHTML=cards.map(function(c){return c.querySelector('.body').innerHTML;});
+  function clearMarks(){ cards.forEach(function(c,i){ c.querySelector('.body').innerHTML=origHTML[i]; }); }
+  q.addEventListener('input',function(){
+    var v=q.value.trim();
+    clearMarks();
+    if(!v){ cards.forEach(function(c){c.style.display='';}); nohit.style.display='none'; return; }
+    var re=new RegExp(v.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+    var any=false;
+    cards.forEach(function(c){
+      var body=c.querySelector('.body'), h2=c.querySelector('h2').textContent;
+      var hit = re.test(body.textContent) || re.test(h2);
+      re.lastIndex=0;
+      c.style.display = hit?'':'none';
+      if(hit){ c.classList.add('open'); any=true;
+        // 간단 하이라이트 (텍스트 노드만)
+        highlight(body,re);
+      }
+    });
+    nohit.style.display = any?'none':'block';
+  });
+  function highlight(root,re){
+    var walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null);
+    var nodes=[],n;
+    while(n=walk.nextNode()){ if(n.parentNode.nodeName!=='SCRIPT' && re.test(n.nodeValue)){nodes.push(n);} re.lastIndex=0; }
+    nodes.forEach(function(node){
+      var span=document.createElement('span');
+      span.innerHTML=node.nodeValue.replace(re,function(m){return '<mark>'+m+'</mark>';});
+      node.parentNode.replaceChild(span,node);
+    });
+  }
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoClaim 실사용 시나리오 v2 — 덴트웹 차팅=청구 현실 반영</title>
+<style>
+  :root{
+    --bg:#eef2f6; --card:#fff; --ink:#1a2733; --sub:#5a6b7b; --line:#e2e8ee;
+    --teal:#0d9488; --teal-deep:#0f766e; --teal-soft:#e6f4f2;
+    --amber:#d8820b; --amber-soft:#fbeed6;
+    --red:#cf4444; --red-soft:#fbe7e7;
+    --blue:#2f6fd6; --blue-soft:#e7f0fc;
+    --green:#2f9e6f; --green-soft:#e4f4ec;
+    --emr:#dceaf3; --emr-line:#a9c6da; --emr-head:#4a7fb5;
+    --shadow:0 5px 20px rgba(20,40,60,.08); --shadow-lg:0 14px 40px rgba(20,40,60,.16);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.65;
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+  h1,h2,h3{line-height:1.32;letter-spacing:-.02em}
+  b{font-weight:700}
+  mark{background:linear-gradient(transparent 55%,#ffe08a 55%);padding:0 2px;font-weight:700}
+  .teal{color:var(--teal-deep)} small{font-size:.82em;color:var(--sub)}
+  code{font-family:"D2Coding","Consolas",monospace;background:#eef3f7;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.88em;color:#25506e}
+
+  header{background:linear-gradient(160deg,#0f766e,#12897d 60%,#1aa392);color:#fff;padding:50px 0 44px}
+  .kick{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#eafff9;font-size:13px;font-weight:600;padding:5px 13px;border-radius:20px;margin-bottom:15px}
+  header h1{font-size:33px;margin:0 0 13px;color:#fff}
+  header p{font-size:16.5px;margin:0;color:#d5f2ec;max-width:800px}
+  .hero-legend{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
+  .hero-legend span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);padding:6px 12px;border-radius:9px;font-size:13px;font-weight:600}
+
+  section{padding:42px 0} section:nth-child(even){background:#f7fafc}
+  .eyebrow{font-size:12.5px;font-weight:800;letter-spacing:.05em;color:var(--teal);text-transform:uppercase;margin:0 0 8px}
+  section h2{font-size:24px;margin:0 0 8px}
+  .lead{font-size:15.5px;color:var(--sub);margin:0 0 24px;max-width:840px}
+
+  /* 차팅=청구 재정의 */
+  .myth{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+  .mcard{border-radius:14px;padding:18px 18px;box-shadow:var(--shadow)}
+  .mcard.wrong{background:var(--red-soft);border:1px solid #eec4c4}
+  .mcard.right{background:var(--green-soft);border:1px solid #bde3ce}
+  .mcard .mt{font-size:12px;font-weight:800;letter-spacing:.03em;margin-bottom:8px}
+  .mcard.wrong .mt{color:#b23b3b} .mcard.right .mt{color:#1f7a52}
+  .mcard h3{font-size:16.5px;margin:0 0 7px}
+  .mcard p{font-size:14px;color:#41525f;margin:0}
+  .mcard .ex{margin-top:10px;font-size:13px;background:rgba(255,255,255,.65);border-radius:8px;padding:9px 11px;color:#3d4d5c}
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:6px}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .tcard::before{content:"";position:absolute;inset:0 auto 0 0;width:5px}
+  .tcard.a::before{background:var(--amber)} .tcard.b::before{background:var(--blue)} .tcard.c::before{background:var(--red)}
+  .tcard h3{font-size:16px;margin:0 0 6px;padding-left:4px}
+  .tcard p{font-size:13.5px;color:var(--sub);margin:0 0 9px;padding-left:4px}
+  .tcard .ex{font-size:12.5px;background:#f6f9fb;border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:#3d4d5c}
+
+  /* 끼워넣기 리스트업 */
+  .kkiwo-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+  .ktab{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:8px 15px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--sub);font-family:inherit;transition:.18s}
+  .ktab:hover{border-color:var(--teal)}
+  .ktab.active{background:var(--teal-deep);border-color:var(--teal-deep);color:#fff}
+  .kpanel{display:none;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow);animation:fade .3s}
+  .kpanel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .kpanel .khead{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .kpanel .khead .kt{font-size:18px;font-weight:800}
+  .kpanel .khead .kd{font-size:13px;color:var(--sub)}
+  .kitem{display:flex;gap:12px;padding:11px 0;border-bottom:1px dashed #e6ecf0}
+  .kitem:last-child{border-bottom:0}
+  .kitem .kdot{flex:none;width:26px;height:26px;border-radius:7px;background:var(--teal-soft);color:var(--teal-deep);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800}
+  .kitem .kx{flex:1}
+  .kitem .kn{font-weight:700;font-size:14.5px}
+  .kitem .kn .tooth{font-family:monospace;background:#eef6fa;border:1px solid var(--emr-line);border-radius:5px;padding:0 6px;font-size:12.5px;color:#25506e;margin-left:6px}
+  .kitem .ks{font-size:13px;color:var(--sub);margin-top:2px}
+  .kitem .ks b{color:var(--amber)}
+  .kwarn{margin-top:14px;background:#fff8ee;border:1px solid #f0dcb4;border-radius:10px;padding:11px 13px;font-size:13px;color:#7a5410}
+
+  /* 시뮬레이터 */
+  .sim{background:#102b31;border-radius:20px;padding:24px 20px 28px;box-shadow:var(--shadow-lg)}
+  .sim .sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+  .sim .sh h3{color:#eafff9;font-size:17px;margin:0}
+  .sim .sh .pt{color:#9fd8ce;font-size:13px}
+  .snav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .snav button{flex:1;min-width:150px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#bfe6df;border-radius:11px;padding:10px 12px;cursor:pointer;text-align:left;font-family:inherit;transition:.2s}
+  .snav button:hover{background:rgba(255,255,255,.12)}
+  .snav button.on{background:#12897d;border-color:#3fd6c0;color:#fff}
+  .snav .n{display:block;font-size:11px;font-weight:800;opacity:.85;letter-spacing:.03em}
+  .snav .l{display:block;font-size:13.5px;font-weight:700;margin-top:2px}
+  .snav .t{display:block;font-size:10.5px;opacity:.7;margin-top:1px}
+  .stage{min-height:400px}
+  .screen{display:none;animation:fade .35s} .screen.on{display:block}
+
+  /* 덴트웹 EMR 창 */
+  .emrwin{background:var(--emr);border:1px solid var(--emr-line);border-radius:10px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+  .emrbar{background:linear-gradient(#5a8fc0,#4a7fb5);color:#fff;padding:6px 12px;font-size:12.5px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+  .emrbar .dr{background:#c94b4b;color:#fff;font-size:11px;padding:2px 8px;border-radius:4px}
+  .emrbody{padding:12px;background:#eef5fa}
+  .emr-topline{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:12.5px;margin-bottom:10px;color:#2b4a63}
+  .emr-topline .fld{background:#fff;border:1px solid var(--emr-line);border-radius:4px;padding:2px 8px}
+  .emr-topline .fld b{color:#1a3a52}
+  .sangbyeong{background:#fff;border:1px solid var(--emr-line);border-radius:4px;padding:5px 10px;font-size:13px;font-weight:700;color:#b23b3b;display:inline-block}
+
+  /* 치식 그리드 */
+  .chart-note{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+  .toothchart{background:#fff;border:1px solid var(--emr-line);border-radius:7px;padding:10px 12px}
+  .tc-arch{display:flex;gap:2px;justify-content:center;margin:3px 0}
+  .tc-arch .q{display:flex;gap:2px}
+  .tc-arch .q.left{border-left:2px solid #c3d6e3;padding-left:4px;margin-left:2px}
+  .tooth{width:19px;height:24px;border:1px solid #cdd9e2;border-radius:3px 3px 5px 5px;background:#f6fafc;display:flex;align-items:center;justify-content:center;font-size:10px;color:#7a8a97;font-family:monospace}
+  .tooth.hl{background:#8fd4b4;border-color:#4fae82;color:#0d5535;font-weight:700}
+  .tooth.cu{background:#f2c98a;border-color:#d8a24f;color:#7a5410;font-weight:700}
+  .tc-label{text-align:center;font-size:10px;color:#8aa0b0;margin-top:5px}
+  .tc-legend{display:flex;gap:10px;justify-content:center;margin-top:7px;font-size:10.5px;color:#5a7183;flex-wrap:wrap}
+  .tc-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:middle;margin-right:3px}
+
+  .noterows{background:#fff;border:1px solid var(--emr-line);border-radius:7px;overflow:hidden}
+  .nr{display:flex;border-bottom:1px solid #e3edf3}
+  .nr:last-child{border-bottom:0}
+  .nr .lab{flex:none;width:42px;background:#e3eef5;color:#3a6183;font-size:11.5px;font-weight:700;padding:8px 6px;text-align:center;border-right:1px solid #dbe7ef}
+  .nr .val{flex:1;padding:8px 11px;font-size:13px;color:#2b3f4f}
+  .nr .val .code{color:#b23b3b;font-weight:700}
+  .nr .val .tag{font-family:monospace;font-size:12px;color:#25506e}
+
+  /* AutoClaim overlay */
+  .overlay{margin-top:14px;background:#fff;border:2px solid var(--teal);border-radius:12px;overflow:hidden;box-shadow:0 8px 22px rgba(15,118,110,.15)}
+  .ov-head{background:var(--teal-deep);color:#fff;padding:9px 14px;font-size:13.5px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+  .ov-head .badge{background:rgba(255,255,255,.2);font-size:11px;padding:2px 9px;border-radius:20px}
+  .ov-body{padding:6px 14px 12px}
+  .ovr{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed #e6ecf0}
+  .ovr:last-child{border-bottom:0}
+  .ovr .ic{flex:none;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px}
+  .ic.ok{background:var(--green-soft)} .ic.miss{background:var(--amber-soft)} .ic.risk{background:var(--red-soft)}
+  .ovr .ot{font-weight:700;font-size:13.5px}
+  .ovr .ot .amt{color:var(--teal-deep);font-weight:800;margin-left:5px}
+  .ovr .os{font-size:12.5px;color:var(--sub);margin-top:1px}
+  .ovr .tooth-inline{font-family:monospace;background:#eef6fa;border:1px solid var(--emr-line);border-radius:4px;padding:0 5px;font-size:11.5px;color:#25506e}
+
+  /* 데스크 팝업 (접수) */
+  .desk{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #9ad7cd;box-shadow:0 8px 22px rgba(15,60,55,.16)}
+  .desk .dh{background:linear-gradient(90deg,#0f766e,#149084);color:#fff;padding:10px 15px;font-weight:700;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+  .desk .dh .tag{font-size:11px;background:rgba(255,255,255,.22);padding:2px 9px;border-radius:20px}
+  .desk .db{padding:14px}
+  .hist{background:#f4f8f9;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:12.5px;color:#3d4d5c;margin-bottom:12px}
+  .hist .ht{font-size:11px;font-weight:800;color:#2b6b60;letter-spacing:.03em;margin-bottom:4px}
+  .ask{display:flex;gap:10px;padding:9px 0;border-bottom:1px dashed #e6ecf0}
+  .ask:last-of-type{border-bottom:0}
+  .ask .ai{flex:none;width:26px;height:26px;border-radius:7px;background:var(--amber-soft);color:#a5610a;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .ask .at{font-weight:700;font-size:14px}
+  .ask .asub{font-size:12.5px;color:var(--sub);margin-top:1px}
+  .script{margin-top:12px;background:#f3f9f8;border-left:4px solid var(--teal);border-radius:0 8px 8px 0;padding:10px 12px;font-size:13.5px}
+  .script .sl{font-size:11px;font-weight:800;color:var(--teal-deep);letter-spacing:.03em;display:block;margin-bottom:3px}
+  .hidden-memo{margin-top:12px;background:#eafaf1;border:1px dashed #8fd4ac;border-radius:8px;padding:10px;font-size:13px;color:#1c7a4c;font-weight:600}
+  .hidden-memo .mt{font-size:10.5px;font-weight:800;color:#2f9e6f;letter-spacing:.04em;display:block;margin-bottom:3px}
+
+  /* 청구 전 검수 */
+  .review{background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--emr-line)}
+  .review .rh{background:#4a7fb5;color:#fff;padding:10px 15px;font-weight:700;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+  .review .rh .cnt{font-size:12px;background:rgba(255,255,255,.2);padding:2px 9px;border-radius:20px}
+  .chk{display:flex;gap:11px;align-items:flex-start;padding:11px 15px;border-bottom:1px solid #eef3f7}
+  .chk:last-child{border-bottom:0}
+  .chk .ci{flex:none;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
+  .ci.pass{background:var(--green-soft);color:#1f7a52} .ci.fix{background:var(--amber-soft);color:#a5610a}
+  .chk .ct{font-weight:700;font-size:13.5px} .chk .cs{font-size:12.5px;color:var(--sub);margin-top:1px}
+  .send{margin-top:12px;text-align:center}
+  .send .amt-big{font-size:34px;font-weight:800;color:var(--teal-deep)}
+  .send .sub{font-size:13.5px;color:var(--sub)}
+
+  .caption{margin-top:13px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:11px 14px;color:#d7efea;font-size:13px}
+  .caption b{color:#fff}
+  .caption .cn{font-size:11px;font-weight:800;color:#5fd6c2;letter-spacing:.04em;display:block;margin-bottom:3px}
+
+  .disclaimer{margin-top:22px;font-size:12.5px;color:var(--sub);line-height:1.7}
+  .closing{background:linear-gradient(160deg,#0f766e,#149084);color:#fff;border-radius:16px;padding:28px 24px;box-shadow:var(--shadow-lg)}
+  .closing h3{color:#fff;font-size:20px;margin:0 0 12px}
+  .closing ul{margin:0;padding-left:20px}
+  .closing li{margin-bottom:8px;color:#e2f5f0;font-size:14px}
+  .closing li b{color:#fff}
+  footer{padding:24px 0 40px;text-align:center;color:var(--sub);font-size:12.5px}
+
+  @media(max-width:860px){
+    .myth,.three{grid-template-columns:1fr}
+    .chart-note{grid-template-columns:1fr}
+    .toothchart{overflow-x:auto}
+    header h1{font-size:25px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="kick">AutoClaim · 실사용 설계본 v2 · 덴트웹 현실 반영</span>
+    <h1>덴트웹은 <mark>차팅이 곧 청구</mark>다 —<br>그래서 AutoClaim은 <mark>차팅하는 그 순간</mark> 옆에 붙는다</h1>
+    <p>"진료기록은 있는데 청구가 안 됐다"는 덴트웹에선 있을 수 없습니다(차팅=청구니까). 진짜 누락은
+      <b>① 차팅을 안 해서·부실해서 청구가 안 되거나 ② 근거가 없어 삭감</b>당하는 것. 아래는 그걸 어느 화면에서
+      어떻게 잡는지, 어떤 항목을 치식별로 끼워넣는지의 실제 설계입니다.</p>
+    <div class="hero-legend">
+      <span>🖥️ 덴트웹 실제 화면 재현</span>
+      <span>🦷 치식별 표시</span>
+      <span>➕ 내원 김에 끼워넣기</span>
+      <span>🛡️ 삭감 전 검수</span>
+    </div>
+  </div>
+</header>
+
+<!-- 1. 차팅=청구 재정의 -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">먼저 · 전제를 바로잡기</p>
+    <h2>"청구 누락"의 진짜 의미가 <span class="teal">바뀝니다</span></h2>
+    <p class="lead">지난 시안은 "진료기록 있음 · 청구내역 없음"을 잡는다고 했는데, 덴트웹에선 차팅하는 순간 청구가 자동 생성되므로
+      그 상태는 존재하지 않습니다. 그래서 프레임을 <b>차팅 품질</b> 관점으로 바꿉니다.</p>
+    <div class="myth">
+      <div class="mcard wrong">
+        <div class="mt">✕ 틀린 전제 (지난 시안)</div>
+        <h3>"진료는 했는데 청구가 빠졌다"</h3>
+        <p>덴트웹은 차팅=청구. 차팅했으면 이미 청구에 반영됨. "기록 있는데 청구 없음"이라는 틈은 없습니다.</p>
+        <div class="ex">그래서 "완료 버튼 누를 때 막아선다"는 시나리오도 성립하지 않음 — 이미 청구는 차팅과 함께 생성됨</div>
+      </div>
+      <div class="mcard right">
+        <div class="mt">✓ 바른 전제</div>
+        <h3>"차팅을 안 해서·부실해서 청구가 안 된다"</h3>
+        <p>할 수 있는 처치를 아예 안 하거나, 묶음항목·내역설명·상병명·치식을 빠뜨려 청구가 안 되거나 삭감됩니다.</p>
+        <div class="ex">골든타임 = <b>완료 버튼이 아니라 차팅하는 그 순간</b>. AutoClaim은 그 순간 옆에 붙습니다.</div>
+      </div>
+    </div>
+    <p class="eyebrow" style="margin-top:6px">그래서 · 잡을 것은 세 가지</p>
+    <div class="three">
+      <div class="tcard a">
+        <h3>① 못 챙긴 것</h3>
+        <p>내원 김에 할 수 있는 보험진료를 안 함(끼워넣기 미실행).</p>
+        <div class="ex">예) 정기검진 온 김에 <b>후처치</b> · 발수하면 <b>근관와동형성</b> 묶음 · 시린 이 <b>지각과민처치</b></div>
+      </div>
+      <div class="tcard b">
+        <h3>② 근거 빠뜨린 것</h3>
+        <p>처치는 차팅했는데 내역설명·상병명·치식·판독소견이 없어 청구 불가/삭감.</p>
+        <div class="ex">예) 난발치인데 "치아분리삭제" 없음 · 파노 <b>판독소견</b> 없음 · 치식 물결표시(~)</div>
+      </div>
+      <div class="tcard c">
+        <h3>③ 삭감날 것</h3>
+        <p>규칙 위반으로 심평원 조정. 오히려 현지조사 리스크.</p>
+        <div class="ex">예) 연1회 치석제거에 <b>K05.31</b>(적용착오) · 전처치 없는 치주소파술 · 발수+근관세척 동시</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. 끼워넣기 리스트업 -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">핵심 · 사용자가 요청한 리스트업</p>
+    <h2>"○○ 하러 온 김에" <span class="teal">끼워넣어 청구 가능한 항목</span></h2>
+    <p class="lead">⚠️ 잇몸치료 환자에게 스케일링을 제안하는 건 틀립니다(치주 환자는 이미 치석제거를 전처치로 받음). 대신
+      <b>임상적으로 개연성 있는 것만</b> — 매뉴얼("1+1 정책"·"보험의 꽃 치주꽃 피우기") 기반입니다.</p>
+
+    <div class="kkiwo-tabs" id="ktabs">
+      <button class="ktab active" data-k="0">🔁 정기검진·임플1m체크</button>
+      <button class="ktab" data-k="1">🦷 잇몸치료(치주)</button>
+      <button class="ktab" data-k="2">🔧 신경치료(엔도)</button>
+      <button class="ktab" data-k="3">🩸 발치</button>
+      <button class="ktab" data-k="4">✨ 비보험(레진·크라운)</button>
+    </div>
+
+    <div class="kpanel on" data-k="0">
+      <div class="khead"><span class="kt">🔁 정기검진 · 임플란트 1개월 체크 하러 온 김에</span><span class="kd">⭐ "1m 체크 온 김에 후처치 항상 누락" — 데스크부터 여쭤보기</span></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">치주치료 후처치 <span class="tooth">지난 잇몸치료 부위</span></div><div class="ks">치주치료 후 언제든 잔여치석·치태 제거 후 산정. <b>가장 많이 놓치는 것</b></div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">지각과민처치 <span class="tooth">시린 치아</span></div><div class="ks">마모·과민성상아질·국소치은퇴축. 하루 6치, 재료명 기록(SE본드 등)</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">임플란트 주위 치주질환 처치 <span class="tooth">임플 부위</span></div><div class="ks">보철장착 <b>3개월 초과</b>면 급여(3개월 이내는 무상=진찰료만)</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">기본진찰료</div><div class="ks">구강검사+증상(mob·per·bleeding) 객관 기록 시. <b>O.E만 쓰면 인정 안 됨</b></div></div></div>
+      <div class="kwarn">⚠️ 여기서 "연1회 스케일링"은 이 환자가 치은염만 있고 스케일링으로 종결될 때만. 치주염이면 부적합.</div>
+    </div>
+
+    <div class="kpanel" data-k="1">
+      <div class="khead"><span class="kt">🦷 잇몸치료(치주) 하러 온 김에</span><span class="kd">스케일링 제안 ✕ / 치주 부수항목 ○</span></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">치주낭측정검사 <span class="tooth">치아당 2면</span></div><div class="ks">치주치료 시 반드시. mm단위 기록</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">교합조정술 <span class="tooth">하루 4치</span></div><div class="ks">치주염에 의한 위치이동. 치주치료와 동시 <b>각각 100%</b>. 교합지 사용 기록 필수</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">지각과민처치 <span class="tooth">시린 치아</span></div><div class="ks">마모·시린 증상 있으면</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">지난 R/P·소파술 부위 후처치</div><div class="ks">재시행 기준상 100% 안 돼도 <b>후처치·50%</b>는 청구 가능</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">잠간고정술 <span class="tooth">동요치아</span></div><div class="ks">치주로 흔들리는 치아 임시고정(Wire·레진). 3치↓=가/4치↑=나</div></div></div>
+    </div>
+
+    <div class="kpanel" data-k="2">
+      <div class="khead"><span class="kt">🔧 신경치료(엔도) 하러 온 김에</span><span class="kd">묶음 빠뜨리면 통째로 누락</span></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">근관와동형성 <span class="tooth">1치 1회</span></div><div class="ks">발수하면 당일 묶음(A/O+P/E). <b>안 적으면 청구 못함</b></div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">근관장측정검사 · 근관확대(2회) · 근관성형(1회)</div><div class="ks">mm 기록. 확대+성형 동시 1회</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">재료대 — Ni-Ti file / barbed broach</div><div class="ks">Ni-Ti=치당, B.B=근관당. 둘 중 하나만</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">치근단 <span class="tooth">각 단계</span></div><div class="ks">발수 전 치수확인·근충 후 확인. 판독소견 필수</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">마취 <span class="tooth">앰플 수</span></div><div class="ks">첫날 발수. 이후 통증 시 <b>내역설명 달고</b> 청구. IA/BA·앰플 개수 정확히</div></div></div>
+      <div class="kwarn">🚫 발수+근관세척 동시청구 불가(발수만 인정) · 가압충전은 G.P cone·sealer 재료 적어야 인정(MTA는 비급여)</div>
+    </div>
+
+    <div class="kpanel" data-k="3">
+      <div class="khead"><span class="kt">🩸 발치하러 온 김에</span></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">치근단·파노라마 <span class="tooth">외과 전 필수</span></div><div class="ks">없으면 삭감·단순발치로 조정. 판독소견 기재</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">난발치 판단 + Burr <span class="tooth">유착·강직·만곡</span></div><div class="ks">단순발치보다 수가↑. "치아분리삭제하여 발치함" 내역설명 + Burr(하루 1개)</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">발치 후 후처치</div><div class="ks">출혈·염증·통증 심하면(내역설명)</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">구강내소염술(I&D)</div><div class="ks">농양 있으면. 단 발치+I&D 동시는 발치만 · 발치+치조골성형술=100:50</div></div></div>
+    </div>
+
+    <div class="kpanel" data-k="4">
+      <div class="khead"><span class="kt">✨ 비보험(레진·인레이·크라운) 하러 온 김에</span><span class="kd">"1+1 정책"</span></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">진단 치근단/파노라마 + 초·재진 진찰료</div><div class="ks">레진·인레이 해도 우식진단용 엑스레이는 급여</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">기존 충전물 제거 <span class="tooth">해당 치아</span></div><div class="ks">아말감=수복물제거(간단)·인레이=(복잡). 비급여충전 전 제거도 급여</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">지각과민처치·치아진정처치·치수복조</div><div class="ks">CA 시린 증상 / 엔도·인레이 인상이라 차팅</div></div></div>
+      <div class="kitem"><div class="kdot">➕</div><div class="kx"><div class="kn">치은절제술 / 치관확장술 <span class="tooth">1/3악·1치</span></div><div class="ks">크라운 치관길이 짧음(처-101 가)·치은연하우식(차-104). 각화치은·생물학적폭경 기준</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. 시뮬레이터 (덴트웹 UI 재현) -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">실제 화면 · 덴트웹처럼 뜨는 3접점</p>
+    <h2>환자 한 명을 <span class="teal">데스크→진료실→청구 전</span>으로 따라가기</h2>
+    <p class="lead">54세 <b>김도현</b> 님이 임플란트 1개월 체크로 예약해 왔는데 "잇몸에서 피가 나요". 아래 버튼으로 세 접점을 넘겨보세요.
+      진료실 화면은 <b>덴트웹 실제 청구 화면(왼쪽 치식·오른쪽 내역)</b>을 그대로 재현했습니다.</p>
+
+    <div class="sim">
+      <div class="sh">
+        <h3>🖥️ AutoClaim 실사용 시연</h3>
+        <span class="pt">김도현(54) · 예약: 임플 1m체크 · c.c 잇몸출혈</span>
+      </div>
+      <div class="snav" id="snav">
+        <button class="on" data-s="0"><span class="n">1접점 · 데스크</span><span class="l">접수 — 뭐하러 왔나 보고 여쭤보기</span><span class="t">09:12</span></button>
+        <button data-s="1"><span class="n">2접점 · 진료실</span><span class="l">차팅=청구 — 세트로 챙김</span><span class="t">09:41</span></button>
+        <button data-s="2"><span class="n">3접점 · 청구 전</span><span class="l">송신 전 검수 — 삭감 막기</span><span class="t">18:30</span></button>
+      </div>
+
+      <div class="stage">
+        <!-- 접점1 : 데스크 -->
+        <div class="screen on" data-s="0">
+          <div class="desk">
+            <div class="dh"><span>🔔 접수 — 김도현 님(54)</span><span class="tag">데스크</span></div>
+            <div class="db">
+              <div class="hist">
+                <div class="ht">📋 지난 이력 자동 요약</div>
+                지난달 #26 임플란트 보철 셋팅(1m체크 예약) · <b>3개월 전 치주치료(SC→cu) 시행</b> · 최근 "이가 시리다" 메모 1회
+              </div>
+              <div class="ask"><div class="ai">➕</div><div class="kx"><div class="at">치주치료 후처치 여쭤보기</div><div class="asub">1m 체크 오시는 김에 — 지난 잇몸치료 부위 <b>후처치가 항상 누락됩니다</b>. 데스크부터 확인</div></div></div>
+              <div class="ask"><div class="ai">➕</div><div class="kx"><div class="at">시린 이 확인(지각과민)</div><div class="asub">"이가 시리다" 메모 있음 → 오늘 증상 있으면 지각과민처치 가능</div></div></div>
+              <div class="ask"><div class="ai">➕</div><div class="kx"><div class="at">임플 주위 상태(#26)</div><div class="asub">보철 3개월 초과 → 임플 주위 치주질환 처치 급여 가능 구간</div></div></div>
+              <div class="script">
+                <span class="sl">💬 데스크 안내멘트</span>
+                "도현 님, 오늘 임플란트 한 달 체크시죠. 지난번 잇몸치료 받으신 부위도 <b>같이 한번 봐드릴게요.</b> 혹시 시린 데는 없으세요?"
+              </div>
+              <div class="hidden-memo">
+                <span class="mt">🔒 EMR 히든메모 (진료실로 릴레이)</span>
+                "환자 요청 — 잇몸치료 부위 후처치 확인 + 시린 이 호소(#15,16 부위)"
+              </div>
+            </div>
+          </div>
+          <div class="caption">
+            <span class="cn">이 순간</span>
+            데스크는 <b>"오늘 뭐하러 왔나"</b>를 보고, 그 목적에 딸려오는 보험진료를 미리 여쭤봅니다.
+            스케일링을 무작정 권하는 게 아니라 — 1m체크엔 후처치, 시린이엔 지각과민. 환자 동의는 <b>히든메모로 진료실에 넘어갑니다.</b>
+          </div>
+        </div>
+
+        <!-- 접점2 : 진료실 (덴트웹 UI) -->
+        <div class="screen" data-s="1">
+          <div class="emrwin">
+            <div class="emrbar"><span>덴트웹 · 진료 차팅 (2026-07-13)</span><span class="dr">Dr.정희수 수정/열람</span></div>
+            <div class="emrbody">
+              <div class="emr-topline">
+                <span class="fld">차트 <b>34117</b></span>
+                <span class="fld">김도현 M/54</span>
+                <span class="fld">재진</span>
+                <span class="sangbyeong">[K05.30] 만성 단순치주염 · 주상병</span>
+              </div>
+              <div class="chart-note">
+                <div class="toothchart">
+                  <div class="tc-arch"><div class="q"><div class="tooth">7</div><div class="tooth hl">6</div><div class="tooth hl">5</div><div class="tooth hl">4</div><div class="tooth">3</div><div class="tooth">2</div><div class="tooth">1</div></div><div class="q left"><div class="tooth">1</div><div class="tooth">2</div><div class="tooth">3</div><div class="tooth hl">4</div><div class="tooth hl">5</div><div class="tooth hl">6</div><div class="tooth">7</div></div></div>
+                  <div class="tc-arch"><div class="q"><div class="tooth hl">7</div><div class="tooth hl">6</div><div class="tooth hl">5</div><div class="tooth">4</div><div class="tooth">3</div><div class="tooth">2</div><div class="tooth">1</div></div><div class="q left"><div class="tooth">1</div><div class="tooth">2</div><div class="tooth">3</div><div class="tooth cu">4</div><div class="tooth cu">5</div><div class="tooth cu">6</div><div class="tooth hl">7</div></div></div>
+                  <div class="tc-label">상악 / 하악 · 잔존치 기준</div>
+                  <div class="tc-legend"><span><i style="background:#8fd4b4"></i>SC 시행</span><span><i style="background:#f2c98a"></i>n) cu 예정</span></div>
+                </div>
+                <div class="noterows">
+                  <div class="nr"><div class="lab">진료</div><div class="val">전악 치석제거 <span class="tag">7=7 SC for cu</span> <span class="code">*K05.30</span></div></div>
+                  <div class="nr"><div class="lab"></div><div class="val">치석제거 · <span class="tag">14.15 bleeding++, pocket++</span></div></div>
+                  <div class="nr"><div class="lab">내역</div><div class="val">잇몸치료 예정 <span class="tag">n) 14.15.16 cu</span></div></div>
+                  <div class="nr"><div class="lab">메모</div><div class="val" style="font-family:monospace;font-size:12px;color:#4a6478">periodontitis, bleeding, swelling</div></div>
+                </div>
+              </div>
+
+              <div class="overlay">
+                <div class="ov-head"><span>➕ AutoClaim — 이 차팅에서 챙길 것</span><span class="badge">차팅=청구 실시간</span></div>
+                <div class="ov-body">
+                  <div class="ovr"><div class="ic ok">✓</div><div class="kx"><div class="ot">치석제거 <span class="tooth-inline">7=7</span> · 내역설명 "잇몸치료 예정" 있음</div><div class="os">치식 정확(물결표시 없음) · 상병 K05.30 적정 → 삭감 요소 없음</div></div></div>
+                  <div class="ovr"><div class="ic miss">➕</div><div class="kx"><div class="ot">치주낭측정검사 놓침 <span class="amt">+치아당 산정</span></div><div class="os">치주치료엔 필수인데 차팅 없음 — mm·2면 기록하면 청구 가능</div></div></div>
+                  <div class="ovr"><div class="ic miss">➕</div><div class="kx"><div class="ot">지각과민처치 가능 <span class="tooth-inline">#15,16</span></div><div class="os">데스크 메모: "시린 이 호소" → 마모·과민성상아질이면 오늘 같이(SE본드 기록)</div></div></div>
+                  <div class="ovr"><div class="ic miss">➕</div><div class="kx"><div class="ot">치주치료 후처치 <span class="tooth-inline">지난 SC 부위</span></div><div class="os">1m체크 겸 내원 → 지난 잇몸치료 부위 후처치(정재엽 지시사항)</div></div></div>
+                  <div class="ovr"><div class="ic ok">✓</div><div class="kx"><div class="ot">파노라마 판독소견 기재됨 <span class="tooth-inline">해당 치식만</span></div><div class="os">전악 클릭 아님 → 부당청구 개연성 낮음</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="caption">
+            <span class="cn">이 순간이 골든타임</span>
+            덴트웹에선 이 차팅이 곧 청구입니다. AutoClaim은 차트 <b>위에 얹혀</b> — 이미 잘 챙긴 건 ✅, 같이 할 수 있는데 안 한 건 ➕로,
+            <b>치식·근거와 함께</b> 지목합니다. 원장은 평소 차팅에 <b>한두 줄만 더</b> 얹으면 됩니다.
+          </div>
+        </div>
+
+        <!-- 접점3 : 청구 전 검수 -->
+        <div class="screen" data-s="2">
+          <div class="review">
+            <div class="rh"><span>🛡️ 청구 송신 전 검수 — 김도현 님</span><span class="cnt">삭감위험 0 · 보완 1</span></div>
+            <div class="chk"><div class="ci pass">✓</div><div class="kx"><div class="ct">치석제거 → "잇몸치료 예정" 내역설명 있음</div><div class="cs">없으면 삭감. 통과</div></div></div>
+            <div class="chk"><div class="ci pass">✓</div><div class="kx"><div class="ct">상병 K05.30(만성단순치주염) — SC for cu에 적정</div><div class="cs">연1회였다면 K05.31은 적용착오. 이 케이스는 문제없음</div></div></div>
+            <div class="chk"><div class="ci pass">✓</div><div class="kx"><div class="ct">치식 정확 · 물결표시(~) 없음 · 파노 전악클릭 아님</div><div class="cs">부당청구 개연성 낮음</div></div></div>
+            <div class="chk"><div class="ci fix">!</div><div class="kx"><div class="ct">치주낭측정검사 차팅이 비어있음</div><div class="cs">진료실에서 시행했다면 지금 보완 입력 → 청구 포함(놓치면 이 건만 누락)</div></div></div>
+            <div class="chk"><div class="ci pass">✓</div><div class="kx"><div class="ct">마취 앰플 수 = 챠트 기록과 일치</div><div class="cs">CCTV 앰플 대조와 교차확인(불일치 시 여기서 경고)</div></div></div>
+          </div>
+          <div class="send">
+            <div class="amt-big">+41,200원</div>
+            <div class="sub">치석제거 + 후처치 + 지각과민 + 치주낭검사(보완) — 놓쳤다면 못 받았을 돈</div>
+          </div>
+          <div class="caption">
+            <span class="cn">마지막 안전망</span>
+            "완료 차단"이 아니라 <b>청구 송신 전 검수</b>입니다("두번에" 청구 전 확인리스트). 삭감날 요소(내역설명·상병착오·치식·앰플 수)를
+            보내기 전에 한 번 더 봅니다 — <b>더 받으려는 게 아니라 탈나지 않게.</b>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="disclaimer">※ 환자·치식·금액은 <b>예시</b>입니다. 실제 산정 가능 여부·재시행 기준·상병 적용은 심평원 고시를 따르며, 검증 주체(본부장/청구담당)가 한 번 더 검수합니다. 메시지 톤은 항상 "받았어야 할 돈의 적법한 복구"이지 청구 부풀리기가 아닙니다.</p>
+  </div>
+</section>
+
+<!-- 4. 마무리 -->
+<section>
+  <div class="wrap">
+    <div class="closing">
+      <h3>핵심 한 장 — 무엇이 바뀌었나</h3>
+      <ul>
+        <li><b>전제</b> — 덴트웹은 차팅=청구. "기록 있는데 청구 없음"은 없음 → 잡을 것은 <b>못 챙김·근거 빠뜨림·삭감</b></li>
+        <li><b>제안 교정</b> — 잇몸치료 환자에 스케일링 제안 ✕ → <b>후처치·지각과민·교합조정·치주낭검사</b> 같은 개연성 있는 끼워넣기</li>
+        <li><b>치식별</b> — 모든 청구를 <code>#15,16</code> <code>7=7</code>처럼 치아번호로. 물결표시(~) 금지</li>
+        <li><b>화면</b> — 진료실은 <b>덴트웹 실제 UI(왼쪽 치식·오른쪽 내역·상병명)</b> 위에 AutoClaim 레이어</li>
+        <li><b>3접점 재정의</b> — 접수(뭐하러 왔나→여쭤보기) → 진료실(차팅=청구, 세트로) → <b>청구 송신 전 검수</b>(삭감 막기)</li>
+        <li><b>골든타임</b> — 완료 버튼이 아니라 <b>차팅하는 그 순간</b></li>
+      </ul>
+    </div>
+    <p class="disclaimer">출처: 덴탈씨드 보험청구 메뉴얼북 · 보험청구 의무챠팅 기록사항 · "두번에" 청구 전 확인리스트 · 청구업 매뉴얼 · 보험의 꽃 치주꽃 피우기 · 정재엽 원장 지시("1m체크 온 김에 후처치 여쭤보기")</p>
+  </div>
+</section>
+
+<footer>AutoClaim 실사용 시나리오 v2 · 2026-07-13 · 사계절치과 MSO · 덴트웹 차팅=청구 현실 반영</footer>
+
+<script>
+  var motionOn = new URLSearchParams(location.search).get('motion') !== '0';
+  // 끼워넣기 탭
+  var ktabs = document.getElementById('ktabs');
+  ktabs.addEventListener('click', function(e){
+    var b = e.target.closest('.ktab'); if(!b) return;
+    document.querySelectorAll('.ktab').forEach(function(x){x.classList.toggle('active', x===b);});
+    document.querySelectorAll('.kpanel').forEach(function(p){p.classList.toggle('on', p.dataset.k===b.dataset.k);});
+  });
+  // 시뮬레이터
+  var snav = document.getElementById('snav');
+  snav.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    document.querySelectorAll('#snav button').forEach(function(x){x.classList.toggle('on', x===b);});
+    document.querySelectorAll('.screen').forEach(function(s){s.classList.toggle('on', s.dataset.s===b.dataset.s);});
+  });
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

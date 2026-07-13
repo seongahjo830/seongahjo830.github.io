@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>보험청구 검토 대시보드 v2 — 청구 근거 한눈에</title>
+<style>
+  :root{
+    --bg:#f4f5f8; --panel:#ffffff; --panel2:#f7f8fb; --panel3:#eceff4; --line:#e3e7ee; --line2:#ced4de;
+    --txt:#1b2230; --dim:#5b6473; --faint:#8b93a2;
+    --accent:#2563eb; --accent2:#3b82f6;
+    --ok:#16a34a; --ok-bg:#16a34a14; --ok-line:#16a34a3a;
+    --warn:#d97706; --warn-bg:#d977061a; --warn-line:#d977063a;
+    --danger:#dc2626; --danger-bg:#dc26261a; --danger-line:#dc26263a;
+    --info:#9333ea; --info-bg:#9333ea14; --info-line:#9333ea3a;
+    --hi:#f59e0b;                 /* 근거 하이라이트(노랑) */
+    --hi-bg:#fef3c7;
+    --r:13px;
+    --mono:'SF Mono',ui-monospace,'Cascadia Code','Consolas',monospace;
+    --sans:'Pretendard','Pretendard Variable',-apple-system,BlinkMacSystemFont,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  button{font-family:inherit;cursor:pointer}
+  .mono{font-family:var(--mono)}
+  .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  /* ===== Header ===== */
+  header{position:sticky;top:0;z-index:50;background:rgba(244,245,248,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .hbar{display:flex;align-items:center;gap:11px;padding:11px 18px}
+  .logo{font-weight:800;font-size:15.5px;letter-spacing:-.3px;display:flex;align-items:center;gap:9px;white-space:nowrap}
+  .logo .dot{width:9px;height:9px;border-radius:3px;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+  .logo small{color:var(--faint);font-weight:500;font-size:12px}
+  .demo-tag{font-size:10px;font-weight:800;color:#eab308;border:1px solid #eab30855;background:#eab3081a;padding:3px 7px;border-radius:6px;letter-spacing:.3px}
+  .hspace{flex:1}
+  .hbtn{font-size:12px;font-weight:600;color:var(--dim);border:1px solid var(--line);background:var(--panel);padding:7px 12px;border-radius:9px}
+  .hbtn:hover{color:var(--txt);border-color:var(--line2)}
+  .hbtn.lit{color:#b45309;border-color:#d9770644;background:#fef3c7}
+
+  /* ===== 요약 한 줄 ===== */
+  .summary{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:11px 18px 3px;font-size:13.5px;color:var(--dim)}
+  .summary .s{display:inline-flex;align-items:baseline;gap:6px;white-space:nowrap}
+  .summary .s b{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.4px;color:var(--txt)}
+  .summary .s.money b{color:var(--ok)} .summary .s.warn b{color:var(--warn)}
+  .summary .sep{color:var(--line2)}
+
+  /* ===== Layout ===== */
+  .grid{display:grid;grid-template-columns:288px 1fr;gap:14px;padding:10px 18px 30px;align-items:start}
+
+  /* ---- Work queue (left) ---- */
+  .queue{position:sticky;top:74px;display:flex;flex-direction:column;gap:9px;max-height:calc(100vh - 90px);overflow:auto;padding-right:2px}
+  .qhead{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.4px;padding:2px 2px 0}
+  .qhead .pbarwrap{flex:1;height:6px;background:var(--panel3);border-radius:99px;overflow:hidden;margin-left:6px}
+  .qhead .pbarwrap i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),#4ade80);transition:.3s}
+  .qfilters{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:2px}
+  .qf{font-size:10.5px;font-weight:700;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:4px 8px}
+  .qf.on{color:#fff;background:var(--accent);border-color:var(--accent)}
+  .qf .c{font-variant-numeric:tabular-nums;opacity:.7;margin-left:3px}
+  .batchbtn{font-size:11.5px;font-weight:700;color:#04200f;background:var(--ok);border:0;border-radius:9px;padding:8px 10px;text-align:left;line-height:1.35}
+  .batchbtn:hover{filter:brightness(1.06)} .batchbtn:disabled{opacity:.4;cursor:default;filter:none}
+  .batchbtn small{display:block;font-weight:600;color:#04200fbb;font-size:10px}
+
+  .qrow{display:grid;grid-template-columns:5px 44px 1fr auto;gap:9px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 10px;cursor:pointer;transition:.1s;text-align:left}
+  .qrow:hover{border-color:var(--line2)}
+  .qrow.sel{border-color:var(--accent);background:#eaf1ff;box-shadow:0 0 0 1px var(--accent) inset}
+  .qrail{width:5px;align-self:stretch;border-radius:99px;min-height:30px}
+  .qrail.ok{background:var(--ok)} .qrail.warn{background:var(--warn)} .qrail.info{background:var(--info)} .qrail.danger{background:var(--danger)}
+  .qchart{font-family:var(--mono);font-size:11px;color:var(--dim);background:var(--panel3);border-radius:7px;padding:6px 0;text-align:center;font-weight:700}
+  .qmain .qname{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .qmain .qname small{font-size:10.5px;color:var(--faint);font-weight:500;margin-left:5px}
+  .qmain .qproc{font-size:10.5px;color:var(--dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .qright{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+  .qstat{font-size:14px;line-height:1}
+  .qdone{font-size:9px;font-weight:800;padding:1px 5px;border-radius:5px}
+
+  /* ---- Detail (right) ---- */
+  .detail{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;min-height:60vh}
+  .dhead{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:13px;flex-wrap:wrap}
+  .chartbig{font-family:var(--mono);font-size:15px;font-weight:800;color:#fff;background:var(--accent);border-radius:9px;padding:7px 12px;letter-spacing:.5px;box-shadow:0 2px 12px #3b82f655;white-space:nowrap}
+  .chartbig small{font-size:9px;font-weight:600;opacity:.85;display:block;letter-spacing:0;margin-bottom:1px}
+  .dh-main{flex:1;min-width:180px}
+  .dh-main .nm{font-size:19px;font-weight:800;letter-spacing:-.4px}
+  .dh-main .nm small{font-size:12.5px;color:var(--faint);font-weight:500;margin-left:8px}
+  .dh-main .proc{font-size:12.5px;color:var(--dim);margin-top:6px}
+  .tooth{font-family:var(--mono);color:#0369a1;background:#0ea5e914;padding:1px 6px;border-radius:5px;font-size:11px;margin:0 1px}
+  .dh-done{font-size:11.5px;font-weight:800;padding:5px 11px;border-radius:8px;white-space:nowrap}
+
+  .banner{display:flex;align-items:center;gap:9px;padding:10px 18px;font-size:13px;font-weight:700}
+  .banner.ok{background:var(--ok-bg);color:var(--ok)} .banner.warn{background:var(--warn-bg);color:var(--warn)}
+  .banner.info{background:var(--info-bg);color:var(--info)} .banner.danger{background:var(--danger-bg);color:var(--danger)}
+  .banner .net{margin-left:auto;font-size:12px;font-weight:700;color:var(--dim)}
+  .banner .net b.plus{color:var(--info)} .banner .net b.minus{color:var(--ok)}
+
+  /* === 2-pane evidence chain === */
+  .panes{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+  .pane{padding:14px 16px}
+  .pane.left{border-right:1px solid var(--line)}
+  .ptitle{font-size:11px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:var(--dim);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+  .ptitle .src{font-family:var(--mono);font-size:9.5px;color:var(--faint);font-weight:500;text-transform:none;letter-spacing:0;margin-left:auto}
+  .ptitle.claim{color:var(--accent)}
+  .cline{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:start;padding:8px 8px;border-radius:9px;border:1px solid transparent;transition:.12s}
+  .cline + .cline{margin-top:3px}
+  .cline.hl{background:var(--hi-bg);border-color:#facc1555}
+  .mk{font-size:10px;font-weight:800;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;background:var(--panel3);color:var(--dim);border:1px solid var(--line2)}
+  .mk.act{background:var(--hi);color:#1a1300;border-color:var(--hi)}
+  .mk.blank{background:transparent;border-color:transparent}
+  .cl-body .code{font-family:var(--mono);font-size:11px;color:var(--accent);margin-right:6px}
+  .cl-body .nmtxt{font-size:13px;font-weight:600}
+  .cl-body .memo{font-size:11px;color:var(--faint);margin-top:3px;line-height:1.5}
+  .cl-body .memo.flag{color:var(--warn)}
+  .cl-amt{font-variant-numeric:tabular-nums;font-size:12.5px;font-weight:700;text-align:right;white-space:nowrap;color:var(--dim)}
+  .cl-amt.zero{color:var(--faint);font-weight:500;font-size:11px}
+  /* claim kinds */
+  .cline.k-fix{background:#f59e0b0d} .cline.k-add{background:#a855f70d} .cline.k-cut{background:#ef44440d} .cline.k-nb{background:#ef44440d}
+  .kbadge{font-size:9px;font-weight:800;padding:1px 6px;border-radius:5px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+  .kb-keep{display:none}
+  .kb-fix{color:var(--warn);background:var(--warn-bg)} .kb-add{color:var(--info);background:var(--info-bg)}
+  .kb-cut{color:var(--danger);background:var(--danger-bg)} .kb-nb{color:var(--danger);background:var(--danger-bg)}
+  .cl-amt .delta{display:block;font-size:10.5px;font-weight:700;margin-top:2px}
+  .delta.plus{color:var(--info)} .delta.minus{color:var(--ok)}
+
+  /* === 왜 이 청구? 근거 체인 === */
+  .reasons{padding:15px 18px}
+  .rtitle{font-size:11.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+  .rcard{border:1px solid var(--line);border-radius:11px;padding:0;margin-bottom:10px;overflow:hidden;transition:.12s}
+  .rcard:hover{border-color:var(--line2)}
+  .rcard.hl{border-color:#facc1577;box-shadow:0 0 0 1px #facc1744}
+  .rc-top{display:flex;align-items:center;gap:9px;padding:10px 13px;background:var(--panel2)}
+  .rc-mk{font-size:11px;font-weight:800;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--hi);color:#1a1300}
+  .rc-verdict{font-size:13px;font-weight:800;flex:1}
+  .rc-verdict.cut,.rc-verdict.nb{color:var(--danger)} .rc-verdict.fix{color:var(--warn)} .rc-verdict.add{color:var(--info)} .rc-verdict.ok{color:var(--ok)}
+  .rule-badge{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--dim);background:var(--panel3);border:1px solid var(--line2);border-radius:6px;padding:2px 7px;white-space:nowrap}
+  .rc-money{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .rc-money.plus{color:var(--info)} .rc-money.minus{color:var(--ok)}
+  .rc-steps{padding:10px 13px 12px;display:flex;flex-direction:column;gap:7px}
+  .qline .quote{color:#854d0e;background:var(--hi-bg);border-left:2px solid var(--hi);padding:3px 9px;border-radius:0 6px 6px 0;display:inline-block;font-size:12px;line-height:1.5}
+  .concl{font-size:12.5px;color:var(--txt);line-height:1.55}
+  .lowconf{display:inline-block;margin-left:7px;font-size:10.5px;font-weight:700;color:var(--warn);background:var(--warn-bg);border-radius:5px;padding:1px 7px;white-space:nowrap}
+
+  /* action bar */
+  .abar{position:sticky;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:11px 16px;display:flex;align-items:center;gap:8px}
+  .navbtn{font-size:14px;font-weight:800;color:var(--txt);background:var(--panel3);border:1px solid var(--line2);border-radius:10px;padding:10px 14px}
+  .navbtn:hover{filter:brightness(1.15)} .navbtn:disabled{opacity:.3;cursor:default}
+  .acts{flex:1;display:flex;gap:8px}
+  .act{flex:1;font-size:13.5px;font-weight:800;border-radius:10px;padding:11px 8px;border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;gap:6px}
+  .act .k{font-family:var(--mono);font-size:9.5px;opacity:.7;border:1px solid currentColor;border-radius:4px;padding:0 4px}
+  .act.confirm{background:var(--ok);border-color:var(--ok);color:#04200f}
+  .act.fix{background:var(--warn);border-color:var(--warn);color:#1a1300}
+  .act.hold{background:var(--panel3);color:var(--dim)}
+  .act:hover{filter:brightness(1.08)}
+
+  footer{margin:6px 18px 36px;padding:14px 16px;border:1px dashed var(--line);border-radius:11px;color:var(--faint);font-size:11.5px;line-height:1.75}
+  footer b{color:var(--dim)}
+
+  /* ===== 사용법 패널 ===== */
+  .guide-mask{position:fixed;inset:0;background:#0008;backdrop-filter:blur(3px);z-index:80;display:none;align-items:flex-start;justify-content:center;padding:42px 16px;overflow:auto}
+  .guide-mask.on{display:flex}
+  .guide{background:var(--panel);border:1px solid var(--line2);border-radius:16px;max-width:760px;width:100%;padding:0;overflow:hidden;box-shadow:0 20px 60px #000a}
+  .g-head{display:flex;align-items:center;gap:10px;padding:18px 22px;border-bottom:1px solid var(--line);background:var(--panel2)}
+  .g-head h2{font-size:17px;font-weight:800;letter-spacing:-.3px}
+  .g-head .x{margin-left:auto;font-size:18px;color:var(--dim);background:transparent;border:0;padding:4px 8px;border-radius:8px}
+  .g-head .x:hover{background:var(--panel3);color:var(--txt)}
+  .g-body{padding:20px 22px;line-height:1.7}
+  .g-body h3{font-size:13.5px;font-weight:800;color:var(--accent2);margin:18px 0 9px;display:flex;align-items:center;gap:7px}
+  .g-body h3:first-child{margin-top:0}
+  .g-body p{font-size:13px;color:var(--dim);margin-bottom:8px}
+  .g-body ol,.g-body ul{margin:0 0 8px 4px;padding-left:18px}
+  .g-body li{font-size:13px;color:var(--txt);margin-bottom:6px}
+  .g-body li b{color:var(--txt)} .g-body li span{color:var(--dim)}
+  kbd{font-family:var(--mono);font-size:11px;background:var(--panel3);color:var(--txt);border:1px solid var(--line2);border-bottom-width:2px;border-radius:5px;padding:1px 6px;margin:0 1px}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+  .lg{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--dim);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:5px 10px}
+  .lg .sw{width:11px;height:11px;border-radius:3px}
+  .g-callout{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:10px;padding:11px 14px;font-size:12.5px;color:#854d0e;margin:12px 0 4px;line-height:1.65}
+  .g-callout b{color:#b45309}
+
+  @media(max-width:1080px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  @media(max-width:900px){
+    .grid{grid-template-columns:1fr}
+    .queue{position:static;max-height:none;flex-direction:row;flex-wrap:wrap;overflow:visible}
+    .qrow{flex:1;min-width:220px} .qhead,.qfilters,.batchbtn{flex-basis:100%}
+    .panes{grid-template-columns:1fr} .pane.left{border-right:0;border-bottom:1px solid var(--line)}
+  }
+  @media(max-width:620px){.kpis{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbar">
+    <div class="logo"><span class="dot"></span>보험청구 검토 <small>· 청구가 제대로 되는지 한눈에</small></div>
+    <span class="demo-tag">DEMO · 06-17(수)</span>
+    <div class="hspace"></div>
+    <button class="hbtn lit" onclick="openGuide()">📖 사용법</button>
+    <button class="hbtn" onclick="openGuide()" title="단축키">⌨</button>
+  </div>
+  <div class="summary" id="kpis"></div>
+</header>
+
+<div class="grid">
+  <!-- ===== 워크큐 ===== -->
+  <div class="queue">
+    <div class="qhead">검토 큐 <span id="progtxt">0/10</span><span class="pbarwrap"><i id="pbar" style="width:0"></i></span></div>
+    <div class="qfilters" id="qfilters"></div>
+    <button class="batchbtn" id="batchbtn" onclick="batchConfirm()"></button>
+    <div id="qlist"></div>
+  </div>
+
+  <!-- ===== 상세 ===== -->
+  <div class="detail">
+    <div id="detailBody"></div>
+    <div class="abar">
+      <button class="navbtn" id="prevBtn" onclick="go(-1)">◀</button>
+      <div class="acts">
+        <button class="act confirm" onclick="mark('confirmed')">✓ 청구 확정<span class="k">1</span></button>
+        <button class="act fix" onclick="mark('fixed')">✎ 수정함<span class="k">2</span></button>
+        <button class="act hold" onclick="mark('held')">⏸ 보류<span class="k">3</span></button>
+      </div>
+      <button class="navbtn" id="nextBtn" onclick="go(1)">▶</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <b>⚠️ 검토 전제</b> · 좌측 「덴트웹 차트」는 <b>TB_세부처치내역 / PUB_V진료비내역</b>(수가코드·금액·특정내역) 구조 기반 가명 샘플, 우측 「제안 청구」와 근거는 <b>삭감사례 P-01~P-20 + 메뉴얼북 §7 43룰 + §27/§41 매트릭스</b> 룰엔진 가정. 수가·산정기준·가산율은 분기 변동(2026-06 기준) — 실제 EDI 송신 전 <b>청구팀·원장 최종검수 필수</b>. 환자명·차트번호는 가명, PHI 외부전송 없음. · 출처: 룰엔진 spec <span class="mono">메뉴얼북-룰엔진-추출.md / 삭감사례-패턴분석.md</span>
+</footer>
+
+<!-- ===== 사용법 모달 ===== -->
+<div class="guide-mask" id="guideMask" onclick="if(event.target===this)closeGuide()">
+  <div class="guide">
+    <div class="g-head">
+      <span style="font-size:20px">📖</span><h2>이 대시보드 사용법</h2>
+      <button class="x" onclick="closeGuide()">✕</button>
+    </div>
+    <div class="g-body">
+      <p>이 페이지는 <b>청구 프로그램이 제안한 보험청구가 "이렇게 청구해도 되는지"를 사람이 다시 체크</b>하는 검토용 화면입니다. 프로그램이 <b>어떤 근거로 → 왜 → 어떤 청구를 했는지</b>를 한눈에 보고, 확정/수정/보류만 누르면 됩니다.</p>
+
+      <h3>🖥️ 1. 화면을 어떻게 띄우나</h3>
+      <ul>
+        <li><b>왼쪽 절반엔 덴트웹</b>, 오른쪽 절반에 이 창을 둡니다. <span>(윈도우 <kbd>⊞</kbd>+<kbd>→</kbd> 우측 도킹)</span></li>
+        <li>덴트웹에서 보는 환자의 <b>차트번호</b>를 이 페이지 큐(왼쪽 목록)의 파란 번호와 맞춥니다.</li>
+      </ul>
+
+      <h3>📋 2. 어떤 순서로 검토하나</h3>
+      <ol>
+        <li><b>상단 요약바</b>로 오늘 전체 상황 파악 — 누락발견(받을 돈), 삭감회피(잃을 뻔한 돈), 비급여 전환 건수.</li>
+        <li><b>왼쪽 큐</b>에서 환자를 위→아래로. 색이 위험 신호입니다.</li>
+        <li><b>오른쪽 상세</b>에서 <b>차트 원문 ↔ 제안 청구</b>를 좌우로 대조. 같은 번호 <span class="mk act" style="display:inline-flex;width:16px;height:16px;font-size:9px">1</span> 끼리 근거↔결론이 연결됩니다.</li>
+        <li>아래 <b>「왜 이 청구를 했나」 근거 카드</b>에서 <b>근거(차트 원문) → 규칙(P-XX) → 결론 → 신뢰도</b>를 확인.</li>
+        <li>맞으면 <b>확정</b>, 고쳤으면 <b>수정함</b>, 애매하면 <b>보류</b>(2차 검토 큐로).</li>
+      </ol>
+
+      <h3>🎨 3. 색·배지 뜻 (triage)</h3>
+      <div class="legend">
+        <span class="lg"><span class="sw" style="background:var(--ok)"></span>정상 — 그대로 청구 OK</span>
+        <span class="lg"><span class="sw" style="background:var(--warn)"></span>삭감위험 — 수정 필요</span>
+        <span class="lg"><span class="sw" style="background:var(--info)"></span>누락발견 — 청구 추가 가능</span>
+        <span class="lg"><span class="sw" style="background:var(--danger)"></span>비급여/보류 — 정정 필요</span>
+      </div>
+      <p style="margin-top:8px">제안 청구 라인의 배지: <span class="kbadge kb-fix">정정</span> 금액·코드 고침 · <span class="kbadge kb-add">추가</span> 누락분 추가 · <span class="kbadge kb-cut">삭감위험</span> 그대로 내면 깎임 · <span class="kbadge kb-nb">비급여</span> 급여 불가 → 비급여 전환.</p>
+
+      <h3>⌨️ 4. 키보드 (마우스 없이)</h3>
+      <ul>
+        <li><kbd>J</kbd>/<kbd>↓</kbd> 다음 환자 · <kbd>K</kbd>/<kbd>↑</kbd> 이전 환자</li>
+        <li><kbd>1</kbd> 확정 · <kbd>2</kbd> 수정함 · <kbd>3</kbd> 보류 <span>(누르면 자동으로 다음 환자)</span></li>
+        <li><kbd>?</kbd> 또는 <kbd>/</kbd> 이 사용법 열기 · <kbd>Esc</kbd> 닫기</li>
+      </ul>
+
+      <div class="g-callout">
+        <b>⚠️ 마지막 책임은 사람입니다.</b> 신뢰도(%)는 참고용 신호일 뿐, <b>고액·임플란트·비급여 전환</b>은 신뢰도가 높아도 반드시 직접 확인하세요. 「고신뢰 일괄확정」은 정상(초록) 건만 묶어주지만, 누르기 전 목록을 한 번 펼쳐 봅니다.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ 데이터: 오늘 환자 10명 ============
+   chart  : 덴트웹 차트 원문 라인 (mk=근거번호, flag=주의표시)
+   claim  : 제안 청구 라인 (kind: keep/fix/add/cut/nb, mk=대응 근거번호, delta=금액효과)
+   reasons: 왜 이 청구? 근거 체인 (ev 근거원문 → rule 규칙 → logic 판단 → verdict 결론)
+*/
+const PATIENTS = [
+ {no:"01423",name:"김영수",sex:"남",age:54,visit:"재진",date:"06-17",proc:"전악 스케일링 + 재진 진찰",teeth:["전악"],status:"ok",
+  chart:[{code:"AA254",nm:"재진 진찰료",amt:9990},{mk:1,code:"차-23",nm:"치석제거(전악)",amt:39250,memo:"올해 첫 시행 · 직전 SC 이력 없음"}],
+  claim:[{code:"AA254",nm:"재진 진찰료",amt:9990,kind:"keep"},{mk:1,code:"차-23",nm:"치석제거(전악)",amt:39250,kind:"keep"}],
+  reasons:[
+    {mk:1,verdict:"정상 — 그대로 청구",vcls:"ok",rule:"P-06 / §21",money:0,conf:97,
+     ev:"차트 #차-23 치석제거(전악) · '올해 첫 시행'",
+     logic:"연 1회 급여(만19세↑·7월~6월). 환자 이력상 올해 급여 청구 0회 → 한도 내 첫 시행.",
+     concl:"치석제거(전악) 39,250원 급여 그대로 인정. 삭감 사유 없음."},
+    {verdict:"재진 진찰료 적정",vcls:"ok",rule:"P-11",money:0,conf:96,
+     ev:"직전 내원 4개월 전, 동일 상병 계속진료",
+     logic:"치료종결 1개월 미경과·치주 90일 미경과 아님 → 재진 코드 정확.",
+     concl:"재진 진찰료 9,990원 유지."}]},
+
+ {no:"02877",name:"이순자",sex:"여",age:61,visit:"재진",date:"06-17",proc:"치석제거(올해 2번째)",teeth:["전악"],status:"warn",
+  chart:[{code:"AA254",nm:"재진 진찰료",amt:9990},{mk:1,code:"차-23",nm:"치석제거(전악)",amt:39250,memo:"올해 03-12 급여 치석제거 이력 있음",flag:1}],
+  claim:[{code:"AA254",nm:"재진 진찰료",amt:9990,kind:"keep"},{mk:1,code:"비급여",nm:"치석제거 → 비급여 전환",amt:0,kind:"nb",delta:-39250,note:"급여 청구 시 삭감"}],
+  reasons:[
+    {mk:1,verdict:"삭감위험 — 치석제거 연 1회 초과",vcls:"cut",rule:"P-06 / §21",money:-39250,conf:91,
+     ev:"올해 03-12 급여 치석제거 1회 청구 이력 + 오늘 차-23 또 청구",
+     logic:"연 1회(7월~6월) 급여 한도 초과. 두 번째 급여 청구는 자동 삭감 대상. 치주질환 6개월 기준도 미충족.",
+     concl:"급여로 내면 39,250원 깎임 → 비급여(본인부담 약 5만원) 전환하거나 6개월 기준 충족 확인 후 청구."},
+    {verdict:"재진 진찰료 적정",vcls:"ok",rule:"P-11",money:0,conf:95,
+     ev:"진찰 자체는 정상",logic:"진찰료는 횟수 제한 없음.",concl:"재진 진찰료 9,990원 정상 청구."}]},
+
+ {no:"03102",name:"박철민",sex:"남",age:47,visit:"재진",date:"06-17",proc:"치주낭 측정검사 + 치근활택술",teeth:["16","17","26","27"],status:"warn",
+  chart:[{code:"AA254",nm:"재진 진찰료",amt:9990},{mk:1,code:"E9020",nm:"치주낭 측정검사",amt:5380,memo:"입력=1회 / 실제 시행=상악 우·좌(2/3악)",flag:1},{code:"차-24",nm:"치근활택술",amt:21600,memo:"4치아"}],
+  claim:[{code:"AA254",nm:"재진 진찰료",amt:9990,kind:"keep"},{mk:1,code:"E9020",nm:"치주낭 측정검사",amt:8070,kind:"fix",delta:2690,note:"1회 → 1.5회 정정"},{code:"차-24",nm:"치근활택술",amt:21600,kind:"keep"}],
+  reasons:[
+    {mk:1,verdict:"과소청구 정정 — 산정단위 오류",vcls:"fix",rule:"P-02",money:2690,conf:88,
+     ev:"E9020 치주낭검사 '입력 1회 / 실제 상악 우·좌(2/3악)'",
+     logic:"2024-03부터 1/3악당 산정. 2/3악 시행 = 1.5회가 정확한데 1회로 입력 → 0.5회분 과소청구.",
+     concl:"1회 → 1.5회로 정정. +2,690원 추가 확보(받을 돈 누락 방지)."},
+    {verdict:"치근활택술 정상",vcls:"ok",rule:"§27",money:0,conf:93,
+     ev:"#16·17·26·27 4치아",logic:"치아 수 기준 산정 정확, 동일부위 중복 없음.",concl:"치근활택술 21,600원 유지."}]},
+
+ {no:"04559",name:"정미경",sex:"여",age:38,visit:"재진",date:"06-17",proc:"근관충전(MTA 사용)",teeth:["36"],status:"info",
+  chart:[{code:"AA254",nm:"재진 진찰료",amt:9990},{code:"차-93",nm:"근관충전",amt:32400,memo:"#36 근관충전 완료"},{mk:1,code:"—",nm:"특정내역 텍스트만",amt:0,memo:"'MTA로 천공부 수복' — 재료대 코드 미입력",flag:1}],
+  claim:[{code:"AA254",nm:"재진 진찰료",amt:9990,kind:"keep"},{code:"차-93",nm:"근관충전",amt:32400,kind:"keep"},{mk:1,code:"치료재료",nm:"MTA 재료대 (별도산정)",amt:38000,kind:"add",delta:38000,note:"누락 청구 추가"}],
+  reasons:[
+    {mk:1,verdict:"누락발견 — MTA 재료대 미청구",vcls:"add",rule:"P-14",money:38000,conf:84,
+     ev:"특정내역 메모 'MTA로 천공부 수복' 기록 있으나 재료대 코드 미입력",
+     logic:"MTA(수산화칼슘 계열)는 치료재료로 별도 산정 대상인데 시술만 입력되고 재료대가 누락됨.",
+     concl:"치료재료대 코드 추가 → 약 +38,000원 확보(이미 한 진료인데 안 받은 돈)."},
+    {verdict:"근관충전 정상",vcls:"ok",rule:"P-07",money:0,conf:90,
+     ev:"#36 근관충전 완료, 단계 추적상 중복 없음",logic:"근관치료 단계·횟수 기준 충족.",concl:"근관충전 32,400원 유지."}]},
+
+ {no:"05231",name:"최동훈",sex:"남",age:59,visit:"재진",date:"06-17",proc:"임플란트 2단계 + 골이식",teeth:["46"],status:"danger",
+  chart:[{code:"AA254",nm:"재진 진찰료",amt:9990},{mk:1,code:"U0073",nm:"임플란트 2단계(지대주)",amt:0,memo:"공단 등록치식 #47 / 차팅 #46 불일치",flag:1},{mk:2,code:"U1140",nm:"골이식술",amt:0,memo:"임플란트 목적 골이식",flag:1}],
+  claim:[{code:"AA254",nm:"재진 진찰료",amt:9990,kind:"keep"},{mk:1,code:"U0073",nm:"임플란트 2단계",amt:0,kind:"fix",note:"치식 #46↔#47 확인 후 청구"},{mk:2,code:"비급여",nm:"골이식술 → 비급여",amt:0,kind:"nb",note:"급여 불가"}],
+  reasons:[
+    {mk:1,verdict:"청구 보류 — 치식 불일치",vcls:"cut",rule:"P-01",money:0,conf:93,
+     ev:"공단 등록치식 '#47' ↔ 차트 시술치식 '#46' 불일치",
+     logic:"공단 등록정보와 청구 치식이 다르면 자동 심사불능(가장 흔한 단일 삭감 사유).",
+     concl:"이대로 송신 금지. 등록정보 정정 또는 치식 재확인 후 청구. 등록일=최초처치일 원칙도 점검."},
+    {mk:2,verdict:"비급여 대상 — 임플란트 골이식",vcls:"nb",rule:"P-05",money:0,conf:95,
+     ev:"U1140 골이식술 · '임플란트 목적'",
+     logic:"U1140 급여 적응증은 골성병소·악안면기형·골절 유착장애 등 제한적. 임플란트 목적은 전액 비급여.",
+     concl:"급여 청구 시 삭감+부당청구 위험. 비급여로 전환 후 별도 수납."}]},
+
+ {no:"06014",name:"한지영",sex:"여",age:33,visit:"재진",date:"06-17",proc:"파노라마 촬영",teeth:["전악"],status:"warn",
+  chart:[{code:"AA254",nm:"재진 진찰료",amt:9990},{mk:1,code:"G9701",nm:"파노라마 촬영",amt:13100,memo:"종별가산 11% 포함 금액으로 입력됨",flag:1}],
+  claim:[{code:"AA254",nm:"재진 진찰료",amt:9990,kind:"keep"},{mk:1,code:"G9701",nm:"파노라마 촬영",amt:11490,kind:"fix",delta:-1610,note:"종별가산 제거"}],
+  reasons:[
+    {mk:1,verdict:"삭감위험 — 방사선 종별가산 미반영",vcls:"fix",rule:"P-08",money:-1610,conf:90,
+     ev:"G9701 파노라마 13,100원 = 종별가산 11% 포함 금액",
+     logic:"2024-01부터 영상진단 수가 종별가산 제외. 가산 포함으로 청구 시 자동 조정 삭감.",
+     concl:"가산 제거한 11,490원으로 정정. 안 고치면 1,610원 자동 삭감(연초 수가 세팅 점검 필요)."},
+    {verdict:"중복 촬영 아님",vcls:"ok",rule:"P-04",money:0,conf:92,
+     ev:"동일 목적 검사 동시 청구 없음",logic:"같은 날 동일목적 영상 중복 없음.",concl:"촬영 자체는 정상."}]},
+
+ {no:"07788",name:"강민호",sex:"남",age:50,visit:"재진",date:"06-17",proc:"치은박리소파술",teeth:["24","25"],status:"warn",
+  chart:[{code:"AA254",nm:"재진 진찰료",amt:9990},{mk:1,code:"차-46",nm:"치은박리소파술",amt:108600,memo:"직전 4주내 치석제거·치근활택술(전처치) 기록 없음",flag:1}],
+  claim:[{code:"AA254",nm:"재진 진찰료",amt:9990,kind:"keep"},{mk:1,code:"차-44",nm:"치주소파술 (하향조정)",amt:38600,kind:"fix",delta:-70000,note:"전처치 미이행 시 하향"}],
+  reasons:[
+    {mk:1,verdict:"삭감위험 — 전처치 미이행 후 수술",vcls:"cut",rule:"P-03 / §23",money:-70000,conf:79,
+     ev:"차-46 치은박리소파술 · '직전 4주내 SRP(전처치) 기록 없음'",
+     logic:"치은박리소파술은 치석제거·치근활택술 선행 의무(2023-03 기준). 전처치 기록 없으면 치주소파술로 하향 또는 전체 불인정.",
+     concl:"전처치 먼저 시행 권고. 지금 청구하면 차-44(38,600원)로 하향 → 70,000원 깎임. 전처치 후 재청구가 유리."},
+    {verdict:"진찰료 정상",vcls:"ok",rule:"P-11",money:0,conf:92,ev:"재진 진찰",logic:"진찰료 자체는 문제 없음.",concl:"재진 진찰료 9,990원 유지."}]},
+
+ {no:"08305",name:"윤서연",sex:"여",age:29,visit:"초진",date:"06-17",proc:"성인 충치 복합레진 충전",teeth:["14","15"],status:"danger",
+  chart:[{code:"AA157",nm:"초진 진찰료",amt:14080},{mk:1,code:"차-101",nm:"광중합형 복합레진 충전",amt:0,memo:"만 29세 성인 / 급여코드로 입력됨",flag:1}],
+  claim:[{code:"AA157",nm:"초진 진찰료",amt:14080,kind:"keep"},{mk:1,code:"비급여",nm:"복합레진 충전 → 비급여",amt:0,kind:"nb",note:"성인 → 전액 비급여"}],
+  reasons:[
+    {mk:1,verdict:"비급여 항목을 급여 청구",vcls:"nb",rule:"P-19",money:0,conf:95,
+     ev:"차-101 광중합 복합레진 · '만 29세 성인'인데 급여코드 입력",
+     logic:"광중합 복합레진 급여는 만 12세 이하 영구치 우식만 해당. 만 29세 성인 충치 레진은 전액 비급여.",
+     concl:"급여코드로 청구 시 삭감+부당청구. 비급여로 전환해 별도 수납(잇몸·마모 GI·스케일링만 보험)."},
+    {verdict:"초진 진찰료 정상",vcls:"ok",rule:"P-11",money:0,conf:96,ev:"신환 첫 내원",logic:"첫 내원 → 초진 코드 정확.",concl:"초진 진찰료 14,080원 유지."}]},
+
+ {no:"09120",name:"임재현",sex:"남",age:42,visit:"초진?",date:"06-17",proc:"진찰 + 단순처치",teeth:["—"],status:"warn",
+  chart:[{mk:1,code:"AA157",nm:"초진 진찰료",amt:14080,memo:"2025-11-20 내원 이력 있음(동일 상병 계속진료)",flag:1}],
+  claim:[{mk:1,code:"AA254",nm:"재진 진찰료",amt:9990,kind:"fix",delta:-4090,note:"초진 → 재진 정정"}],
+  reasons:[
+    {mk:1,verdict:"삭감위험 — 초진/재진 구분 오류",vcls:"fix",rule:"P-11",money:-4090,conf:86,
+     ev:"AA157 초진 청구 · 직전 내원 '2025-11-20(동일 상병 계속진료)'",
+     logic:"치료종결 1개월/치주 90일 경과해도 동일 상병 계속진료면 재진 해당 가능. 초진 청구 시 진찰료 차액 삭감 위험.",
+     concl:"상병·경과기간 확인 후 재진(AA254)으로 정정 검토. 잘못 내면 4,090원 차액 삭감."}]},
+
+ {no:"10044",name:"송하늘",sex:"여",age:67,visit:"재진",date:"06-17",proc:"단순 발치 — 야간 응급",teeth:["38"],status:"info",
+  chart:[{mk:1,code:"AA254",nm:"재진 진찰료",amt:9990,memo:"19:40 진료(평일 야간)"},{code:"차-71",nm:"단순 발치",amt:15700,memo:"#38 발치 · PMH상 항응고제 없음"}],
+  claim:[{code:"AA254",nm:"재진 진찰료",amt:9990,kind:"keep"},{code:"차-71",nm:"단순 발치",amt:15700,kind:"keep"},{mk:1,code:"야간가산",nm:"의원 야간진료 가산(30%)",amt:7710,kind:"add",delta:7710,note:"누락 가산 추가"}],
+  reasons:[
+    {mk:1,verdict:"누락발견 — 야간진료 가산 미적용",vcls:"add",rule:"§8 진찰료",money:7710,conf:82,
+     ev:"재진 진찰 '19:40 진료(평일 야간)'인데 야간가산 코드 미입력",
+     logic:"평일 18:00~익일 09:00 진료는 초/재진료 30% 가산 대상. 시각 기록은 있으나 가산이 누락됨.",
+     concl:"야간가산 코드 추가 → 약 +7,710원 확보(받을 수 있던 돈)."},
+    {verdict:"발치 정상 / PMH 확인",vcls:"ok",rule:"P-09",money:0,conf:91,
+     ev:"#38 단순발치, 항응고제 복용력 없음",logic:"발치 청구 정상, 증빙(PA·PMH) 충족.",concl:"단순발치 15,700원 유지."}]}
+];
+
+/* ============ 렌더링 ============ */
+const won = n => n.toLocaleString('ko-KR')+'원';
+const STATUS={
+  ok:{ic:"✅",lab:"정상 청구 — 그대로 송신 가능"},
+  warn:{ic:"⚠️",lab:"삭감위험 — 수정 후 송신"},
+  info:{ic:"💡",lab:"누락발견 — 청구 추가 가능"},
+  danger:{ic:"🚫",lab:"비급여/보류 — 정정 필요"}};
+const KIND={keep:{b:""},fix:{b:"정정",c:"kb-fix"},add:{b:"추가",c:"kb-add"},cut:{b:"삭감위험",c:"kb-cut"},nb:{b:"비급여",c:"kb-nb"}};
+const DONE={confirmed:{lab:"✓ 확정",c:"var(--ok)",bg:"var(--ok-bg)"},fixed:{lab:"✎ 수정",c:"var(--warn)",bg:"var(--warn-bg)"},held:{lab:"⏸ 보류",c:"var(--dim)",bg:"var(--panel3)"}};
+const FILTERS=[{k:"all",lab:"전체"},{k:"warn",lab:"🟡삭감위험"},{k:"info",lab:"🟢누락"},{k:"danger",lab:"🔴비급여"},{k:"ok",lab:"✅정상"}];
+
+let cur=0, filter="all";
+const reviewed={};
+
+function netOf(p){let gain=0,save=0;p.reasons.forEach(r=>{if(r.money>0)gain+=r.money;if(r.money<0)save+=Math.abs(r.money);});
+  const claimSum=p.claim.filter(c=>c.kind!=='nb'&&c.amt>0).reduce((s,c)=>s+c.amt,0)+(gain);return{gain,save,claimSum};}
+
+/* 요약 한 줄 */
+function renderKPI(){
+  let gain=0,save=0;
+  PATIENTS.forEach(p=>{const n=netOf(p);gain+=n.gain;save+=n.save;});
+  const check=PATIENTS.filter(p=>p.status==='warn'||p.status==='danger').length;
+  document.getElementById('kpis').innerHTML=
+    `<span class="s">📅 오늘 <b>${PATIENTS.length}</b>명</span><span class="sep">·</span>`+
+    `<span class="s warn">⚠️ 확인 필요 <b>${check}</b>건</span><span class="sep">·</span>`+
+    `<span class="s money">💰 놓칠 뻔한 돈 <b>+${won(gain+save)}</b></span>`;
+}
+
+/* 워크큐 */
+function renderQueue(){
+  document.getElementById('progtxt').textContent=Object.keys(reviewed).length+"/"+PATIENTS.length;
+  document.getElementById('pbar').style.width=(Object.keys(reviewed).length/PATIENTS.length*100)+'%';
+  // filters
+  const counts={all:PATIENTS.length};FILTERS.slice(1).forEach(f=>counts[f.k]=PATIENTS.filter(p=>p.status===f.k).length);
+  document.getElementById('qfilters').innerHTML=FILTERS.map(f=>
+    `<button class="qf ${filter===f.k?'on':''}" onclick="setFilter('${f.k}')">${f.lab}<span class="c">${counts[f.k]}</span></button>`).join('');
+  // batch button
+  const okIdx=PATIENTS.map((p,i)=>({p,i})).filter(x=>x.p.status==='ok'&&!reviewed[x.i]);
+  const bb=document.getElementById('batchbtn');
+  bb.disabled=okIdx.length===0;
+  bb.innerHTML=okIdx.length?`✓ 고신뢰 정상 ${okIdx.length}건 일괄확정<small>누르기 전 목록 한 번 확인</small>`:`✓ 일괄확정할 정상 건 없음`;
+  // rows
+  const list=PATIENTS.map((p,i)=>({p,i})).filter(x=>filter==='all'||x.p.status===filter);
+  document.getElementById('qlist').innerHTML=list.map(({p,i})=>{
+    const dc=reviewed[i]?DONE[reviewed[i]]:null;
+    return `<button class="qrow ${i===cur?'sel':''}" onclick="jump(${i})">
+      <div class="qrail ${p.status}"></div>
+      <div class="qchart">${p.no}</div>
+      <div class="qmain"><div class="qname">${p.name}<small>${p.sex}·${p.age}·${p.visit}</small></div>
+        <div class="qproc">${p.proc}</div></div>
+      <div class="qright"><div class="qstat">${STATUS[p.status].ic}</div>
+        ${dc?`<div class="qdone" style="color:${dc.c};background:${dc.bg}">${dc.lab}</div>`:''}</div>
+    </button>`;}).join('')||`<div style="color:var(--faint);font-size:12px;padding:16px;text-align:center">해당 상태 환자 없음</div>`;
+}
+
+/* 차트/청구 라인 */
+function chartLine(l){
+  const mk=l.mk?`<span class="mk" data-mk="${l.mk}">${l.mk}</span>`:`<span class="mk blank"></span>`;
+  const memo=l.memo?`<div class="memo ${l.flag?'flag':''}">${l.flag?'⚠ ':''}${l.memo}</div>`:'';
+  const amt=l.amt?won(l.amt):'<span class="cl-amt zero">미산정</span>';
+  return `<div class="cline ${l.mk?'ev-line':''}" data-mk="${l.mk||''}">${mk}
+    <div class="cl-body"><span class="code">${l.code}</span><span class="nmtxt">${l.nm}</span>${memo}</div>
+    <div class="cl-amt">${l.amt?won(l.amt):''}</div></div>`;
+}
+function claimLine(l){
+  const k=KIND[l.kind];
+  const mk=l.mk?`<span class="mk" data-mk="${l.mk}">${l.mk}</span>`:`<span class="mk blank"></span>`;
+  const badge=k.b?`<span class="kbadge ${k.c}">${k.b}</span>`:'';
+  const note=l.note?`<div class="memo">${l.note}</div>`:'';
+  let amtblock=l.amt?won(l.amt):'<span class="cl-amt zero">별도</span>';
+  let delta='';
+  if(l.delta>0)delta=`<span class="delta plus">+${won(l.delta)}</span>`;
+  if(l.delta<0)delta=`<span class="delta minus">${won(l.delta)}</span>`;
+  return `<div class="cline k-${l.kind} ${l.mk?'ev-line':''}" data-mk="${l.mk||''}">${mk}
+    <div class="cl-body"><span class="code">${l.code}</span><span class="nmtxt">${l.nm}</span>${badge}${note}</div>
+    <div class="cl-amt">${l.amt?won(l.amt):''}${delta}</div></div>`;
+}
+/* 근거 카드 (심플: 결론 + 근거 한 줄) */
+function reasonCard(r){
+  const mk=r.mk?`<span class="rc-mk" data-mk="${r.mk}">${r.mk}</span>`:`<span class="rc-mk" style="background:var(--panel3);color:var(--dim)">·</span>`;
+  let money='';
+  if(r.money>0)money=`<span class="rc-money plus">+${won(r.money)}</span>`;
+  if(r.money<0)money=`<span class="rc-money minus">${won(r.money)} 회피</span>`;
+  const lowconf=r.conf<80?`<span class="lowconf">신뢰도 ${r.conf}% · 직접 확인</span>`:'';
+  return `<div class="rcard ${r.mk?'rcard-ev':''}" data-mk="${r.mk||''}">
+    <div class="rc-top">${mk}<span class="rc-verdict ${r.vcls}">${r.verdict}</span><span class="rule-badge">${r.rule}</span>${money}</div>
+    <div class="rc-steps">
+      <div class="qline"><span class="quote">근거 · ${r.ev}</span></div>
+      <div class="concl">→ ${r.concl}${lowconf}</div>
+    </div></div>`;
+}
+
+function renderDetail(){
+  const p=PATIENTS[cur], st=STATUS[p.status], n=netOf(p);
+  const teeth=p.teeth.map(t=>`<span class="tooth">${t}</span>`).join('');
+  const dc=reviewed[cur]?DONE[reviewed[cur]]:null;
+  let netTxt=[];
+  if(n.gain>0)netTxt.push(`누락 <b class="plus">+${won(n.gain)}</b>`);
+  if(n.save>0)netTxt.push(`삭감회피 <b class="minus">${won(n.save)}</b>`);
+  document.getElementById('detailBody').innerHTML=`
+    <div class="dhead">
+      <div class="chartbig"><small>차트번호</small>${p.no}</div>
+      <div class="dh-main">
+        <div class="nm">${p.name}<small>${p.sex}·${p.age} · ${p.visit} · ${p.date}</small></div>
+        <div class="proc">${p.proc} &nbsp;${teeth}</div>
+      </div>
+      ${dc?`<div class="dh-done" style="color:${dc.c};background:${dc.bg}">${dc.lab}</div>`:''}
+    </div>
+    <div class="banner ${p.status}">${st.ic} ${st.lab}<span class="net">${netTxt.join(' · ')}</span></div>
+    <div class="panes">
+      <div class="pane left">
+        <div class="ptitle">🦷 덴트웹 차트 원문 <span class="src">TB_세부처치내역 · #${p.no}</span></div>
+        ${p.chart.map(chartLine).join('')}
+      </div>
+      <div class="pane">
+        <div class="ptitle claim">🧾 제안 청구 <span class="src">룰엔진 판정</span></div>
+        ${p.claim.map(claimLine).join('')}
+      </div>
+    </div>
+    <div class="reasons">
+      <div class="rtitle">📋 왜 이 청구를 했나 — 근거 → 규칙 → 결론</div>
+      ${p.reasons.map(reasonCard).join('')}
+    </div>`;
+  document.getElementById('prevBtn').disabled=(cur===0);
+  document.getElementById('nextBtn').disabled=(cur===PATIENTS.length-1);
+  attachLink();
+  renderQueue();
+}
+
+/* 공간적 연결: 같은 번호 호버 시 동시 하이라이트 */
+function attachLink(){
+  document.querySelectorAll('[data-mk]').forEach(el=>{
+    const mk=el.getAttribute('data-mk');if(!mk)return;
+    el.addEventListener('mouseenter',()=>setHL(mk,true));
+    el.addEventListener('mouseleave',()=>setHL(mk,false));
+  });
+}
+function setHL(mk,on){
+  document.querySelectorAll('.cline[data-mk="'+mk+'"]').forEach(e=>e.classList.toggle('hl',on));
+  document.querySelectorAll('.rcard[data-mk="'+mk+'"]').forEach(e=>e.classList.toggle('hl',on));
+  document.querySelectorAll('.mk[data-mk="'+mk+'"],.rc-mk[data-mk="'+mk+'"]').forEach(e=>e.classList.toggle('act',on));
+}
+
+/* 네비/액션 */
+function go(d){let n=cur;const vis=PATIENTS.map((p,i)=>i).filter(i=>filter==='all'||PATIENTS[i].status===filter);
+  const pos=vis.indexOf(cur);let np=pos+d;if(np<0||np>=vis.length)return;cur=vis[np];renderDetail();scrollTopDetail();}
+function jump(i){cur=i;renderDetail();scrollTopDetail();}
+function scrollTopDetail(){document.querySelector('.detail').scrollIntoView({behavior:'smooth',block:'start'});}
+function mark(s){reviewed[cur]=s;renderDetail();setTimeout(()=>go(1),200);}
+function setFilter(k){filter=k;if(!(filter==='all'||PATIENTS[cur].status===filter)){const v=PATIENTS.findIndex(p=>p.status===filter);if(v>=0)cur=v;}renderDetail();}
+function batchConfirm(){PATIENTS.forEach((p,i)=>{if(p.status==='ok'&&!reviewed[i])reviewed[i]='confirmed';});renderDetail();}
+
+/* 사용법 */
+function openGuide(){document.getElementById('guideMask').classList.add('on');}
+function closeGuide(){document.getElementById('guideMask').classList.remove('on');}
+
+/* 키보드 */
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT')return;
+  const k=e.key.toLowerCase();
+  if(k==='escape'){closeGuide();return;}
+  if(k==='?'||k==='/'){e.preventDefault();const m=document.getElementById('guideMask');m.classList.toggle('on');return;}
+  if(document.getElementById('guideMask').classList.contains('on'))return;
+  if(k==='j'||k==='arrowdown'){e.preventDefault();go(1);}
+  else if(k==='k'||k==='arrowup'){e.preventDefault();go(-1);}
+  else if(k==='1')mark('confirmed');
+  else if(k==='2')mark('fixed');
+  else if(k==='3')mark('held');
+});
+
+renderKPI();renderDetail();
+/* 첫 방문 시 사용법 자동 노출 */
+if(!sessionStorage.getItem('seenGuide')){openGuide();sessionStorage.setItem('seenGuide','1');}
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body>
+</html>

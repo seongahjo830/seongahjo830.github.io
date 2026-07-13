@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>차트 열면 이렇게 — 보험청구 추천 UX (추천안)</title>
+<style>
+  :root{
+    --ink:#1f2430; --muted:#6b7280; --line:#e7e3d9; --bg:#eef0f3; --card:#fff;
+    --money:#1d4ed8; --moneybg:#eef4ff; --moneybd:#cdddff;
+    --new:#2f7d4f; --newbg:#eef7f1; --newbd:#cfe7d8;
+    --warn:#b5751a; --warnbg:#fff6e8; --warnbd:#ecd3a4;
+    --priv:#0f766e; --privbg:#e7f4f1;
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo',system-ui,-apple-system,'Malgun Gothic',sans-serif; line-height:1.6; padding:24px 14px 70px; }
+  .wrap{ max-width:860px; margin:0 auto; }
+  h1{ font-size:20px; margin:0 0 3px; font-weight:800; }
+  .sub{ color:var(--muted); font-size:13px; margin:0 0 18px; }
+
+  /* ===== 가짜 EMR 차트 ===== */
+  .emr{ background:var(--card); border:1px solid #d7dae0; border-radius:14px; overflow:hidden; box-shadow:0 6px 26px rgba(30,40,70,.09); }
+  .phead{ display:flex; align-items:center; gap:11px; padding:14px 18px; border-bottom:1px solid #eceef2; flex-wrap:wrap; }
+  .pname{ font-size:17px; font-weight:800; }
+  .pmeta{ font-size:12.5px; color:#6b7280; font-weight:600; }
+  .qual{ font-size:11px; font-weight:800; background:var(--privbg); color:var(--priv); border-radius:20px; padding:3px 10px; }
+
+  /* 배너(수동형, 안 막음) */
+  .banner{ display:flex; align-items:center; gap:9px; padding:9px 18px; background:linear-gradient(90deg,#f3f7ff,#fbfdff); border-bottom:1px solid #e6ecf6; cursor:pointer; user-select:none; flex-wrap:wrap; }
+  .pill{ font-size:12px; font-weight:800; border-radius:20px; padding:3px 11px; }
+  .pill.m{ background:var(--moneybg); color:var(--money); }
+  .pill.n{ background:var(--newbg); color:var(--new); }
+  .pill.w{ background:var(--warnbg); color:var(--warn); }
+  .banner .more{ margin-left:auto; font-size:12px; font-weight:800; color:#5a73a8; }
+  .banner .more::after{ content:' ▾'; }
+  .banner.open .more::after{ content:' ▴'; }
+
+  /* 펼침 패널 */
+  .panel{ display:none; padding:13px 16px 6px; background:#fafbfd; border-bottom:1px solid #eceef2; }
+  .panel.open{ display:block; }
+  .rc{ display:flex; gap:11px; align-items:flex-start; background:#fff; border:1px solid #e6e8ee; border-radius:11px; padding:11px 13px; margin-bottom:10px; }
+  .rc .tag{ flex:0 0 auto; width:46px; text-align:center; font-size:10px; font-weight:800; border-radius:8px; padding:6px 0; line-height:1.25; }
+  .tag.m{ background:var(--moneybg); color:var(--money); }
+  .tag.n{ background:var(--newbg); color:var(--new); }
+  .tag.w{ background:var(--warnbg); color:var(--warn); border:1.5px solid var(--warnbd); }
+  .rc .body{ flex:1; min-width:0; }
+  .rc .ti{ font-size:13.5px; font-weight:800; margin-bottom:2px; }
+  .rc .de{ font-size:12.3px; color:#48505f; }
+  .rc .de b{ color:#23314e; }
+  .rc .pt{ font-size:11.8px; color:#5b6472; margin-top:4px; }
+  .rc .pt::before{ content:'🗣️ '; }
+  .rc .act{ flex:0 0 auto; display:flex; flex-direction:column; gap:6px; }
+  .btn{ font-size:11px; font-weight:800; border:1px solid #cdddff; background:#eef4ff; color:#1d4ed8; border-radius:8px; padding:6px 10px; cursor:pointer; white-space:nowrap; }
+  .btn:hover{ background:#e2ecff; }
+  .btn.done{ background:#eef7f1; border-color:#cfe7d8; color:#2f7d4f; cursor:default; }
+
+  .warnrow{ border-color:var(--warnbd); background:#fffdf8; }
+
+  /* 메모칸 */
+  .memowrap{ padding:14px 18px 18px; }
+  .memolb{ font-size:11px; font-weight:800; color:#8a90a0; letter-spacing:.4px; margin-bottom:6px; }
+  .memo{ width:100%; min-height:96px; border:1.5px solid #e2e4ea; border-radius:11px; padding:11px 13px; font-size:12.6px; color:#374050; font-family:inherit; line-height:1.75; background:#fff; resize:vertical; }
+
+  /* 설계 근거 */
+  .why{ background:#fff; border:1px solid var(--line); border-radius:12px; padding:15px 17px; margin-top:20px; }
+  .why h3{ font-size:14px; margin:0 0 9px; font-weight:800; }
+  .why ul{ margin:0; padding-left:18px; font-size:12.6px; color:#414a57; }
+  .why li{ margin:5px 0; }
+  .why b{ color:#1f2430; }
+  .src{ font-size:11.4px; color:#8a90a0; margin-top:11px; line-height:1.7; }
+  .src a{ color:#5a73a8; }
+  .reject{ background:#fbefee; border:1px solid #eccfcd; border-radius:9px; padding:9px 13px; font-size:12.2px; color:#8e423e; margin-top:11px; }
+</style></head><body><div class="wrap">
+
+  <h1>차트 열면 이렇게 떴으면 — 보험청구 추천 UX <span style="font-size:12px;color:#2f7d4f;font-weight:800;">추천안</span></h1>
+  <p class="sub">수동형 배너(안 막음) + 펼치면 카드 + [메모에 넣기]. 시한부·사전등록 같은 <b>놓치면 손해</b>인 것만 노랑으로 강조. 팝업(중단형)은 일부러 안 씀. ↓ 아래 배너·버튼 실제로 눌러보세요.</p>
+
+  <!-- ===== 가짜 차트 데모 ===== -->
+  <div class="emr">
+    <div class="phead">
+      <span class="pname">김복자</span>
+      <span class="pmeta">만 65세 2개월 · 여 · #10920</span>
+      <span class="qual">자격: 의료급여 1종</span>
+    </div>
+
+    <div class="banner" id="bn" onclick="tog()">
+      <span class="pill m">💰 청구가능 2</span>
+      <span class="pill n">🆕 신규자격 1</span>
+      <span class="pill w">⚠️ 사전등록 1</span>
+      <span class="more" id="more">펼치기</span>
+    </div>
+
+    <div class="panel" id="pn">
+
+      <div class="rc warnrow">
+        <div class="tag w">🆕<br>+⚠️</div>
+        <div class="body">
+          <div class="ti">보험 임플란트 — 이번에 새로 가능</div>
+          <div class="de">만 65세 도달 · 부분무치악 → <b>평생 2개</b> 보험. 의료급여 1종이라 본인부담 <b>10%</b>(≈개당 12만 원대). <b>⚠️ 시술 전 사전등록 필수 — 안 하면 소급 불가.</b></div>
+          <div class="pt">"이번에 만 65세가 되셔서 임플란트도 보험이 됩니다. 다만 시작 전에 등록을 먼저 해야 적용됩니다."</div>
+        </div>
+        <div class="act"><button class="btn" onclick="ins(this,'[⚠️] 만 65세 도달·부분무치악 → 보험 임플 평생 2개(의료급여 1종 본인부담 10%). 시술 전 사전등록 필수(소급 불가).')">메모에 넣기</button></div>
+      </div>
+
+      <div class="rc">
+        <div class="tag m">💰</div>
+        <div class="body">
+          <div class="ti">치석제거(스케일링) — 지금 청구 가능</div>
+          <div class="de">만 19세+ · <b>올해 0/1</b> 미사용 · 직전 2024-11-10(12개월 경과) → 보험 가능.</div>
+          <div class="pt">"스케일링은 1년에 한 번 보험이 되는데, 올해 아직 안 받으셨어요."</div>
+        </div>
+        <div class="act"><button class="btn" onclick="ins(this,'[💰] 보험 스케일링 올해 0/1 · 직전 2024-11-10 → 지금 청구 가능.')">메모에 넣기</button></div>
+      </div>
+
+      <div class="rc">
+        <div class="tag m">💰</div>
+        <div class="body">
+          <div class="ti">파노라마 — 영상진단 급여</div>
+          <div class="de">전반 진단·치료계획 근거. <b>의료급여라 본인부담 0%.</b></div>
+          <div class="pt">"입 전체를 한 장 찍어 상태를 보겠습니다. 부담금은 없습니다."</div>
+        </div>
+        <div class="act"><button class="btn" onclick="ins(this,'[💰] 파노라마 영상진단 급여(의료급여 본인부담 0%).')">메모에 넣기</button></div>
+      </div>
+
+    </div>
+
+    <div class="memowrap">
+      <div class="memolb">💬 차트 메모 (추천을 넣으면 여기 쌓임 — 영구 기록)</div>
+      <textarea class="memo" id="memo" placeholder="위 카드의 [메모에 넣기]를 누르면 이 칸에 자동으로 들어갑니다."></textarea>
+    </div>
+  </div>
+
+  <!-- ===== 설계 근거 ===== -->
+  <div class="why">
+    <h3>왜 이 방식인가 (목적 → 검증된 원칙)</h3>
+    <ul>
+      <li><b>목적은 "청구 누락 0 + 환자 설명"</b> — 환자안전 경보가 아니라 돈·정보. 그래서 일을 <b>막지 않는 게</b> 1순위.</li>
+      <li><b>수동형 우선 (Non-interruptive first).</b> 연구 일관 결론: 팝업(중단형)은 <b>알림 피로 → 무시·기각</b>으로 실패. 인라인·패널 같은 수동형이 채택률이 높음. → 그래서 <b>상단 배너 + 펼침</b>.</li>
+      <li><b>티어링 (Tiered).</b> 다 똑같이 띄우면 다 무시함. <b>💰돈 / 🆕신규자격 / ⚠️시한부·사전등록</b> 3단계로 색 구분, <b>놓치면 손해인 것만</b> 노랑 강조.</li>
+      <li><b>한 번에 행동 (Actionable).</b> 각 카드에 [메모에 넣기] 한 클릭 → 청구·설명 근거가 <b>메모에 영구 기록</b>으로 남음.</li>
+      <li><b>워크플로 안에서 (In-workflow).</b> 차트를 여는 그 동선에 붙임. 별도 화면·학습 불필요 → 저년차도 바로.</li>
+    </ul>
+    <div class="reject"><b>일부러 뺀 것 — 열자마자 팝업(모달).</b> 매번 차트마다 가로막으면 "닫기" 반사만 학습됨(알림 피로). 단 <b>정말 시한부인 것</b>(사전등록·만료 임박)만 배너에서 노랑으로 살짝 띄우는 선에서 처리.</div>
+    <div class="src">
+      근거: 「Five Rights of CDS」(right info·person·format·channel·time) · Bates 외 「Ten Commandments for Effective CDS」(JAMIA 2003) · 「Replacing Interruptive Alert with Passive CDS」(2023, 중단형→수동형 전환으로 알림 피로↓·실행률↑).
+      <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC264429/">Bates 2003</a> · <a href="https://pubmed.ncbi.nlm.nih.gov/38086417/">PubMed 2023</a> · <a href="https://academic.oup.com/jamiaopen/article/6/3/ooad056/7235064">JAMIA Open 2023</a>
+    </div>
+  </div>
+
+<script>
+  function tog(){ document.getElementById('pn').classList.toggle('open'); document.getElementById('bn').classList.toggle('open'); document.getElementById('more').textContent=document.getElementById('pn').classList.contains('open')?'접기':'펼치기'; }
+  function ins(btn,line){ var m=document.getElementById('memo'); m.value=(m.value?m.value+'\n':'')+line; btn.textContent='넣음 ✓'; btn.classList.add('done'); btn.onclick=null; }
+  // 데모: 처음엔 펼쳐서 보여줌
+  tog();
+</script>
+</div><!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body></html>

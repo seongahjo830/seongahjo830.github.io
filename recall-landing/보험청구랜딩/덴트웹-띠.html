@@ -1,0 +1,205 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>덴트웹에 얹으면 이렇게 — 보험청구 띠</title>
+<style>
+  *{box-sizing:border-box;}
+  body{ margin:0; background:#cfd3da; color:#1f2430;
+    font-family:'맑은 고딕','Malgun Gothic',Pretendard,system-ui,sans-serif; font-size:12px; }
+  .app{ max-width:1480px; margin:0 auto; background:#eef0f3; }
+
+  /* 타이틀 바 (덴트웹 상단) */
+  .titlebar{ background:#f4f5f7; border-bottom:1px solid #c7ccd4; padding:5px 12px; font-size:12px; color:#2b3038; display:flex; align-items:center; gap:8px; }
+  .titlebar b{ color:#0b3d91; }
+  .ptitle{ display:flex; align-items:center; gap:14px; padding:7px 14px; background:#fff; border-bottom:1px solid #d6dae1; }
+  .pbig{ font-size:18px; font-weight:800; color:#15366e; }
+  .pmeta{ font-size:12px; color:#3a4150; }
+  .pmeta b{ color:#1f2430; }
+
+  /* ===== NEW: 보험청구 띠 ===== */
+  .reco{ background:linear-gradient(90deg,#eaf3ff,#eafaf4); border-top:1px solid #cfe0f5; border-bottom:1px solid #cfe0f5; }
+  .recobar{ display:flex; align-items:center; gap:9px; padding:6px 14px; cursor:pointer; user-select:none; }
+  .recobar .ttl{ font-weight:800; color:#15366e; font-size:12.5px; }
+  .pill{ font-size:11.5px; font-weight:800; border-radius:20px; padding:2px 10px; }
+  .pill.m{ background:#e7f0ff; color:#1d4ed8; border:1px solid #c9dbfb; }
+  .pill.w{ background:#fff3df; color:#b5751a; border:1px solid #ecd3a4; }
+  .pill.i{ background:#e8f0ef; color:#0f766e; border:1px solid #c4e0da; }
+  .recobar .more{ margin-left:auto; font-weight:800; color:#5a73a8; font-size:11.5px; }
+  .recobar .more::after{ content:' ▾'; }
+  .recobar.open .more::after{ content:' ▴'; }
+  .recopanel{ display:none; padding:4px 12px 11px; }
+  .recopanel.open{ display:block; }
+  .rc{ display:flex; gap:10px; align-items:flex-start; background:#fff; border:1px solid #d9e2ef; border-radius:9px; padding:9px 11px; margin:7px 0; }
+  .rc .tag{ flex:0 0 auto; width:42px; text-align:center; font-size:10px; font-weight:800; border-radius:7px; padding:5px 0; line-height:1.2; }
+  .tag.m{ background:#e7f0ff; color:#1d4ed8; } .tag.w{ background:#fff3df; color:#b5751a; border:1.5px solid #ecd3a4; } .tag.i{ background:#e8f0ef; color:#0f766e; }
+  .rc .bd{ flex:1; min-width:0; }
+  .rc .ti{ font-weight:800; font-size:12.7px; margin-bottom:1px; }
+  .rc .de{ font-size:11.8px; color:#48505f; } .rc .de b{ color:#23314e; }
+  .rc .pt{ font-size:11.3px; color:#5b6472; margin-top:3px; } .rc .pt::before{ content:'🗣️ '; }
+  .btn{ flex:0 0 auto; align-self:center; font-size:11px; font-weight:800; border:1px solid #cdddff; background:#eef4ff; color:#1d4ed8; border-radius:7px; padding:6px 9px; cursor:pointer; white-space:nowrap; }
+  .btn:hover{ background:#e1ebff; } .btn.done{ background:#eef7f1; border-color:#cfe7d8; color:#2f7d4f; cursor:default; }
+  .warnrow{ border-color:#ecd3a4; background:#fffdf7; }
+
+  /* ===== 본문 2분할 (덴트웹 흉내) ===== */
+  .body{ display:flex; gap:8px; padding:8px; }
+  .left{ flex:1.1; background:#fff; border:1px solid #d6dae1; border-radius:4px; min-height:420px; }
+  .right{ flex:1; background:#fff; border:1px solid #d6dae1; border-radius:4px; padding:8px; }
+  .lhead,.tabrow{ background:#eef1f5; border-bottom:1px solid #dde1e8; padding:5px 9px; font-size:11.5px; font-weight:700; color:#3a4150; }
+  .hx{ padding:8px 11px; font-size:11.6px; color:#384050; line-height:1.85; }
+  .hx .d{ color:#9aa0ab; } .hx .blue{ color:#1f5fbf; font-weight:700; } .hx .row{ padding:2px 0; border-bottom:1px dashed #eef0f3; }
+  .hx .hl{ background:#fff7d6; }
+
+  /* 치식 미니 */
+  .teeth{ display:flex; flex-wrap:wrap; gap:2px; margin:7px 0; }
+  .t{ width:24px; height:20px; border:1px solid #cdd2da; border-radius:3px; font-size:10px; display:flex; align-items:center; justify-content:center; color:#5a6170; background:#fafbfc; }
+  .t.sel{ background:#ffe1e1; border-color:#e7a3a3; color:#b23; font-weight:800; }
+  .qbtns{ display:flex; flex-wrap:wrap; gap:3px; margin:6px 0; }
+  .q{ font-size:10.5px; border:1px solid #d4d8e0; background:#f6f7f9; border-radius:4px; padding:3px 7px; color:#414a57; }
+  .q.y{ background:#fff0bf; border-color:#e8d28a; } .q.o{ background:#ffd9a8; border-color:#edbf86; } .q.g{ background:#cdeccd; border-color:#a8d6a8; }
+  .procbox{ border:1px solid #dfe3ea; border-radius:5px; margin-top:8px; }
+  .procbox .h{ background:#eef1f5; padding:4px 8px; font-size:11px; font-weight:700; }
+  .procbox .r{ display:flex; justify-content:space-between; padding:4px 8px; font-size:11px; border-top:1px solid #eef0f3; }
+  .cost{ text-align:right; font-size:11.5px; padding:5px 8px; } .cost b{ color:#b23; }
+
+  .memolb{ font-size:10.5px; font-weight:800; color:#8a90a0; margin:9px 0 4px; }
+  .memo{ width:100%; height:88px; border:1.5px solid #cdd2da; border-radius:5px; padding:7px 9px; font-size:11.6px; font-family:inherit; line-height:1.7; resize:vertical; color:#374050; }
+
+  /* 안내 말풍선 */
+  .hint{ position:relative; margin:0 14px; }
+  .hintbubble{ background:#15366e; color:#fff; font-size:11.5px; font-weight:700; border-radius:8px; padding:7px 12px; display:inline-block; margin:8px 0 0; box-shadow:0 3px 10px rgba(20,40,80,.25); }
+  .hintbubble::before{ content:'▲'; position:absolute; top:1px; left:120px; color:#15366e; font-size:13px; }
+  .legendwrap{ max-width:1480px; margin:14px auto 40px; padding:0 8px; font-size:12px; color:#3a4150; }
+  .legendwrap .k{ background:#fff; border:1px solid #d6dae1; border-radius:9px; padding:12px 15px; line-height:1.85; }
+  .legendwrap b{ color:#15366e; }
+</style></head><body>
+
+<div class="app">
+
+  <!-- 덴트웹 타이틀바 -->
+  <div class="titlebar">▶ 덴트웹 :: Dr.조성아 &nbsp;—&nbsp; @ Chart No.8250 / <b>홍대식</b> / 1974-11-03 (남 51Y) / 보험구분 <b>건강보험</b> / 최초내원 2026-04-27 / 최종 2026-06-22 / 다음예약 2026-06-29 / 리콜 기본리콜</div>
+
+  <div class="ptitle">
+    <span class="pbig">홍대식 (8250)</span>
+    <span class="pmeta">만 51세 · 남 · <b>건강보험</b> · 진행 Tx: #36 근관+Zir Cr · #37 endo · #18,28 ext 예정</span>
+  </div>
+
+  <!-- ★★ 여기가 새로 생기는 "보험청구 띠" ★★ -->
+  <div class="reco">
+    <div class="recobar" id="bar" onclick="tog()">
+      <span class="ttl">💡 보험청구 도우미</span>
+      <span class="pill w">⚠️ 확인 1</span>
+      <span class="pill m">💰 청구 1</span>
+      <span class="pill i">ℹ️ 안내 2</span>
+      <span class="more" id="more">펼치기</span>
+    </div>
+
+    <div class="recopanel" id="panel">
+
+      <div class="rc warnrow">
+        <div class="tag w">⚠️<br>PA</div>
+        <div class="bd">
+          <div class="ti">치근단(PA) 청구 빠졌는지 확인</div>
+          <div class="de">오늘 <b>#36 근관세척</b> 했는데 같은 날 <b>치근단(PA) 청구가 안 보임</b> → 우측 <b>「PA(추가)」</b> 눌러 청구 확인. (놓치면 손해)</div>
+        </div>
+        <button class="btn" onclick="ins(this,'[⚠️] #36 근관처치일 PA 청구 확인(누락 점검).')">메모에 넣기</button>
+      </div>
+
+      <div class="rc">
+        <div class="tag m">💰</div>
+        <div class="bd">
+          <div class="ti">스케일링 — 올해 보험 가능?</div>
+          <div class="de">만 51세(만 19세+). <b>올해 보험 스케일링 기록 없으면 연 1회 가능</b>. 직전 내역 확인 후 안내.</div>
+          <div class="pt">"스케일링은 1년에 한 번 보험이 되는데, 올해 안 받으셨으면 같이 해드릴게요."</div>
+        </div>
+        <button class="btn" onclick="ins(this,'[💰] 보험 스케일링 — 올해 미실시 시 연 1회 가능(만 51세). 직전 내역 확인.')">메모에 넣기</button>
+      </div>
+
+      <div class="rc">
+        <div class="tag i">ℹ️</div>
+        <div class="bd">
+          <div class="ti">#36 지르코니아 크라운 — 자비</div>
+          <div class="de">건강보험 비급여(자비). <b>치아보험 가입 시 보철보장 청구</b> 가능 → 진단서·청구서류 안내.</div>
+          <div class="pt">"신경치료 끝나면 씌우는 크라운은 보험이 안 돼요. 치아보험 있으시면 서류 챙겨드려요."</div>
+        </div>
+        <button class="btn" onclick="ins(this,'[ℹ️] #36 지르코니아 크라운=자비. 치아보험 가입 시 보철보장 청구 서류 안내.')">메모에 넣기</button>
+      </div>
+
+      <div class="rc">
+        <div class="tag i">ℹ️</div>
+        <div class="bd">
+          <div class="ti">#18·28 발치 예정 — 사보험</div>
+          <div class="de">건보 급여 + <b>치아보험 발치보장</b> 가입 시 청구. 매복이면 진단서 챙기기.</div>
+        </div>
+        <button class="btn" onclick="ins(this,'[ℹ️] #18·28 발치 — 건보 급여 + 치아보험 발치보장 가입 시 진단서.')">메모에 넣기</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="hint"><span class="hintbubble">🆕 이 띠 하나가 새로 생기는 전부 — 차트 본문은 그대로</span></div>
+
+  <!-- 본문 (덴트웹 흉내, 맥락용) -->
+  <div class="body">
+    <div class="left">
+      <div class="lhead">진료 내역</div>
+      <div class="hx">
+        <div class="row"><span class="d">2026-06-22</span> &nbsp; [기공의뢰서] #36 지르코니아 Cr — 유니온기공소 06-29 예정</div>
+        <div class="row hl"><span class="blue">&lt; 오늘의 Next &gt;</span> &nbsp; c/f, core, t/s · #36,37 f/s 우측 cr prep · #18,28 ext 일정 확인</div>
+        <div class="row"><span class="d">2026-06-12</span> &nbsp; 치료 간격 짧게 잡아 빠르게 진행 — 김민정</div>
+        <div class="row"><span class="d"></span> &nbsp; ■ 치료비용계획 진행중 — 총 2,000,000 / 남은 2,000,000</div>
+        <div class="row"><span class="d">2026-04-27</span> &nbsp; 치료계획#1 — sc+cu / ext / cr / <b>endo(#37 뿌리 염증)</b></div>
+        <div class="row" style="color:#9aa0ab;">… (기존 차트 내역 그대로, 바뀌는 것 없음) …</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="tabrow">진료 입력 &nbsp;·&nbsp; 진료일 2026-06-22 &nbsp;·&nbsp; 건강보험</div>
+      <div class="teeth">
+        <div class="t">16</div><div class="t">15</div><div class="t">14</div><div class="t">13</div><div class="t">12</div><div class="t">11</div>
+        <div class="t sel">36</div><div class="t">37</div><div class="t">18</div><div class="t">28</div>
+      </div>
+      <div class="qbtns">
+        <span class="q">진찰료</span><span class="q">파노라마</span><span class="q y">PA(추가)</span><span class="q g">스테인 제거</span><span class="q">치석제거(연1회)</span><span class="q o">충전물연마</span><span class="q y">치주후처치(간단)</span><span class="q">근관세척</span>
+      </div>
+      <div class="procbox">
+        <div class="h">#36 근관세척 · 지르코니아 Cr 프렙</div>
+        <div class="r"><span>근관세척 [1근관1회당] ×4</span><span>9,240</span></div>
+        <div class="r"><span>러버댐장착</span><span>3,090</span></div>
+        <div class="r"><span>치과전달마취</span><span>6,130</span></div>
+        <div class="r"><span>상병명 <b>K04.7</b> 근단주위농양</span><span></span></div>
+      </div>
+      <div class="cost">총진료비 530,580원 · 본인부담 <b>509,100원</b></div>
+
+      <div class="memolb">진료메모 ([메모에 넣기] 누르면 여기에 기록됨)</div>
+      <textarea class="memo" id="memo" placeholder="평소엔 비어 있음. 위 띠의 [메모에 넣기]를 눌러야 기록됩니다."></textarea>
+    </div>
+  </div>
+
+</div>
+
+<div class="legendwrap">
+  <div class="k">
+    <b>정리 — "위에 뜬다"가 뭐냐면:</b><br>
+    ① 환자 정보 바(홍대식 8250) <b>바로 아래에 얇은 띠 1줄</b>이 새로 생깁니다. 평소엔 <b>요약만</b>(⚠️확인1·💰청구1·ℹ️안내2) — <b>차트 기록이 아니라 그냥 보여주기</b>입니다.<br>
+    ② 띠를 누르면 <b>아래로 카드가 펼쳐집니다</b> (이 환자에 맞는 것만 — 홍대식은 #36 근관치료 중이라 PA 누락·스케일링·크라운 자비 안내).<br>
+    ③ 카드의 <b>[메모에 넣기]를 눌렀을 때만</b> → 오른쪽 아래 <b>진료메모에 실제로 기록</b>됩니다. 안 누르면 아무 기록도 안 남습니다.<br>
+    → 즉 <b>차트 본문·치식·처치입력은 1도 안 건드리고</b>, 위에 띠 하나만 얹는 방식입니다. (직접 띠·버튼 눌러보세요.)
+  </div>
+</div>
+
+<script>
+  function tog(){ var p=document.getElementById('panel'),b=document.getElementById('bar'); p.classList.toggle('open'); b.classList.toggle('open'); document.getElementById('more').textContent=p.classList.contains('open')?'접기':'펼치기'; }
+  function ins(btn,line){ var m=document.getElementById('memo'); m.value=(m.value?m.value+'\n':'')+line; btn.textContent='넣음 ✓'; btn.classList.add('done'); btn.onclick=null; }
+  tog(); // 데모: 펼친 상태로 시작
+</script>
+<!--recall-fab-->
+<a href="../index.html" id="recallFab" title="리콜 랜딩페이지 후보 전체 목록 보기"
+   style="position:fixed;right:18px;bottom:18px;z-index:2147483000;display:inline-flex;align-items:center;gap:7px;
+   background:#1D4ED8;color:#fff;text-decoration:none;font-weight:700;font-size:13px;line-height:1;
+   padding:11px 15px;border-radius:999px;box-shadow:0 4px 16px rgba(29,78,216,.35),0 1px 3px rgba(0,0,0,.2);
+   font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+   transition:transform .12s ease,box-shadow .12s ease;opacity:.94;">
+  <span style="font-size:15px">📋</span><span>후보 목록</span>
+</a>
+<style>#recallFab:hover{transform:translateY(-2px);opacity:1;box-shadow:0 8px 24px rgba(29,78,216,.45),0 2px 5px rgba(0,0,0,.25)}
+@media print{#recallFab{display:none!important}}</style>
+</body></html>
