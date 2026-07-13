@@ -2477,6 +2477,16 @@
   #daycine .dc-dot{width:9px;height:9px;border-radius:50%;background:#D8D2C4;border:0;padding:0;cursor:pointer;transition:.15s}
   #daycine .dc-dot.on{background:var(--accent);transform:scale(1.35)}
   #daycine .dc-note{font-size:12px;color:var(--ink-soft);font-weight:600;text-align:center;margin-top:14px}
+  #daycine .dc-easy{margin-top:auto;background:var(--green-soft);border-radius:12px;padding:11px 14px;font-size:13px;font-weight:660;line-height:1.65}
+  #daycine .dc-easy .lb{display:block;font-size:10px;font-weight:900;letter-spacing:.06em;color:var(--green);margin-bottom:3px}
+  #daycine .dc-easy b{color:var(--green)}
+  #daycine .hs-t{font-size:12.5px;font-weight:870;margin-bottom:5px}
+  #daycine .hs-row{display:flex;align-items:center;gap:8px;padding:5px 8px;font-size:12px;font-weight:660;border-bottom:1px dashed var(--line)}
+  #daycine .hs-dot{width:9px;height:9px;border-radius:50%;background:#CFC9BC;flex:0 0 auto}
+  #daycine .hs-row.k-g .hs-dot{background:var(--green)} #daycine .hs-row.k-r .hs-dot{background:var(--red)} #daycine .hs-row.k-b .hs-dot{background:var(--accent)}
+  #daycine .hs-when{flex:0 0 66px;font-size:10px;font-weight:850;color:var(--ink-soft)}
+  #daycine .hs-sum{background:var(--red-soft);border-radius:9px;padding:8px 11px;font-size:11.5px;font-weight:720;line-height:1.6;margin:8px 0}
+  #daycine .hs-sum b{color:var(--red)}
 </style>
 <section id="daycine">
   <div class="wrap">
@@ -2496,6 +2506,7 @@
         <div class="dc-left">
           <div class="dc-nar" id="dcNar"></div>
           <div id="dcDlg"></div>
+          <div class="dc-easy" id="dcEasy"></div>
         </div>
         <div class="dc-right">
           <div class="dc-scr">
@@ -2519,6 +2530,7 @@
 (function(){
   function tag(k,t){return '<span class="sc-tag '+k+'">'+t+'</span>'}
   function alertCard(k,h,s){return '<div class="sc-alert k-'+k+'"><div class="h">'+h+'</div><div class="s">'+s+'</div></div>'}
+  function hs(when,tx,k){return '<div class="hs-row k-'+k+'"><span class="hs-dot"></span><span class="hs-when">'+when+'</span><span>'+tx+'</span></div>'}
   var SCENES=[
    {t:'08:50',p:'데스크 — 출근, 컴퓨터를 켜자마자',st:'오늘 예약 브리핑',
     nar:'아무것도 안 해도 됩니다. 컴퓨터를 켜면 <b>오늘 예약 환자 중 챙길 청구가 있는 사람</b>부터 표시돼 있습니다.',
@@ -2526,16 +2538,22 @@
     scr:'<div class="sc-row"><span class="tm">오늘</span>예약 <b>12명</b> · 그중 챙길 청구 있는 환자 <b style="color:var(--accent-deep)">3명</b></div>'
       +'<div class="sc-row"><span class="tm">09:10</span><span class="nm">이수진 님 (47)</span>'+tag('t','치석제거 미사용')+tag('r','치주 후속 끊김')+'</div>'
       +'<div class="sc-row"><span class="tm">10:30</span><span class="nm">김O식 님 (61)</span>'+tag('a','발치 후 소독 청구')+'</div>'
-      +'<div class="sc-row"><span class="tm">11:00</span><span class="nm">박O래 님 (33)</span>'+tag('b','치근단 재평가 시기')+'</div>'},
+      +'<div class="sc-row"><span class="tm">11:00</span><span class="nm">박O래 님 (33)</span>'+tag('b','치근단 재평가 시기')+'</div>',
+    easy:'아침에 컴퓨터가 <b>“오늘 올 손님 중에 챙길 게 있는 사람 3명이에요”</b>라고 미리 알려주는 겁니다. 직원이 기억할 필요가 없어요.'},
    {t:'09:10',p:'데스크 — 이수진 님 접수',st:'접수 순간',
     nar:'접수 버튼을 누르는 순간, 이 환자에 대해 <b>알아야 할 것과 건넬 한마디</b>가 같이 뜹니다. 실장은 외울 필요가 없습니다.',
     dlg:[['pt','이수진 님','스케일링 예약한 이수진인데요.'],
          ['st','김실장','네 어서오세요! 지난번에 잇몸 검사하셨는데 수치가 좀 있으셨어요. 오늘 오신 김에 이어서 치료받으실 수 있어요 — 보험 적용되세요.'],
          ['pt','이수진 님','아 그래요? 그럼 오늘 같이 해주세요.']],
-    scr:'<div class="sc-row"><span class="nm">이수진 님 (47)</span> 접수됨 · 스케일링 예약</div>'
-      +alertCard('teal','올해 급여 치석제거 아직 미사용','연 1회 급여 — 오늘 사용하면 환자 부담이 줄어듭니다.')
-      +alertCard('red','3개월 전 치주낭측정(4mm+ 6부위) 후 후속 끊김','측정만 하고 치료로 이어지지 않은 상태 — 오늘 재개 적기.')
-      +'<div class="sc-say"><span class="lb">💬 이렇게 말해보세요</span>“지난번 잇몸 검사에서 수치가 좀 있으셨어요. <b>오늘 오신 김에 이어서</b> 치료받으실 수 있고, 보험 적용돼요.”</div>'},
+    scr:'<div class="hs-t">📂 이수진 님 차트 — 30초 브리핑</div>'
+      +hs('작년 11월','스케일링 받고 감 (보험)','g')
+      +hs('3개월 전','잇몸 검사 — <b>깊은 잇몸주머니 6군데</b> 발견','r')
+      +hs('그 후','치료로 이어지지 않음 ← <b>여기서 끊김</b>','r')
+      +hs('오늘 09:10','스케일링 예약으로 다시 옴 — 기회','b')
+      +'<div class="hs-sum">한 줄 상황: <b>잇몸이 안 좋다는 걸 알고도 치료가 끊긴 환자.</b> 오늘이 다시 잡을 기회입니다.</div>'
+      +alertCard('teal','올해 급여 치석제거 아직 미사용','연 1회 보험 — 오늘 쓰면 환자 부담이 줄어듭니다.')
+      +'<div class="sc-say"><span class="lb">💬 이렇게 말해보세요</span>“지난번 잇몸 검사에서 수치가 좀 있으셨어요. <b>오늘 오신 김에 이어서</b> 치료받으실 수 있고, 보험 적용돼요.”</div>',
+    easy:'손님이 오자마자 컴퓨터가 <b>“이 분, 지난번에 하다 만 치료가 있어요. 이렇게 말해보세요”</b>라고 귀띔해주는 겁니다.'},
    {t:'09:20',p:'진료실 — 체어에 앉음',st:'차트 열자마자',
     nar:'원장이 차트를 여는 순간, <b>지난 기록 요약과 오늘의 추천</b>이 차트 옆에 붙습니다. 뒤져볼 필요가 없습니다.',
     dlg:[['dr','원장','수진 님, 지난번 잇몸 수치가 좋지 않았어요. 오늘 스케일링하면서 잇몸치료도 같이 시작할게요.'],
@@ -2543,7 +2561,8 @@
     scr:'<div class="sc-row"><span class="nm">이수진 님</span> 차트 열림</div>'
       +alertCard('b','지난 방문 요약','2026-04-11 치주낭측정 — 4mm 이상 6부위(#44~46 집중) · 후속 치료 미진행.')
       +alertCard('teal','오늘 추천','치주치료(SC) 시작 + 급여 치석제거 동시 검토 — 산정 기준 충족.')
-      +'<div class="sc-say"><span class="lb">💬 환자 설명 포인트</span>“잇몸 수치가 4mm 넘는 곳이 여섯 군데예요. <b>오늘부터 단계적으로</b> 잡아가야 나중에 임플란트까지 안 갑니다.”</div>'},
+      +'<div class="sc-say"><span class="lb">💬 환자 설명 포인트</span>“잇몸 수치가 4mm 넘는 곳이 여섯 군데예요. <b>오늘부터 단계적으로</b> 잡아가야 나중에 임플란트까지 안 갑니다.”</div>',
+    easy:'의사가 예전 기록을 뒤질 필요 없이, 컴퓨터가 <b>“지난번에 잇몸이 안 좋았어요. 오늘 이거 하시면 돼요”</b>라고 요약해주는 겁니다.'},
    {t:'09:35',p:'진료실 — 진료 중, 차팅하는 순간',st:'차팅 = 감지',
     nar:'원장은 평소대로 차팅할 뿐입니다. 그 순간 <b>찍기 전에 챙길 것 · 같이 산정할 것</b>이 옆에 뜹니다.',
     dlg:[['dr','원장','#46 시린 부위는 치경부가 패여 있네요. 사진 한 장 찍고 갈게요.'],
@@ -2551,7 +2570,8 @@
     scr:'<div class="sc-row"><span class="tm">10:05</span><b>#46 치경부 마모 — 레진 수복 · 하악 SC</b></div>'
       +alertCard('b','촬영 근거 먼저 — 치근단 촬영 하셨나요?','수복 근거가 차트에 남아야 합니다. 촬영하면 촬영·판독까지 같이 산정.')
       +alertCard('teal','마취했다면 마취 산정도 같이','수복만 찍고 마취를 빠뜨리는 게 가장 흔한 누락입니다.')
-      +alertCard('teal','시림 호소 — 지각과민 처치 산정 검토','오늘 처치했다면 함께 산정 가능한지 기준 확인.')},
+      +alertCard('teal','시림 호소 — 지각과민 처치 산정 검토','오늘 처치했다면 함께 산정 가능한지 기준 확인.'),
+    easy:'의사가 치료 내용을 적는 순간 <b>“사진 먼저 찍으세요, 마취비 빼먹지 마세요”</b>라고 옆에서 챙겨주는 겁니다. 의사는 평소대로 일할 뿐이에요.'},
    {t:'09:55',p:'진료실 — 진료완료 버튼',st:'마지막 그물',
     nar:'완료 버튼을 누르는 순간이 <b>마지막 그물</b>입니다. 오늘 이 환자에게서 챙긴 것과 놓친 것을 한 번 더 확인합니다.',
     dlg:[['ai','AutoClaim','이수진 님 진료완료 — 오늘 산정 4건 확인, 놓친 항목 0건.'],
@@ -2560,7 +2580,8 @@
       +'<div class="sc-chk"><span class="c">✓</span>#46 레진 수복 + 치근단 촬영·판독</div>'
       +'<div class="sc-chk"><span class="c">✓</span>마취 산정</div>'
       +'<div class="sc-chk"><span class="c">✓</span>지각과민 처치</div>'
-      +alertCard('amber','다음 내원 알림 등록됨','치주 후처치 — 재내원 접수 순간 데스크·진료실에 다시 뜹니다.')},
+      +alertCard('amber','다음 내원 알림 등록됨','치주 후처치 — 재내원 접수 순간 데스크·진료실에 다시 뜹니다.'),
+    easy:'치료 끝 버튼을 누르면 <b>“오늘 받을 돈 다 챙겼어요, 빠뜨린 것 없어요”</b>라고 마지막으로 검사해주는 겁니다.'},
    {t:'13:00',p:'데스크 — 수납과 다음 예약',st:'환자 안내',
     nar:'수납할 때는 <b>환자에게 설명할 문구</b>가 준비돼 있습니다. 환자는 “여기는 꼼꼼하다”는 인상을 받고 갑니다.',
     dlg:[['st','김실장','오늘 잇몸치료랑 스케일링은 보험 적용돼서 부담이 크지 않으세요. 잇몸치료 2회차는 다음 주 같은 시간 어떠세요?'],
@@ -2568,7 +2589,8 @@
          ['st','김실장','네 — 올해 보험 치석제거를 오늘 쓰셔서 그래요. 저희가 챙겨드렸죠 😊']],
     scr:'<div class="sc-row"><span class="nm">이수진 님</span> 수납 대기</div>'
       +'<div class="sc-say"><span class="lb">💬 수납 안내 문구 (자동 생성)</span>“오늘 치료는 <b>보험 적용</b>이라 부담금이 크지 않아요. 잇몸치료는 이어서 받으셔야 효과가 있어서, <b>다음 예약</b> 잡아드릴게요.”</div>'
-      +alertCard('amber','다음 예약 제안','치주치료 2회차 — 다음 주 화요일 09~10시 빈 슬롯 3개.')},
+      +alertCard('amber','다음 예약 제안','치주치료 2회차 — 다음 주 화요일 09~10시 빈 슬롯 3개.'),
+    easy:'계산할 때 <b>손님에게 뭐라고 설명할지 문장까지 만들어줍니다.</b> 손님은 “여기 꼼꼼하네”라고 느끼고, 다음 예약까지 잡고 갑니다.'},
    {t:'18:30',p:'데스크 — 마감, 송신 전 검토',st:'송신 전 더블체크',
     nar:'하루의 마지막. 오늘 청구 전체가 <b>근거가 약한 것부터</b> 정렬돼 올라옵니다. 여기서 잡히면 삭감도, 누락도 없습니다.',
     dlg:[['ai','AutoClaim','오늘 청구 23건 중 근거 확인 필요 1건 — 김O식 님 난발치 전환 여부.'],
@@ -2577,7 +2599,8 @@
       +alertCard('red','김O식 님 — 단순발치로 입력됨','차트에 골삭제(버) 기록 있음 — 난발치 전환 검토. 클릭해 원장 확인 요청.')
       +'<div class="sc-chk"><span class="c">✓</span>원장 확인 완료 — 난발치 전환, 사유 메모 첨부</div>'
       +'<div class="sc-sum"><span>오늘 지킨 청구 (예시)</span><span class="v">+18.4만원</span></div>'
-      +'<div class="sc-sum" style="background:var(--navy-2)"><span>이번 달 누적 (예시)</span><span class="v">+212만원</span></div>'}
+      +'<div class="sc-sum" style="background:var(--navy-2)"><span>이번 달 누적 (예시)</span><span class="v">+212만원</span></div>',
+    easy:'퇴근 전에 <b>오늘 서류(청구)를 전부 검사</b>해서 실수 1건을 잡아낸 겁니다. 이렇게 하루 십몇만 원씩, 한 달이면 이백만 원 넘게 쌓입니다(예시).'}
   ];
   var i=0,auto=null;
   var $=function(id){return document.getElementById(id)};
@@ -2587,6 +2610,7 @@
     $('dcTime').textContent=s.t;$('dcPlace').textContent=s.p;
     $('dcStep').textContent='장면 '+(i+1)+' / '+SCENES.length;
     $('dcNar').innerHTML=s.nar;$('dcScrT').textContent=s.st;$('dcScr').innerHTML=s.scr;
+    $('dcEasy').innerHTML='<span class="lb">🍀 쉽게 말해서</span>'+(s.easy||'');
     $('dcDlg').innerHTML=s.dlg.map(function(m,k){
       var w=WHO[m[0]];
       return '<div class="dc-msg w-'+m[0]+'" style="animation-delay:'+(k*.18)+'s"><span class="av">'+w[0]+'</span><span class="bub"><small>'+m[1]+'</small>'+m[2]+'</span></div>';
@@ -3403,6 +3427,55 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
 
 
 
+
+<!-- ══════════ 맨 마지막 : 쉽게 이해하기 (어려운 말 0) ══════════ -->
+<style>
+  #ezfin .ez-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:34px}
+  @media(max-width:720px){#ezfin .ez-grid{grid-template-columns:1fr}}
+  #ezfin .ez-card{background:var(--card);border:1.6px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:22px 24px}
+  #ezfin .ez-card .q{font-size:16.5px;font-weight:870;letter-spacing:-.02em;display:flex;align-items:center;gap:9px;margin-bottom:9px}
+  #ezfin .ez-card .q .em{font-size:22px}
+  #ezfin .ez-card .a{font-size:14px;line-height:1.8;font-weight:620;color:var(--ink)}
+  #ezfin .ez-card .a b{background:linear-gradient(180deg,transparent 58%,#D9F2E4 58%);padding:0 2px;border-radius:2px}
+  #ezfin .ez-close{max-width:680px;margin:26px auto 0;text-align:center;background:var(--green-soft);border-radius:var(--radius);padding:20px 24px;font-size:15px;font-weight:700;line-height:1.75}
+  #ezfin .ez-close b{color:var(--green)}
+</style>
+<section id="ezfin" style="background:var(--bg-soft)">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow t">🍀 어려운 말 다 빼고</span>
+      <h2>마지막으로 — <mark>쉽게 이해하기</mark></h2>
+      <p class="lead" style="margin:14px auto 0;max-width:35em">위에 나온 말들이 어려우셨다면, 이 여섯 개만 읽으셔도 됩니다.</p>
+    </div>
+    <div class="ez-grid">
+      <div class="ez-card">
+        <div class="q"><span class="em">🧾</span>'청구'가 뭔가요?</div>
+        <div class="a">치과가 치료를 한 뒤, 나라(건강보험공단)에 <b>"이 치료 했어요, 치료비 주세요"라고 서류를 보내는 일</b>입니다. 이 서류를 안 보내면 — 치료를 해놓고도 그 돈을 못 받습니다.</div>
+      </div>
+      <div class="ez-card">
+        <div class="q"><span class="em">💸</span>돈이 왜 새나요?</div>
+        <div class="a">하루에 수십 명을 진료하다 보면 서류에서 한두 줄씩 빠집니다. <b>치료는 했는데 적는 걸 깜빡하면, 그 돈은 그냥 사라집니다.</b> 작은 것들이 모여 한 달에 수백만 원이 됩니다.</div>
+      </div>
+      <div class="ez-card">
+        <div class="q"><span class="em">🤖</span>이 프로그램은 뭘 해주나요?</div>
+        <div class="a">옆에서 차트를 지켜보다가 <b>"이거 빠뜨렸어요!", "이 손님께는 이 말씀 해보세요"라고 알려주는 비서</b>입니다. 원장님과 직원은 평소처럼 일하면 됩니다.</div>
+      </div>
+      <div class="ez-card">
+        <div class="q"><span class="em">🙋</span>환자한테 나쁜 건 아닌가요?</div>
+        <div class="a">반대입니다. 안 한 치료를 꾸며내는 게 아니라, <b>이미 한 치료에서 빠진 서류를 챙기는 것</b>입니다. 환자도 1년에 한 번 보험되는 스케일링 같은 혜택을 놓치지 않게 됩니다.</div>
+      </div>
+      <div class="ez-card">
+        <div class="q"><span class="em">🆓</span>얼마인가요?</div>
+        <div class="a"><b>무료로 시작합니다.</b> 깔고 3분이면 우리 병원에서 그동안 놓친 청구 명단부터 보여드립니다.</div>
+      </div>
+      <div class="ez-card">
+        <div class="q"><span class="em">📈</span>그래서 얼마나 버나요?</div>
+        <div class="a">실제 쓰는 치과에서 <b>한 달에 +200만~400만원</b>을 회수했습니다(병원 규모마다 다릅니다). 위에서 보신 '하루'가 매일 반복된 결과입니다.</div>
+      </div>
+    </div>
+    <div class="ez-close">정리하면 — <b>이미 하신 진료의 돈이 서류에서 새고 있고,</b> 이 프로그램은 그걸 옆에서 <b>"빠뜨렸어요"라고 말해주는 비서</b>입니다. 뺏는 게 아니라, 흘린 것을 줍는 겁니다.</div>
+  </div>
+</section>
 
 <footer>
   <div class="wrap">
