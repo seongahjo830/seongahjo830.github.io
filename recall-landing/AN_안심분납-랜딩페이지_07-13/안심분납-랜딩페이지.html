@@ -541,6 +541,40 @@
   .altbox{background:var(--danger-soft);border-radius:11px;padding:13px 15px;font-size:12.5px;color:var(--ink);line-height:1.6}
   .altbox b{color:var(--danger)}
 
+  /* 필름스트립 — 단계별 미니 화면 */
+  .filmstrip{display:flex;gap:8px;align-items:flex-start;overflow-x:auto;padding:10px 2px 12px;margin-top:12px}
+  .fstep{flex:0 0 auto;width:160px;display:flex;flex-direction:column}
+  .fphone{background:#0d0b16;border-radius:22px;padding:5px;box-shadow:0 8px 18px rgba(15,20,40,.26)}
+  .fscr{background:#eef2f4;border-radius:17px;height:252px;overflow:hidden;display:flex;flex-direction:column}
+  .fscr.kk{background:#b2c7d9}
+  .fbar{height:17px;font-size:8px;font-weight:700;color:#333;display:flex;align-items:center;justify-content:space-between;padding:0 10px;flex:0 0 auto}
+  .fbar.kk{background:#a9c0d4}
+  .fbody{flex:1;overflow:hidden;padding:9px}
+  .fcap{font-size:11.5px;font-weight:800;color:var(--ink);text-align:center;margin-top:9px;line-height:1.35;padding:0 2px}
+  .fcap .s{display:block;font-size:10px;color:var(--ink-soft);font-weight:600;margin-top:2px}
+  .farr{flex:0 0 auto;color:var(--accent);font-size:17px;font-weight:900;margin-top:118px}
+  .mtt{font-size:10.5px;font-weight:800;color:#141618;line-height:1.3;margin-bottom:4px}
+  .mmut{font-size:9px;color:#5b6b74;line-height:1.35;margin-bottom:5px}
+  .mc{background:#fff;border-radius:8px;padding:6px 7px;margin-bottom:5px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .mr{display:flex;justify-content:space-between;gap:4px;font-size:9px;padding:2px 0}.mr b{font-weight:800}
+  .mbtn{background:var(--accent);color:#fff;font-size:9px;font-weight:800;text-align:center;padding:6px;border-radius:7px;margin-top:4px}
+  .mbtn.money{background:#0f7d5e}
+  .mslots{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px}
+  .mslot{border:1px solid #dfe4e7;border-radius:5px;font-size:8px;text-align:center;padding:4px 0;background:#fff;color:#333}
+  .mslot.sel{border-color:#0f7d5e;background:#E3F5EE;color:#0a534d;font-weight:800}
+  .mslot.off{opacity:.4;text-decoration:line-through}
+  .mplan{display:flex;gap:3px;margin:4px 0}
+  .mplan .mp{flex:1;border:1px solid #dfe4e7;border-radius:5px;text-align:center;padding:4px 1px;font-size:7.5px;background:#fff;line-height:1.3}
+  .mplan .mp.sel{border-color:#0f7d5e;background:#E3F5EE;color:#0a534d;font-weight:800}
+  .mbig{background:#E3F5EE;border-radius:7px;text-align:center;padding:6px;color:#0f7d5e;font-weight:900;font-size:11px}
+  .mbub{background:#fff;border-radius:2px 9px 9px 9px;padding:6px 8px;font-size:9px;line-height:1.42;color:#1c1c1c}
+  .mbub b{color:#0f7d72}
+  .mtag{background:#fae100;color:#3b1f1f;font-size:7.5px;font-weight:800;padding:3px 7px;border-radius:6px 6px 0 0;display:inline-block;margin-bottom:-2px}
+  .mold{background:#fff;border-radius:7px;padding:5px 7px;font-size:8.5px;color:#666;opacity:.72;margin-bottom:5px;line-height:1.4}
+  .msys{text-align:center;margin:5px 0}
+  .msys span{font-size:7.5px;color:#3a4c56;background:rgba(255,255,255,.6);border-radius:8px;padding:2px 7px}
+  .mdone{width:34px;height:34px;border-radius:50%;background:#E3F5EE;color:#0f7d5e;display:flex;align-items:center;justify-content:center;font-size:18px;margin:6px auto 5px}
+
   /* drama patient briefing (만화 패널) */
   .drama{display:flex;flex-direction:column;gap:22px;max-width:980px;margin:0 auto}
   .dcard{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;display:grid;grid-template-columns:1fr 300px;gap:28px;align-items:center;box-shadow:0 12px 30px rgba(20,40,38,.07)}
@@ -640,7 +674,7 @@
 <section id="situations"><div class="wrap">
   <div class="sec-head fadeup"><span class="eyebrow">환자 3명 · 실제로 이렇게 옵니다</span>
     <h2 class="sec" style="margin-top:12px">말로 하면 안 보이죠.<br>그 환자 폰 화면을 그대로 보여드립니다</h2>
-    <p class="lead">무작위로 세 명을 짚었습니다. <b>어떤 환자가</b>, 폰에 <b>어떤 화면</b>을 받고, <b>어떻게 결정하는지</b> — 오른쪽이 그 환자가 실제로 보는 화면입니다. 아래 노란 칸이 그 순간 환자의 <b>속마음과 결정</b>.</p></div>
+    <p class="lead">무작위로 세 명. <b>어떤 환자가</b>, 폰에 <b>어떤 화면</b>을 받고, <b>어떻게 결정하는지</b>. 오른쪽이 실제 폰 화면, 노란 칸이 그 순간의 결정입니다.</p></div>
   <div class="drama">
 
     <!-- 이영자 -->
@@ -650,7 +684,7 @@
         <div class="dbrief">📋 <b>브리핑:</b> 오래 안 와서 <b>미안한 마음에 더 못 오는</b> 분. "왜 안 왔냐"고 하면 그대로 도망갑니다. 죄책감이 아니라 안부로 접근해야 하는 케이스.</div>
         <div class="dba">
           <div class="r b"><span class="t">😩 전엔</span><p>데스크가 전화 돌려도 안 받음. 문자는 80바이트라 담을 말이 없어 결국 흐지부지.</p></div>
-          <div class="r a"><span class="t">✨ 이젠</span><p>오른쪽처럼 "기다렸다" 톤 카톡 한 통. 옛 대화와 공백까지 보여 마음이 열림.</p></div>
+          <div class="r a"><span class="t">✨ 이젠</span><p>"기다렸다" 톤 카톡 한 통. 옛 대화와 공백까지 보여 마음이 열림.</p></div>
         </div>
         <div class="ddec"><div class="who">💬 이영자 님 속마음 → 결정</div>
           <div class="say">"왜 안 왔냐고 안 하네… 스케일링 보험도 올해 아직이래. <b>이번 주에 한번 가볼까.</b>"</div></div>
@@ -678,7 +712,7 @@
         <div class="dbrief">📋 <b>브리핑:</b> 신경치료 후 <b>씌우는 걸 미룬</b> 분. 바빠서 34개월. 지금 안 하면 이가 깨져 <b>발치</b>될 수도 있는 상태인데, 본인은 그 위험을 모릅니다.</div>
         <div class="dba">
           <div class="r b"><span class="t">😩 전엔</span><p>전화로 "오세요" 설득해도 "바빠서요". 왜 위험한지 말로는 안 와닿음.</p></div>
-          <div class="r a"><span class="t">✨ 이젠</span><p>오른쪽처럼 시간표에서 직접 시간 선택. 재촉 없이 스스로, 통화 0회로 예약.</p></div>
+          <div class="r a"><span class="t">✨ 이젠</span><p>시간표에서 직접 시간 선택. 재촉 없이 스스로, 통화 0회로 예약.</p></div>
         </div>
         <div class="ddec"><div class="who">💬 정미숙 님 속마음 → 결정</div>
           <div class="say">"벌써 34개월이나 됐네. 전화하기도 귀찮았는데… <b>목요일 10시 반으로 딱 잡았어.</b>"</div></div>
@@ -708,7 +742,7 @@
         <div class="dbrief">📋 <b>브리핑:</b> 돈이 아예 없는 게 아니라 <b>"한 번에"가 부담</b>인 분. 350만원이 택시 한 달 수입. "생각해볼게요" 하고 그냥 안 하려던 참.</div>
         <div class="dba">
           <div class="r b"><span class="t">😩 전엔</span><p>큰 금액 앞에 "생각해보고 연락드릴게요"(=안 함). 원장은 진단 끝낸 케이스를 놓침.</p></div>
-          <div class="r a"><span class="t">✨ 이젠</span><p>오른쪽처럼 개월 수를 직접 골라 월 얼마인지 즉시 확인. "낼 수 있게" 되니 결정이 바뀜.</p></div>
+          <div class="r a"><span class="t">✨ 이젠</span><p>개월 수를 직접 골라 월 얼마인지 즉시 확인. "낼 수 있게" 되니 결정이 바뀜.</p></div>
         </div>
         <div class="ddec"><div class="who">💬 박성철 님 속마음 → 결정</div>
           <div class="say">"24개월이면 하루 4,800원, 담배값이네. <b>한 번에 안 내도 되니까, 난 이게 맘 편해. 24개월로 하자.</b>"</div></div>
@@ -930,14 +964,74 @@
   </div>
   <div class="pers fadeup">
     <div class="perscard"><div class="top"><div class="av" style="background:var(--accent-soft)">👩</div><div class="nm">정미숙 <small>58 · 34개월 방치</small></div></div>
-      <span class="track">🔁 재활성화 트랙</span>
-      <div class="flow">카톡 리콜 → <b>통화 0회로 검진 예약</b> → 내원 상담서 균열 발견 → 임플란트 견적 → 안심분납으로 치료 시작.</div></div>
+      <span class="track">🔁 재활성화 트랙 · 통화 0회</span>
+      <div class="filmstrip">
+        <div class="fstep"><div class="fphone"><div class="fscr kk"><div class="fbar kk"><span>10:24</span><span>📶 87%</span></div>
+          <div class="fbody"><div class="mtag">알림톡</div>
+            <div class="mbub"><b>미숙 님</b>, 오른쪽 아래 어금니 마지막 처치 후 <b>34개월</b>이 지났어요. 씌우는 마무리가 남아있어요 🙂</div>
+            <div class="mbtn" style="margin-top:6px">📄 내 검진 안내 확인</div></div></div></div>
+          <div class="fcap">① 카톡 알림톡<span class="s">버튼 터치</span></div></div>
+        <div class="farr">→</div>
+        <div class="fstep"><div class="fphone"><div class="fscr"><div class="fbar"><span>10:25</span><span>🔋 82%</span></div>
+          <div class="fbody"><div class="mtt">언제가 편하세요?</div><div class="mmut">7월 16일 (목)</div>
+            <div class="mslots"><div class="mslot off">09:00</div><div class="mslot sel">10:30✓</div><div class="mslot">11:00</div>
+              <div class="mslot off">14:00</div><div class="mslot">15:30</div><div class="mslot">16:00</div></div>
+            <div class="mbtn">이 시간으로 예약 요청 →</div></div></div></div>
+          <div class="fcap">② 시간 직접 선택<span class="s">10:30 고름 · 전화 없이</span></div></div>
+        <div class="farr">→</div>
+        <div class="fstep"><div class="fphone"><div class="fscr"><div class="fbar"><span>21:11</span><span>🔋 64%</span></div>
+          <div class="fbody"><div class="mtt">치료 견적서</div><div class="mmut">오른쪽 아래 어금니 · 상담 후</div>
+            <div class="mc"><div class="mr"><span>발치(보험)</span><b>3만</b></div><div class="mr"><span>임플란트</span><b>90만</b></div><div class="mr"><span>보철</span><b>40만</b></div></div>
+            <div class="mr" style="font-weight:900;font-size:10.5px"><span>총액</span><span>168만원</span></div>
+            <div class="mbtn money">💳 나눠서 내기</div></div></div></div>
+          <div class="fcap">③ 상담 후 견적<span class="s">집에서 가족과 확인</span></div></div>
+      </div></div>
     <div class="perscard"><div class="top"><div class="av" style="background:#E3F5EE">🧑</div><div class="nm">박성철 <small>52 · 개인택시</small></div></div>
-      <span class="track">💳 동의율 트랙</span>
-      <div class="flow">350만원 견적 앞 <b>포기 직전</b> → 무채권 할부 60초 승인 → 24개월 월 14.6만 → "낼 수 있게" 되니 <b>동의</b>.</div></div>
+      <span class="track">💳 동의율 트랙 · 포기 → 동의</span>
+      <div class="filmstrip">
+        <div class="fstep"><div class="fphone"><div class="fscr"><div class="fbar"><span>21:40</span><span>🔋 64%</span></div>
+          <div class="fbody"><div class="mtt">치료 견적서</div><div class="mmut">임플란트 2개</div>
+            <div class="mc"><div class="mr"><span>임플란트×2</span><b>190만</b></div><div class="mr"><span>보철×2</span><b>94만</b></div><div class="mr"><span>발치·골이식</span><b>66만</b></div></div>
+            <div class="mbig" style="background:#f0eef7;color:#452fb0">총 350만원</div>
+            <div class="mbtn money">💳 한번에 부담되면 나눠서</div></div></div></div>
+          <div class="fcap">① 350만 견적<span class="s">"한 달 수입인데…"</span></div></div>
+        <div class="farr">→</div>
+        <div class="fstep"><div class="fphone"><div class="fscr"><div class="fbar"><span>21:42</span><span>🔋 64%</span></div>
+          <div class="fbody"><div class="mdone">✓</div><div class="mtt" style="text-align:center">나눠서 낼 수 있어요!</div>
+            <div class="mplan"><div class="mp">6개월<br>583천</div><div class="mp">12개월<br>291천</div><div class="mp sel">24개월<br>145,834</div><div class="mp">36개월<br>97천</div></div>
+            <div class="mbig">✅ 내가 고른 24개월<br>월 145,834원</div>
+            <div class="mbtn money">이 조건으로 시작 →</div></div></div></div>
+          <div class="fcap">② 24개월 직접 선택<span class="s">하루 4,800원 · 담배값</span></div></div>
+        <div class="farr">→</div>
+        <div class="fstep"><div class="fphone"><div class="fscr"><div class="fbar"><span>21:43</span><span>🔋 64%</span></div>
+          <div class="fbody"><div class="mdone">🎉</div><div class="mtt" style="text-align:center">치료 예약이 확정됐어요</div>
+            <div class="mc"><div class="mr"><span>치료</span><b>임플란트 2개</b></div><div class="mr"><span>납부</span><b>24개월</b></div><div class="mr"><span>월</span><b>145,834원</b></div></div>
+            <div class="mmut" style="font-size:8px;text-align:center">🏦 병원은 채권 미보유 · 제휴 금융사 실행</div></div></div></div>
+          <div class="fcap">③ 동의 완료<span class="s">포기하려던 걸 시작</span></div></div>
+      </div></div>
     <div class="perscard"><div class="top"><div class="av" style="background:var(--gold-soft)">👵</div><div class="nm">이영자 <small>62 · 2년 7개월 방치</small></div></div>
-      <span class="track">🩹 이탈 복구 트랙</span>
-      <div class="flow">죄책감 대신 <b>"기다렸다"</b> 톤 카톡 → 스케일링 보험 후크(연 1회) → 부담 없이 <b>재방문 결심</b>.</div></div>
+      <span class="track">🩹 이탈 복구 트랙 · 죄책감 없이</span>
+      <div class="filmstrip">
+        <div class="fstep"><div class="fphone"><div class="fscr kk"><div class="fbar kk"><span>12:44</span><span>📶 87%</span></div>
+          <div class="fbody"><div class="mold">스케일링 잘 받으셨어요? 6개월 뒤 다시 뵐게요 :) <span style="font-size:7px">(2023.12)</span></div>
+            <div class="msys"><span>· 2년 7개월간 대화 없음 ·</span></div>
+            <div class="mtag">알림톡</div><div class="mbub"><b>영자 님</b>, 오랜만이에요 🙂 벌써 <b>2년 7개월</b>. 안 오셔도 늘 기다리고 있었어요.</div></div></div></div>
+          <div class="fcap">① 카톡 도착<span class="s">공백·옛 대화가 보임</span></div></div>
+        <div class="farr">→</div>
+        <div class="fstep"><div class="fphone"><div class="fscr kk"><div class="fbar kk"><span>12:44</span><span>📶 87%</span></div>
+          <div class="fbody"><div class="mtag">정기검진 안내</div>
+            <div class="mbub">🦷 정기검진 + 스케일링 · 30분<br>💬 스케일링 건강보험 <b>연 1회</b>(올해 아직이세요)</div>
+            <div class="mbtn" style="margin-top:6px;background:#0f7d72">📄 내 검진 안내 확인</div>
+            <div class="mbtn" style="background:#eef1f3;color:#5a6b74">🔕 안내 안 받기</div></div></div></div>
+          <div class="fcap">② 검진 안내 확인<span class="s">보험 후크 · 재촉 없음</span></div></div>
+        <div class="farr">→</div>
+        <div class="fstep"><div class="fphone"><div class="fscr"><div class="fbar"><span>12:45</span><span>🔋 87%</span></div>
+          <div class="fbody"><div class="mtt">밝은미소치과 검진 안내</div><div class="mmut">정*자 님 · 본인 안내</div>
+            <div class="mc"><div class="mr"><span>권장</span><b>정기검진·스케일링</b></div><div class="mr"><span>예약</span><b>평일/토 오전</b></div></div>
+            <div class="mbtn">📅 예약하기</div>
+            <div class="mbtn" style="background:#0f5132">☎️ 전화로 예약</div></div></div></div>
+          <div class="fcap">③ 예약/전화 선택<span class="s">부담 없이 재방문 결심</span></div></div>
+      </div></div>
   </div>
 </div></section>
 
@@ -1640,8 +1734,7 @@ const A=[
  <div class="qrow hot"><span class="nm">정미숙</span><span>34개월</span><span class="hidem">크라운 마무리</span><span><span class="qbadge web">🟢 웹 예약요청 — 통화 불필요</span></span></div>
  <div class="qrow"><span class="nm">김영호</span><span>8개월</span><span class="hidem">정기검진</span><span><span class="qbadge miss">☐ 미응답 — 전화 대상</span></span></div>
  <div class="qrow"><span class="nm">이순자</span><span>2년 7개월</span><span class="hidem">잇몸+스케일링</span><span><span class="qbadge sent">🔔 알림톡 발송됨</span></span></div>
- <div class="qrow"><span class="nm">박정우</span><span>14개월</span><span class="hidem">보철 재점검</span><span><span class="qbadge miss">☐ 미응답 — 전화 대상</span></span></div>
- <p style="font-size:12.5px;color:var(--ink-soft);margin-top:12px">미숙 님은 웹으로 응답해 전화 큐에서 자동으로 빠졌습니다. 직원은 <b>미응답자 2명에게만</b> 전화하면 됩니다.</p>`,
+ <div class="qrow"><span class="nm">박정우</span><span>14개월</span><span class="hidem">보철 재점검</span><span><span class="qbadge miss">☐ 미응답 — 전화 대상</span></span></div>`,
 `<div class="a2">
   <div class="apanel"><h5>👤 환자 정보</h5>
     <div class="arow"><span class="k">이름</span><b>정미숙 (여, 58)</b></div>
@@ -1664,13 +1757,11 @@ const A=[
    <span style="font-size:10.5px;font-weight:800;background:var(--gold-soft);color:var(--gold);padding:4px 9px;border-radius:99px">원장 참고용 · 환자 노출 금지</span></div>
  <div class="pano"><span>🦷 파노라마 이미지 영역</span>
    <span class="mark" style="top:40%;left:24%">치근단 병소 의심 · #46</span>
-   <span class="mark" style="top:30%;right:18%">매복치 · #38</span></div>
- <p style="font-size:12px;color:var(--ink-soft);margin-top:12px;line-height:1.7">AI 후보는 <b>원장 참고용 표시</b>일 뿐 진단이 아닙니다. 의료기기(SaMD) 인허가 전까지 <b>섀도우 모드</b>로만 운영되며, 환자 화면·출력물 어디에도 노출되지 않습니다. 분석은 데스크 PC 안에서 오프라인으로 돌아 <b>진료 데이터가 병원 밖으로 나가지 않습니다</b>(edge-first).</p>`,
+   <span class="mark" style="top:30%;right:18%">매복치 · #38</span></div>`,
 `<div class="dsk-sub">진료 당일 기준 자동 점검 · 오늘 12건</div>
  <div class="clm warn"><span class="st">⚠️</span><div><b>3번 체어 · 김○○</b><div style="font-size:12px;color:var(--ink-soft)">파노라마 촬영했으나 청구 항목 누락 의심</div></div><span class="amt" style="color:#c47f17">+16,000원</span></div>
  <div class="clm"><span class="st">✅</span><div><b>1번 체어 · 이○○</b><div style="font-size:12px;color:var(--ink-soft)">스케일링 · 정상 청구</div></div><span class="amt">정상</span></div>
- <div class="clm"><span class="st">✅</span><div><b>2번 체어 · 정○○</b><div style="font-size:12px;color:var(--ink-soft)">신경치료 2일차 · 정상 청구</div></div><span class="amt">정상</span></div>
- <p style="font-size:12.5px;color:var(--ink-soft);margin-top:12px">사후에 발견하던 누락을 <b>당일에</b> 잡습니다. 청구 오류율 1.8% → 0.4%.</p>`,
+ <div class="clm"><span class="st">✅</span><div><b>2번 체어 · 정○○</b><div style="font-size:12px;color:var(--ink-soft)">신경치료 2일차 · 정상 청구</div></div><span class="amt">정상</span></div>`,
 `<div class="akpi">
   <div class="k"><div class="n">94%</div><div class="l">완납률</div></div>
   <div class="k"><div class="n">1.8%</div><div class="l">30일+ 연체율</div></div>
@@ -1680,8 +1771,7 @@ const A=[
    <div class="arow"><span class="k">#A-0716 정미숙</span><span>350만 · 24개월 · <b style="color:var(--accent-deep)">정상</b></span></div>
    <div class="arow"><span class="k">#A-0712 이지은</span><span>500만 · 36개월 · <b style="color:var(--accent-deep)">정상</b></span></div>
    <div class="arow"><span class="k">#A-0705 김순자</span><span>180만 · 12개월 · <b style="color:var(--accent-deep)">정상</b></span></div>
-   <div class="arow"><span class="k">#A-0628 최○○</span><span>240만 · 24개월 · <b style="color:var(--gold)">D+5 안내중</b></span></div></div>
- <p style="font-size:12px;color:var(--ink-soft);margin-top:12px">연체는 사람이 독촉하지 않고 <b>법정 시간·횟수 안에서 자동 안내</b>. 끊기면 보증보험이 병원에 잔액을 지급합니다.</p>`
+   <div class="arow"><span class="k">#A-0628 최○○</span><span>240만 · 24개월 · <b style="color:var(--gold)">D+5 안내중</b></span></div></div>`
 ];
 const ATITLE=['오늘 현황','리콜 큐','환자 상세 · 정미숙','AI 파노라마','청구 점검','안심분납 약정'];
 const appbody=document.getElementById('appbody'), appTitle=document.getElementById('appTitle');
