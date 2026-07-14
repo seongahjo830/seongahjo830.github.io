@@ -773,10 +773,13 @@
   #daycine .wrow .nm{font-weight:830}
   #daycine .wrow .arr{margin-left:auto;color:#C9C2B2;font-weight:900}
   #daycine .wc{font-size:9px;font-weight:870;padding:2px 7px;border-radius:99px;white-space:nowrap}
-  #daycine .wc.t{background:var(--teal-soft);color:var(--teal-deep)} #daycine .wc.r{background:var(--red-soft);color:var(--red)} #daycine .wc.b{background:var(--accent-soft);color:var(--accent-deep)} #daycine .wc.a{background:#FBF0DC;color:var(--amber)}
-  #daycine .wtoast{display:flex;gap:9px;background:#fff;border:1px solid #E3DFD4;border-radius:10px;box-shadow:0 8px 22px rgba(20,20,20,.10);padding:10px 11px;margin-bottom:8px;position:relative;animation:dcSlide .4s ease both}
-  #daycine .wtoast .tic{flex:0 0 26px;width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;background:var(--accent)}
-  #daycine .wtoast.k-teal .tic{background:var(--teal)} #daycine .wtoast.k-red .tic{background:var(--red)} #daycine .wtoast.k-amber .tic{background:var(--amber)}
+  #daycine .wc.n{background:#F1EFE8;color:var(--ink-soft)} #daycine .wc.t{background:var(--teal-soft);color:var(--teal-deep)} #daycine .wc.r{background:var(--red-soft);color:var(--red)} #daycine .wc.b{background:var(--accent-soft);color:var(--accent-deep)} #daycine .wc.a{background:#FBF0DC;color:var(--amber)}
+  #daycine .wtoast{background:#fff;border:1px solid #E3DFD4;border-left-width:4px;border-radius:10px;box-shadow:0 8px 22px rgba(20,20,20,.10);padding:10px 12px;margin-bottom:8px;position:relative;animation:dcSlide .4s ease both}
+  #daycine .wtoast.g-now{border-left-color:var(--red)} #daycine .wtoast.g-today{border-left-color:var(--amber)} #daycine .wtoast.g-ref{border-left-color:#98A0B3}
+  #daycine .wt-top{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+  #daycine .gc{font-size:9px;font-weight:900;padding:2px 8px;border-radius:99px;color:#fff;letter-spacing:.04em}
+  #daycine .g-now .gc{background:var(--red)} #daycine .g-today .gc{background:var(--amber)} #daycine .g-ref .gc{background:#98A0B3}
+  #daycine .wcat{font-size:9.5px;font-weight:860;color:var(--ink-soft);background:#F1EFE8;padding:2px 8px;border-radius:99px}
   #daycine .wtoast .tt{font-size:12.5px;font-weight:840;line-height:1.35;padding-right:14px}
   #daycine .wtoast .ds{font-size:10.5px;color:var(--ink-soft);font-weight:660;margin-top:2px;line-height:1.5}
   #daycine .wtoast .xx{position:absolute;top:7px;right:10px;color:#C9C2B2;font-size:10px;font-weight:900}
@@ -860,7 +863,7 @@
 <script>
 (function(){
   function wc(k,t){return '<span class="wc '+k+'">'+t+'</span>'}
-  function toast(k,ic,tt,ds,btns){return '<div class="wtoast k-'+k+'"><span class="tic">'+ic+'</span><div style="flex:1"><div class="tt">'+tt+'</div>'+(ds?'<div class="ds">'+ds+'</div>':'')+(btns||'')+'</div><span class="xx">✕</span></div>'}
+  function toast(g,cat,tt,ds,btns){var G={now:'지금',today:'오늘',ref:'참고'};return '<div class="wtoast g-'+g+'"><div class="wt-top"><span class="gc">'+G[g]+'</span><span class="wcat">'+cat+'</span></div><div class="tt">'+tt+'</div>'+(ds?'<div class="ds">'+ds+'</div>':'')+(btns||'')+'<span class="xx">✕</span></div>'}
   function btn(t,p,done){return '<button type="button" class="wbtn'+(p?' p':'')+'"'+(done?' data-done="'+done+'"':'')+'>'+t+'</button>'}
   function hs(when,tx,k){return '<div class="hs-row k-'+k+'"><span class="hs-dot"></span><span class="hs-when">'+when+'</span><span>'+tx+'</span></div>'}
   var SCENES=[
@@ -869,9 +872,9 @@
     dlg:[['st','김실장','오늘 챙길 사람 3명 — 이수진 님 오시면 말씀드려야지.']],
     scr:'<div class="stt"><div class="st"><div class="l">오늘 예약</div><div class="v">12명</div></div><div class="st"><div class="l">챙길 청구</div><div class="v b">3명</div></div><div class="st"><div class="l">예상 회수</div><div class="v t">+9.2만</div></div></div>'
       +'<div class="wpanel"><div class="wph">📋 오늘 예약 — 챙길 것 있는 순</div>'
-      +'<div class="wrow"><span class="tm">09:10</span><span class="nm">이수진 (47)</span>'+wc('t','스케일링 미사용')+wc('r','잇몸치료 끊김')+'<span class="arr">›</span></div>'
-      +'<div class="wrow"><span class="tm">10:30</span><span class="nm">김O식 (61)</span>'+wc('a','발치 후 소독')+'<span class="arr">›</span></div>'
-      +'<div class="wrow"><span class="tm">11:00</span><span class="nm">박O래 (33)</span>'+wc('b','치근단 재평가')+'<span class="arr">›</span></div></div>',
+      +'<div class="wrow"><span class="tm">09:10</span><span class="nm">이수진 (47)</span>'+wc('n','🪥 스케일링 미사용')+wc('r','🔁 잇몸치료 끊김')+'<span class="arr">›</span></div>'
+      +'<div class="wrow"><span class="tm">10:30</span><span class="nm">김O식 (61)</span>'+wc('n','⏰ 발치 후 소독')+'<span class="arr">›</span></div>'
+      +'<div class="wrow"><span class="tm">11:00</span><span class="nm">박O래 (33)</span>'+wc('n','📷 치근단 재평가')+'<span class="arr">›</span></div></div>',
     easy:'아침에 컴퓨터가 <b>“오늘 올 손님 중에 챙길 게 있는 사람 3명이에요”</b>라고 미리 알려주는 겁니다. 직원이 기억할 필요가 없어요.'},
    {t:'09:10',p:'데스크 — 이수진 님 접수',st:'접수 알림',
     nar:'접수 버튼을 누르는 순간, 우하단에 뜹니다.',
@@ -883,7 +886,7 @@
       +hs('그 후','치료 안 이어짐 ← <b>끊긴 지점</b>','r')
       +hs('오늘','스케일링 예약으로 다시 옴','b')
       +'<div class="hs-sum">한 줄 상황: <b>잇몸이 안 좋은 걸 알고도 치료가 끊긴 환자.</b> 오늘이 기회.</div></div>'
-      +toast('teal','!','이수진 님 — 오늘 챙길 2가지','① 올해 보험 스케일링 미사용 ② 잇몸치료 3개월 끊김',
+      +toast('today','💬 접수 안내','이수진 님 — 오늘 챙길 2가지','① 보험 스케일링 미사용 ② 잇몸치료 3개월 끊김',
         '<div class="wbtns">'+btn('멘트 확인',1,'✓ 확인함')+btn('나중에')+'</div>')
       +'<div class="wsay">💬 “지난번 잇몸 검사에서 수치가 좀 있으셨어요. <b>오늘 오신 김에 이어서</b> 치료받으실 수 있고, 보험 적용돼요.”</div>',
     easy:'손님이 오자마자 컴퓨터가 <b>“이 분, 지난번에 하다 만 치료가 있어요. 이렇게 말해보세요”</b>라고 귀띔해주는 겁니다.'},
@@ -902,9 +905,9 @@
     nar:'차팅하는 순간, 옆에 이렇게 뜹니다.',
     dlg:[['dr','원장','치경부가 패여 있네요. 사진 한 장 찍고 갈게요.']],
     scr:'<div class="wpanel"><div class="wph">✏️ 지금 차팅</div><div class="wrow"><span class="tm">10:05</span><b>#46 치경부 마모 — 레진 · 하악 SC</b></div></div>'
-      +toast('','📷','치근단 촬영 먼저','근거가 남아야 안전 · 촬영+판독 같이 산정','<div class="wbtns">'+btn('촬영 오더',1,'✓ 오더 넣음')+btn('나중에')+'</div>')
-      +toast('teal','💉','마취 산정 잊지 마세요','수복만 찍고 마취 빠뜨리는 게 단골 누락','<div class="wbtns">'+btn('추가',1,'✓ 추가됨')+'</div>')
-      +toast('teal','🦷','시림 호소 — 지각과민 처치','오늘 처치했다면 산정 기준 확인','<div class="wbtns">'+btn('기준 보기')+'</div>'),
+      +toast('now','📷 근거 남기기','치근단 촬영 먼저','치료 시작 전에만 가능 · 촬영+판독 같이 산정','<div class="wbtns">'+btn('촬영 오더',1,'✓ 오더 넣음')+btn('나중에')+'</div>')
+      +toast('today','➕ 같이 산정','마취 산정 확인','수복만 찍고 마취 누락이 단골','<div class="wbtns">'+btn('추가',1,'✓ 추가됨')+'</div>')
+      +toast('ref','🦷 검토','지각과민 처치 산정 검토','오늘 처치했다면 기준 확인','<div class="wbtns">'+btn('기준 보기')+'</div>'),
     easy:'의사가 치료 내용을 적는 순간 <b>“사진 먼저 찍으세요, 마취비 빼먹지 마세요”</b>라고 옆에서 챙겨주는 겁니다. 의사는 평소대로 일할 뿐이에요.'},
    {t:'09:55',p:'진료실 — 진료완료 버튼',st:'진료완료 확인',
     nar:'완료 버튼을 누르면 마지막 확인 창이 뜹니다.',
@@ -929,7 +932,7 @@
     dlg:[['ai','AutoClaim','오늘 23건 중 확인 필요 1건 — 김O식 님 발치 건.'],
          ['dr','원장','버 썼으니 난발치 맞아요. 송신 진행하세요.']],
     scr:'<div class="stt"><div class="st"><div class="l">오늘 청구</div><div class="v">23건</div></div><div class="st"><div class="l">자동 확인</div><div class="v t">22건</div></div><div class="st"><div class="l">확인 필요</div><div class="v r">1건</div></div></div>'
-      +toast('red','!','김O식 님 — 단순발치로 입력됨','차트에 골삭제(버) 기록 있음 → 난발치 전환 검토','<div class="wbtns">'+btn('원장 확인 요청',1,'✓ 확인 완료 — 난발치 전환')+'</div>')
+      +toast('now','🧾 송신 검토','김O식 — 난발치 전환 검토','차트에 골삭제(버) 기록 있음','<div class="wbtns">'+btn('원장 확인 요청',1,'✓ 확인 완료 — 난발치 전환')+'</div>')
       +'<div class="sc-sum"><span>오늘 지킨 청구 (예시)</span><span class="v">+18.4만원</span></div>'
       +'<div class="sc-sum" style="background:var(--navy-2)"><span>이번 달 누적 (예시)</span><span class="v">+212만원</span></div>',
     easy:'퇴근 전에 <b>오늘 서류(청구)를 전부 검사</b>해서 실수 1건을 잡아낸 겁니다. 이렇게 하루 십몇만 원씩, 한 달이면 이백만 원 넘게 쌓입니다(예시).'}
@@ -976,14 +979,14 @@
 })();
 </script>
 
-<!-- ══════════ 상황별 알림 시뮬레이터 : 차팅하면 옆에서 이렇게 뜹니다 ══════════ -->
+<!-- ══════════ 상황별 알림 시뮬레이터 v2 — 구역 문법(위치=등급·색=긴급도·아이콘=카테고리) ══════════ -->
 <style>
   #alertsim .as-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:28px 0 0}
   #alertsim .as-btn{border:1.6px solid var(--line);background:#fff;color:var(--ink);font-weight:790;font-size:14px;
     padding:11px 18px;border-radius:13px;cursor:pointer;font-family:inherit;transition:.15s;box-shadow:var(--shadow-sm)}
   #alertsim .as-btn:hover{border-color:var(--accent);transform:translateY(-2px)}
   #alertsim .as-btn.on{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 8px 20px rgba(29,78,216,.3)}
-  #alertsim .as-win{max-width:860px;margin:26px auto 0;background:var(--card);border:1.6px solid var(--line);border-radius:var(--radius);
+  #alertsim .as-win{max-width:880px;margin:26px auto 0;background:var(--card);border:1.6px solid var(--line);border-radius:var(--radius);
     box-shadow:var(--shadow);overflow:hidden}
   #alertsim .as-head{display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,#F4F2EC,#EDEAE1);border-bottom:1px solid var(--line);padding:10px 16px}
   #alertsim .as-head .ic{width:26px;height:26px;border-radius:8px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
@@ -993,7 +996,7 @@
     padding:3px 10px;border-radius:99px;display:inline-flex;align-items:center;gap:5px}
   #alertsim .as-head .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);animation:asPulse 1.6s ease-in-out infinite}
   @keyframes asPulse{0%,100%{opacity:1}50%{opacity:.3}}
-  #alertsim .as-body{display:grid;grid-template-columns:1fr 1.1fr;min-height:320px}
+  #alertsim .as-body{display:grid;grid-template-columns:1fr 1.25fr;min-height:340px}
   @media(max-width:720px){#alertsim .as-body{grid-template-columns:1fr}}
   #alertsim .as-chart{padding:18px 20px;border-right:1px solid var(--line)}
   @media(max-width:720px){#alertsim .as-chart{border-right:0;border-bottom:1px solid var(--line)}}
@@ -1005,24 +1008,27 @@
   #alertsim .as-row.new.show{opacity:1;transform:none}
   #alertsim .as-row.new .cur{display:inline-block;width:2px;height:14px;background:var(--accent);margin-left:2px;animation:asPulse 1s infinite}
   #alertsim .as-alerts{padding:18px 20px;background:radial-gradient(140% 120% at 80% 0%,#F7F5EF 0%,var(--bg-soft) 70%)}
-  #alertsim .as-alerts .lb{font-size:10.5px;font-weight:850;letter-spacing:.07em;color:var(--teal-deep);margin-bottom:10px}
+  #alertsim .as-alerts .lb{font-size:10.5px;font-weight:850;letter-spacing:.07em;color:var(--teal-deep);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  #alertsim .as-cnt{margin-left:auto;font-size:10px;font-weight:870;color:var(--ink-soft);background:#fff;border:1.4px solid var(--line);padding:3px 11px;border-radius:99px;transition:.2s}
+  #alertsim .as-cnt.hot{color:var(--green);border-color:var(--green);background:var(--green-soft)}
+  /* 구역: 위치 = 등급 (항상 같은 자리 · 비면 '없음'이 보임 = 0.2초 안심 판정) */
+  #alertsim .as-zone{margin-bottom:12px}
+  #alertsim .zh{font-size:10px;font-weight:900;letter-spacing:.05em;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+  #alertsim .z-now .zh{color:var(--red)} #alertsim .z-today .zh{color:var(--amber)} #alertsim .z-ref .zh{color:#7A8296}
+  #alertsim .zempty{font-size:11px;font-weight:720;color:#BCB5A5;border:1.4px dashed var(--line);border-radius:10px;padding:7px 12px;background:rgba(255,255,255,.55)}
   @keyframes asIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
   #alertsim .as-alert{background:#fff;border:1.4px solid var(--line);border-left-width:4px;border-radius:12px;box-shadow:var(--shadow-sm);
-    padding:12px 14px;margin-bottom:10px;animation:asIn .45s cubic-bezier(.2,.7,.2,1) both}
-  #alertsim .as-alert .bd{font-size:9.5px;font-weight:900;letter-spacing:.05em;padding:2px 8px;border-radius:99px;display:inline-block;margin-bottom:6px}
-  #alertsim .as-alert.k-blue{border-left-color:var(--accent)} #alertsim .as-alert.k-blue .bd{background:var(--accent-soft);color:var(--accent-deep)}
-  #alertsim .as-alert.k-teal{border-left-color:var(--teal)} #alertsim .as-alert.k-teal .bd{background:var(--teal-soft);color:var(--teal-deep)}
-  #alertsim .as-alert.k-red{border-left-color:var(--red)} #alertsim .as-alert.k-red .bd{background:var(--red-soft);color:var(--red)}
-  #alertsim .as-alert.k-amber{border-left-color:var(--amber)} #alertsim .as-alert.k-amber .bd{background:#FBF0DC;color:var(--amber)}
-  #alertsim .as-alert .tt{font-size:14px;font-weight:830;letter-spacing:-.015em;line-height:1.4}
-  #alertsim .as-alert .ds{font-size:12px;color:var(--ink-soft);font-weight:600;line-height:1.6;margin-top:4px}
-  #alertsim .as-add{font-family:inherit;font-size:11px;font-weight:840;border-radius:8px;padding:6px 13px;cursor:pointer;border:1.4px solid var(--accent);background:var(--accent);color:#fff;margin-top:9px;transition:.12s}
+    padding:11px 13px;margin-bottom:8px;animation:asIn .45s cubic-bezier(.2,.7,.2,1) both}
+  #alertsim .as-alert.g-now{border-left-color:var(--red)}
+  #alertsim .as-alert.g-today{border-left-color:var(--amber)}
+  #alertsim .as-alert.g-ref{border-left-color:#98A0B3}
+  #alertsim .as-alert .cat{display:inline-block;font-size:9.5px;font-weight:870;color:var(--ink-soft);background:#F1EFE8;padding:2px 8px;border-radius:99px;margin-bottom:6px}
+  #alertsim .as-alert .tt{font-size:14px;font-weight:840;letter-spacing:-.015em;line-height:1.35}
+  #alertsim .as-alert .ds{font-size:11.5px;color:var(--ink-soft);font-weight:600;line-height:1.55;margin-top:3px}
+  #alertsim .as-add{font-family:inherit;font-size:11px;font-weight:840;border-radius:8px;padding:6px 13px;cursor:pointer;border:1.4px solid var(--accent);background:var(--accent);color:#fff;margin-top:8px;transition:.12s}
   #alertsim .as-add:hover{background:var(--accent-deep)}
   #alertsim .as-alert.claimed{border-color:var(--green);border-left-color:var(--green);background:var(--green-soft)}
   #alertsim .as-alert.claimed .as-add{background:#fff;border-color:var(--green);color:var(--green);cursor:default}
-  #alertsim .as-alerts .lb{display:flex;align-items:center;gap:8px}
-  #alertsim .as-cnt{margin-left:auto;font-size:10px;font-weight:870;color:var(--ink-soft);background:#fff;border:1.4px solid var(--line);padding:3px 11px;border-radius:99px;transition:.2s}
-  #alertsim .as-cnt.hot{color:var(--green);border-color:var(--green);background:var(--green-soft)}
   #alertsim .as-note{font-size:12px;color:var(--ink-soft);font-weight:600;text-align:center;margin-top:14px}
 </style>
 <section id="alertsim" style="background:var(--bg-soft)">
@@ -1050,11 +1056,13 @@
         </div>
         <div class="as-alerts">
           <div class="lb">🔔 이 순간 옆에 뜨는 알림<span class="as-cnt" id="asCnt">🧾 담은 청구 0건</span></div>
-          <div id="asStack"></div>
+          <div class="as-zone z-now"><div class="zh">🔴 지금 — 이 순간 지나면 놓침</div><div id="zNow"><div class="zempty">— 없음</div></div></div>
+          <div class="as-zone z-today"><div class="zh">🟠 오늘 안에</div><div id="zToday"><div class="zempty">— 없음</div></div></div>
+          <div class="as-zone z-ref"><div class="zh">⚪ 참고 · 다음 내원</div><div id="zRef"><div class="zempty">— 없음</div></div></div>
         </div>
       </div>
     </div>
-    <p class="as-note">알림 문구는 <b>예시</b>이며, 실제 산정 가능 여부는 건강보험 산정기준(심평원 고시)을 따릅니다 · 실제 설치 시 우리 병원 차팅에 맞춰 뜹니다</p>
+    <p class="as-note">알림 문구는 <b>예시</b>이며, 실제 산정 가능 여부는 건강보험 산정기준(심평원 고시)을 따릅니다 · 빨강 구역이 비어 있으면 = 지금 놓치는 것 없음</p>
   </div>
 </section>
 
@@ -1062,54 +1070,61 @@
 (function(){
   var CASES=[
     {b:'🦷 인레이 충전',line:'#26 원심 우식 — 인레이 충전',al:[
-      {k:'blue',bd:'찍기 전에',tt:'충전 전, 치근단 촬영 하셨나요?',ds:'와동 깊이·치수 근접 근거가 차트에 남아야 나중에 문제가 없습니다. 촬영하면 촬영·판독까지 같이 산정됩니다.'},
-      {k:'teal',bd:'같이 산정',tt:'마취했다면 마취 산정도 같이',ds:'충전만 찍고 마취를 빠뜨리는 게 가장 흔한 누락입니다.'}]},
+      {g:'now',cat:'📷 근거 남기기',tt:'충전 전, 치근단 촬영',ds:'치료 시작 전에만 가능 · 촬영+판독 같이 산정'},
+      {g:'today',cat:'➕ 같이 산정',tt:'마취 산정 확인',ds:'수복만 찍고 마취 누락이 단골'}]},
     {b:'🔩 임플란트 식립',line:'#36 임플란트 1차 식립',al:[
-      {k:'teal',bd:'식립 전 체크',tt:'주변 치아에 치석 없는지 먼저 확인해 보세요',ds:'치석이 있으면 오늘 치석제거를 같이 진행할지 검토 — 올해 급여 치석제거를 안 쓴 환자라면 환자도 이득입니다.'},
-      {k:'blue',bd:'근거 남기기',tt:'식립 전후 방사선 촬영·판독 산정 확인',ds:'파노라마·치근단 판독이 자주 빠지는 항목입니다.'},
-      {k:'amber',bd:'다음 내원',tt:'수술후처치 — 다음 내원 때 다시 알려드릴게요',ds:'소독·발사 청구가 끊기지 않게 재내원 시 자동으로 다시 뜹니다.'}]},
+      {g:'now',cat:'🪥 사전 체크',tt:'주변 치아 치석 확인',ds:'치석 있으면 오늘 치석제거 동시 진행 검토'},
+      {g:'today',cat:'📷 근거 남기기',tt:'식립 전후 촬영·판독 산정',ds:'파노라마·치근단 판독이 자주 빠짐'},
+      {g:'ref',cat:'⏰ 다음 내원',tt:'수술후처치 자동 알림',ds:'재내원 접수 순간 다시 뜸'}]},
     {b:'👑 크라운 본뜨기',line:'#11 크라운 — 지대치 형성 · 인상채득',al:[
-      {k:'teal',bd:'본뜨기 전 체크',tt:'인상 전, 주변 치아 치석부터 확인해 보세요',ds:'치석 위로 본을 뜨면 정밀도가 떨어집니다. 필요하면 치석제거 먼저 — 보철 퀄리티와 청구를 같이 챙깁니다.'},
-      {k:'amber',bd:'다음 내원',tt:'세팅 내원 날, 놓치기 쉬운 항목은 그때 다시',ds:'세팅일에 챙길 산정 항목을 그날 아침 다시 알려드립니다.'}]},
+      {g:'now',cat:'🪥 사전 체크',tt:'인상 전, 주변 치석 확인',ds:'치석 위 인상 = 정밀도 저하 · 필요 시 치석제거 먼저'},
+      {g:'ref',cat:'⏰ 다음 내원',tt:'세팅일 산정 재알림',ds:'세팅 아침에 챙길 항목 다시 뜸'}]},
     {b:'🪥 치주치료',line:'전악 치주낭측정 · 하악 스케일링',al:[
-      {k:'red',bd:'연계 끊김 방지',tt:'치주낭측정 → 치주치료로 이어지고 있나요?',ds:'측정만 하고 끊기면 치료도, 청구도 사라집니다. 후속 계획이 없으면 여기서 잡아둡니다.'},
-      {k:'amber',bd:'다음 내원',tt:'치주치료 후처치 — 다음 내원 때 자동 알림',ds:'후처치는 리포트 기준으로 가장 많이 새는 항목입니다.'}]},
+      {g:'now',cat:'🔁 연계',tt:'측정 → 치주치료 연결',ds:'여기서 끊기면 치료도 청구도 사라짐'},
+      {g:'ref',cat:'⏰ 다음 내원',tt:'후처치 자동 알림',ds:'가장 많이 새는 항목'}]},
     {b:'🦷 발치',line:'#38 발치 (매복 소견)',al:[
-      {k:'teal',bd:'같이 산정',tt:'마취 산정 확인',ds:'발치는 찍고 마취는 안 찍는 케이스가 많습니다.'},
-      {k:'blue',bd:'수가 확인',tt:'버(Burr) 썼다면 난발치로',ds:'단순발치로 두면 그 차액이 그대로 사라집니다. 골삭제 여부를 확인해 보세요.'},
-      {k:'amber',bd:'다음 내원',tt:'발치 후 소독 — 재내원 알림 예약됨',ds:'수술후처치가 끊기지 않게 다음 내원 때 다시 뜹니다.'}]},
+      {g:'today',cat:'➕ 같이 산정',tt:'마취 산정 확인',ds:'발치만 찍고 마취 누락이 단골'},
+      {g:'today',cat:'🧾 수가 확인',tt:'버 사용 시 난발치 전환',ds:'단순발치로 두면 차액이 사라짐'},
+      {g:'ref',cat:'⏰ 다음 내원',tt:'발치 후 소독 알림',ds:'수술후처치가 끊기지 않게'}]},
     {b:'⚡ 신경치료',line:'#15 근관세척 2회차',al:[
-      {k:'teal',bd:'같이 산정',tt:'러버댐 걸었다면 가산 확인',ds:'러버댐은 걸고 가산은 안 찍는 게 단골 누락입니다.'},
-      {k:'blue',bd:'근거 남기기',tt:'세척 횟수 기록 — 5회 넘으면 사유 메모',ds:'횟수 초과는 근거가 없으면 삭감 대상입니다. 지금 한 줄 남겨두세요.'},
-      {k:'amber',bd:'다음 내원',tt:'근관충전까지 — 다음 예약 잡혔는지 확인',ds:'중간에 끊기면 치료도 청구도 미완성으로 남습니다.'}]}
+      {g:'now',cat:'📝 기록',tt:'세척 5회 초과 — 사유 메모',ds:'근거 없으면 삭감 대상 · 지금 한 줄'},
+      {g:'today',cat:'➕ 같이 산정',tt:'러버댐 가산 확인',ds:'걸고 가산 안 찍는 게 단골'},
+      {g:'ref',cat:'⏰ 다음 예약',tt:'근관충전 예약 확인',ds:'중간에 끊기면 미완성으로 남음'}]}
   ];
-  var btns=document.getElementById('asBtns'),stack=document.getElementById('asStack'),
-      line=document.getElementById('asLine'),row=document.getElementById('asNew');
+  var ZONE={now:'zNow',today:'zToday',ref:'zRef'};
+  var btns=document.getElementById('asBtns'),line=document.getElementById('asLine'),row=document.getElementById('asNew');
   var timers=[],claimed=0;
   CASES.forEach(function(c,i){
     var b=document.createElement('button');b.type='button';b.className='as-btn';b.textContent=c.b;
     b.addEventListener('click',function(){play(i);});
     btns.appendChild(b);c._btn=b;
   });
+  function resetZones(){
+    ['zNow','zToday','zRef'].forEach(function(z){
+      document.getElementById(z).innerHTML='<div class="zempty">— 없음</div>';
+    });
+  }
   function play(i){
     timers.forEach(clearTimeout);timers=[];
     CASES.forEach(function(c,j){c._btn.classList.toggle('on',j===i);});
     var c=CASES[i];
-    stack.innerHTML='';row.classList.remove('show');line.textContent='';
+    resetZones();row.classList.remove('show');line.textContent='';
     timers.push(setTimeout(function(){row.classList.add('show');line.textContent=c.line;},120));
     timers.push(setTimeout(function(){if(getComputedStyle(row).opacity==='0'){row.style.transition='none';row.style.opacity='1';row.style.transform='none';}},700));
     c.al.forEach(function(a,k){
       timers.push(setTimeout(function(){
-        var d=document.createElement('div');d.className='as-alert k-'+a.k;
-        d.innerHTML='<span class="bd">'+a.bd+'</span><div class="tt">'+a.tt+'</div><div class="ds">'+a.ds+'</div>'
+        var zone=document.getElementById(ZONE[a.g]);
+        var emp=zone.querySelector('.zempty');if(emp)emp.remove();
+        var d=document.createElement('div');d.className='as-alert g-'+a.g;
+        d.innerHTML='<span class="cat">'+a.cat+'</span><div class="tt">'+a.tt+'</div><div class="ds">'+a.ds+'</div>'
           +'<button type="button" class="as-add">➕ 청구에 담기</button>';
         d.querySelector('.as-add').addEventListener('click',function(){
           if(d.classList.contains('claimed'))return;
           d.classList.add('claimed');this.textContent='✓ 청구에 담김';
-          claimed++;var c=document.getElementById('asCnt');c.textContent='🧾 담은 청구 '+claimed+'건';c.classList.add('hot');
+          claimed++;var cc=document.getElementById('asCnt');cc.textContent='🧾 담은 청구 '+claimed+'건';cc.classList.add('hot');
         });
-        stack.appendChild(d);
-        /* 애니메이션이 막힌 환경(구형 브라우저·절전 등)에서도 알림이 반드시 보이게 */
+        zone.appendChild(d);
+        /* 애니메이션이 막힌 환경에서도 알림이 반드시 보이게 */
         timers.push(setTimeout(function(){if(getComputedStyle(d).opacity==='0'){d.style.animation='none';d.style.opacity='1';d.style.transform='none';}},900));
       },650+k*620));
     });
@@ -3524,6 +3539,234 @@ window.__calcClose=function(){ var m=document.getElementById('calcModal'); if(!m
     <div class="ez-close">정리하면 — <b>이미 하신 진료의 돈이 서류에서 새고 있고,</b> 이 프로그램은 그걸 옆에서 <b>"빠뜨렸어요"라고 말해주는 비서</b>입니다. 뺏는 게 아니라, 흘린 것을 줍는 겁니다.</div>
   </div>
 </section>
+
+<!-- ══════════ 최하단 : 실제 제안 데모 (글자 최소 · 상황별 제안 미리보기) ══════════ -->
+<style>
+  #sgx{background:var(--bg)}
+  #sgx .sgx-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:30px auto 22px;max-width:720px}
+  #sgx .sgx-tab{border:1.6px solid var(--line);background:var(--card);color:var(--ink-soft);font-weight:750;font-size:13.5px;
+    padding:8px 15px;border-radius:99px;cursor:pointer;transition:.15s;letter-spacing:-.01em;font-family:inherit;position:relative;overflow:hidden}
+  #sgx .sgx-tab:hover{border-color:var(--teal);color:var(--teal)}
+  #sgx .sgx-tab.on{background:var(--teal);border-color:var(--teal);color:#fff}
+  #sgx .sgx-demo{max-width:560px;margin:0 auto;background:var(--card);border:1.6px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);overflow:hidden}
+  #sgx .sgx-chart{background:var(--bg-soft);padding:18px 22px;border-bottom:1px solid var(--line)}
+  #sgx .sgx-chart .lb{font-size:11.5px;font-weight:800;letter-spacing:.08em;color:var(--ink-soft);margin-bottom:5px}
+  #sgx .sgx-chart .tx{font-size:clamp(19px,3vw,23px);font-weight:850;letter-spacing:-.02em}
+  #sgx .sgx-chart .tx::after{content:'';display:inline-block;width:2px;height:1em;background:var(--teal);margin-left:4px;
+    vertical-align:-.15em;animation:sgxCaret 1s steps(1) infinite}
+  @keyframes sgxCaret{50%{opacity:0}}
+  #sgx .sgx-mid{display:flex;align-items:center;gap:10px;padding:13px 22px 4px;font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--teal)}
+  #sgx .sgx-mid::after{content:'';flex:1;height:1px;background:var(--line)}
+  #sgx .sgx-list{padding:8px 16px 18px;display:flex;flex-direction:column;gap:8px;min-height:224px}
+  #sgx .sgx-pill{display:flex;align-items:center;gap:11px;background:var(--bg);border:1.4px solid var(--line);border-radius:13px;
+    padding:11px 14px;animation:sgxIn .38s cubic-bezier(.2,.8,.3,1) backwards}
+  @keyframes sgxIn{from{opacity:0;transform:translateY(9px)}}
+  #sgx .sgx-pill .pl{flex:0 0 24px;height:24px;border-radius:8px;background:var(--teal-soft);color:var(--teal);font-weight:900;
+    font-size:15px;display:flex;align-items:center;justify-content:center}
+  #sgx .sgx-pill .nm{font-size:15px;font-weight:780;letter-spacing:-.015em;flex:1;line-height:1.3}
+  #sgx .sgx-pill .bd{font-size:11.5px;font-weight:750;color:var(--ink-soft);background:var(--bg-soft);padding:3px 9px;border-radius:99px;white-space:nowrap}
+  #sgx .sgx-pill .bd.must{color:var(--red);background:var(--red-soft)}
+  #sgx .sgx-pill .bd.pct{color:var(--green);background:var(--green-soft)}
+  #sgx .sgx-cap{text-align:center;font-size:12px;color:var(--ink-soft);font-weight:600;margin-top:18px}
+  #sgx .sgx-allbtn{display:block;margin:34px auto 0;background:var(--card);border:1.6px solid var(--line);color:var(--ink-soft);
+    font-weight:780;font-size:14px;padding:12px 24px;border-radius:99px;cursor:pointer;font-family:inherit;transition:.15s}
+  #sgx .sgx-allbtn:hover{border-color:var(--teal);color:var(--teal)}
+  #sgx .sgx-all{display:none;max-width:760px;margin:22px auto 0}
+  #sgx .sgx-all.open{display:block}
+  #sgx .sgx-g{background:var(--card);border:1.6px solid var(--line);border-radius:var(--radius-sm);margin-bottom:10px;overflow:hidden}
+  #sgx .sgx-g summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;padding:13px 17px;font-size:14.5px;font-weight:800;letter-spacing:-.015em}
+  #sgx .sgx-g summary::-webkit-details-marker{display:none}
+  #sgx .sgx-g summary .n{font-size:11.5px;font-weight:750;color:var(--ink-soft);background:var(--bg-soft);padding:2px 9px;border-radius:99px}
+  #sgx .sgx-g summary .ar{margin-left:auto;color:var(--ink-soft);font-size:12px;transition:.2s}
+  #sgx .sgx-g[open] summary .ar{transform:rotate(180deg)}
+  #sgx .sgx-g .rows{border-top:1px solid var(--line)}
+  #sgx .sgx-r{display:flex;align-items:baseline;gap:8px;padding:9px 17px;font-size:13px;line-height:1.5;border-bottom:1px solid var(--bg-soft)}
+  #sgx .sgx-r:last-child{border-bottom:0}
+  #sgx .sgx-r .si{flex:0 0 31%;font-weight:740;color:var(--ink)}
+  #sgx .sgx-r .ar2{flex:0 0 auto;color:var(--teal);font-weight:800}
+  #sgx .sgx-r .pr{flex:1;font-weight:640}
+  #sgx .sgx-r .cb{font-size:11px;font-weight:700;color:var(--ink-soft);background:var(--bg-soft);padding:2px 8px;border-radius:99px;white-space:nowrap}
+  @media(max-width:560px){#sgx .sgx-r{flex-wrap:wrap}#sgx .sgx-r .si{flex-basis:100%}#sgx .sgx-r .cb{margin-left:auto}}
+  @media(max-width:520px){#sgx .sgx-tab{font-size:12.5px;padding:7px 12px}}
+</style>
+<section id="sgx">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow t">🤖 실제 제안 화면</span>
+      <h2>차트에 적는 순간,<br><mark>이렇게 제안됩니다</mark></h2>
+      <p class="lead" style="margin:12px auto 0;max-width:22em">상황을 눌러보세요.</p>
+    </div>
+    <div class="sgx-tabs" id="sgxTabs"></div>
+    <div class="sgx-demo">
+      <div class="sgx-chart">
+        <div class="lb">오늘 차트</div>
+        <div class="tx" id="sgxChart"></div>
+      </div>
+      <div class="sgx-mid">그 순간, 화면에</div>
+      <div class="sgx-list" id="sgxList"></div>
+    </div>
+    <div class="sgx-cap">산정기준에 맞는 항목만 · 최종 확인은 원장님 · 화면은 예시입니다</div>
+    <button type="button" class="sgx-allbtn" id="sgxAllBtn">규칙 전부 보기 ▾</button>
+    <div class="sgx-all" id="sgxAll"></div>
+  </div>
+</section>
+<script>
+(function(){
+  var D=[
+    {t:'🦷 발수',c:'#46 발수',s:[
+      ['치근단 촬영','필수','must'],['근관와동형성','같이 청구',''],['B.B 재료','근관당 1회',''],['마취','같이 청구','']]},
+    {t:'🪥 발치',c:'#38 발치',s:[
+      ['치근단 촬영','필수','must'],['난발치 내역설명','문구 자동',''],['Burr','난발치부터',''],['치조골성형술','동시 50%','pct']]},
+    {t:'👑 크라운·임플란트',c:'#16 크라운 인상',s:[
+      ['주변 치아 스케일링','증상 기재',''],['치은절제·치관확장','해당 시',''],['다음 잇몸치료','연계','']]},
+    {t:'🌿 스케일링',c:'#17~47 SC',s:[
+      ['“잇몸치료 예정”','내역설명 자동','must'],['다음 RP·CU','예약 연결',''],['교합조정','증상 시 · 하루 4치',''],['연1회와 구분','자동 확인','']]},
+    {t:'🔁 잇몸 재내원',c:'#24~27 CU',s:[
+      ['지난 부위 → 후처치','자동 표시',''],['지각과민처치','시림 있으면',''],['재시행 50·100%','기간 자동 계산','pct']]},
+    {t:'🧒 소아',c:'10세 · 검진',s:[
+      ['치면열구전색','6·7번 건전면',''],['치면세마','유치',''],['만8세 미만 가산','+30% 자동','pct']]},
+    {t:'💎 비급여 진료',c:'#15 인레이',s:[
+      ['진단 X-ray','우식 확인',''],['충전물 제거','충전 전',''],['부분 치석제거','인상 전 · 증상 시','']]},
+    {t:'⚖️ 동시 시행',c:'발수 + 구강내소염술',s:[
+      ['높은 수가 100%','자동','pct'],['낮은 수가 50%','자동','pct'],['묶음 규칙 구분','자동','']]}
+  ];
+  var tabs=document.getElementById('sgxTabs'),chart=document.getElementById('sgxChart'),list=document.getElementById('sgxList');
+  var cur=0,timer=null;
+  D.forEach(function(d,i){
+    var b=document.createElement('button');b.type='button';b.className='sgx-tab';b.textContent=d.t;
+    b.onclick=function(){ if(timer){clearInterval(timer);timer=null;} show(i); };
+    tabs.appendChild(b);
+  });
+  function show(i){
+    cur=i;
+    var bs=tabs.children;
+    for(var k=0;k<bs.length;k++) bs[k].classList.toggle('on',k===i);
+    chart.textContent=D[i].c;
+    list.innerHTML='';
+    D[i].s.forEach(function(p,j){
+      var el=document.createElement('div');el.className='sgx-pill';el.style.animationDelay=(0.12+j*0.14)+'s';
+      el.innerHTML='<span class="pl">✚</span><span class="nm"></span><span class="bd'+(p[2]?' '+p[2]:'')+'"></span>';
+      el.children[1].textContent=p[0]; el.children[2].textContent=p[1];
+      list.appendChild(el);
+    });
+  }
+  show(0);
+  var sec=document.getElementById('sgx');
+  function inView(){ var r=sec.getBoundingClientRect(); return r.top<window.innerHeight && r.bottom>0; }
+  timer=setInterval(function(){ if(inView()) show((cur+1)%D.length); },3400);
+
+  /* ── 전체 제안 규칙 (자료 전수 반영 · 접힘) ── */
+  var G=[
+   ['📸 사진·방사선',[
+    ['발수·발치·외과·치주','치근단 자동','파노 있어도'],
+    ['사진 없는 외과','“기존 사진 참조” 문구','자동'],
+    ['치근단+파노 같은 날','촬영 목적 문구','자동'],
+    ['치근단 2장↑','동시·각각 구분','자동'],
+    ['파노라마','판독소견 입력','3부위↑·매복·TMD'],
+    ['CT','판독소견서','인정조건 체크'],
+    ['보험임플란트·틀니','같은 달 파노 확인','자동']]],
+   ['🧾 진찰료·내역설명',[
+    ['초진 vs 재진','자동 판정','종결 1개월·치주 90일'],
+    ['타치과 진료 이어받음','초진 삭감 경고+문구','자동'],
+    ['달 넘겨 이어 진행','“전월 이어 진행” 문구','자동'],
+    ['평일 18시 이후','야간 30% 가산','자동'],
+    ['기본진찰료만 청구','상병·사유 요청','일률 청구 경고'],
+    ['비급여로 온 날','질병 확인 시 보험 병행','증상 기재']]],
+   ['🦷 보존',[
+    ['우식 깊음','진정처치·치수복조','충전 당일 X·비급여 X'],
+    ['1달 내 재충전','와동 50+충전 50+재료 100','자동'],
+    ['충전','면수·재료·상병 확인','마모·우식 구분'],
+    ['엔도 시작한 치아','즉일충전 오청구 차단','자동'],
+    ['충전물 연마','G.I 당일·아말감 익일','자동'],
+    ['시린 치아','지각과민처치','하루 6치·(나) 6개월'],
+    ['교합 높음·위치 이상','교합조정','하루 4치·교합지 기재']]],
+   ['🪛 근관',[
+    ['발수','와동형성+B.B+마취','세척 동시 X'],
+    ['약재만 넣은 날','보통처치로','자동'],
+    ['근관확대','성형 1회·Ni-Ti 치당','엔도 중 2회'],
+    ['근관세척 5회↑','농양 상병+문구','자동'],
+    ['가압충전','확인 촬영','세척 동시 X'],
+    ['당일발수근충','포함 행위 차단','B.B·Ni-Ti만'],
+    ['재근관치료','기존충전물제거부터','발수 X'],
+    ['엔도 중 약처방','상병 교정','치수염→치주염·농양']]],
+   ['🌿 치주',[
+    ['스케일링(SC)','“잇몸치료 예정”+다음 RP·CU','구치 1~2개 50%'],
+    ['치주 재시행','후처치→50%→100% 자동','SC 3·6개월 / RP·CU 1·3 / Flap 6'],
+    ['지난 치주 부위','후처치·지각과민','동시 시 내용 기재'],
+    ['치주소파술(CU)','만성·마취·전처치 확인','급성 X'],
+    ['연 1회 치석제거','대상·등록 확인','만 19세↑·7월 기준'],
+    ['프로빙','치아당 2면↑','자동 확인'],
+    ['임상치관 짧은 크라운','치은절제·치관확장','엔도 완료 치아'],
+    ['잇몸 절개','치은절제술','후처치는 복잡'],
+    ['흔들리는 치아 고정','잠간고정술','3치↓ 가 · 4치↑ 나']]],
+   ['🔪 외과',[
+    ['발치','유치·단순·난발치·매복 자동 구분','사진+상병'],
+    ['난발치 이상','사유 문구+Burr','하루 1개'],
+    ['매복발치','절개·분리·골삭제 기재','CT는 발치 시만'],
+    ['발치+치조골성형술','100:50','실크·버 가능'],
+    ['구강내소염술(I&D)','블레이드 기재+실크','발치 동시엔 발치만'],
+    ['발치와재소파술','발치 당일 X','후처치 2~3회'],
+    ['실밥 제거','s/o 문구','치주와 동시 시'],
+    ['치근단절제·치근낭','동시 100:50','근충과는 각각 100%'],
+    ['외상 치아','정복술+잠간고정+근관','100:50 자동'],
+    ['소대 이상','소대성형술','간단·복잡'],
+    ['무치악 돌출 뼈','골융기절제','틀니 전']]],
+   ['⚖️ 동시산정',[
+    ['주된 처치만 조합','자동 차단','치수절단+충전 등 12종'],
+    ['100+50 조합','자동 배분','발수+I&D 등 14종'],
+    ['3중 제거','100+50+50','크라운+충전물+포스트'],
+    ['치주후처치+수술후처치','1개만','자동']]],
+   ['🧒 소아',[
+    ['건전 어금니','치면열구전색','18세↓·6,7번·2년'],
+    ['만 8세 미만','30% 가산','자동'],
+    ['유치 치태','치면세마','치은염 상병'],
+    ['유치 근관','사유 문구','상악 D·E 전달마취 X'],
+    ['맹출 중 어금니','치은판절제술','실란트·우식 별도']]],
+   ['💉 마취·약',[
+    ['마취','침윤 1/3악·전달 1/2악','주된 것만·앰플수'],
+    ['발수 뒤 마취','사유 문구','자동'],
+    ['약처방','증상·개연성 문진','위장약·30대↓ 문진'],
+    ['비급여 진료 날','처방전도 비급여','자동'],
+    ['겁 많은 환자','행동조절(아산화질소)','15분 단위'],
+    ['처방전 재발급·분실','규칙 자동 안내','가글 1회·관리료 1일 1회']]],
+   ['👑 보철·기타',[
+    ['보철물 제거','간단·복잡 구분','지대치+폰틱'],
+    ['재부착','파이널 시멘만','임시 X'],
+    ['수복물제거(복잡)','내역설명','자동'],
+    ['보험틀니·임플란트','단계별 자동 안내','만 65세↑·7년 1회'],
+    ['틀니 무상관리','z46.3+문구','자동'],
+    ['턱관절 물리치료','분석검사 선행','자동 차단'],
+    ['모든 행위','인정 상병명 자동 추천','상병 DB']]]
+  ];
+  var all=document.getElementById('sgxAll'), btn=document.getElementById('sgxAllBtn');
+  var total=0; G.forEach(function(g){ total+=g[1].length; });
+  btn.textContent='규칙 전부 보기 ('+total+') ▾';
+  var built=false;
+  btn.onclick=function(){
+    if(!built){
+      G.forEach(function(g){
+        var d=document.createElement('details'); d.className='sgx-g';
+        var sm=document.createElement('summary');
+        sm.innerHTML='<span></span><span class="n"></span><span class="ar">▾</span>';
+        sm.children[0].textContent=g[0]; sm.children[1].textContent=g[1].length;
+        d.appendChild(sm);
+        var rw=document.createElement('div'); rw.className='rows';
+        g[1].forEach(function(r){
+          var el=document.createElement('div'); el.className='sgx-r';
+          el.innerHTML='<span class="si"></span><span class="ar2">→</span><span class="pr"></span><span class="cb"></span>';
+          el.children[0].textContent=r[0]; el.children[2].textContent=r[1]; el.children[3].textContent=r[2];
+          rw.appendChild(el);
+        });
+        d.appendChild(rw); all.appendChild(d);
+      });
+      built=true;
+    }
+    var open=all.classList.toggle('open');
+    btn.textContent=open?('접기 ▴'):('규칙 전부 보기 ('+total+') ▾');
+  };
+})();
+</script>
 
 <footer>
   <div class="wrap">
