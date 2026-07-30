@@ -4,7 +4,10 @@
     "target": {
       "namespace": "android_app",
       "package_name": "io.github.seongahjo830.twa",
-      "sha256_cert_fingerprints": ["C8:41:6A:77:D7:82:1C:EA:83:5F:BD:FF:D1:00:B2:EE:58:11:5C:F3:0F:B5:01:94:7A:67:6E:69:06:CE:33:18"]
+      "sha256_cert_fingerprints": [
+        "22:81:28:2E:28:84:DE:B8:77:4E:21:8B:9C:DA:C3:10:05:78:B9:AF:63:34:40:21:C1:D7:07:33:47:4C:46:B9",
+        "C8:41:6A:77:D7:82:1C:EA:83:5F:BD:FF:D1:00:B2:EE:58:11:5C:F3:0F:B5:01:94:7A:67:6E:69:06:CE:33:18"
+      ]
     }
   },
   {
