@@ -1,7 +1,7 @@
 {
-  "name": "고양이사주일기",
-  "short_name": "고양이사주",
-  "description": "사주와 타로로 오늘의 나를 들여다보는 고양이 운세 일기",
+  "name": "강아지사주일기",
+  "short_name": "강아지사주",
+  "description": "사주와 타로로 오늘의 나를 들여다보는 강아지 운세 일기",
   "start_url": ".",
   "scope": ".",
   "id": "/saju/",

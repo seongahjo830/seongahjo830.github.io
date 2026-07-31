@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>고양이사주일기 — 온보딩·홈·4탭·데일리타로·퍼널·결제</title>
+<title>강아지사주일기 — 온보딩·홈·4탭·데일리타로·퍼널·결제</title>
 <link rel="stylesheet" href="assets/app_v10.css?v=10">
 
 <link rel="manifest" href="manifest.json">
@@ -11,10 +11,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="고양이사주">
+<meta name="apple-mobile-web-app-title" content="강아지사주">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-<meta name="description" content="사주·타로로 오늘의 나를 기록하는 고양이 운세 일기">
+<meta name="description" content="사주·타로로 오늘의 나를 기록하는 강아지 운세 일기">
 <style id="pwa-standalone">
 /* 앱(standalone)으로 실행될 땐 데스크톱 목업 프레임을 없애고 전체화면으로 */
 @media (display-mode: standalone), (display-mode: fullscreen) {
@@ -34,7 +34,7 @@
   <!-- 온보딩 1~6 -->
   <div class="screen" id="scr-ob1">
     <button class="skip" onclick="finishOnboard()">건너뛰기</button>
-    <div class="ob"><div id="obcat1"></div><h2>안녕하세요.<br>저는 고양이사주일기의 보리예요.</h2></div>
+    <div class="ob"><div id="obcat1"></div><h2>안녕하세요.<br>저는 강아지사주일기의 보리예요.</h2></div>
     <p class="terms">앱을 사용함으로써 <u>개인정보처리방침</u> 및 <u>이용약관</u>에 동의하게 됩니다.</p>
     <button class="btn-cta" onclick="go('scr-ob2')">안녕!</button>
   </div>
@@ -82,25 +82,28 @@
   <div class="screen" id="scr-home">
     <div class="scroll">
       <div class="home-head">
-        <span class="logo">고양이사주일기 🐾</span>
+        <span class="logo">강아지사주일기 🐾</span>
         <span class="right">
           <span class="days" id="days-line"></span>
           <span class="wallet">🐾 <span class="jelly-n">1,500</span> 젤리</span>
         </span>
       </div>
-      <div class="home-top">
-        <div class="icon-col">
-          <button class="h-icon" onclick="showTab('scr-today')"><span class="ic">🍀</span>오늘운세</button>
-          <button class="h-icon" onclick="go('scr-box');renderBox()"><span class="ic">📦</span>운세보관함</button>
-        </div>
-        <div class="mascot">
+      <div class="hero-band">
+        <div class="hero-txt">
           <div class="blurb" id="mascot-talk">‥</div>
-          <div id="homecat"></div>
+          <div class="hero-sub">오늘의 기운을 보리가 먼저 읽어뒀어요</div>
         </div>
-        <div class="icon-col">
-          <button class="h-icon" onclick="openMail()"><span class="ic">📮<span class="noti" id="mail-noti">♥1</span></span>편지함</button>
-          <button class="h-icon" onclick="go('scr-jelly')"><span class="ic">🏭</span>젤리공장</button>
-        </div>
+        <div class="hero-dog" id="homecat"></div>
+      </div>
+      <div class="quick-grid">
+        <button class="q" onclick="showTab('scr-today')"><span class="qi">🍀</span><span class="ql">오늘운세</span></button>
+        <button class="q" onclick="tarotOpen('today','🐾 오늘의 타로')"><span class="qi">🔮</span><span class="ql">데일리타로</span></button>
+        <button class="q" onclick="showTab('scr-diary')"><span class="qi">📔</span><span class="ql">일기장</span></button>
+        <button class="q" onclick="openMail()"><span class="qi">📮<span class="noti" id="mail-noti">♥1</span></span><span class="ql">편지함</span></button>
+        <button class="q" onclick="go('scr-box');renderBox()"><span class="qi">📦</span><span class="ql">운세보관함</span></button>
+        <button class="q" onclick="go('scr-jelly')"><span class="qi">🏭</span><span class="ql">젤리공장</span></button>
+        <button class="q" onclick="go('scr-jelly')"><span class="qi">🎁</span><span class="ql">무료젤리</span></button>
+        <button class="q" onclick="showTab('scr-more')"><span class="qi">⚙️</span><span class="ql">더보기</span></button>
       </div>
       <div id="home-sections"><!-- data.js CATALOG로 렌더 --></div>
       <div style="height:30px"></div>
@@ -179,7 +182,7 @@
     <div class="scroll">
       <div class="jf-row"><span class="paw">🐾</span><div class="tx"><b>말랑 젤리</b><span>매일 1 젤리 받기</span></div><button class="get" onclick="earn(this,1)">받기</button></div>
     </div>
-    <div class="toast" id="toast-jelly">젤리가 도착했다냥 🐾</div>
+    <div class="toast" id="toast-jelly">젤리가 도착했다멍 🐾</div>
   </div>
 
   <!-- 편지함 -->
@@ -214,7 +217,7 @@
 
   <!-- 데일리 타로: 인트로 -->
   <div class="screen" id="scr-tarot-intro">
-    <div class="topbar"><button class="back" onclick="showTab('scr-home')">←</button><span class="h-title">고양이사주일기 🐾</span></div>
+    <div class="topbar"><button class="back" onclick="showTab('scr-home')">←</button><span class="h-title">강아지사주일기 🐾</span></div>
     <div class="tarot-intro">
       <div id="tarotcat"></div>
       <h2 id="tarot-intro-msg"></h2>
@@ -225,9 +228,9 @@
 
   <!-- 데일리 타로: 뽑기 애니메이션 -->
   <div class="screen" id="scr-tarot-draw">
-    <div class="topbar"><button class="back" onclick="go('scr-tarot-intro')">←</button><span class="h-title">고양이사주일기 🐾</span></div>
+    <div class="topbar"><button class="back" onclick="go('scr-tarot-intro')">←</button><span class="h-title">강아지사주일기 🐾</span></div>
     <div class="draw-stage">
-      <div class="draw-hint" id="draw-hint">카드를 섞는 중이다냥…</div>
+      <div class="draw-hint" id="draw-hint">카드를 섞는 중이다멍…</div>
       <div class="deck shuffling" id="deck"><span class="back"></span><span class="back"></span><span class="back"></span></div>
       <div class="pick3" id="pick3" style="display:none"></div>
     </div>
@@ -235,7 +238,7 @@
 
   <!-- 데일리 타로: 결과 -->
   <div class="screen" id="scr-tarot-res">
-    <div class="topbar"><button class="back" onclick="showTab('scr-home')">←</button><span class="h-title">고양이사주일기 🐾</span></div>
+    <div class="topbar"><button class="back" onclick="showTab('scr-home')">←</button><span class="h-title">강아지사주일기 🐾</span></div>
     <div class="scroll">
       <div class="tarot-res" id="tarot-res-body"></div>
     </div>
@@ -248,7 +251,7 @@
     <div class="topbar"><button class="back" onclick="showTab('scr-home')">←</button></div>
     <div class="scroll" id="funnel-g-body"></div>
     <button class="btn-cta" onclick="startSajuInput()">다음</button>
-    <div class="toast" id="toast-funnel-g">지금 사용할 수 있는 쿠폰이 있다냥 🐈</div>
+    <div class="toast" id="toast-funnel-g">지금 사용할 수 있는 쿠폰이 있다멍 🐈</div>
   </div>
 
   <!-- 앱 내 카드 슬라이드 리포트 (다크) -->
@@ -314,7 +317,7 @@
           <li>🙋‍♀️ <b>사주로 보는 결혼 후의 나</b></li>
           <li class="dep">🖐️ 오행으로 보는 사주 해석</li>
           <li class="dep">🔟 십신으로 보는 사주 해석</li>
-          <li class="dep">🐱 일주로 보는 내 고양이</li>
+          <li class="dep">🐱 일주로 보는 내 강아지</li>
           <li>💔 <b>절대 만나선 안되는 결혼 상대</b></li>
           <li class="dep">📅 언제 만나게 되는지<span class="pop">인기</span></li>
           <li class="dep">🧑 그 상대의 성격 + 외모<span class="pop">인기</span></li>
@@ -342,7 +345,7 @@
       <div style="height:20px"></div>
     </div>
     <button class="btn-cta" onclick="startSajuInput()">다음</button>
-    <div class="toast" id="toast-funnel">지금 사용할 수 있는 쿠폰이 있다냥 🐈</div>
+    <div class="toast" id="toast-funnel">지금 사용할 수 있는 쿠폰이 있다멍 🐈</div>
   </div>
 
   <!-- 통합 사주/타로 입력 (단계식) — 모든 상품이 이 한 화면을 공유 -->
@@ -362,14 +365,14 @@
       <p class="wallet-line" style="color:#b8b0a2">결제하면 운세보관함에 영구 저장돼 언제든 다시 볼 수 있어요.</p>
     </div>
     <button class="btn-cta" id="pay-btn" onclick="pay()">젤리 내고 보기</button>
-    <div class="toast" id="toast-pay">쿠폰이 자동으로 적용됐다냥 🎟️</div>
+    <div class="toast" id="toast-pay">쿠폰이 자동으로 적용됐다멍 🎟️</div>
   </div>
 
   <!-- 로딩 -->
   <div class="screen" id="scr-loading">
     <div class="load-wrap">
       <div class="load-cat">🐱</div>
-      <div class="load-msg" id="load-msg">만세력을 뒤적이는 중이다냥…</div>
+      <div class="load-msg" id="load-msg">만세력을 뒤적이는 중이다멍…</div>
       <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
     </div>
     <button class="btn-cta" id="btn-result" style="display:none" onclick="goResult()">결과 보러 가기 ✨</button>
@@ -413,7 +416,7 @@ function resetAll(){ Object.keys(localStorage).filter(k=>k.startsWith('catsaju_'
 
 /* ═══ 공용 UI ═══ */
 const $=id=>document.getElementById(id);
-const CAT_SVG='<svg viewBox="0 0 120 100"><g fill="#fff" stroke="#4a3d33" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"><path d="M35 30 L28 10 L48 20 Z"/><path d="M85 30 L92 10 L72 20 Z"/><ellipse cx="60" cy="52" rx="34" ry="30"/></g><g stroke="#4a3d33" stroke-width="2.6" stroke-linecap="round"><line x1="14" y1="48" x2="30" y2="50"/><line x1="14" y1="58" x2="30" y2="56"/><line x1="106" y1="48" x2="90" y2="50"/><line x1="106" y1="58" x2="90" y2="56"/></g><circle cx="48" cy="50" r="2.8" fill="#4a3d33"/><circle cx="72" cy="50" r="2.8" fill="#4a3d33"/><path d="M55 60 Q60 65 65 60" stroke="#4a3d33" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>';
+const CAT_SVG='<svg viewBox="0 0 120 100"><g fill="#fff" stroke="#4a3d33" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"><path d="M34 30 Q17 36 18 58 Q19 78 36 76 Z"/><path d="M86 30 Q103 36 102 58 Q101 78 84 76 Z"/><ellipse cx="60" cy="50" rx="32" ry="29"/><ellipse cx="60" cy="64" rx="18" ry="13"/></g><circle cx="47" cy="45" r="3" fill="#4a3d33"/><circle cx="73" cy="45" r="3" fill="#4a3d33"/><ellipse cx="60" cy="58" rx="5.6" ry="4.2" fill="#4a3d33"/><g stroke="#4a3d33" stroke-width="2.6" fill="none" stroke-linecap="round"><path d="M60 62 v3"/><path d="M60 65 q-6 5 -11 0"/><path d="M60 65 q6 5 11 0"/></g></svg>';
 ['obcat1','obcat2','obcat3','obcat4','obcat5','obcat6','homecat','diarycat','tarotcat'].forEach(id=>{ const el=$(id); if(el) el.innerHTML=CAT_SVG; });
 
 function go(id){
@@ -433,7 +436,7 @@ function updateTabbar(cur){
   $(cur).appendChild(div);
 }
 function showTab(id){ go(id); if(id==='scr-today') renderToday(); if(id==='scr-diary') renderDiary(); if(id==='scr-more') renderMore(); if(id==='scr-home') renderHome(); }
-const STUBS=['은 다음 업데이트에서 열려냥 🐾','는 지금 열심히 만드는 중이야 🔨','는 조금만 기다려줘, 예쁘게 굽는 중 🎀'];
+const STUBS=['은 다음 업데이트에서 열려멍 🐾','는 지금 열심히 만드는 중이야 🔨','는 조금만 기다려줘, 예쁘게 굽는 중 🎀'];
 function stub(name){ const t=$('toast-global'); t.textContent='「'+name.replace(/^[^\s]+ /,'')+'」'+STUBS[hashN(name,STUBS.length)]; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1900); }
 function couponToast(){ setTimeout(()=>flash('toast-funnel'),600); }
 function flash(id){ const t=$(id); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400); }
@@ -583,7 +586,7 @@ function startHeroTimer(){ if(_heroTmr)clearInterval(_heroTmr); let t=86381;
 /* L3 무료 쇼츠 스트립 (가변보상 도파민) */
 const SHORTS=[
   ['🍟','오늘 뭐 먹지?',['마라탕 🥵','국밥 🍚','샐러드 🥗','치킨 🍗','파스타 🍝'],'spin'],
-  ['🐱','고양이 속마음',['집사, 오늘 좀 멋진데? 🐾','간식 어디감? 😾','네 곁이 제일 좋아 💜'],''],
+  ['🐱','강아지 속마음',['집사, 오늘 좀 멋진데? 🐾','간식 어디감? 😾','네 곁이 제일 좋아 💜'],''],
   ['🙆','YES or NO',['YES! 질러도 좋은 날 🙆','조금만 기다려 🙅','반반의 날 🤔'],'spin'],
   ['🎨','오늘 행운 컬러',['라벤더 💜','민트 🌿','코랄 🧡','아이보리 🤍'],''],
   ['🍀','행운 카드',['오늘은 귀인을 만날 운 🍀','작은 선물이 올 운 🎁','미뤄둔 연락이 올 운 📩'],'spin'],
@@ -595,7 +598,7 @@ function shortsHtml(){
 /* 쇼츠 결과 — 토스트로 흘려보내지 않고 제대로 된 결과 시트 + 보관함 저장 */
 const SHORT_DESC={
   '오늘 뭐 먹지?':['오늘 네 기운엔 이게 제일 잘 맞아. 고민할 시간에 그냥 이걸로 🍽️','속이 편한 쪽을 고르면 오후 컨디션이 달라져.'],
-  '고양이 속마음':['보리가 오늘 너한테 하고 싶은 말이야 🐾','오늘은 이 말이 유독 필요한 날 같아서.'],
+  '강아지 속마음':['보리가 오늘 너한테 하고 싶은 말이야 🐾','오늘은 이 말이 유독 필요한 날 같아서.'],
   'YES or NO':['오늘 흐름 기준의 답이야. 참고만 해 🙆','확신이 안 서면 하루 재워두는 것도 답이야.'],
   '오늘 행운 컬러':['오늘 이 색을 한 점만 지녀도 기운이 붙어 🎨','옷·소품·폰 배경 어디든 좋아.'],
   '행운 카드':['오늘 너에게 들어온 기운이야 🍀','작은 신호를 놓치지 마.'],
@@ -762,7 +765,7 @@ function tarotShuffle(){
   go('scr-tarot-draw');
   const deck=$('deck'), pick=$('pick3'), hint=$('draw-hint');
   deck.style.display=''; deck.classList.add('shuffling'); pick.style.display='none';
-  hint.textContent='카드를 섞는 중이다냥…';
+  hint.textContent='카드를 섞는 중이다멍…';
   setTimeout(()=>{
     deck.classList.remove('shuffling'); deck.style.display='none';
     hint.textContent='마음이 가는 카드를 한 장 골라봐 🐾';
@@ -814,7 +817,7 @@ function tarotDraw(){
     <div class="kw-row">${c.kw.map(k=>`<span class="kw">${k}</span>`).join('')}</div>
     <p class="rtext">${p1}</p>
     <p class="rtext">${p2}</p>
-    <div class="react-total">이 운세, 어땠냥? <b>${(90000+seed).toLocaleString()}명</b>이 반응했어요</div>
+    <div class="react-total">이 운세, 어땠멍? <b>${(90000+seed).toLocaleString()}명</b>이 반응했어요</div>
     <div class="react-row">
       ${[['💜','고마워'],['💪','힘난다'],['🍀','도움돼'],['😀','재밌어'],['🤔','아쉬워']].map(([e,l])=>
         `<button class="react-btn" onclick="this.classList.toggle('picked')"><span class="re">${e}</span>${l}</button>`).join('')}
@@ -920,7 +923,7 @@ function closeSent(){
   $('dlg-sent').classList.remove('show'); $('reply-area').style.display='none';
   const now=new Date(); const ls=S.letters;
   ls.push({ date:`${now.getFullYear()}. ${now.getMonth()+1}. ${now.getDate()}.`,
-    text:`답장 고마워!! 편지함에 네 글씨가 있으니까 기분이 좋다냥. 내일 아침 운세도 예쁘게 준비해둘게 🐾`, read:true });
+    text:`답장 고마워!! 편지함에 네 글씨가 있으니까 기분이 좋다멍. 내일 아침 운세도 예쁘게 준비해둘게 🐾`, read:true });
   S.letters=ls; renderLetters();
 }
 
@@ -1147,7 +1150,7 @@ function startLoading(){
   const MSGS=[...LOADING_MSGS.slice(0,3), ...own, LOADING_MSGS[LOADING_MSGS.length-1]];
   $('load-msg').textContent=MSGS[0];
   msgTimer=setInterval(()=>{ i++;
-    if(i>=MSGS.length){ clearInterval(msgTimer); $('btn-result').style.display='block'; $('load-msg').textContent='다 됐어! 네 리포트가 나왔다냥 ✨'; return; }
+    if(i>=MSGS.length){ clearInterval(msgTimer); $('btn-result').style.display='block'; $('load-msg').textContent='다 됐어! 네 리포트가 나왔다멍 ✨'; return; }
     $('load-msg').textContent=MSGS[i]; },1000);
 }
 function goResult(){ const p=S.box.find(x=>x.type==='report'); openReport(p); }
@@ -1210,7 +1213,7 @@ function openTodayFortune(){
     <div class="rtime" style="background:#fff;color:#3d3833">${warn('color')}</div>
     <div class="rtime" style="background:#bfe0f5;color:#1c4a66">${warn('place')}</div>
     <div class="rtime" style="background:#d8c9f5;color:#3b2b6e">👶 조심할 사람: ${warn('person')}</div></div>`);
-  cards.push(`<div class="big">🐱</div><h2>운세 풀이는 어땠냥?</h2>
+  cards.push(`<div class="big">🐱</div><h2>운세 풀이는 어땠멍?</h2>
     <div class="react-row" style="flex-wrap:wrap;justify-content:center;gap:8px">
       ${[['💜','고마워'],['💪','힘난다'],['🍀','도움돼'],['😀','재밌어'],['🤔','아쉬워']].map(([e,l])=>
         `<button class="react-btn" onclick="this.classList.toggle('picked')"><span class="re">${e}</span>${l}</button>`).join('')}
@@ -2034,7 +2037,7 @@ function buildChoeae(c){
      <p class="ctr">${type[0].includes('불꽃')||type[0].includes('밀당')?'둘 다 고집이 세지는 날엔 아무도 안 져. 그날은 서로의 팬으로 한 발 물러서기.':'둘 다 속마음을 늦게 여는 편이라, 현실에서 만났다면 썸이 아주 길었을 거야.'}</p>`,
     `<h2>🌙 전생의 우리는</h2><p class="ctr">${past}</p>`,
     `<div class="big">✨</div><h2>${month}월을 기억해</h2>
-     <p class="ctr">올해 ${month}월, ${who}의 기운이 네 사주에 가장 가깝게 스치는 달이야.<br>콘서트·팬미팅·컴백 — <span class="gold">덕질 총력전은 이 달</span>이 답이다냥 🐾</p>`
+     <p class="ctr">올해 ${month}월, ${who}의 기운이 네 사주에 가장 가깝게 스치는 달이야.<br>콘서트·팬미팅·컴백 — <span class="gold">덕질 총력전은 이 달</span>이 답이다멍 🐾</p>`
   ];
 }
 
