@@ -1,5 +1,5 @@
-const CACHE = 'catsaju-v1.0.0';
-const CORE = ['./', './index.html', './manifest.json',
+const CACHE = 'catsaju-v1.2.0';
+const CORE = ['./', './index.html', './intro.html', './manifest.json',
   './assets/app_v10.css', './assets/engine.js', './assets/data_v10.js',
   './icon-192.png', './icon-512.png'];
 

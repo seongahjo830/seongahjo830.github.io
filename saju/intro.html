@@ -1,0 +1,464 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>연애사주 · 결제 전 소개 (3종 전체보기)</title>
+<style>
+:root{
+  --bg:#fbf7f0;          /* 크림 종이 */
+  --paper:#ffffff;       /* 카드 */
+  --paper2:#faf6ff;      /* 옅은 보라 카드 */
+  --ink:#33294a;         /* 본문 */
+  --mut:#8a7fa3;         /* 흐린 글씨 */
+  --line:#ece4f4;        /* 옅은 선 */
+  --line2:#efe7dc;       /* 크림 선 */
+  --pur:#8158e0;         /* 보라 = 브랜드 */
+  --pur2:#a888f0;
+  --pursoft:#f1ebfd;
+  --gold:#dfa02a;
+  --goldsoft:#fbefcf;
+  --red:#e8607e;
+  --redsoft:#fde7ec;
+  --grn:#2fa877;
+  --grnsoft:#e0f5ec;
+  --blu:#4a90d9;
+}
+*{box-sizing:border-box;margin:0}
+body{background:#e7e0d3;font-family:'Pretendard',-apple-system,'Malgun Gothic',sans-serif;color:var(--ink);padding:16px 8px 60px;display:flex;flex-direction:column;align-items:center;line-height:1.62;-webkit-font-smoothing:antialiased}
+.phone{width:min(460px,100%);background:var(--bg);border-radius:28px;overflow:hidden;box-shadow:0 18px 55px rgba(80,60,120,.22);position:relative}
+
+/* 탭 */
+.tabs{display:flex;position:sticky;top:0;z-index:20;background:#fbf7f0f2;backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.tabs button{flex:1;background:none;border:none;color:var(--mut);font-family:inherit;font-weight:800;font-size:12.5px;padding:15px 4px;cursor:pointer;border-bottom:2.5px solid transparent;transition:.15s}
+.tabs button.on{color:var(--pur);border-bottom-color:var(--pur)}
+
+/* 히어로 */
+.hero{background:linear-gradient(180deg,#efe7fc 0%,#f7f0ff 55%,var(--bg) 100%);padding:28px 22px 24px;text-align:center;position:relative}
+.hero .author{display:inline-block;font-size:12px;color:var(--pur);font-weight:800;background:#fff;border:1px solid var(--line);border-radius:99px;padding:5px 13px;margin-bottom:12px;box-shadow:0 2px 8px rgba(129,88,224,.08)}
+.hero h1{font-size:24px;line-height:1.34;letter-spacing:-.5px;color:#2c2144}
+.hero .sub{font-size:13px;color:#6b6086;margin-top:10px;line-height:1.55}
+.stats{display:flex;margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 0;box-shadow:0 4px 14px rgba(129,88,224,.06)}
+.stats div{flex:1;font-size:11px;color:var(--mut);border-right:1px solid var(--line)}
+.stats div:last-child{border:none}
+.stats b{display:block;font-size:16px;color:var(--ink);margin-bottom:3px}
+.stats b.gold{color:var(--gold)}
+
+/* 섹션 */
+.sec{padding:22px 20px 2px}
+.secnum{display:inline-flex;align-items:center;gap:8px;margin-bottom:10px}
+.secnum .n{width:28px;height:28px;border-radius:9px;background:var(--pur);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:14px}
+.secnum .t{font-size:11px;font-weight:800;color:var(--pur);letter-spacing:.4px}
+.sec h2{font-size:19px;letter-spacing:-.3px;margin-bottom:5px;color:#2c2144}
+.sec .sd{font-size:13px;color:#6b6086;margin-bottom:14px;line-height:1.55}
+
+/* 체크 티저 */
+.teaser{background:var(--paper2);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin:16px 20px 0}
+.teaser .q{font-size:13.5px;color:#5a4c86;padding:5px 0;display:flex;gap:8px;align-items:flex-start}
+.teaser .q b{color:var(--pur);flex:none}
+.teaser .big{font-size:15.5px;font-weight:800;color:#b47d12;background:var(--goldsoft);border-radius:11px;padding:11px 13px;margin-top:12px;line-height:1.5}
+.chk{display:flex;gap:9px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:9px;font-size:14px}
+.chk .i{color:var(--pur);font-weight:900;flex:none}
+
+/* 개념 카드 (뜻풀이) */
+.concept{display:flex;gap:10px;margin-bottom:6px}
+.concept .cc{flex:1;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.concept .cc .em{font-size:26px}
+.concept .cc .tt{font-size:14px;font-weight:900;margin:6px 0 4px}
+.concept .cc .ds{font-size:12px;color:var(--mut);line-height:1.5}
+.concept .cc.pur{border-color:#e3d7fb;background:var(--paper2)}
+.concept .cc.red{border-color:#f6d6de;background:var(--redsoft)}
+.concept .cc.pur .tt{color:var(--pur)}
+.concept .cc.red .tt{color:var(--red)}
+
+/* 게이지 (가로 막대) */
+.gwrap{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px 17px;margin-bottom:12px;box-shadow:0 4px 14px rgba(129,88,224,.05)}
+.gwrap .gh{font-size:14px;font-weight:900;margin-bottom:14px;color:#2c2144}
+.gauge{margin:12px 0}
+.gauge .gl{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:6px}
+.gauge .gl .nm{font-weight:800;color:#4a3f66}
+.gauge .gl .gv{font-weight:900;font-size:15px}
+.gtrack{height:11px;background:#f0ecf6;border-radius:99px;overflow:hidden}
+.gfill{height:100%;border-radius:99px;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.gauge .cap{font-size:11.5px;color:var(--mut);margin-top:6px}
+.t-pur .gfill,.gfill.t-pur{background:linear-gradient(90deg,var(--pur),var(--pur2))}
+.t-gold .gfill,.gfill.t-gold{background:linear-gradient(90deg,#e6a52d,#f4c95d)}
+.t-red .gfill,.gfill.t-red{background:linear-gradient(90deg,#e8607e,#f28fa4)}
+.t-grn .gfill,.gfill.t-grn{background:linear-gradient(90deg,#2fa877,#5fd3a0)}
+.t-blu .gfill,.gfill.t-blu{background:linear-gradient(90deg,#4a90d9,#7cb5ec)}
+
+/* 원형 게이지 (종합 점수) */
+.ringwrap{display:flex;gap:15px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px 17px;margin-bottom:12px;box-shadow:0 5px 18px rgba(129,88,224,.07)}
+.ring{width:104px;height:104px;flex:none;border-radius:50%;display:grid;place-items:center}
+.ring i{width:78px;height:78px;background:var(--paper);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring .rn{font-size:27px;font-weight:900;line-height:1}
+.ring .ru{font-size:10.5px;color:var(--mut);margin-top:3px}
+.ringwrap .rx .rq{font-size:14.5px;font-weight:900;color:#2c2144;line-height:1.4;margin-bottom:5px}
+.ringwrap .rx .rd{font-size:12.5px;color:#6b6086;line-height:1.5}
+
+/* 오행 막대 */
+.elem{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px 17px;margin-bottom:12px}
+.elem .eh{font-size:14px;font-weight:900;margin-bottom:4px}
+.elem .ec{font-size:12px;color:var(--mut);margin-bottom:14px;line-height:1.5}
+.ebars{display:flex;align-items:flex-end;gap:9px;height:96px}
+.ebars .eb{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+.ebars .bar{width:64%;border-radius:7px 7px 0 0;min-height:5px;transition:height .9s cubic-bezier(.2,.8,.2,1)}
+.ebars .ev{font-size:11px;font-weight:900;margin-bottom:4px;color:#4a3f66}
+.ebars .el{font-size:12px;margin-top:7px;font-weight:800}
+. e-목 .bar{background:linear-gradient(180deg,#7fd3a0,#3fa877)} .e-목 .el{color:#2e9e6c}
+.e-화 .bar{background:linear-gradient(180deg,#f28fa4,#e8607e)} .e-화 .el{color:#e05a72}
+.e-토 .bar{background:linear-gradient(180deg,#f4c95d,#e0a52a)} .e-토 .el{color:#c68a15}
+.e-금 .bar{background:linear-gradient(180deg,#cfc9d8,#9a92ad)} .e-금 .el{color:#8a819c}
+.e-수 .bar{background:linear-gradient(180deg,#7cb5ec,#4a90d9)} .e-수 .el{color:#3f82cf}
+
+/* 타임라인 */
+.tl{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px 15px 14px;margin-bottom:12px}
+.tl .th{font-size:14px;font-weight:900;margin-bottom:4px}
+.tl .tc{font-size:12px;color:var(--mut);margin-bottom:16px;line-height:1.5}
+.tlrail{position:relative;padding-top:2px}
+.tlrail .rail{position:absolute;left:5%;right:5%;top:21px;height:3px;background:#eee6f6;border-radius:2px}
+.tlrail .pts{display:flex;position:relative}
+.tlrail .pt{flex:1;text-align:center;position:relative}
+.tlrail .wh{font-size:10.5px;color:var(--mut);height:16px}
+.tlrail .dot{width:15px;height:15px;border-radius:50%;background:#cdc3e6;margin:0 auto;border:3px solid #fff;box-shadow:0 0 0 1px #ddd2f0}
+.tlrail .lb{font-size:11px;font-weight:800;margin-top:7px;color:#5a4f74;line-height:1.35}
+.tlrail .pt.hot .dot{background:var(--gold);box-shadow:0 0 0 5px #f8e7b8}
+.tlrail .pt.hot .wh{color:#b9791a;font-weight:800}
+.tlrail .pt.hot .lb{color:#b9791a}
+
+/* 막대그래프 (관계·반응) */
+.bc{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px 15px 12px;margin-bottom:12px}
+.bc .bh{font-size:14px;font-weight:900;margin-bottom:2px}
+.bc .bcc{font-size:12px;color:var(--mut);margin-bottom:14px}
+.bcbars{display:flex;align-items:flex-end;gap:11px;height:118px}
+.bcbars .b{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+.bcbars .bar{width:74%;border-radius:8px 8px 0 0;min-height:6px;background:linear-gradient(180deg,var(--pur2),var(--pur));transition:height .9s cubic-bezier(.2,.8,.2,1)}
+.bcbars .bar.gold{background:linear-gradient(180deg,#f4c95d,#e0a52a)}
+.bcbars .bv{font-size:11.5px;font-weight:900;margin-bottom:5px;color:#4a3f66}
+.bcbars .bl{font-size:11px;color:var(--mut);margin-top:7px;text-align:center;line-height:1.3}
+
+/* 프로필 비교 */
+.prof{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:15px 16px;margin-bottom:11px}
+.prof .ph{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.prof .ph .em{font-size:20px}
+.prof .ph .nm{font-size:15px;font-weight:900}
+.prof.pur{border-color:#e3d7fb} .prof.pur .nm{color:var(--pur)}
+.prof.red{border-color:#f6d6de} .prof.red .nm{color:var(--red)}
+.prof .match{display:flex;align-items:center;gap:8px;margin:6px 0 12px}
+.prof .match .mt{flex:1;height:9px;background:#f0ecf6;border-radius:99px;overflow:hidden}
+.prof .match .mf{height:100%;border-radius:99px}
+.prof.pur .match .mf{background:linear-gradient(90deg,var(--pur),var(--pur2))}
+.prof.red .match .mf{background:linear-gradient(90deg,var(--red),#f28fa4)}
+.prof .match .mv{font-size:12px;font-weight:900;flex:none}
+.prof.pur .match .mv{color:var(--pur)} .prof.red .match .mv{color:var(--red)}
+
+/* 카드 kv */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:11px}
+.card .ct{font-size:14.5px;font-weight:900;color:var(--pur);margin-bottom:9px}
+.card.red .ct{color:var(--red)}
+.kv{font-size:13.5px;padding:5px 0;border-bottom:1px dashed var(--line)}
+.kv:last-child{border:none}
+.kv b{color:var(--mut);font-weight:700;display:inline-block;min-width:80px}
+
+/* 말풍선 */
+.talk{background:var(--pursoft);color:#4a3d78;border-radius:14px;padding:12px 15px;font-size:13.5px;font-weight:600;margin-bottom:10px;line-height:1.55}
+.talk.q{background:#f4f0ea;color:#5a5140}
+
+/* 4단계 진단 */
+.diag{background:var(--paper);border:1.5px solid #e3d7fb;border-radius:16px;padding:15px 16px;margin-bottom:12px}
+.diag .stg{display:inline-block;background:var(--pur);color:#fff;font-size:11px;font-weight:900;padding:4px 13px;border-radius:99px;margin-bottom:11px}
+.diag .row{font-size:13px;padding:7px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between;gap:8px}
+.diag .row:last-of-type{border:none}
+.diag .row .tag{font-size:12px;font-weight:800;flex:none;color:var(--grn)}
+.diag .pct{margin-top:12px}
+.diag .pct .pl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.diag .pct .pl .n{font-size:13px;font-weight:800;color:#4a3f66}
+.diag .pct .pl .v{font-size:20px;font-weight:900;color:var(--pur)}
+.diag .pct .gtrack{height:10px}
+.diag .pct .q{font-size:13px;color:#b47d12;font-weight:800;margin:9px 0 3px}
+.diag .pct .d{font-size:12.5px;color:#6b6086;line-height:1.5}
+
+/* best/worst */
+.sc{border-radius:12px;padding:12px 14px;margin-bottom:9px;font-size:13.5px;display:flex;gap:9px;align-items:flex-start}
+.sc.best{background:var(--grnsoft);border:1px solid #bce6d3}
+.sc.worst{background:var(--redsoft);border:1px solid #f4cdd6}
+.sc .lb{font-weight:900;flex:none;font-size:11px;padding:2px 8px;border-radius:6px}
+.sc.best .lb{color:#fff;background:var(--grn)}
+.sc.worst .lb{color:#fff;background:var(--red)}
+
+.note-b{background:var(--goldsoft);border:1px solid #f0dca0;border-radius:12px;padding:13px 15px;text-align:center;font-size:13.5px;margin:6px 0 12px;color:#8a6512;line-height:1.55}
+.note-b b{color:#b47d12}
+.divider{text-align:center;color:var(--mut);font-size:13px;padding:18px 20px 4px}
+.divider b{color:var(--pur);font-size:16px;display:block;margin-top:6px}
+
+.cta-wrap{position:sticky;bottom:0;background:#fbf7f0f2;backdrop-filter:blur(8px);padding:14px 18px;border-top:1px solid var(--line)}
+.cta{display:block;width:100%;background:linear-gradient(135deg,#8158e0,#a179f0);color:#fff;border:none;border-radius:15px;padding:16px;font-size:16px;font-weight:900;font-family:inherit;cursor:pointer;text-align:center;box-shadow:0 8px 22px rgba(129,88,224,.32)}
+.cta small{display:block;font-weight:700;font-size:11.5px;color:#f0e8ff;margin-top:3px}
+.pricebar{text-align:center;font-size:12px;color:var(--mut);padding:12px}
+</style>
+
+<div class="phone">
+  <div class="tabs" id="tabs"></div>
+  <div id="wrap"></div>
+  <div class="cta-wrap"><button class="cta" onclick="goApp()">🐾 내 사주로 지금 확인하기<small id="cta-price"></small></button></div>
+</div>
+
+<script>
+const REPORTS=[
+
+/* ─────────── 1. 재회 ─────────── */
+{ id:'reunion', tab:'🔮 재회', price:'990젤리 (≈₩19,800)',
+  author:'천호 연우 사주', title:'떠난 그 사람,<br>다시 붙잡을 수 있을까?',
+  sub:'재회는 용기가 아니라 \'타이밍\'입니다 — 지금이 그 타이밍인지, 사주로 짚어 드려요',
+  stats:[['재회 상담','4,639건'],['재회 성공','982건'],['성공 핵심','타이밍']],
+  teaser:{ lines:[
+     '그 사람이 지금 나를 어떻게 생각하는지',
+     '닫힌 그 사람 마음을 다시 여는 방법은 뭔지',
+     '먼저 연락해도 되는지, 언제가 그 타이밍인지'],
+    big:'그 사람 마음속에 아직 남은 내 자리 — 사라지기 전에 확인하세요.' },
+  blocks:[
+   {t:'chks'},
+   {ring:[75,'재회 가능성','종합 진단 결과','t-pur'],
+     rq:'끊어진 인연은 아니지만, 지금이 가장 조심할 때',
+     rd:'아래 4단계 진단으로 이 75%가 어떻게 나왔는지 하나씩 보여드려요.'},
+   {gtitle:'📡 지금 그 사람 신호 3종',
+     gauges:[
+      ['그 사람의 미련 지수',68,'t-pur','아직 나를 완전히 지우지 못했어요'],
+      ['재회 타이밍 지수',54,'t-gold','문이 열려 있지만 오래 열려 있진 않아요'],
+      ['내 조급함 위험도',72,'t-red','지금 연락하면 오히려 문을 닫게 됩니다'],
+     ]},
+   {t:'talks', items:[
+     ['q','(이별 중, 20대) 상대가 헤어지자 했는데 자꾸 연락이 와요.'],
+     ['a','❌ 그 연락, 재회 신호 아니에요. 미련 때문에 흔드는 거예요. 오히려 9월에 더 좋은 사람이 들어옵니다.'],
+     ['q','(이별 후 3개월, 30대) 전 남친 생각만 나요. 연락해도 될까요?'],
+     ['a','⭕ 지금이 딱 타이밍. 이번 달 넘기면 마음이 완전히 닫혀요. 근데 먼저 연락하면 안 돼요…'],
+   ]},
+   {sec:1, tag:'STEP 1', h:'우리 둘의 연애 방식·성향', sd:'나는 왜 못 잊는지, 그 사람은 왜 연락을 못 끊는지 — 반복되는 패턴이 사주에 나와 있어요.',
+     cards:[
+      ['나의 연애 방식 🙋‍♀️',[['유형','집착형 · 감정 과몰입'],['방식','감정에 올인, 상대에게 맞춰줌'],['표현','숨기지 못하고 바로 드러냄'],['조심할 것','먼저 연락 · 읽씹 확인 · SNS 염탐']]],
+      ['그 사람 연애 방식 🧑',[['유형','차단형 · 감정 셧다운'],['방식','말보다 행동으로 보여줌'],['표현','드러내지 않고 혼자 삭힘'],['조심할 것','감정적 연락 · 해명 · 매달리기']]],
+     ]},
+   {etitle:'🌿 우리 둘의 오행 궁합', ecap:'내 사주엔 \'물(水)\' 기운이 몰려 감정이 넘치고, 그 사람은 \'쇠(金)\'가 강해 감정을 눌러요. 정반대라 끌렸고, 정반대라 어긋났어요.',
+     elem:[['목',2,''],['화',1,''],['토',1,''],['금',1,''],['수',4,'']]},
+   {sec:2, tag:'STEP 2', h:'그 사람의 이별 방식', sd:'이별할 때의 태도·심리·행동 패턴, 마지막에 남긴 말까지 꿰뚫어 알려드려요 🎯',
+     talk:['a','전남친 속마음: \'진짜 보고 싶다… 연락해 볼까?\''],
+     cards:[
+      ['그 사람의 이별 특징',[['패턴','연락 서서히 ↓ · 잠수 후 통보'],['태도','차갑게 돌변 · 일방적 통보'],['심리','미련은 있지만 자존심이 먼저'],['남긴 말','"우리 여기까지인 것 같아"']]],
+     ]},
+   {sec:3, tag:'STEP 3', h:'이별 전후 상황 실시간 진단', sd:'4단계로 냉정하게 뜯어봐 \'다시 붙을 수 있는 이별\'인지 짚어드려요. 단계마다 재회 가능성 %가 갱신됩니다.',
+     diags:[
+      ['1차 · 인연의 깊이',[['만난 기간 2년 3개월',''],['헤어진 지 3개월',''],['누적 이별 1회','']],23,'인연은 있지만, 감정이 가장 예민한 시기','지금 잘못하면 가능성이 0으로 떨어집니다.'],
+      ['2차 · 이별의 명분',[['헤어지자 한 사람: 그 사람','재회 가능'],['이유: 승진으로 바빠짐','상황 문제'],['멘트: "잘해줄 자신 없어"','미련 있음']],62,'애정이 식어서 헤어진 게 아닙니다','상황이 풀리면 돌아오는 케이스입니다.'],
+      ['3차 · 말 못한 진짜 이유',[['2주 전부터 연락 뜸','충동 이별 X'],['"각자 좀 쉬자"',''],['"네가 싫은 게 아니야"','감정 남음']],46,'진짜 이유는 보이지만, 변수가 있어요','쌓인 감정 소진이 있어 기다림만으론 부족.'],
+      ['4차 · 이별 후 연락',[['전화 3번 "너 없이 못 살겠어"','감점'],['인스타 염탐 + 좋아요','감점'],['새벽에 상대가 먼저 연락','긍정적']],57,'만회 가능, 하지만 연락은 멈추세요','지금부터 연락을 끊어야 상대에게 여유가 생겨요.'],
+     ]},
+   {sec:4, tag:'STEP 4', h:'재회를 결정짓는 행동 지침', sd:'지금부터 어떻게 하느냐에 따라 위 가능성이 180도 달라집니다.',
+     scen:[
+      ['best','연락 완전히 끊기 — 경계심 풀리는 데 최소 3주'],
+      ['best','이별 암시 SNS 멈추기 — 올릴수록 "아직 날 생각하네"'],
+      ['best','일상 회복 모습만 스토리로 은근히 보여주기'],
+      ['worst','감정 장문 문자 — 읽는 순간 차단/거절로'],
+      ['worst','"한 번만 만나자" 반복 — 마음 더 단단히 닫힘'],
+      ['worst','지인 통해 안부 떠보기 — 소문 나면 급하락'],
+     ],
+     note:'💡 재결합 후 팁: "그때 왜 그랬어?"로 이별을 떠올리게 하면 다시 틀어질 수 있어요. ⏰ 타임 리미트: 지금부터 3개월.'},
+   {final:[75,'결국은 돌고 돌아 다시 만날 사이','잠시 각자의 시간이 필요할 뿐, 끊어질 인연이 아닙니다.']},
+  ] },
+
+/* ─────────── 2. 평생인연 ─────────── */
+{ id:'lifelong', tab:'💞 평생인연', price:'880젤리 (≈₩17,600)',
+  author:'붉은 실 사주타로', title:'이 사람, 평생 갈까<br>잠깐 스칠까?',
+  sub:'\'시절인연\'은 한 시기만 맞는 사람, \'평생인연\'은 끝까지 갈 사람 — 지금 그 사람은 어느 쪽일까요?',
+  stats:[['만족도','⭐4.7'],['이용자','5,000+'],['분량','약 6,000자']],
+  teaser:{ lines:[
+     '지금 만나는 이 사람, 정말 끝까지 갈 수 있는지',
+     '헤어진 그 사람이 놓쳐선 안 될 인연이었는지',
+     '내 평생인연은 언제쯤, 어떤 사람으로 오는지'],
+    big:'스쳐 갈 사람에 매달리다 진짜를 놓치지 않도록, 미리 알려드려요.' },
+  blocks:[
+   {sec:1, tag:'개념', h:'먼저, 두 인연의 뜻', sd:'헷갈리는 이 두 단어부터 쉽게 풀고 시작할게요.',
+     concept:[
+      ['🌱','시절인연','tone-red','한 계절처럼 그때만 맞는 사람. 좋았지만 때가 지나면 자연히 멀어져요.'],
+      ['🔗','평생인연','tone-pur','시간이 지날수록 더 단단해지는 사람. 놓치면 평생 다시 안 와요.'],
+     ]},
+   {ring:[38,'평생인연 지수','지금 그 사람 판별 결과','t-red'],
+     rq:'아쉽지만 지금 그 사람은 \'시절인연\'에 가까워요',
+     rd:'끌림은 강하지만 오래갈 궁합은 아니에요. 왜 그런지 아래에서 항목별로 보여드려요.'},
+   {gtitle:'💗 이 관계, 항목별 점수',
+     gauges:[
+      ['설렘·끌림',82,'t-red','시작은 강하게 끌렸어요'],
+      ['가치관·생활 합',34,'t-gold','오래 붙어 있을수록 부딪히는 부분'],
+      ['갈등 회복력',29,'t-pur','한번 틀어지면 되돌리기 어려운 조합'],
+     ]},
+   {sec:2, tag:'프로필', h:'평생인연 vs 시절인연, 실제 모습', sd:'내 평생 짝은 이렇게 오고, 스칠 사람은 이렇게 와요. 매칭도까지 보여드려요.',
+     profiles:[
+      ['🟣','평생인연은 이렇게 옵니다','pur',88,[
+        ['나이차','얼굴만 봐도 웃음 나는 2살 연하'],
+        ['성격','밀당 없이 있는 그대로 사랑하는 사람'],
+        ['취향','여행·소소한 일상 코드가 맞음'],
+        ['만나면','밖의 스트레스가 대화 몇 마디에 녹음']]],
+      ['🔴','시절인연은 이렇게 옵니다','red',41,[
+        ['나이차','부딪히면 불같이 싸우는 동갑'],
+        ['성격','순해 보여도 고집·자기주장 강함'],
+        ['끌리는 점','당당한 모습에 처음엔 반함'],
+        ['만나면','점점 내가 끌려다니고 자신감 ↓']]],
+     ]},
+   {timeline:{title:'📅 내 평생인연이 오는 시기', cap:'앞으로 3년, 인연의 문이 크게 열리는 때예요. ★가 가장 강하게 들어오는 시기.',
+     points:[['봄 인연','27세 봄',false],['여름 스침','27세 여름',false],['★ 운명기','28세 가을',true],['가을 재회','29세',false]]}},
+   {etitle:'🌿 내 애정운 오행 밸런스', ecap:'\'불(火)\' 기운이 몰려 뜨겁게 시작하지만 금방 식기 쉬워요. 부족한 \'물(水)\'을 채워주는 차분한 사람이 평생인연입니다.',
+     elem:[['목',2,''],['화',4,''],['토',2,''],['금',1,''],['수',1,'']]},
+   {sec:3, tag:'행동', h:'평생인연 잡는 법 · 놓치는 법', sd:'그 인연이 스쳐 갈지 평생이 될지는, 지금의 준비에 달렸어요.',
+     scen:[
+      ['best','\'꾸미지 않아도 편한 사람\'이 신호 — 그 편안함을 흘려보내지 마세요'],
+      ['best','28세 가을, 마음을 여는 쪽으로 움직이기'],
+      ['worst','지금의 시절인연에 매달리다 평생인연의 때를 놓치기'],
+     ],
+     note:'🎁 Bonus: 결제 시 내 평생인연을 실사 초상화로 미리 만나볼 수 있어요.'},
+   {final:[71,'조급함만 내려놓으면, 평생인연은 정해져 있어요','지금 스치는 사람이 아니라, 곧 올 그 사람을 기다릴 때입니다.']},
+  ] },
+
+/* ─────────── 3. 연애·결혼 ─────────── */
+{ id:'love2marry', tab:'💖 연애·결혼', price:'990젤리 (≈₩19,800)',
+  author:'독산언니', title:'이 사랑, 연애로 끝날까<br>결혼까지 갈까?',
+  sub:'타고난 애정운을 깊이 풀어, \'연애만 할 상대\'와 \'결혼까지 갈 상대\'를 갈라 드려요',
+  stats:[['만족도','⭐4.7'],['이용자','5만+'],['분량','약 4,800자']],
+  teaser:{ lines:[
+     '지독하게 엮일 내 연애 상대는 어떤 사람인지',
+     '결혼 수가 가장 높게 들어온 시기는 언제인지',
+     '평생 갈 결혼 상대 vs 절대 안 되는 상대는 누구인지'],
+    big:'운명의 상대, 스쳐 지나가기 전에 딱 알아보게 해드릴게요 💗' },
+  blocks:[
+   {ring:[73,'결혼운 지수','타고난 애정운 종합','t-pur'],
+     rq:'결혼운은 평균보다 좋은 편이에요',
+     rd:'다만 \'연애만 할 상대\'에게 시간을 오래 쓰면 그 시기를 놓쳐요. 아래에서 갈라 드려요.'},
+   {gtitle:'💞 내 애정운 3종 진단',
+     gauges:[
+      ['연애운 (끌림·시작)',86,'t-red','연애 자체는 쉽게, 자주 시작돼요'],
+      ['결혼운 (안착·지속)',73,'t-pur','제대로 만나면 결혼까지 잘 가요'],
+      ['궁합 안목 (상대 보는 눈)',48,'t-gold','좋은 사람을 자꾸 놓치는 패턴이 있어요'],
+     ]},
+   {sec:1, tag:'STEP 1', h:'연애 상대 vs 결혼 상대', sd:'같은 사랑이라도 연애로 끝날 인연과 결혼까지 갈 인연은 완전히 달라요. 매칭도까지 봅니다.',
+     profiles:[
+      ['🩷','연애만 할 상대','red',52,[
+        ['시기·조건','25/03 · 연하 · IT개발자'],
+        ['MBTI','ISTP — 언제나 내 편'],
+        ['끌림','나와 다른 활동적인 성향'],
+        ['결말','뜨겁게 만나 싸우다 헤어질 인연']]],
+      ['💍','결혼까지 갈 상대','pur',91,[
+        ['시기·조건','26/08 · 연상 · 은행원'],
+        ['MBTI','ISFJ — 순수하고 성실'],
+        ['성격','섬세하고 배려심 많음'],
+        ['결말','만날수록 더 좋아지는 상대']]],
+     ]},
+   {timeline:{title:'📅 내 결혼 수가 들어오는 시기', cap:'결혼 가능성이 높게 들어오는 시기예요. ★가 가장 강한 \'결혼 골든타임\'.',
+     points:[['만남운','26세',false],['진지한 인연','27세',false],['★ 결혼기','28세',true],['안정기','29세',false]]}},
+   {sec:2, tag:'STEP 2', h:'내 애정운 심층 풀이', sd:'타고난 성향부터 결혼 시기, 피해야 할 상대까지 하나씩.',
+     talks:[
+      ['a','타고난 연애 성향: "시간이 지날수록 상대에게 깊이 빠져 몰입하는 스타일이구나."'],
+      ['a','🍀 잘 맞는 상대: "ISTP, 내 편일 때 가장 든든한 사람이겠다."'],
+      ['a','🚫 절대 안 되는 상대: "만나면 애써도 안 풀려 서로 상처만 남을 거야."'],
+      ['a','💍 결혼 시기: "결혼운은 평균 이상. 27~29세쯤이 가장 좋은 때."'],
+     ]},
+   {etitle:'🌿 내 사랑 에너지 밸런스', ecap:'\'물(水)\' 기운이 많아 감정이 깊고 정이 많아요. 부족한 \'흙(土)\'의 안정감을 채워주는 든든한 상대가 결혼 상대입니다.',
+     elem:[['목',1,''],['화',2,''],['토',1,''],['금',2,''],['수',4,'']]},
+   {sec:3, tag:'STEP 3', h:'내 매력 극대화 + AI 초상화', sd:'',
+     note:'👀 운명의 연애 상대·결혼 상대를 AI 초상화로 미리 만나보고, 💙 "이 점을 무기로 삼으면 상대도 네 진심을 알아줄 거야."'},
+   {final:[78,'제대로 된 사람만 알아보면, 결혼까지 잘 가는 사주','연애를 못 하는 게 아니라, 결혼 상대를 고르는 눈만 키우면 돼요.']},
+  ] },
+];
+
+/* ───────── 렌더 ───────── */
+const RC={ 't-pur':'#8158e0','t-gold':'#e0a52a','t-red':'#e8607e','t-grn':'#2fa877','t-blu':'#4a90d9' };
+const EMAX=5;
+const tabsEl=document.getElementById('tabs'), wrapEl=document.getElementById('wrap');
+tabsEl.innerHTML=REPORTS.map((r,i)=>`<button class="${i===0?'on':''}" onclick="showRep(${i})">${r.tab}</button>`).join('');
+let CUR=REPORTS[0];
+
+function gauge([nm,pct,tone,cap]){
+  return `<div class="gauge ${tone}"><div class="gl"><span class="nm">${nm}</span><span class="gv" style="color:${RC[tone]}">${pct}%</span></div>
+  <div class="gtrack"><div class="gfill ${tone}" style="width:${pct}%"></div></div>${cap?`<div class="cap">${cap}</div>`:''}</div>`;
+}
+function ring(b){
+  const [pct,label,sub,tone]=b.ring, c=RC[tone];
+  return `<div class="ringwrap"><div class="ring" style="background:conic-gradient(${c} ${pct*3.6}deg,#efe7f4 0)">
+    <i><span class="rn" style="color:${c}">${pct}%</span><span class="ru">${label}</span></i></div>
+    <div class="rx"><div class="rd" style="color:${c};font-weight:800;font-size:11px;margin-bottom:6px">${sub}</div>
+    <div class="rq">${b.rq}</div><div class="rd">${b.rd}</div></div></div>`;
+}
+function elemBlock(b){
+  return `<div class="elem"><div class="eh">${b.etitle}</div><div class="ec">${b.ecap}</div>
+   <div class="ebars">${b.elem.map(([n,c])=>`<div class="eb e-${n}"><span class="ev">${c}</span>
+     <div class="bar" style="height:${Math.round(c/EMAX*100)}%"></div><span class="el">${n}</span></div>`).join('')}</div></div>`;
+}
+function timeline(t){
+  return `<div class="tl"><div class="th">${t.title}</div><div class="tc">${t.cap}</div>
+   <div class="tlrail"><div class="rail"></div><div class="pts">${t.points.map(([lb,wh,hot])=>
+     `<div class="pt ${hot?'hot':''}"><div class="wh">${wh}</div><div class="dot"></div><div class="lb">${lb}</div></div>`).join('')}</div></div></div>`;
+}
+function profiles(list){
+  return list.map(([em,title,tone,match,rows])=>`<div class="prof ${tone}">
+    <div class="ph"><span class="em">${em}</span><span class="nm">${title}</span></div>
+    <div class="match"><span class="mt"><span class="mf" style="width:${match}%"></span></span><span class="mv">나와 ${match}%</span></div>
+    ${rows.map(([k,v])=>`<div class="kv"><b>${k}</b> ${v}</div>`).join('')}</div>`).join('');
+}
+function concept(list){
+  return `<div class="concept">${list.map(([em,tt,_,ds],i)=>`<div class="cc ${i===0?'red':'pur'}">
+    <div class="em">${em}</div><div class="tt">${tt}</div><div class="ds">${ds}</div></div>`).join('')}</div>`;
+}
+
+function renderBlock(b){
+  let h='';
+  if(b.t==='chks'){ h+=`<div style="padding:0 20px">`+CUR.teaser.lines.map(l=>`<div class="chk"><span class="i">✓</span>${l}</div>`).join('')+`</div>`; }
+  if(b.t==='talks'){ h+=`<div class="sec">`+b.items.map(([k,v])=>`<div class="talk ${k}">${v}</div>`).join('')+`</div>`; }
+  if(b.ring){ h+=`<div class="sec" style="padding-top:6px">`+ring(b)+`</div>`; }
+  if(b.gauges){ h+=`<div class="sec" style="padding-top:6px"><div class="gwrap"><div class="gh">${b.gtitle}</div>`+b.gauges.map(gauge).join('')+`</div></div>`; }
+  if(b.elem){ h+=`<div class="sec" style="padding-top:6px">`+elemBlock(b)+`</div>`; }
+  if(b.timeline){ h+=`<div class="sec" style="padding-top:6px">`+timeline(b.timeline)+`</div>`; }
+  if(b.divider){ h+=`<div class="divider">${b.divider[0]}<b>${b.divider[1]}</b></div>`; }
+  if(b.sec!=null){
+    h+=`<div class="sec"><div class="secnum"><span class="n">${b.sec}</span>${b.tag?`<span class="t">${b.tag}</span>`:''}</div><h2>${b.h}</h2>${b.sd?`<div class="sd">${b.sd}</div>`:''}`;
+    if(b.concept) h+=concept(b.concept);
+    if(b.talk) h+=`<div class="talk ${b.talk[0]}">${b.talk[1]}</div>`;
+    if(b.profiles) h+=profiles(b.profiles);
+    if(b.cards) h+=b.cards.map(([ct,kvs],i)=>`<div class="card ${i===1&&CUR.id==='reunion'?'red':''}"><div class="ct">${ct}</div>${kvs.map(([k,v])=>`<div class="kv"><b>${k}</b> ${v}</div>`).join('')}</div>`).join('');
+    if(b.talks) h+=b.talks.map(([k,v])=>`<div class="talk ${k}">${v}</div>`).join('');
+    if(b.diags) h+=b.diags.map(([stg,rows,pct,q,d])=>`<div class="diag"><span class="stg">${stg}</span>${rows.map(([r,tag])=>`<div class="row"><span>${r}</span>${tag?`<span class="tag">${tag}</span>`:''}</div>`).join('')}<div class="pct"><div class="pl"><span class="n">재회 가능성</span><span class="v">${pct}%</span></div><div class="gtrack"><div class="gfill t-pur" style="width:${pct}%"></div></div><div class="q">"${q}"</div><div class="d">${d}</div></div></div>`).join('');
+    if(b.scen) h+=b.scen.map(([k,v])=>`<div class="sc ${k}"><span class="lb">${k==='best'?'BEST':'WORST'}</span><span>${v}</span></div>`).join('');
+    if(b.note) h+=`<div class="note-b">${b.note}</div>`;
+    h+=`</div>`;
+  }
+  if(b.note && b.sec==null){ h+=`<div class="sec" style="padding-top:6px"><div class="note-b">${b.note}</div></div>`; }
+  if(b.final){ const c=RC['t-gold'];
+    h+=`<div class="sec" style="padding-top:6px"><div class="ringwrap" style="border-color:#f0dca0;background:var(--goldsoft)">
+     <div class="ring" style="background:conic-gradient(${c} ${b.final[0]*3.6}deg,#f3e6c4 0)"><i style="background:var(--goldsoft)"><span class="rn" style="color:${c}">${b.final[0]}%</span><span class="ru">최종 결론</span></i></div>
+     <div class="rx"><div class="rq" style="color:#8a6512">${b.final[1]}</div><div class="rd" style="color:#8a6512">${b.final[2]}</div></div></div></div>`; }
+  return h;
+}
+function showRep(i){
+  CUR=REPORTS[i];
+  [...tabsEl.children].forEach((b,j)=>b.classList.toggle('on',j===i));
+  const r=CUR;
+  let h=`<div class="hero"><div class="author">🔮 ${r.author}</div><h1>${r.title}</h1><div class="sub">${r.sub}</div>
+    <div class="stats">${r.stats.map(([k,v])=>`<div><b class="${v.includes('건')||v.includes('타이밍')?'gold':''}">${v}</b>${k}</div>`).join('')}</div></div>`;
+  h+=`<div class="teaser">${r.teaser.lines.map(l=>`<div class="q"><b>✓</b>${l}</div>`).join('')}<div class="big">${r.teaser.big}</div></div>`;
+  h+=r.blocks.map(renderBlock).join('');
+  h+=`<div class="pricebar">이 소개는 결제 전 전체 미리보기예요 · 가격 ${r.price}</div>`;
+  wrapEl.innerHTML=h;
+  document.getElementById('cta-price').textContent=r.price;
+  // 게이지 채우기 애니메이션
+  requestAnimationFrame(()=>{ wrapEl.querySelectorAll('.gfill,.mf,.ebars .bar').forEach(el=>{const w=el.style.width,ht=el.style.height; if(w){el.style.width='0';requestAnimationFrame(()=>el.style.width=w);} if(ht){el.style.height='0';requestAnimationFrame(()=>el.style.height=ht);} }); });
+}
+/* 홈에서 넘어올 때 #reunion / #lifelong / #love2marry 로 해당 탭을 바로 연다 */
+function openFromHash(){
+  const id=(location.hash||'').replace('#','');
+  const i=REPORTS.findIndex(r=>r.id===id);
+  showRep(i>=0?i:0);
+}
+window.addEventListener('hashchange',openFromHash);
+
+/* CTA → 실제 앱(ver10)의 해당 상품 퍼널로 이어짐 (alert 대신 진짜 결과까지) */
+/* 08-02: love2marry가 엉뚱한 marriage(절대결혼)로 가던 것을 신설 lovemarry 상품으로 교정 */
+const APP_PRODUCT={ reunion:'golden', lifelong:'future10', love2marry:'lovemarry' };
+function goApp(){
+  const key=APP_PRODUCT[CUR.id]||'golden';
+  location.href='./index.html#p='+key;
+}
+openFromHash();
+</script>

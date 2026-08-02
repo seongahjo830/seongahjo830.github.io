@@ -288,10 +288,10 @@ button:active{transform:scale(.955)}
 .volume{text-align:center;font-size:14.5px;color:var(--ink);line-height:1.6;padding:14px 24px}
 .volume b{background:linear-gradient(transparent 62%, #e5dbff 62%)}
 .samples{display:flex;gap:10px;overflow-x:auto;padding:8px 18px 14px}
-.sample{flex:none;width:118px;height:196px;border-radius:14px;background:linear-gradient(170deg,#3b2b28,#241a18);color:#e8ddd4;padding:12px 10px;font-size:9.5px;line-height:1.6}
-.sample .s-head{font-size:8.5px;color:#a99a90;padding-bottom:6px}
-.sample .s-blur{filter:blur(3.5px);user-select:none}
-.sample .s-clear{font-size:10.5px;font-weight:700;padding-bottom:5px}
+.samples .sample{flex:none;width:118px;height:196px;border-radius:14px;background:linear-gradient(170deg,#3b2b28,#241a18);color:#e8ddd4;padding:12px 10px;font-size:9.5px;line-height:1.6}
+.samples .sample .s-head{font-size:8.5px;color:#a99a90;padding-bottom:6px}
+.samples .sample .s-blur{filter:blur(3.5px);user-select:none}
+.samples .sample .s-clear{font-size:10.5px;font-weight:700;padding-bottom:5px}
 .react{background:#fff;border-radius:18px;margin:6px 18px 12px;padding:16px 18px;box-shadow:0 3px 10px rgba(0,0,0,.05)}
 .react h3{font-size:14.5px;color:var(--ink);padding-bottom:4px}
 .react p{font-size:12.5px;color:var(--sub);padding-bottom:10px}
@@ -565,10 +565,10 @@ button:active{transform:scale(.955)}
 .rp-chap span.on{background:#e8a33d;color:#1c2338}
 
 /* ═══ 결제 전 샘플 미리보기 (형태는 보여주고 내용은 블러) ═══ */
-.sample{margin:22px 16px 6px}
-.sample h3{font-size:16px;font-weight:900;color:var(--ink)}
-.sample .sp-sub{font-size:12.5px;color:var(--sub);margin:5px 0 12px;line-height:1.55}
-.sample .sp-sub b{color:var(--purple)}
+.sp-wrap{margin:22px 16px 6px}
+.sp-wrap h3{font-size:16px;font-weight:900;color:var(--ink)}
+.sp-wrap .sp-sub{font-size:12.5px;color:var(--sub);margin:5px 0 12px;line-height:1.55}
+.sp-wrap .sp-sub b{color:var(--purple)}
 .sp-strip{display:flex;gap:11px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
 .sp-strip::-webkit-scrollbar{height:0}
 .sp-card{flex:none;width:216px;scroll-snap-align:start;background:linear-gradient(175deg,#232c47,#151b2c);border-radius:16px;padding:14px 12px;position:relative;overflow:hidden;box-shadow:0 6px 18px rgba(21,27,44,.3)}
@@ -605,3 +605,13 @@ button:active{transform:scale(.955)}
 .quick-grid .ql{font-size:11.5px;font-weight:700;color:var(--ink);letter-spacing:-.4px;white-space:nowrap}
 .quick-grid .qi .noti{position:absolute;top:-3px;right:-5px;background:#e2574c;color:#fff;
   font-size:9px;font-weight:800;border-radius:10px;padding:1px 5px;line-height:1.5}
+
+/* ═══ 08-02 · 준비중(스텁) 항목 비활성 디자인 — 클릭하면 안내 토스트만 ═══ */
+.c-card.c-stub{opacity:.55;background:#f2efe8;border-style:dashed;border-color:#d8d0c0;box-shadow:none;filter:grayscale(.35)}
+.c-card.c-stub .ct{color:#8a8378}
+.c-card.c-stub:active{transform:none}
+.badge.b-wip{background:#e5ded0;color:#8a8378;border:1px dashed #c5bcaa}
+.menu button.stub-off{opacity:.5;background:#f4f1ea}
+.menu button.stub-off .ar{opacity:.4}
+.wip-tag{font-size:10.5px;color:#a09884;border:1px dashed #cfc6b2;border-radius:8px;padding:1.5px 7px;margin-left:8px;vertical-align:1px}
+.jf-row .get.stub-get{opacity:.5;background:#e5ded0;color:#8a8378}
