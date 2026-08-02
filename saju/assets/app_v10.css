@@ -619,3 +619,15 @@ button:active{transform:scale(.955)}
 /* 08-02 · 태어난 시간: 시계입력 대신 큼직한 드롭다운 (모바일 탭 개선) */
 select.f-input.f-time{height:52px;font-size:16px;font-weight:700;appearance:auto;-webkit-appearance:menulist;cursor:pointer}
 select.f-input.f-time:disabled{opacity:.45;background:#f2efe8}
+
+/* 08-02 · 용어 자동 해설 */
+.term-tip{font-size:11px;color:#8792ab;font-weight:500;margin-left:2px}
+
+/* 08-02 · 질문 연결 콜아웃 */
+.qlink{margin-top:12px;background:rgba(232,196,124,.10);border:1px solid rgba(232,196,124,.30);border-radius:12px;padding:11px 13px;font-size:12.5px;line-height:1.65;color:#d8cfc0;text-align:left}
+.qlink b{color:#e8c47c}
+
+/* 08-02 · 리포트 도구줄 (건너뛰기 · 질문 답만 보기) */
+.rp-tools{display:flex;gap:8px;padding:6px 16px 2px}
+.rp-tools button{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#c2cbdd;border-radius:10px;padding:8px 6px;font-size:12px;font-weight:800;cursor:pointer}
+.rp-tools button:disabled{cursor:default}
