@@ -907,7 +907,10 @@ function renderProfiles(){
     +`<button onclick="addProfile()" style="background:#fff;border:1.5px dashed #c5bdae;border-radius:20px;padding:5px 12px;font-size:12px;color:var(--sub);cursor:pointer">＋ 추가하기</button>`;
 }
 function addProfile(){
-  const n=prompt('프로필 이름 (가족·친구 사주도 볼 수 있어요)'); if(!n) return;
+  /* 08-02: 성·이름 분리 — 화면 표시는 이름만 */
+  const sn=prompt('성 (예: 홍)'); if(sn===null) return;
+  const gn=prompt('이름 (예: 길동) — 화면엔 이름만 표시돼요'); if(!gn||!gn.trim()) return;
+  const n=gn.trim();
   const d=prompt('생년월일 (예: 1994-03-15)','1994-03-15'); if(!d||!/^\d{4}-\d{2}-\d{2}$/.test(d)){ alert('날짜 형식은 1994-03-15 처럼!'); return; }
   const ps=getProfiles(); ps.push({n:n.trim(),d,t:'12:00'}); localStorage.catsaju_profiles=JSON.stringify(ps);
   loadProfile(ps.length-1);
@@ -1064,7 +1067,8 @@ function renderFunnelG(F){
 /* ═══ 통합 입력 모델 — 모든 상품/타로가 이 하나의 INPUT을 씀 ═══ */
 const INPUT = {
   name:'집사', gender:'여자', d:'2000-01-01', t:'', unknown:true, cal:'양력',
-  partner:{ name:'', d:'', has:false, t:'', tunknown:false }
+  sname:'',                                    /* 성 — 08-02: 성·이름 분리 입력 (결과지는 이름만 호명) */
+  partner:{ name:'', sname:'', d:'', has:false, t:'', tunknown:false }
 };
 let STEPS=[], stepIdx=0, stepDone=null;
 
@@ -1072,10 +1076,15 @@ let STEPS=[], stepIdx=0, stepDone=null;
 function buildSteps(){
   const F=FUNNELS[PRODUCT];
   const steps=[
-    { title:'너를 알려줘', label:'이름 (부를 이름)',
-      render:()=>`<h2>먼저, 널 뭐라고 부를까? 🐾</h2><p class="f-sub">리포트 내내 이 이름으로 불러줄게.</p>
-        <input class="f-input" id="s-name" value="${INPUT.name}" maxlength="10" placeholder="예: 지수">`,
-      save:()=>{ const v=$('s-name').value.trim(); if(!v){wobble('s-name');return false;} INPUT.name=v; return true; } },
+    { title:'너를 알려줘', label:'성과 이름',
+      render:()=>`<h2>먼저, 이름을 알려줘 🐾</h2><p class="f-sub">사주는 이름과 생년월일로 봐. 결과지에선 <b>성은 떼고 이름만</b> 다정하게 부를게.</p>
+        <div style="display:flex;gap:8px">
+          <input class="f-input" id="s-sname" value="${INPUT.sname||''}" maxlength="2" placeholder="성 (예: 홍)" style="flex:0 0 96px">
+          <input class="f-input" id="s-name" value="${INPUT.name}" maxlength="10" placeholder="이름 (예: 길동)" style="flex:1">
+        </div>`,
+      save:()=>{ const sn=$('s-sname').value.trim(), v=$('s-name').value.trim();
+        if(!sn){wobble('s-sname');return false;} if(!v){wobble('s-name');return false;}
+        INPUT.sname=sn; INPUT.name=v; return true; } },
     { title:'성별', label:'성별',
       render:()=>`<h2>${INPUT.name}는 어느 쪽이야?</h2>
         <div class="seg big" id="s-gender">
@@ -1098,10 +1107,14 @@ function buildSteps(){
   /* 상대 정보가 필요한 상품이면 상대 단계 추가 */
   const pn=(F.needs||[]).find(n=>typeof n==='object' && n.key==='partner');
   if(pn){
-    steps.push({ title:'상대 정보', label:'상대 이름',
-      render:()=>`<h2>${pn.label.replace(/ *\(.*\)/,'')}</h2><p class="f-sub">${pn.required?'이건 꼭 필요해!':'몰라도 괜찮아 — 비우면 "그 사람"이라고 부를게.'}</p>
-        <input class="f-input" id="s-pname" value="${INPUT.partner.name}" maxlength="12" placeholder="${pn.ph||''}">`,
-      save:()=>{ const v=$('s-pname').value.trim(); if(pn.required&&!v){wobble('s-pname');return false;} INPUT.partner.name=v; return true; } });
+    steps.push({ title:'상대 정보', label:'상대 성과 이름',
+      render:()=>`<h2>${pn.label.replace(/ *\(.*\)/,'')}</h2><p class="f-sub">${pn.required?'이건 꼭 필요해! 결과지에선 성 떼고 이름만 부를게.':'몰라도 괜찮아 — 비우면 "그 사람"이라고 부를게. 적어주면 성 떼고 이름만 불러.'}</p>
+        <div style="display:flex;gap:8px">
+          <input class="f-input" id="s-psname" value="${INPUT.partner.sname||''}" maxlength="2" placeholder="성 (선택)" style="flex:0 0 96px">
+          <input class="f-input" id="s-pname" value="${INPUT.partner.name}" maxlength="12" placeholder="${pn.ph||'이름'}">
+        </div>`,
+      save:()=>{ const v=$('s-pname').value.trim(); if(pn.required&&!v){wobble('s-pname');return false;}
+        INPUT.partner.sname=$('s-psname').value.trim(); INPUT.partner.name=v; return true; } });
     if(pn.birth){
       steps.push({ title:'상대 생년월일', label:'상대 생년월일',
         render:()=>`<h2>${pn.birthLabel||'그 사람 생년월일'}</h2><p class="f-sub">알면 궁합·재회 정확도가 올라가. 모르면 건너뛰어도 돼.</p>
@@ -1166,8 +1179,8 @@ function pay(){
   if(S.jelly<fin){ stub('젤리가 부족해 — 젤리공장'); return; }
   S.jelly=S.jelly-fin;
   S.addBox({ type:'report', product:PRODUCT, title:F.emoji+' '+F.title, date:new Date().toLocaleDateString('ko-KR'),
-    n:INPUT.name, d:INPUT.d, t:INPUT.unknown?'':INPUT.t, g:INPUT.gender,
-    x:INPUT.partner.name, xd:INPUT.partner.has?INPUT.partner.d:'', xt:(INPUT.partner.has&&!INPUT.partner.tunknown)?INPUT.partner.t:'' });
+    n:INPUT.name, sn:INPUT.sname||'', d:INPUT.d, t:INPUT.unknown?'':INPUT.t, g:INPUT.gender,
+    x:INPUT.partner.name, xsn:INPUT.partner.sname||'', xd:INPUT.partner.has?INPUT.partner.d:'', xt:(INPUT.partner.has&&!INPUT.partner.tunknown)?INPUT.partner.t:'' });
   startLoading();
 }
 /* ═══ 운세보관함 — 날짜별 그룹 + 종류 필터
@@ -1230,7 +1243,8 @@ function openReport(p){
   const [y,m,d]=p.d.split('-').map(Number);
   const [hh,mm]=p.t?p.t.split(':').map(Number):[null,0];
   const fp=fourPillars(y,m,d,hh,mm);
-  const seed=hashN(p.n+p.d+(p.x||''),997);
+  /* 08-02: 성까지 시드에 넣어 홍길동/김길동이 다른 결과를 받게 (결과지 호칭은 이름만) */
+  const seed=hashN((p.sn||'')+p.n+p.d+(p.xsn||'')+(p.x||''),997);
   /* 상대 사주(있으면) */
   let pfp=null, pilju='', panimal='';
   if(p.xd){ const [py,pm,pd]=p.xd.split('-').map(Number); const [phh,pmm]=p.xt?p.xt.split(':').map(Number):[null,0];
