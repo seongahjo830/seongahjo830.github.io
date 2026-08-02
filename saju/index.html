@@ -448,6 +448,14 @@ function renameMe(){
   t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000);
 }
 function openPrivacy(){ window.open('privacy.html','_blank'); }
+/* 08-02: 홈 상단 추천·무료 구간 접기/펼치기 (기본 접힘) */
+function toggleHomeExtras(){
+  const box=$('home-extras'), ar=$('extras-arrow');
+  const open=box.style.display==='none';
+  box.style.display=open?'block':'none';
+  if(ar) ar.textContent=open?'접기 ⌃':'펼치기 ⌄';
+  S.extrasOpen=open;
+}
 function flash(id){ const t=$(id); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400); }
 function segPick(btn){ [...btn.parentElement.children].forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
 function renderJelly(){ document.querySelectorAll('.jelly-n').forEach(e=>e.textContent = S.jelly>=999000 ? '∞' : S.jelly.toLocaleString()); }
@@ -658,11 +666,14 @@ function renderHome(){
   /* L5 카테고리는 가로 캐러셀 (콘텐츠는 100% 유지, 벽 느낌만 제거) */
   const carou=(s)=>`<div class="sec-label">${s.label}${interests.includes(s.key)?' <span class="pin-hint">· 관심 주제</span>':''}</div><div class="card-carou">${s.items.map(i=>cardHtml(i,nm,s.key)).join('')}</div>`;
 
-  /* 08-02 지시: 결제전 미리보기 히어로(+이하 전체)를 '더보기' 든 빠른메뉴 그리드 바로 아래로 */
-  let html = heroCardHtml(nm);                     // L2 오늘 딱 하나 (블러 미리보기) — 최상단
+  /* 08-02 지시(2차): "오늘 딱 하나"부터 "3초 도파민"까지는 접힌 메뉴 뒤로 숨김 */
+  let html = `<div class="muted-card" id="extras-toggle" onclick="toggleHomeExtras()"><span class="e">⭐</span><span class="t">오늘의 추천 · 무료 운세 · 3초 타로</span><span class="x" id="extras-arrow">펼치기 ⌄</span></div>`;
+  html += `<div id="home-extras" style="display:${S.extrasOpen?'block':'none'}">`;
+  html += heroCardHtml(nm);                        // L2 오늘 딱 하나 (블러 미리보기)
   html += sajuNotiHtml(nm) + ctxBannerHtml();      // ① 개인화 배너
   html += freeHookHtml();                          // L1 무료 훅
   html += shortsHtml();                            // L3 무료 쇼츠
+  html += `</div>`;
   /* 💘 연애사주 3종 (기존 유지) */
   const yeonae=[
     {t:'🔮 떠난 그 사람, 다시 붙잡을 수 있을까?',badge:'HOT',price:990,act:'intro:reunion'},
