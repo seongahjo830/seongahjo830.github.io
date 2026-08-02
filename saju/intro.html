@@ -458,6 +458,8 @@ window.addEventListener('hashchange',openFromHash);
 const APP_PRODUCT={ reunion:'golden', lifelong:'future10', love2marry:'lovemarry' };
 function goApp(){
   const key=APP_PRODUCT[CUR.id]||'golden';
+  /* 앱 안 iframe으로 열렸으면 부모 앱에 메시지로 — 페이지 이동 없이 퍼널이 열린다 (08-02) */
+  if(window.parent!==window){ window.parent.postMessage({sajuProduct:key},'*'); return; }
   location.href='./index.html#p='+key;
 }
 openFromHash();
