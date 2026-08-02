@@ -39,8 +39,12 @@
     <button class="btn-cta" onclick="go('scr-ob2')">안녕!</button>
   </div>
   <div class="screen" id="scr-ob2">
-    <div class="ob"><div id="obcat2"></div><h2>그전에… 이름을<br>불러드리고 싶은데<br>뭐라고 불러드릴까요?</h2>
-      <input class="ob-input" id="ob-name" placeholder="내 이름은…" maxlength="10"></div>
+    <div class="ob"><div id="obcat2"></div><h2>그전에… 성함을<br>알려주시겠어요?</h2>
+      <p style="font-size:12.5px;color:var(--sub);margin:-6px 0 10px">사주는 이름으로 봐요. 부를 땐 성을 떼고 <b>이름만</b> 다정하게 불러드릴게요.</p>
+      <div style="display:flex;gap:8px;width:100%">
+        <input class="ob-input" id="ob-sname" placeholder="성 (홍)" maxlength="2" style="flex:0 0 88px">
+        <input class="ob-input" id="ob-name" placeholder="이름 (길동)" maxlength="10" style="flex:1">
+      </div></div>
     <button class="btn-cta" onclick="obName()">다음</button>
   </div>
   <div class="screen" id="scr-ob3">
@@ -388,6 +392,18 @@
 </div>
 
 <div class="toast" id="toast-global" style="position:fixed;left:50%;transform:translateX(-50%);width:min(380px,90%);bottom:24px"></div>
+<!-- 08-02: 전역 사주 이름 등록 다이얼로그 (성·이름 미등록 상태로 운세 진입 시 1회) -->
+<div class="dlg" id="dlg-name" style="position:fixed;inset:0;z-index:60">
+  <div class="box" style="width:min(340px,86%)">
+    <b>운세를 보려면 성함이 필요해요 🐾</b>
+    <p style="font-size:12.5px;color:#8a8378;margin:6px 0 12px;font-weight:500">사주는 이름으로 봐요. 결과에선 성을 떼고 <b>이름만</b> 불러드려요.</p>
+    <div style="display:flex;gap:8px">
+      <input class="f-input" id="nm-sn" placeholder="성 (홍)" maxlength="2" style="flex:0 0 84px">
+      <input class="f-input" id="nm-gn" placeholder="이름 (길동)" maxlength="10" style="flex:1">
+    </div>
+    <button class="ok" style="margin-top:14px;width:100%" onclick="saveNameDlg()">저장하고 계속</button>
+  </div>
+</div>
 <!-- 쇼츠(3초 도파민) 결과 시트 -->
 <div class="short-dim" id="short-dim" onclick="if(event.target===this)shortClose()"><div class="short-box" id="short-body"></div></div>
 
@@ -398,6 +414,9 @@
 const S = {
   get name(){ return localStorage.catsaju_name || '집사'; },
   set name(v){ localStorage.catsaju_name = v; },
+  /* 08-02: 성(姓) — 사주 프로필용. 결과지는 항상 이름만 부르고, 성은 시드·기록에만 쓴다 */
+  get sn(){ return localStorage.catsaju_sn || ''; },
+  set sn(v){ localStorage.catsaju_sn = v; },
   get jelly(){ return 999999; },   /* 테스트 모드: 젤리 무한 (저장값 무시) */
   set jelly(v){ renderJelly(); },  /* 테스트 중 차감 안 함 — 결과지 항상 볼 수 있게 */
   get onboarded(){ return localStorage.catsaju_onboarded === '1'; },
@@ -442,14 +461,20 @@ function updateTabbar(cur){
     `<button class="tab ${id===cur?'on':''}" onclick="showTab('${id}')"><span class="t-ic">${ic}</span>${label}</button>`).join('');
   $(cur).appendChild(div);
 }
-function showTab(id){ go(id); if(id==='scr-today') renderToday(); if(id==='scr-diary') renderDiary(); if(id==='scr-more') renderMore(); if(id==='scr-home') renderHome(); }
+function showTab(id){
+  /* 08-02: 오늘운세는 사주 — 성·이름 등록 후에만 (미등록이면 1회 등록 게이트) */
+  if(id==='scr-today' && !(S.sn&&S.name)){ ensureName(()=>showTab('scr-today')); return; }
+  go(id); if(id==='scr-today') renderToday(); if(id==='scr-diary') renderDiary(); if(id==='scr-more') renderMore(); if(id==='scr-home') renderHome();
+}
 /* 준비중 항목 클릭 → 통일 토스트 (08-02 지시: 떴다가 사라지는 팝업) */
 function stub(name){ const t=$('toast-global'); const nm=name.replace(/^[^가-힣A-Za-z0-9]+\s*/,''); t.textContent='「'+nm+'」 준비중이에요 — 성아에게 업데이트해달라고 하세요! 🐾'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2300); }
 function couponToast(){ setTimeout(()=>flash('toast-funnel'),600); }
 /* 08-02: 준비중이던 더보기 메뉴 2종을 진짜 기능으로 */
 function renameMe(){
-  const v=prompt('새 이름 (보리가 부를 이름)', S.name);
+  const sn=prompt('성 (예: 홍)', S.sn||''); if(sn===null) return;
+  const v=prompt('이름 (예: 길동) — 부를 땐 이름만 불러요', S.name);
   if(!v||!v.trim()) return;
+  if(sn&&sn.trim()) S.sn=sn.trim();
   S.name=v.trim(); renderMore();
   const t=$('toast-global'); t.textContent='알겠어! 이제 '+S.name+'(이)라고 부를게 🐾';
   t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000);
@@ -480,7 +505,29 @@ function segPick(btn){ [...btn.parentElement.children].forEach(b=>b.classList.re
 function renderJelly(){ document.querySelectorAll('.jelly-n').forEach(e=>e.textContent = S.jelly>=999000 ? '∞' : S.jelly.toLocaleString()); }
 
 /* ═══ 온보딩 ═══ */
-function obName(){ const v=$('ob-name').value.trim()||'친구'; S.name=v; $('ob3-name').textContent=v; go('scr-ob3'); }
+function obName(){
+  const sn=$('ob-sname').value.trim(), v=$('ob-name').value.trim();
+  if(!sn){ wobble('ob-sname'); return; }
+  if(!v){ wobble('ob-name'); return; }
+  S.sn=sn; S.name=v; $('ob3-name').textContent=v; go('scr-ob3');
+}
+/* ── 08-02: 전역 사주 이름 게이트 — 성·이름이 등록 안 된 채 운세를 보려 하면 1회 등록 ── */
+let _nmCb=null;
+function ensureName(cb){
+  if(S.sn && S.name){ cb(); return; }
+  _nmCb=cb;
+  $('nm-sn').value=S.sn||''; $('nm-gn').value=(S.sn?S.name:'')||'';
+  $('dlg-name').classList.add('show');
+}
+function saveNameDlg(){
+  const sn=$('nm-sn').value.trim(), gn=$('nm-gn').value.trim();
+  if(!sn){ wobble('nm-sn'); return; }
+  if(!gn){ wobble('nm-gn'); return; }
+  S.sn=sn; S.name=gn;
+  $('dlg-name').classList.remove('show');
+  const cb=_nmCb; _nmCb=null; if(cb) cb();
+  renderJelly();
+}
 function finishOnboard(notif){ S.onboarded=true; S.firstDay; initLetters(); showTab('scr-home'); if(notif){ const t=$('toast-global'); t.textContent='좋아! 매일 아침 7~8시에 운세 들고 올게 🐾'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); } }
 
 /* ── 관심사 온보딩 (수집①) ──
@@ -642,6 +689,7 @@ const SHORT_DESC={
   '행운 카드':['오늘 너에게 들어온 기운이야 🍀','작은 신호를 놓치지 마.'],
 };
 function shortPlay(i){
+  if(!(S.sn&&S.name)){ ensureName(()=>shortPlay(i)); return; }
   const s=SHORTS[i];
   const r=s[2][hashN(S.name+new Date().toDateString()+i,s[2].length)];
   const d=(SHORT_DESC[s[1]]||['오늘의 결과야 🐾',''])[hashN(S.name+i,2)] || '오늘의 결과야 🐾';
@@ -793,6 +841,7 @@ function unhideSec(k){ S.hidden=S.hidden.filter(x=>x!==k); renderHome(); }
 /* ═══ 데일리 타로 ═══ */
 let tarotKind=null, tarotTitle='', tarotCard=null;
 function tarotOpen(kind,title){
+  if(!(S.sn&&S.name)){ ensureName(()=>tarotOpen(kind,title)); return; }
   tarotKind=kind; tarotTitle=DAILY_CFG[kind]?.title||title.replace(/^[^\s]+ /,'');
   const cfg=DAILY_CFG[kind];
   $('tarot-intro-msg').innerHTML=cfg.intro.replace(/\n/g,'<br>');
@@ -1099,10 +1148,15 @@ function buildSteps(){
           <button class="${INPUT.cal==='음력'?'on':''}" onclick="segPick(this)">음력</button></div>`,
       save:()=>{ INPUT.d=$('s-date').value; INPUT.cal=document.querySelector('#s-cal .on').textContent; return !!INPUT.d; } },
     { title:'태어난 시간', label:'시간',
-      render:()=>`<h2>태어난 시간을 알고 있어?</h2><p class="f-sub">시간까지 알면 훨씬 정확해져.</p>
-        <input class="f-input" type="time" id="s-time" value="${INPUT.t||'12:00'}" ${INPUT.unknown?'disabled':''}>
-        <label class="f-check" style="margin-top:12px"><input type="checkbox" id="s-unk" ${INPUT.unknown?'checked':''} onchange="$('s-time').disabled=this.checked"> 태어난 시간을 몰라요 (시주 빼고 볼게)</label>`,
-      save:()=>{ INPUT.unknown=$('s-unk').checked; INPUT.t=INPUT.unknown?'':$('s-time').value; return true; } },
+      /* 08-02: 시계형 입력이 폰에서 탭이 잘 안 돼 → 큼직한 드롭다운(시/분)으로 교체 */
+      render:()=>{ const [h0,m0]=(INPUT.t||'12:00').split(':');
+        return `<h2>태어난 시간을 알고 있어?</h2><p class="f-sub">시간까지 알면 훨씬 정확해져. 대략만 알아도 골라줘.</p>
+        <div style="display:flex;gap:8px">
+          <select class="f-input f-time" id="s-hh" ${INPUT.unknown?'disabled':''}>${Array.from({length:24},(_,h)=>`<option value="${String(h).padStart(2,'0')}" ${+h0===h?'selected':''}>${h===0?'밤 12시 (0시)':h<12?'오전 '+h+'시':h===12?'낮 12시':'오후 '+(h-12)+'시'}</option>`).join('')}</select>
+          <select class="f-input f-time" id="s-mm" ${INPUT.unknown?'disabled':''}>${[0,10,20,30,40,50].map(m=>`<option value="${String(m).padStart(2,'0')}" ${+m0===m?'selected':''}>${m}분</option>`).join('')}</select>
+        </div>
+        <label class="f-check" style="margin-top:12px"><input type="checkbox" id="s-unk" ${INPUT.unknown?'checked':''} onchange="$('s-hh').disabled=this.checked;$('s-mm').disabled=this.checked"> 태어난 시간을 몰라요 (시주 빼고 볼게)</label>`; },
+      save:()=>{ INPUT.unknown=$('s-unk').checked; INPUT.t=INPUT.unknown?'':($('s-hh').value+':'+$('s-mm').value); return true; } },
   ];
   /* 상대 정보가 필요한 상품이면 상대 단계 추가 */
   const pn=(F.needs||[]).find(n=>typeof n==='object' && n.key==='partner');
@@ -1123,10 +1177,14 @@ function buildSteps(){
         save:()=>{ INPUT.partner.d=$('s-pdate').value; INPUT.partner.has=!!INPUT.partner.d; return true; } });
       if(pn.time){
         steps.push({ title:'상대 시간', label:'상대 태어난 시간',
-          render:()=>`<h2>${pn.who||'그 사람'} 태어난 시간도 알아?</h2><p class="f-sub">알면 궁합·전생 인연이 훨씬 또렷해져. 몰라도 괜찮아.</p>
-            <input class="f-input" type="time" id="s-ptime" value="${INPUT.partner.t||'12:00'}" ${INPUT.partner.tunknown?'disabled':''}>
-            <label class="f-check" style="margin-top:12px"><input type="checkbox" id="s-punk" ${INPUT.partner.tunknown?'checked':''} onchange="$('s-ptime').disabled=this.checked"> 태어난 시간을 몰라요</label>`,
-          save:()=>{ INPUT.partner.tunknown=$('s-punk').checked; INPUT.partner.t=INPUT.partner.tunknown?'':$('s-ptime').value; return true; } });
+          render:()=>{ const [h0,m0]=(INPUT.partner.t||'12:00').split(':');
+            return `<h2>${pn.who||'그 사람'} 태어난 시간도 알아?</h2><p class="f-sub">알면 궁합·전생 인연이 훨씬 또렷해져. 몰라도 괜찮아.</p>
+            <div style="display:flex;gap:8px">
+              <select class="f-input f-time" id="s-phh" ${INPUT.partner.tunknown?'disabled':''}>${Array.from({length:24},(_,h)=>`<option value="${String(h).padStart(2,'0')}" ${+h0===h?'selected':''}>${h===0?'밤 12시 (0시)':h<12?'오전 '+h+'시':h===12?'낮 12시':'오후 '+(h-12)+'시'}</option>`).join('')}</select>
+              <select class="f-input f-time" id="s-pmm" ${INPUT.partner.tunknown?'disabled':''}>${[0,10,20,30,40,50].map(m=>`<option value="${String(m).padStart(2,'0')}" ${+m0===m?'selected':''}>${m}분</option>`).join('')}</select>
+            </div>
+            <label class="f-check" style="margin-top:12px"><input type="checkbox" id="s-punk" ${INPUT.partner.tunknown?'checked':''} onchange="$('s-phh').disabled=this.checked;$('s-pmm').disabled=this.checked"> 태어난 시간을 몰라요</label>`; },
+          save:()=>{ INPUT.partner.tunknown=$('s-punk').checked; INPUT.partner.t=INPUT.partner.tunknown?'':($('s-phh').value+':'+$('s-pmm').value); return true; } });
       }
     }
   }
@@ -1134,6 +1192,8 @@ function buildSteps(){
 }
 
 function startSajuInput(){
+  /* 08-02: 등록된 사주 프로필(성·이름)을 기본값으로 프리필 — 그래도 매 상품마다 확인·수정 가능 */
+  if(!INPUT._touched){ if(S.sn) INPUT.sname=S.sn; if(S.sn&&S.name) INPUT.name=S.name; INPUT._touched=true; }
   STEPS=buildSteps(); stepIdx=0;
   stepDone=()=>go('scr-pay');
   go('scr-step'); renderStep(1);
@@ -1273,6 +1333,7 @@ function openReport(p){
 
 /* ═══ 오늘의 운세 상세 (다크 카드 슬라이드) ═══ */
 function openTodayFortune(){
+  if(!(S.sn&&S.name)){ ensureName(()=>openTodayFortune()); return; }
   const nm=$('t-name').textContent;
   const [y,m,d]=$('t-date').value.split('-').map(Number);
   const [hh,mm]=$('t-time').value?$('t-time').value.split(':').map(Number):[null,0];

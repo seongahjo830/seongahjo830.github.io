@@ -615,3 +615,7 @@ button:active{transform:scale(.955)}
 .menu button.stub-off .ar{opacity:.4}
 .wip-tag{font-size:10.5px;color:#a09884;border:1px dashed #cfc6b2;border-radius:8px;padding:1.5px 7px;margin-left:8px;vertical-align:1px}
 .jf-row .get.stub-get{opacity:.5;background:#e5ded0;color:#8a8378}
+
+/* 08-02 · 태어난 시간: 시계입력 대신 큼직한 드롭다운 (모바일 탭 개선) */
+select.f-input.f-time{height:52px;font-size:16px;font-weight:700;appearance:auto;-webkit-appearance:menulist;cursor:pointer}
+select.f-input.f-time:disabled{opacity:.45;background:#f2efe8}
