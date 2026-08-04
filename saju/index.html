@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>강아지사주일기 — 온보딩·홈·4탭·데일리타로·퍼널·결제</title>
+<title>강아지사주일기 🐾</title>
 <link rel="stylesheet" href="assets/app_v10.css?v=10">
 
 <link rel="manifest" href="manifest.json">
@@ -35,12 +35,12 @@
   <div class="screen" id="scr-ob1">
     <button class="skip" onclick="finishOnboard()">건너뛰기</button>
     <div class="ob"><div id="obcat1"></div><h2>안녕하세요.<br>저는 강아지사주일기의 보리예요.</h2></div>
-    <p class="terms">앱을 사용함으로써 <u>개인정보처리방침</u> 및 <u>이용약관</u>에 동의하게 됩니다.</p>
+    <p class="terms">앱을 사용함으로써 <u onclick="openPrivacy()" style="cursor:pointer">개인정보처리방침</u> 및 <u onclick="openPrivacy()" style="cursor:pointer">이용약관</u>에 동의하게 됩니다.</p>
     <button class="btn-cta" onclick="go('scr-ob2')">안녕!</button>
   </div>
   <div class="screen" id="scr-ob2">
     <div class="ob"><div id="obcat2"></div><h2>그전에… 성함을<br>알려주시겠어요?</h2>
-      <p style="font-size:12.5px;color:var(--sub);margin:-6px 0 10px">사주는 이름으로 봐요. 부를 땐 성을 떼고 <b>이름만</b> 다정하게 불러드릴게요.</p>
+      <p style="font-size:12.5px;color:var(--sub);margin:-6px 0 10px">사주는 이름이랑 생년월일로 봐요. 부를 땐 성을 떼고 <b>이름만</b> 다정하게 불러드릴게요.</p>
       <div style="display:flex;gap:8px;width:100%">
         <input class="ob-input" id="ob-sname" placeholder="성 (홍)" maxlength="2" style="flex:0 0 88px">
         <input class="ob-input" id="ob-name" placeholder="이름 (길동)" maxlength="10" style="flex:1">
@@ -48,12 +48,12 @@
     <button class="btn-cta" onclick="obName()">다음</button>
   </div>
   <div class="screen" id="scr-ob3">
-    <div class="ob"><div id="obcat3"></div><h2><span id="ob3-name">집사</span>님!<br>멋진 이름이네요.</h2></div>
+    <div class="ob"><div id="obcat3"></div><h2><span id="ob3-name">보호자</span>님!<br>멋진 이름이네요.</h2></div>
     <button class="btn-cta" onclick="go('scr-ob-int');renderInterestChips()">고마워!</button>
   </div>
   <!-- 관심사 온보딩 (수집①) -->
   <div class="screen" id="scr-ob-int">
-    <button class="skip" onclick="go('scr-ob4')">건너뛰기</button>
+    <button class="skip" onclick="go('scr-ob6')">건너뛰기</button>
     <div class="scroll">
       <div class="form" style="padding-top:26px">
         <h2 style="font-size:21px">요즘 가장 자주<br>떠오르는 고민은? 🤔</h2>
@@ -64,16 +64,7 @@
     </div>
     <button class="btn-cta" id="int-cta" onclick="saveInterests()">이걸로 시작하기 →</button>
   </div>
-  <div class="screen" id="scr-ob4">
-    <div class="ob"><div id="obcat4"></div><h2>본인 인증을 위해<br>휴대폰 번호가 필요해요.</h2>
-      <input class="ob-input" id="ob-phone" placeholder="휴대폰 번호" inputmode="numeric" value="010-0000-0000"></div>
-    <button class="btn-cta" onclick="go('scr-ob5')">다음</button>
-  </div>
-  <div class="screen" id="scr-ob5">
-    <div class="ob"><div id="obcat5"></div><h2>문자로 전송된<br>인증번호를 입력해주세요</h2>
-      <input class="ob-input" id="ob-code" inputmode="numeric" value="0726" maxlength="6"></div>
-    <button class="btn-cta" onclick="go('scr-ob6')">확인</button>
-  </div>
+  <!-- (08-04 검수) 가짜 본인인증 2화면 제거 — 실제 인증 없이 흉내만 내던 목업 잔재 -->
   <div class="screen" id="scr-ob6">
     <div class="ob"><div id="obcat6"></div><h2>매일 아침에 알림으로<br>오늘의 운세를 알려드릴까요?</h2></div>
     <div class="ob2btn">
@@ -119,7 +110,7 @@
     <div class="topbar"><button class="back" onclick="showTab('scr-home')">←</button><span class="h-title">오늘의 운세</span></div>
     <div class="scroll">
       <div class="today-head">
-        <div class="nm" id="t-name">집사</div>
+        <div class="nm" id="t-name">보호자</div>
         <div class="bt">
           <input type="date" id="t-date" value="2000-01-01" onchange="renderToday()">
           <input type="time" id="t-time" value="01:00" onchange="renderToday()"> 생
@@ -147,7 +138,7 @@
   <div class="screen" id="scr-diary">
     <div class="scroll">
       <div class="diary-cat" id="diarycat"></div>
-      <div class="cal-nav"><span>‹</span><span id="cal-title"></span><span>›</span></div>
+      <div class="cal-nav"><span onclick="diaryNav(-1)" style="cursor:pointer;padding:0 8px">‹</span><span id="cal-title"></span><span onclick="diaryNav(1)" style="cursor:pointer;padding:0 8px">›</span></div>
       <div class="cal" id="cal"></div>
       <div class="diary-editor">
         <textarea id="diary-text" placeholder="오늘의 일기 쓰기 (보리가 답글을 달아줘요)"></textarea>
@@ -162,20 +153,20 @@
   <div class="screen" id="scr-more">
     <div class="scroll">
       <div class="more-prof">
-        <div class="nm" id="m-name">집사</div>
-        <div class="sub">회원번호: proto-0001</div>
+        <div class="nm" id="m-name">보호자</div>
+        <div class="sub">🐾 보리의 1호 친구</div>
         <div class="sub" id="m-birth"></div>
       </div>
       <div class="more-jelly"><span>🐾 <b class="jelly-n">1,500</b> 젤리</span><button class="chg" onclick="go('scr-jelly')">충전하기</button></div>
       <div class="menu">
         <button class="stub-off" onclick="stub('알림 설정')">알림 설정<span class="wip-tag">준비중</span><span class="ar">›</span></button>
         <button onclick="go('scr-box');renderBox()">운세 보관함<span class="ar">›</span></button>
-        <button class="stub-off" onclick="stub('내 쿠폰')">내 쿠폰 (1장)<span class="wip-tag">준비중</span><span class="ar">›</span></button>
+        <button class="stub-off" onclick="stub('내 쿠폰')">내 쿠폰<span class="wip-tag">준비중</span><span class="ar">›</span></button>
         <button onclick="go('scr-jelly')">내 젤리 · 젤리 충전<span class="ar">›</span></button>
         <button onclick="renameMe()">이름 바꾸기<span class="ar">›</span></button>
         <button onclick="openPrivacy()">약관·개인정보 확인하기<span class="ar">›</span></button>
         <button class="stub-off" onclick="stub('고객센터')">고객센터<span class="wip-tag">준비중</span><span class="ar">›</span></button>
-        <button onclick="resetAll()">프로토타입 초기화 (온보딩 다시 보기)<span class="ar">›</span></button>
+        <button onclick="resetAll()">처음부터 다시 시작하기<span class="ar">›</span></button>
       </div>
     </div>
   </div>
@@ -193,7 +184,7 @@
   <!-- 편지함 -->
   <div class="screen" id="scr-mail-intro">
     <div class="topbar"><button class="back" onclick="showTab('scr-home')">←</button></div>
-    <div class="mail-intro"><div class="env">💌</div><p><span id="mi-name">집사</span>님, 편지가 도착했어요.<br>보리의 편지를 열어볼까요?</p></div>
+    <div class="mail-intro"><div class="env">💌</div><p><span id="mi-name">보호자</span>님, 편지가 도착했어요.<br>보리의 편지를 열어볼까요?</p></div>
     <button class="btn-cta" onclick="go('scr-mail')">보러가기</button>
   </div>
   <div class="screen" id="scr-mail">
@@ -308,7 +299,7 @@
       <div class="review"><div class="rv-top"><span>💜 고마워</span><span class="who">여*주</span></div>엄마가 잡아준 오프라인 사주보다 자세하다..</div>
       <div class="q-block">사주를 보면,<br>나랑 절대 안 맞는 사람을<br>미리 알 수 있다는 거 알아?</div>
       <div class="bubble-cat">🐶</div>
-      <p class="count-line">그동안 <b>2,174명</b> 넘게 본 운세!</p>
+      <p class="count-line">그동안 <b>9,738명</b> 넘게 본 운세!</p>
       <div class="chk-wrap">
         <h3>이런 사람에게 도움이 돼요</h3>
         <div class="chk on"><span class="box">✓</span><span>사주 속 <em>악연을 피하고</em> 싶다</span></div>
@@ -342,12 +333,12 @@
           <li>📊 <b>결혼하면 안되는 사람 한장 정리</b></li>
         </ul>
       </div>
-      <p class="volume">이런 리포트가 <b>약 5,000자 분량</b>으로<br>방대하게 연애운을 읽어드려요.</p>
+      <p class="volume">이런 리포트가 <b>카드 30장 이상</b>으로<br>결혼 악연의 모든 것을 짚어드려요.</p>
       <div class="samples">
-        <div class="sample"><div class="s-head">1993년 7월 26일 14:23</div><div class="s-clear">당신의 일주</div><div class="s-blur">무신 — 노란 원숭이의 기운을 타고났고, 겉은 단단하지만 속은 부드러운 결을 가졌습니다. 이런 사주는…</div></div>
+        <div class="sample"><div class="s-head">1993년 7월 26일 14:23</div><div class="s-clear">너의 일주</div><div class="s-blur">무신 — 노란 원숭이의 기운을 타고났고, 겉은 단단한데 속은 부드러운 결이야. 이런 사주는…</div></div>
         <div class="sample"><div class="s-head">악연이 들어오는 시기</div><div class="s-clear">10년 중 3번의 고비</div><div class="s-blur">2027년 6월, 2028년 8월, 그리고 2031년 1월 — 이 시기에 만나는 인연은 특히…</div></div>
         <div class="sample"><div class="s-head">피해야 할 사람</div><div class="s-clear">한장 정리 📒</div><div class="s-blur">말투가 빠르고, 처음에 과할 정도로 잘해주며, 돈 얘기를 먼저 꺼내는 사람. 특히…</div></div>
-        <div class="sample"><div class="s-head">결혼 후의 나</div><div class="s-clear">가정에서의 모습</div><div class="s-blur">당신은 결혼하면 의외로 가정적인 사람이 됩니다. 다만 부족한 기운 탓에…</div></div>
+        <div class="sample"><div class="s-head">결혼 후의 나</div><div class="s-clear">가정에서의 모습</div><div class="s-blur">너는 결혼하면 의외로 훨씬 다정한 사람이 되는 사주야. 다만 부족한 기운 탓에…</div></div>
       </div>
       <div class="react">
         <h3>3,393명이 추천했어요!</h3>
@@ -417,7 +408,7 @@
 <script>
 /* ═══ 상태 ═══ */
 const S = {
-  get name(){ return localStorage.catsaju_name || '집사'; },
+  get name(){ return localStorage.catsaju_name || '보호자'; },
   set name(v){ localStorage.catsaju_name = v; },
   /* 08-02: 성(姓) — 사주 프로필용. 결과지는 항상 이름만 부르고, 성은 시드·기록에만 쓴다 */
   get sn(){ return localStorage.catsaju_sn || ''; },
@@ -447,6 +438,8 @@ function resetAll(){ Object.keys(localStorage).filter(k=>k.startsWith('catsaju_'
 
 /* ═══ 공용 UI ═══ */
 const $=id=>document.getElementById(id);
+/* 받침 유무로 조사 자동 선택 — josa(이름,'이','가') / josa(이름,'은','는') / josa(이름,'을','를') / josa(이름,'과','와') / josa(이름,'아','야') */
+const josa=(w,a,b)=>{ if(!w) return b; const c=String(w).charCodeAt(String(w).length-1); if(c<0xAC00||c>0xD7A3) return b; return (c-0xAC00)%28>0?a:b; };
 const CAT_SVG='<svg viewBox="0 0 120 100"><g fill="#fff" stroke="#4a3d33" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"><path d="M34 30 Q17 36 18 58 Q19 78 36 76 Z"/><path d="M86 30 Q103 36 102 58 Q101 78 84 76 Z"/><ellipse cx="60" cy="50" rx="32" ry="29"/><ellipse cx="60" cy="64" rx="18" ry="13"/></g><circle cx="47" cy="45" r="3" fill="#4a3d33"/><circle cx="73" cy="45" r="3" fill="#4a3d33"/><ellipse cx="60" cy="58" rx="5.6" ry="4.2" fill="#4a3d33"/><g stroke="#4a3d33" stroke-width="2.6" fill="none" stroke-linecap="round"><path d="M60 62 v3"/><path d="M60 65 q-6 5 -11 0"/><path d="M60 65 q6 5 11 0"/></g></svg>';
 ['obcat1','obcat2','obcat3','obcat4','obcat5','obcat6','homecat','diarycat','tarotcat'].forEach(id=>{ const el=$(id); if(el) el.innerHTML=CAT_SVG; });
 
@@ -472,7 +465,7 @@ function showTab(id){
   go(id); if(id==='scr-today') renderToday(); if(id==='scr-diary') renderDiary(); if(id==='scr-more') renderMore(); if(id==='scr-home') renderHome();
 }
 /* 준비중 항목 클릭 → 통일 토스트 (08-02 지시: 떴다가 사라지는 팝업) */
-function stub(name){ const t=$('toast-global'); const nm=name.replace(/^[^가-힣A-Za-z0-9]+\s*/,''); t.textContent='「'+nm+'」 준비중이에요 — 성아에게 업데이트해달라고 하세요! 🐾'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2300); }
+function stub(name){ const t=$('toast-global'); const nm=name.replace(/^[^가-힣A-Za-z0-9]+\s*/,''); t.textContent='「'+nm+'」은 보리가 열심히 만들고 있어요 — 조금만 기다려 줘! 🐾'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2300); }
 function couponToast(){ setTimeout(()=>flash('toast-funnel'),600); }
 /* 08-02: 준비중이던 더보기 메뉴 2종을 진짜 기능으로 */
 function renameMe(){
@@ -533,7 +526,7 @@ function saveNameDlg(){
   const cb=_nmCb; _nmCb=null; if(cb) cb();
   renderJelly();
 }
-function finishOnboard(notif){ S.onboarded=true; S.firstDay; initLetters(); showTab('scr-home'); if(notif){ const t=$('toast-global'); t.textContent='좋아! 매일 아침 7~8시에 운세 들고 올게 🐾'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); } }
+function finishOnboard(notif){ S.onboarded=true; S.firstDay; initLetters(); showTab('scr-home'); if(notif){ const t=$('toast-global'); t.textContent='좋아! 알림이 열리는 대로 아침마다 들고 올게. 이제 친구니까 말도 놓는다? 🐾'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); } }
 
 /* ── 관심사 온보딩 (수집①) ──
    key = 홈 섹션 key와 연결. 고른 관심사가 홈 정렬 가중치가 됨 */
@@ -549,11 +542,11 @@ function renderInterestChips(){
     const i=_intSel.indexOf(k);
     return `<span class="chip-sel ${i>=0?'on':''}" onclick="toggleInt('${k}')">${label}${i>=0?`<span class="ord">${i+1}</span>`:''}</span>`;
   }).join('');
-  const cta=$('int-cta'); if(cta){ cta.disabled=!_intSel.length; cta.textContent=_intSel.length?`이 ${_intSel.length}개로 시작하기 →`:'하나 이상 골라줘 🐾'; }
+  const cta=$('int-cta'); if(cta){ cta.disabled=!_intSel.length; cta.textContent=_intSel.length?`이 ${_intSel.length}개로 시작하기 →`:'하나 이상 골라주세요 🐾'; }
 }
 /* 고른 순서 = 우선순위. 배열로 순서 보존 */
 function toggleInt(k){ const i=_intSel.indexOf(k); i<0?_intSel.push(k):_intSel.splice(i,1); renderInterestChips(); }
-function saveInterests(){ if(_intSel&&_intSel.length) S.interests=[..._intSel]; go('scr-ob4'); }
+function saveInterests(){ if(_intSel&&_intSel.length) S.interests=[..._intSel]; go('scr-ob6'); }
 
 /* ═══ 홈 (CATALOG + 개인화 재배열) ═══ */
 function cardHtml(item,nm,secKey){
@@ -586,7 +579,7 @@ function homeSections(nm){
 /* ═══ 개인화 히어로 엔진 (펀스코어 · 기획서 13 이식) ═══ */
 const LBL=k=>(INTEREST_OPTS.find(o=>o[0]===k)||[,''])[1];
 function actOnclick(item){
-  const t=(item.t||'').replace('{M}',(new Date().getMonth()+1)%12+1).replace(/'/g,'');
+  const t=(item.t||'').replace('{M}',new Date().getMonth()+1).replace(/'/g,'');
   if(item.act==='funnel') return "openProduct('marriage')";
   if(item.act&&item.act.startsWith('funnel:')) return "openProduct('"+item.act.split(':')[1]+"')";
   if(item.act&&item.act.startsWith('tarot:')) return "tarotOpen('"+item.act.split(':')[1]+"','"+t+"')";
@@ -656,27 +649,29 @@ function heroCardHtml(nm){
   const ranked=rankHeroes(nm); if(!ranked.length) return '';
   const top=ranked[0], it=top.it, m=top.matched[0];
   const why = m ? `✨ ${S.name}님이 고른 '${LBL(m).replace(/^\S+ /,'')}' 관심사에 딱 맞아서` : `🔥 지금 가장 반응이 뜨거운 리포트`;
-  const disc=Math.round(it.price*1.3);
   return `<div class="sec-hd">⭐ 오늘 ${S.name}님에게 딱 하나 <small>자동 선택</small></div>
     <div class="hero-card" onclick="${actOnclick(it)}">
-      <div class="band"><span>🎯 ${it.badge==='HOT'?'지금 다들 보는':'따끈한'} 리포트</span><span class="timer" id="hero-tmr">23:59:41</span></div>
+      <div class="band"><span>🎯 ${it.badge==='HOT'?'지금 다들 보는':'따끈한'} 리포트</span><span class="timer" id="hero-tmr">오늘의 추천</span></div>
       <div class="body">
         <div class="why">${why}</div>
         <h3>${it.t}</h3>
         <div class="blur-prev"><p>${S.name}님의 사주로 본 결과, 핵심은 <b>정확히 ○○</b>이고 가장 중요한 타이밍은 ○요일이야. 이때 꼭 기억할 한 가지는…</p>
           <div class="lock"><div class="k">🔒</div><div class="t">잠금 해제하고 내 결과 보기</div></div></div>
-        <div class="hero-cta"><span>🐾 지금 열기 · ${it.price.toLocaleString()}젤리</span><span class="old">${disc.toLocaleString()}</span></div>
+        <div class="hero-cta"><span>🐾 지금 열기 · ${it.price.toLocaleString()}젤리</span></div>
       </div>
     </div>
     <div class="fixlink" onclick="_intSel=null;go('scr-ob-int');renderInterestChips()">이 추천, 안 맞아? 관심사 고치기 ✏️</div>`;
 }
-function startHeroTimer(){ if(_heroTmr)clearInterval(_heroTmr); let t=86381;
-  _heroTmr=setInterval(()=>{ const el=$('hero-tmr'); if(!el){clearInterval(_heroTmr);return;}
-    t=t<=0?86399:t-1; el.textContent=[t/3600,t%3600/60,t%60].map(x=>String(Math.floor(x)).padStart(2,'0')).join(':'); },1000); }
+/* 오늘의 추천은 자정에 갱신 — 실제 자정까지 남은 시간을 표시 (가짜 무한 타이머 제거) */
+function startHeroTimer(){ if(_heroTmr)clearInterval(_heroTmr);
+  const tick=()=>{ const el=$('hero-tmr'); if(!el){clearInterval(_heroTmr);return;}
+    const n=new Date(); const t=Math.max(0,Math.floor((new Date(n.getFullYear(),n.getMonth(),n.getDate()+1)-n)/1000));
+    el.textContent='오늘 추천 '+[t/3600,t%3600/60,t%60].map(x=>String(Math.floor(x)).padStart(2,'0')).join(':')+' 남음'; };
+  tick(); _heroTmr=setInterval(tick,1000); }
 /* L3 무료 쇼츠 스트립 (가변보상 도파민) */
 const SHORTS=[
   ['🍟','오늘 뭐 먹지?',['마라탕 🥵','국밥 🍚','샐러드 🥗','치킨 🍗','파스타 🍝'],'spin'],
-  ['🐶','강아지 속마음',['집사, 오늘 좀 멋진데? 🐾','간식 어디감? 😾','네 곁이 제일 좋아 💜'],''],
+  ['🐶','강아지 속마음',['우리 보호자, 오늘 좀 멋진데? 🐾','간식 어디감? 😤','네 곁이 제일 좋아 💜'],''],
   ['🙆','YES or NO',['YES! 질러도 좋은 날 🙆','조금만 기다려 🙅','반반의 날 🤔'],'spin'],
   ['🎨','오늘 행운 컬러',['라벤더 💜','민트 🌿','코랄 🧡','아이보리 🤍'],''],
   ['🍀','행운 카드',['오늘은 귀인을 만날 운 🍀','작은 선물이 올 운 🎁','미뤄둔 연락이 올 운 📩'],'spin'],
@@ -719,9 +714,9 @@ function shortKeep(){
 function renderHome(){
   renderJelly();
   const days=Math.floor((Date.now()-S.firstDay)/86400000)+1;
-  $('days-line').innerHTML=`${S.name}님이 보리와<br>함께한지 ${days}일째 🔥`;
+  $('days-line').innerHTML=`${S.name}님이 보리와<br>함께한 지 ${days}일째 🔥`;
   $('mascot-talk').textContent=MASCOT_TALK[hashN(S.name+new Date().getHours(),MASCOT_TALK.length)];
-  const nm=(new Date().getMonth()+1)%12+1;
+  const nm=new Date().getMonth()+1;
   const interests=S.interests, hidden=S.hidden, views=S.views;
   let secs=homeSections(nm);
   /* 정렬: 관심사 > 조회 많은 순 > 원래 순 */
@@ -748,7 +743,7 @@ function renderHome(){
   html += `</div>`;
   /* 💘 연애사주 3종 (기존 유지) */
   const yeonae=[
-    {t:'🔮 전남친과 재회의 골든타임은?',badge:'HOT',price:990,act:'intro:reunion'},
+    {t:'🔮 그 사람과 재회의 골든타임은?',badge:'HOT',price:990,act:'intro:reunion'},
     {t:'💖 이 사랑, 연애로 끝날까 결혼까지 갈까?',badge:'HOT',price:990,act:'intro:love2marry'},
     {t:'💞 이 사람, 평생 갈까 잠깐 스칠까?',badge:'NEW',price:880,act:'intro:lifelong'},
   ];
@@ -761,8 +756,8 @@ function renderHome(){
   /* L5 카테고리별 캐러셀 (모든 기존 섹션 유지) */
   html += shown.map(carou).join('');
   if(collapsed.length){
-    html += `<div class="sec-label grey" style="color:#a89f90">덜 궁금해하셔서 접어뒀어요</div>`;
-    html += collapsed.map(s=>`<div class="muted-card" onclick="unhideSec('${s.key}')"><span class="e">${s.label.match(/[\p{Emoji}]/u)?.[0]||'🔸'}</span><span class="t">${s.label.replace(/ *·.*/,'')}</span><span class="x">펼치기 ⌄</span></div>`).join('');
+    html += `<div class="sec-label grey" style="color:#a89f90">덜 보는 것 같아서 접어뒀어 🐾</div>`;
+    html += collapsed.map(s=>`<div class="muted-card" onclick="unhideSec('${s.key}')"><span class="e">${s.label.match(/\p{Extended_Pictographic}/u)?.[0]||'🔸'}</span><span class="t">${s.label.replace(/ *·.*/,'')}</span><span class="x">펼치기 ⌄</span></div>`).join('');
   }
   html += carou({key:'makers',label:'보리를 만드는 사람들',items:CATALOG.makers});
   $('home-sections').innerHTML=html;
@@ -777,9 +772,10 @@ function sajuNotiHtml(nm){
   const t=new Date(); const tI=dayIdx(t.getFullYear(),t.getMonth()+1,t.getDate());
   const tiljin=STEMS[tI%10]+BRANCHES[tI%12];
   const el=['목','화','토','금','수'][STEM_ELEM[tI%10]];
+  const elHj=['木','火','土','金','水'][STEM_ELEM[tI%10]];
   const seed=hashN(S.name+t.toDateString(),997);
   const lines=[
-    [`🔮 ${S.name}님, 오늘은 <b>${tiljin}일</b> — 마음이 흔들리기 쉬운 날`, `${el}(${el}) 기운이 강해 감정이 커지는 흐름이라, '그 사람' 생각이 유독 날 수 있어요. 지금 흐름 확인하기 좋은 날 🐾`],
+    [`🔮 ${S.name}님, 오늘은 <b>${tiljin}일</b> — 마음이 흔들리기 쉬운 날`, `${el}(${elHj}) 기운이 강해 감정이 커지는 흐름이라, '그 사람' 생각이 유독 날 수 있어요. 지금 흐름 확인하기 좋은 날 🐾`],
     [`🐾 ${S.name}님, 오늘 <b>${tiljin}일</b>의 기운이 어제와 달라졌어요`, `연애운이 움직이는 구간이라, 지난번 본 흐름이 오늘 바뀌었을 수 있어요.`],
     [`🌙 ${S.name}님, ${tiljin}일 — 인연의 문이 살짝 열리는 날`, `${el} 기운이 관계를 건드리는 흐름. 오늘 확인해두면 타이밍을 놓치지 않아요.`],
   ][seed%3];
@@ -884,7 +880,7 @@ function tarotDraw(){
   const c=tarotCard, nm=S.name;
   let head=c.head, sub=c.sub, p1=c.p1, p2=c.p2;
   if(tarotKind==='contact'&&extra){
-    head=`${nm}야, ${extra}에게서<br>연락이 올 가능성이 ${seed%2? '커 보여!':'천천히 열리고 있어'}`;
+    head=`${nm}${josa(nm,'아','야')}, ${extra}에게서<br>${seed%2? '연락이 올 가능성이 커 보여!':'연락의 문이 천천히 열리고 있어'}`;
     sub=`${extra}의 기운이 ${c.kw[0]}·${c.kw[1]} 쪽으로 흐르고 있어.`;
     p1=`${c.ko} 카드가 나왔어. ${c.p1}`;
     p2=`${extra}의 마음이 움직일 때까지, 너는 네 하루를 예쁘게 보내고 있으면 돼. ${c.p2}`;
@@ -939,7 +935,7 @@ function tarotDraw(){
     <div class="kw-row">${c.kw.map(k=>`<span class="kw">${k}</span>`).join('')}</div>
     <p class="rtext">${p1}</p>
     <p class="rtext">${p2}</p>
-    <div class="react-total">이 운세, 어땠멍? <b>${(90000+seed).toLocaleString()}명</b>이 반응했어요</div>
+    <div class="react-total">이 운세, 어땠멍? <b>${(1200+seed%800).toLocaleString()}명</b>이 반응했어요</div>
     <div class="react-row">
       ${[['💜','고마워'],['💪','힘난다'],['🍀','도움돼'],['😀','재밌어'],['🤔','아쉬워']].map(([e,l])=>
         `<button class="react-btn" onclick="this.classList.toggle('picked')"><span class="re">${e}</span>${l}</button>`).join('')}
@@ -976,6 +972,7 @@ function loadProfile(i){
 }
 function renderToday(keepName){
   if(!keepName) $('t-name').textContent=S.name;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test($('t-date').value)) $('t-date').value='2000-01-01'; /* 날짜를 지워도 undefined 사주가 안 나오게 */
   const [y,m,d]=$('t-date').value.split('-').map(Number);
   const [hh,mm]=$('t-time').value?$('t-time').value.split(':').map(Number):[null,0];
   const fp=fourPillars(y,m,d,hh,mm);
@@ -994,7 +991,7 @@ function renderToday(keepName){
   $('t-today-score').textContent=`오늘의 운세 점수 ${40+hashN(seed,55)}점`;
   const comments=['겸손과 조화로움이 필요해','작은 약속이 큰 인연으로 이어지는 날','지갑 단속, 마음 단속 둘 다 필요해','미뤄둔 연락을 하기 좋은 날','오늘은 네 편이 많은 날이야'];
   $('t-today-comment').textContent=`${S.name}, ${comments[hashN(seed,comments.length)]}`;
-  const cats=[['💰','재물운'],['💘','애정운'],['💪','건강운'],['📖','직업/학업운']];
+  const cats=[['💰','재물운'],['💘','애정운'],['💪','건강운'],['📖','학업/직장운']];
   $('t-grid').innerHTML=cats.map(([e,label],i)=>`<div class="tcard"><span class="e">${e}</span>${label}<div class="p">${30+hashN(seed+i,65)}점</div></div>`).join('');
   const warns=['빨간 우산','낡은 이어폰','차가운 커피','뾰족한 말','헐거운 신발'];
   const lucks=['노란 손수건','네잎클로버 굿즈','따뜻한 라떼','창가 자리','오래된 플레이리스트'];
@@ -1003,14 +1000,18 @@ function renderToday(keepName){
 }
 function renderMore(){
   $('m-name').textContent=S.name;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test($('t-date').value)) $('t-date').value='2000-01-01';
   const [y,m,d]=$('t-date').value.split('-').map(Number);
   const tm=$('t-time').value||'모름';
   $('m-birth').textContent=`${y}년 ${m}월 ${d}일 ${tm} 생 · 수정은 오늘운세 탭에서`;
 }
 
 /* ═══ 일기장 ═══ */
+let _dOff=0; /* 달력 월 이동 (‹ › 죽은 버튼이던 것 실기능화) */
+function diaryNav(d){ _dOff+=d; if(_dOff>0)_dOff=0; renderDiary(); }
 function renderDiary(){
-  const now=new Date(), y=now.getFullYear(), m=now.getMonth();
+  const now=new Date(), view=new Date(now.getFullYear(),now.getMonth()+_dOff,1), y=view.getFullYear(), m=view.getMonth();
+  const isCur=_dOff===0;
   $('cal-title').textContent=`${y}년 ${m+1}월`;
   const first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate();
   let cells=['일','월','화','수','목','금','토'].map(w=>`<span class="wd">${w}</span>`).join('');
@@ -1018,7 +1019,7 @@ function renderDiary(){
   const diary=S.diary;
   for(let d=1;d<=days;d++){
     const has=diary.some(e=>e.d===`${y}-${m+1}-${d}`);
-    cells+=`<button class="day ${d===now.getDate()?'today':''} ${has?'has':''}">${d}${d===now.getDate()?' ＋':''}</button>`;
+    cells+=`<button class="day ${isCur&&d===now.getDate()?'today':''} ${has?'has':''}">${d}${isCur&&d===now.getDate()?' ＋':''}</button>`;
   }
   $('cal').innerHTML=cells;
   $('diary-replies').innerHTML=diary.slice(-3).map(e=>
@@ -1107,20 +1108,22 @@ function renderFunnelG(F){
     </div>
     <p class="volume">${F.volume}</p>
     ${samplePreview(F)}
-    <div class="react">
+    ${(()=>{ /* 반응 그래프 — 상품마다 1위 반응·비율이 달라지게 (전 상품 동일 복붙 티 제거) */
+      const rs=hashN(F.title,997);
+      const reacts=[['💜 고마워','#5b7bb0'],['💪 힘난다','#6db8ff'],['🍀 도움돼','#7ec96f'],['😀 재밌어','#ffcf4d']];
+      const ws=reacts.map((r,i)=>58+((rs>>(i*2))%37));
+      const top=reacts[ws.indexOf(Math.max(...ws))][0];
+      return `<div class="react">
       <h3>${F.seen}명이 보고 갔어요!</h3>
-      <p>'고마워 💜'를 가장 많이 받았어요.</p>
-      <div class="bar-row"><span class="em">💜 고마워</span><div class="bar-bg"><div class="bar" style="width:84%;background:#5b7bb0"></div></div></div>
-      <div class="bar-row"><span class="em">💪 힘난다</span><div class="bar-bg"><div class="bar" style="width:55%;background:#6db8ff"></div></div></div>
-      <div class="bar-row"><span class="em">🍀 도움돼</span><div class="bar-bg"><div class="bar" style="width:62%;background:#7ec96f"></div></div></div>
-      <div class="bar-row"><span class="em">😀 재밌어</span><div class="bar-bg"><div class="bar" style="width:70%;background:#ffcf4d"></div></div></div>
-      <div class="bar-row"><span class="em">🤔 아쉬워</span><div class="bar-bg"><div class="bar" style="width:10%;background:#b9b2a6"></div></div></div>
-    </div>
+      <p>'${top}'${josa(top.replace(/^\S+ /,''),'을','를')} 가장 많이 받았어요.</p>
+      ${reacts.map(([em,cl],i)=>`<div class="bar-row"><span class="em">${em}</span><div class="bar-bg"><div class="bar" style="width:${ws[i]}%;background:${cl}"></div></div></div>`).join('')}
+      <div class="bar-row"><span class="em">🤔 아쉬워</span><div class="bar-bg"><div class="bar" style="width:${6+rs%7}%;background:#b9b2a6"></div></div></div>
+    </div>`; })()}
     <div style="height:20px"></div>`;
 }
 /* ═══ 통합 입력 모델 — 모든 상품/타로가 이 하나의 INPUT을 씀 ═══ */
 const INPUT = {
-  name:'집사', gender:'여자', d:'2000-01-01', t:'', unknown:true, cal:'양력',
+  name:'보호자', gender:'여자', d:'2000-01-01', t:'', unknown:true, cal:'양력',
   sname:'',                                    /* 성 — 08-02: 성·이름 분리 입력 (결과지는 이름만 호명) */
   partner:{ name:'', sname:'', d:'', has:false, t:'', tunknown:false }
 };
@@ -1140,7 +1143,7 @@ function buildSteps(){
         if(!sn){wobble('s-sname');return false;} if(!v){wobble('s-name');return false;}
         INPUT.sname=sn; INPUT.name=v; return true; } },
     { title:'성별', label:'성별',
-      render:()=>`<h2>${INPUT.name}는 어느 쪽이야?</h2>
+      render:()=>`<h2>${INPUT.name}${josa(INPUT.name,'은','는')} 어느 쪽이야?</h2>
         <div class="seg big" id="s-gender">
           <button class="${INPUT.gender==='여자'?'on':''}" onclick="segPick(this)">여자</button>
           <button class="${INPUT.gender==='남자'?'on':''}" onclick="segPick(this)">남자</button></div>`,
@@ -1235,13 +1238,13 @@ function renderPay(){
   $('pay-box').innerHTML=`
     <div class="pay-row"><span>상품 금액</span><span><b>${F.price.toLocaleString()} 젤리</b></span></div>
     <div class="pay-row"><span>내 젤리</span><span><span class="jelly-n">${S.jelly>=999000?'∞':S.jelly.toLocaleString()}</span> 젤리</span></div>
-    <div class="pay-row"><span>🎟️ 신규 가입 할인 쿠폰 (30%)</span><span class="minus">− ${disc.toLocaleString()} 젤리</span></div>
+    <div class="pay-row"><span>🎟️ 보리의 응원 쿠폰 (30%)</span><span class="minus">− ${disc.toLocaleString()} 젤리</span></div>
     <div class="pay-row total"><span>최종 금액</span><span>🐾 ${fin.toLocaleString()} 젤리</span></div>`;
   $('pay-btn').textContent=`🐾 ${fin.toLocaleString()} 젤리 내고 보기`;
 }
 function pay(){
   const F=FUNNELS[PRODUCT], fin=F.price-Math.round(F.price*0.3);
-  if(S.jelly<fin){ stub('젤리가 부족해 — 젤리공장'); return; }
+  if(S.jelly<fin){ const t=$('toast-global'); t.textContent='젤리가 조금 모자라! 젤리공장에서 모으고 오자 🐾'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2300); go('scr-jelly'); return; }
   S.jelly=S.jelly-fin;
   S.addBox({ type:'report', product:PRODUCT, title:F.emoji+' '+F.title, date:new Date().toLocaleDateString('ko-KR'),
     n:INPUT.name, sn:INPUT.sname||'', d:INPUT.d, t:INPUT.unknown?'':INPUT.t, g:INPUT.gender,
@@ -1317,7 +1320,7 @@ function openReport(p){
   const ctx={ nm:p.n, g:p.g, x:p.x, xd:p.xd, y, fp, seed,
     ilju:pName(fp.day), animal:animalOf(fp.day), emo:ANIMAL_EMOJI[fp.day.b],
     myEl:STEM_ELEM[fp.day.s], age:ageGroup(y),
-    partner:p.g==='여자'?'그 남자':'그 사람',
+    partner:'그 사람',
     pfp, pilju, panimal };
   const builders={ marriage:buildMarriage, reunion:buildReunion, simhwa:buildSimhwa, choeae:buildChoeae,
     couple:buildCouple, marryTarget:buildMarryTarget, selfworth:buildSelfworth, gobaek:buildGobaek,
@@ -1587,8 +1590,8 @@ function elemDistCard(c){
   /* 남들과의 차이로 푸는 대조 해설: 강한 오행(많으면/없으면) + 부족 오행(많으면/없으면) */
   const explain =
     `${ELEM_STRONG[s]}`
-    + ` 참고로 <b>${EN[s]}이 부족한</b> 사람은 ${ELEM_LACK[s]} 편인데, 너는 그 정반대야.`
-    + `<br><br>반대로 너는 <b>${EN[l]}이 거의 없어</b>. ${EN[l]}이 많은 사람은 ${ELEM_RICH_SHORT[l]} 하는데, 너는 그 결이 옅어서 ${ELEM_LACK[l]} 쪽에 가까워.`
+    + ` 참고로 <b>${EN[s]}${josa(EN[s],'이','가')} 부족한</b> 사람은 ${ELEM_LACK[s]} 편인데, 너는 그 정반대야.`
+    + `<br><br>반대로 너는 <b>${EN[l]}${josa(EN[l],'이','가')} 거의 없어</b>. ${EN[l]}${josa(EN[l],'이','가')} 많은 사람은 ${ELEM_RICH_SHORT[l]} 하는데, 너는 그 결이 옅어서 ${ELEM_LACK[l]} 쪽에 가까워.`
     + `<br><br>그래서 <b>${EN[s]} 과잉 + ${EN[l]} 결핍</b>이라는 이 조합이, 남들과 확실히 갈리는 <span class="gold">너만의 성격 지문</span>이야 🐾`;
   return `<h2>네 오행 분포부터 🔍</h2>
     <p class="ctr" style="font-size:12.5px;color:#8792ab;padding-bottom:4px">막대가 길수록 그 기운이 강해 · 숫자는 사주 8글자 중 개수</p>
@@ -1667,7 +1670,7 @@ function charmCard(c){
 }
 /* 상처 — 트리거 체크리스트로 자기참조 강화 */
 function woundCard(c){
-  return `<h2>${c.nm}가 유독 아파하는 지점 🩹</h2><p>${WOUND_POOL[c.myEl]}</p>
+  return `<h2>${c.nm}${josa(c.nm,'이','가')} 유독 아파하는 지점 🩹</h2><p>${WOUND_POOL[c.myEl]}</p>
     ${RV.checks([
       ['상대의 답장이 늦어지면 이유를 계속 곱씹는다', true],
       ['서운한 걸 그 자리에서 말하지 못하고 삼킨다', true],
@@ -1798,7 +1801,7 @@ function partnerDeep(c, who){
     dayMasterCard(c.pfp,false,who),
     `<h2>${who}의 기운은…</h2><p>${PELEM_STR[pec.strong]}<br>${PELEM_LACK[pec.lack]}</p>
      ${RV.radar(pec.cnt)}
-     ${RV.quote(`${who}는 <b>${EN[pec.strong]}</b>이 강하고 <b>${EN[pec.lack]}</b>이 옅어. 너와 겹치는 부분에선 편하고, 어긋나는 부분에서 늘 같은 갈등이 나.`)}`,
+     ${RV.quote(`${who}${josa(who,'은','는')} <b>${EN[pec.strong]}</b>${josa(EN[pec.strong],'이','가')} 강하고 <b>${EN[pec.lack]}</b>${josa(EN[pec.lack],'이','가')} 옅어. 너와 겹치는 부분에선 편하고, 어긋나는 부분에서 늘 같은 갈등이 나.`)}`,
     /* 두 사람 오행 맞대보기 — 표로 한눈에 */
     `<h2>너 vs ${who}, 기운 맞대보기 ⚖️</h2>
      ${RV.vs(c.nm, who, EN.map((e,i)=>[e,
@@ -1934,7 +1937,7 @@ function summaryCard(c){
       <li>일주 ${c.ilju} · ${c.animal} ${c.emo}</li>
       <li>${EN[ec.strong]} 강 · ${EN[ec.lack]} 약 — ${ELEM_RICH_SHORT[ec.strong]}</li>
       <li>기억할 시기: ${t[0][0]}.${t[0][1]} · ${t[1][0]}.${t[1][1]}</li>
-      ${gh?`<li>${who}와의 궁합 ${gh.score}점 — ${gh.label}</li>`:''}
+      ${gh?`<li>${who}${josa(who,'과','와')}의 궁합 ${gh.score}점 — ${gh.label}</li>`:''}
       <li>한 줄: ${DIFF_TRAIT[c.seed%DIFF_TRAIT.length][0]}의 소유자</li>
     </ul></div>
     <p class="ctr" style="font-size:13px;padding-top:12px">캡처해서 지니고 다녀도 좋아 🐾</p>`;
@@ -1961,7 +1964,7 @@ function buildPastlife(c){
   const era=PL_ERA[s%PL_ERA.length], climax=PL_CLIMAX[s%PL_CLIMAX.length], endsc=PL_ENDSCENE[s%PL_ENDSCENE.length];
   const dejavu=PL_DEJAVU[s%PL_DEJAVU.length];
   const cards=[
-    `<div class="big">🔮</div><h2>${c.nm}…<br>${who}와의 전생 기록,<br>지금 열람할게</h2>
+    `<div class="big">🔮</div><h2>${c.nm}…<br>${who}${josa(who,'과','와')}의 전생 기록,<br>지금 열람할게</h2>
      <p class="ctr">${PL_PROLOGUE[s%PL_PROLOGUE.length]}</p>
      <div class="icon-row"><span>📜 제1장 만남</span><span>🔥 제2장 절정</span><span>🌙 제3장 결말</span><span>✨ 현생 연결</span></div>`,
   ];
@@ -2016,7 +2019,7 @@ function buildMarriage(c){
      <p class="ctr" style="font-size:12px;color:#8792ab">${c.fp.hour?'시 · 일 · 월 · 연':'(시주는 태어난 시간을 몰라서 뺐어) · 일 · 월 · 연'}</p>
      <p class="ctr" style="padding-top:10px">${c.y}년생 ${c.nm}의 일주는 <span class="gold">${c.ilju}</span> — <span class="gold">${c.animal}</span>의 기운이야.</p>`,
     elemDistCard(c),
-    `<h2>${c.animal}를 가진<br>${c.nm}는…</h2><div class="big">${c.emo}</div>
+    `<h2>${c.animal}${josa(c.animal,'을','를')} 가진<br>${c.nm}${josa(c.nm,'은','는')}…</h2><div class="big">${c.emo}</div>
      <p>${ELEM_COMPARE[c.myEl]}</p>`,
     diffCard(c),
     `<div class="big">${c.emo}</div><p class="ctr">${R_BARNUM1[c.seed%R_BARNUM1.length]}</p>
@@ -2044,7 +2047,7 @@ function buildMarriage(c){
     `<div class="big">🐶🔍</div><h2>${c.partner}의 외모를<br>좀 더 자세히 읽어줄게</h2>`,
     `<h2>${c.partner}의 첫인상 · 외모</h2><ul class="rlist">${looks.map(x=>`<li>${x}</li>`).join('')}</ul>
      <p style="padding-top:8px;color:#8792ab;font-size:13px">매력적으로 보인다는 게 핵심이야 — 그래서 미리 알아둬야 해.</p>`,
-    `<h2>${c.partner}의 초상화 🖼️</h2><div class="rportrait"><div class="face">${c.g==='여자'?'🧑':'👩'}</div></div>
+    `<h2>${c.partner}의 초상화 🖼️</h2><div class="rportrait"><div class="face">🧑</div></div>
      <p class="ctr" style="font-size:12.5px;color:#8792ab">(흐릿하게만 보여줄게 — 선명해지는 순간은 실제로 마주쳤을 때야)</p>`,
     `<h2>악연이 들어오는 시기 😮</h2><p class="ctr">10년 안에 <span class="gold">세 번의 고비</span>가 보여.</p>
      ${RV.rail('세 번의 고비', times.map((t,i)=>[`${t[1]}월`,`${t[0]}`,i===0]))}
@@ -2060,10 +2063,10 @@ function buildMarriage(c){
      ])}
      ${RV.picto('이 체크만 지켜도 피해가는 확률',8,'미리 알면 대부분 피할 수 있어. 문제는 <b>모르고 지나치는 것</b>뿐이야.','🛡️')}`,
     `<div class="big" style="font-size:38px">🐶</div>
-     <div class="rnote"><h4>📒 ${c.nm}가 피해야 할 사람, 한장 정리!</h4><ul>
+     <div class="rnote"><h4>📒 ${c.nm}${josa(c.nm,'이','가')} 피해야 할 사람, 한장 정리!</h4><ul>
        <li>${times.map(t=>t[0]+'.'+t[1]).join(' · ')} 새 인연 조심</li>
        <li>${chars[0]}</li><li>${chars[1]}</li><li>${looks[0]}</li><li>${avoid[0]}</li></ul></div>
-     <p class="ctr" style="font-size:13px;padding-top:12px">캡처해서 지니고 다녀도 좋아 🐾</p>`,
+     <p class="ctr" style="font-size:13px;padding-top:12px">이 카드만 캡처해두면 든든할 거야 🐾</p>`,
     `<div class="big">💜</div><h2>겁주려던 게 아니야</h2>
      <p class="ctr">이 사람만 피하면, ${c.nm} 너는 <span class="gold">꽤 괜찮은 ${c.age==='teen'?'인연운':'결혼운'}</span>을 가진 사주야.<br>이건 나쁜 예언이 아니라 <span class="pp">네 행복을 지키는 지도</span>야.</p>
      <p class="ctr" style="padding-top:14px;font-size:13.5px;color:#8792ab">이 리포트는 운세보관함에 저장해뒀어. 친구 사주도 궁금하면 홈에서 다시 봐줘!</p>`
@@ -2083,7 +2086,7 @@ function buildReunion(c){
   const paradox=RE_PARADOX[0];
   const formulas=pickN(RE_FORMULA,c.seed,3);
   const cards=[
-    `<div class="big">🎯</div><h2>${c.nm},<br>${who}를 다시 만나고 싶구나</h2>
+    `<div class="big">🎯</div><h2>${c.nm},<br>${who}${josa(who,'을','를')} 다시 만나고 싶구나</h2>
      <p class="ctr">매달리라는 말은 안 할게. 대신 <span class="gold">마음이 열리는 시기</span>와 <span class="pp">그때 쓸 전략</span>을 같이 보자.</p>
      <div class="icon-row"><span>🔑 주도권</span><span>🗓️ 골든타임</span><span>💬 연락 각본</span><span>🛡️ 재회 후</span></div>`,
     ...selfDeep(c),
@@ -2140,7 +2143,8 @@ function buildReunion(c){
        [`${times[2][0]}.${times[2][1]} · 예비 ②`, rpct(s,101,30,52),'blu'],
      ])}
      ${RV.quote(`골든타임은 <b>"연락해도 되는 날"</b>이지 <b>"반드시 잘 되는 날"</b>이 아니야. 준비가 된 상태로 그날을 맞아야 의미가 있어.`)}`,
-    `<h2>⏳ 골든타임 전, 침묵기 규칙</h2><ul class="rlist">${silent.map(x=>`<li>${x}</li>`).join('')}</ul>
+    `<h2>⏳ 골든타임 전, 침묵기 규칙</h2>
+     <p class="ctr" style="font-size:13px;color:#8792ab">이 시기의 모든 행동은 "하지 않는 것"이 점수야.</p>
      ${RV.dos([
        [false,'긴 편지·전화 — 진심이 무거울수록 상대는 문을 닫아'],
        [false,'새벽 감성 글, 일부러 잘 지내는 척 SNS'],
@@ -2149,7 +2153,7 @@ function buildReunion(c){
      ])}
      ${RV.quote('지금 참는 건 포기가 아니라 <b>장전</b>이야.')}`,
     `<h2>침묵기에 할 일은 하나야</h2>
-     <p class="ctr">${who}가 다시 만났을 때 "어, 좀 달라졌네?"라고 느낄 <span class="gold">한 가지</span>를 만들어 둬.</p>
+     <p class="ctr">${who}${josa(who,'이','가')} 다시 만났을 때 "어, 좀 달라졌네?"라고 느낄 <span class="gold">한 가지</span>를 만들어 둬.</p>
      ${RV.tiles([['1개','만들 변화의 수','gold'],[`${rpct(s,89,3,6)}주`,'필요한 시간','pur'],[`${rpct(s,90,70,93)}%`,'체감 효과','grn']])}
      ${RV.table([
        ['외형','머리·자세·표정 중 하나만 — 사진 한 장에 드러나는 것'],
@@ -2218,7 +2222,7 @@ function buildReunion(c){
      ${RV.table(pickN(RE_SIGNALS,s,4).map(x=>[x[0],`<b>${x[1]}</b><br><span style="color:#8792ab;font-size:12px">→ ${x[2]}</span>`]))}`,
     `<h2>🌙 보고 싶어 미칠 것 같은 밤엔</h2>
      ${RV.table(RE_NIGHT.map(n=>[n[0],n[1]]))}
-     ${RV.quote('이 밤을 넘기는 횟수만큼 주도권이 쌓여. <b>새벽의 진심은 아침의 후회</b>라는 것만 기억해.')}`,
+     ${RV.quote('이 밤을 넘기는 횟수만큼 주도권이 쌓여 — 그 파도는 <b>평균 10분</b>이면 지나가.')}`,
     `<h2>🕊️ 정직하게 — 놓아줘야 할 신호</h2>
      <p class="ctr" style="font-size:13px;color:#8792ab">희망만 파는 리포트는 너를 오래 아프게 해. 이 넷 중 둘 이상이면, 이번 인연은 접는 게 네 운을 지키는 길이야.</p>
      ${RV.checks(RE_LETGO.map(x=>[x,false]))}
@@ -2247,7 +2251,7 @@ function buildSimhwa(c){
     `<div class="big">💗</div><h2>${c.nm},<br>${who}의 지금 마음을<br>3장의 카드로 볼게</h2>
      <p class="ctr">현재 상황 → 재회 확률을 올리는 법 → 오늘 연락해도 될지, 순서대로 가자.</p>`,
     `<h2>그 전에 — 왜 하필 '너'였을까 🔍</h2>
-     <p class="ctr" style="font-size:13px;color:#8792ab">${who}가 너를 쉽게 못 지우는 건, 네 사주가 남들과 확실히 다른 결을 가졌기 때문이야. 그 차이부터 보자.</p>`,
+     <p class="ctr" style="font-size:13px;color:#8792ab">${who}${josa(who,'이','가')} 너를 쉽게 못 지우는 건, 네 사주가 남들과 확실히 다른 결을 가졌기 때문이야. 그 차이부터 보자.</p>`,
     ...selfDeep(c),
     ...partnerDeep(c,who),
     `<h2>카드 1 · ${who}의 현재 🙈</h2><div class="big">${cards[0].emo}</div>
@@ -2260,9 +2264,9 @@ function buildSimhwa(c){
     `<h2>카드 3 · 오늘 연락해도 될까 💬</h2><div class="big">${cards[2].emo}</div>
      <p class="ctr"><span class="gold">〈${cards[2].name}〉</span></p>
      <p class="ctr">${c.seed%2? '오늘은 <b>보내도 되는 날</b>이야 — 단, 안부 한 줄까지만.':'오늘은 <b>아껴두는 날</b>이야. 서두른 연락은 지금의 흐름을 깨.'}</p>`,
-    `<h2>지금 시점 재회 흐름 🌡️</h2>
+    `<h2>그 사람 마음속 '내 지분' 🌡️</h2>
      <p class="ctr"><span class="compat-score" style="color:#e8a33d">${prob}%</span></p>
-     <p class="ctr" style="font-size:13px;color:#8792ab">숫자는 오늘 기준 흐름이야 — 네 행동에 따라 매일 움직여.</p>`,
+     <p class="ctr" style="font-size:13px;color:#8792ab">오늘 기준, 그 사람 마음속에 남아 있는 네 자리야 — 네 행동에 따라 매일 움직여.</p>`,
     `<div class="rnote"><h4>📒 오늘의 결론</h4><ul>
        <li>${who}의 마음: 닫힌 게 아니라 잠긴 상태</li>
        <li>올리는 법: ${RE_SILENT[c.seed%RE_SILENT.length].slice(0,28)}…</li>
@@ -2289,7 +2293,7 @@ function buildChoeae(c){
      <p class="ctr" style="font-size:13px;color:#8792ab">(상위 ${100-score+3}% 케미 — 어디까지나 재미로!)</p>`,
     `<h2>너희 케미 유형은…</h2><h2>${type[0]}</h2><p class="ctr">${type[1]}</p>`,
     `<h2>찰떡인 순간 💖</h2>
-     <p class="ctr">${who}의 무대(일) 에너지가 지칠 때, ${c.animal} 기운의 ${c.nm}가 주는 <span class="gold">잔잔한 응원</span>이 정확히 꽂히는 구조야.</p>`,
+     <p class="ctr">${who}의 무대(일) 에너지가 지칠 때, ${c.animal} 기운의 ${c.nm}${josa(c.nm,'이','가')} 주는 <span class="gold">잔잔한 응원</span>이 정확히 꽂히는 구조야.</p>`,
     `<h2>솔직히 상극인 순간 💔</h2>
      <p class="ctr">${type[0].includes('불꽃')||type[0].includes('밀당')?'둘 다 고집이 세지는 날엔 아무도 안 져. 그날은 서로의 팬으로 한 발 물러서기.':'둘 다 속마음을 늦게 여는 편이라, 현실에서 만났다면 썸이 아주 길었을 거야.'}</p>`,
     `<h2>🌙 전생의 우리는</h2><p class="ctr">${past}</p>`,
@@ -2302,7 +2306,7 @@ function buildChoeae(c){
 function partnerCard(c,who){
   if(!c.pfp) return '';
   return `<h2>${who}의 사주도 봤어 🔍</h2>${pillarMini(c.pfp)}
-     <p class="ctr">${who}는 <span class="gold">${c.pilju} · ${c.panimal}</span>의 기운. 너의 ${c.animal}와 어떻게 맞물리는지가 이 리포트의 핵심이야.</p>`;
+     <p class="ctr">${who}${josa(who,'은','는')} <span class="gold">${c.pilju} · ${c.panimal}</span>의 기운. 너의 ${c.animal}${josa(c.animal,'과','와')} 어떻게 맞물리는지가 이 리포트의 핵심이야.</p>`;
 }
 
 /* ── 우리가 자꾸 싸우는 이유 (couple) ── */
@@ -2336,18 +2340,18 @@ function buildMarryTarget(c){
   const who=c.x||'그 사람';
   const want=MT_WANT[c.seed%MT_WANT.length], match=MT_MATCH[c.seed%MT_MATCH.length], gap=MT_GAP[c.seed%MT_GAP.length];
   const cards=[
-    `<div class="big">💍</div><h2>${c.nm},<br>${who}가 그리는 결혼 상대…<br>그게 지금의 나일까?</h2>
+    `<div class="big">💍</div><h2>${c.nm},<br>${who}${josa(who,'이','가')} 그리는 결혼 상대…<br>그게 지금의 나일까?</h2>
      <p class="ctr">겁먹지 마. <span class="gold">겹치는 점</span>과 <span class="pp">좁힐 점</span>을 나눠서 보여줄게.</p>`,
     ...selfDeep(c),
   ];
   cards.push(...partnerDeep(c,who));
   cards.push(
-    `<h2>${who}가 무의식중에 그리는 결혼 상대 💍</h2><p>${want}</p>`,
+    `<h2>${who}${josa(who,'이','가')} 무의식중에 그리는 결혼 상대 💍</h2><p>${want}</p>`,
     `<h2>지금의 나와 겹치는 점 ✅</h2><p>${match}</p>`,
     `<h2>딱 한 칸, 좁힐 점 🌱</h2><p>${gap}</p>
      <p style="padding-top:8px;color:#8792ab;font-size:13px">이건 흠이 아니라 "여기만 맞추면 된다"는 지도야.</p>`,
     `<div class="big">💜</div><h2>결론</h2>
-     <p class="ctr">${who}가 원하는 상의 <span class="gold">가장 큰 부분을 너는 이미 갖고 있어.</span> 나머지 한 칸은 대화로 충분히 좁혀지는 거리야.</p>`
+     <p class="ctr">${who}${josa(who,'이','가')} 원하는 상의 <span class="gold">가장 큰 부분을 너는 이미 갖고 있어.</span> 나머지 한 칸은 대화로 충분히 좁혀지는 거리야.</p>`
   );
   return cards;
 }
@@ -2389,7 +2393,7 @@ function buildGobaek(c){
     /* 08-02 지시: 성별별 고백 전략 분기 — 남=신호 보며 직접 고백 / 여=티는 최대, 결정타는 상대 몫 */
     female
       ? `<h2>🧭 ${c.nm}의 전략 — 티는 다 내되, 고백은 ${who} 몫</h2>
-     <p>네 흐름에선 <b>직접 고백은 아껴두는 게 정답</b>이야. 결정적인 그 한 문장만 빼고 <b>전부 티를 내</b> — 시선·웃음·먼저 챙기기·둘만 아는 농담까지. 확신이 차오르면 결정타는 ${who}가 치게 돼 있어. 그게 이 관계가 제일 예쁘게 시작되는 각본이야.</p>
+     <p>네 흐름에선 <b>직접 고백은 아껴두는 게 정답</b>이야. 결정적인 그 한 문장만 빼고 <b>전부 티를 내</b> — 시선·웃음·먼저 챙기기·둘만 아는 농담까지. 확신이 차오르면 결정타는 ${who}${josa(who,'이','가')} 치게 돼 있어. 그게 이 관계가 제일 예쁘게 시작되는 각본이야.</p>
      ${RV.dos([
        [true,'3초 눈맞춤 · 이름 불러 말 걸기 · "너랑 있으면 편해"까지는 전부 OK'],
        [true,'골든타임 즈음 둘만의 자리 만들기 — 판은 네가 깔고'],
@@ -2408,7 +2412,7 @@ function buildGobaek(c){
        [false,'신호 확인 없이 장문 고백 — 부담부터 안겨'],
        [false,'확인만 반년째 — 신호에도 유통기한이 있어'],
      ])}`,
-    `<h2>💬 성공률 높이는 첫마디</h2><div class="script-box"><b>${female?'그 사람이 고백하게 만드는 문장':'이렇게 시작해봐'}</b>${female?'「요즘 누가 자꾸 생각나서 큰일이야」 — 여기까지만. 다음 문장은 '+who+'가 잇게 두는 거야.':script}</div>
+    `<h2>💬 성공률 높이는 첫마디</h2><div class="script-box"><b>${female?'그 사람이 고백하게 만드는 문장':'이렇게 시작해봐'}</b>${female?'「요즘 누가 자꾸 생각나서 큰일이야」 — 여기까지만. 다음 문장은 '+who+josa(who,'이','가')+' 잇게 두는 거야.':script}</div>
      <p style="font-size:13px;color:#8792ab">무겁지 않게 — 관계의 이름은 그 다음에 붙여도 돼.</p>`,
     `<div class="big">💜</div><h2>결과가 어떻든 괜찮아</h2>
      <p class="ctr">${female?'티를 낸 만큼 관계는 이미 움직이고 있어. 서두르지 않는 게 네 각본의 완성이야.':'타이밍 맞춰 진심을 전한 것만으로 넌 이미 잘한 거야. 어색해질까 봐 못 하는 것보다, <span class="gold">해보고 아는 게</span> 네 사주엔 훨씬 나아.'}</p>`
@@ -2463,7 +2467,7 @@ function buildLoveMarry(c){
   const talkT=times[0];
   const pEl=c.pfp?elemOf(c.pfp):((c.myEl+2)%5);
   const cards=[
-    `<div class="big">💖</div><h2>${c.nm},<br>${who}와의 이 사랑…<br>연애로 끝날까, 결혼까지 갈까?</h2>
+    `<div class="big">💖</div><h2>${c.nm},<br>${who}${josa(who,'과','와')}의 이 사랑…<br>연애로 끝날까, 결혼까지 갈까?</h2>
      <p class="ctr">${LM_AGE_INTRO[c.age]}</p>
      <div class="icon-row"><span>💞 연애합</span><span>💍 결혼합</span><span>🔔 신호들</span><span>📅 시기</span></div>`,
     `<h2>먼저 알아둘 것 — 연애합 ≠ 결혼합</h2>
@@ -2515,8 +2519,8 @@ function buildLoveMarry(c){
        ['서운함 처리',`${rpct(s,220,40,70)}% 표현`,`${rpct(s,221,55,85)}% 표현 — 늘어야 해`],
        ['가장 커지는 것','설렘의 기술','버티는 기술'],
      ])}`,
-    `<h2>🤵 결혼하면, ${who}는 이렇게 변해</h2>
-     <p>${LM_CHANGE_YOU[pEl].replaceAll('{who}',who)}</p>
+    `<h2>🤵 결혼하면, ${who}${josa(who,'은','는')} 이렇게 변해</h2>
+     <p>${LM_CHANGE_YOU[pEl].replaceAll('{who}는',who+josa(who,'은','는')).replaceAll('{who}',who)}</p>
      ${RV.gauges(`${who}의 결혼 후 예보`,[
        ['다정함 유지율', rpct(s,222,52,94),'red'],
        ['책임감 상승폭', rpct(s,223,60,96),'gold'],
@@ -2559,7 +2563,7 @@ function buildLoveMarry(c){
     `<div class="big">💜</div><h2>마지막으로, 훈훈하게</h2>
      <p class="ctr">${LM_ENDINGS[s%LM_ENDINGS.length]}</p>
      ${RV.ring(rpct(s,233,86,99),'애정 지수','확실한 건 하나야','연애로 끝날지 결혼까지 갈지 재는 동안에도, 두 사람은 지금 서로를 좋아하고 있다는 것. 그게 이 리포트의 출발점이자 결론이야.','red')}
-     ${RV.quote(`${c.nm}, 어느 쪽이든 <b>${who}와의 지금</b>을 아까워하지 마. 좋은 사랑은 결말과 상관없이 사람을 자라게 하니까 🐾`)}`,
+     ${RV.quote(`${c.nm}, 어느 쪽이든 <b>${who}${josa(who,'과','와')}의 지금</b>을 아까워하지 마. 좋은 사랑은 결말과 상관없이 사람을 자라게 하니까 🐾`)}`,
   ];
   return cards;
 }
@@ -2601,7 +2605,7 @@ function qlink(html, c, domKey){
   else if(/무기|매력/.test(head)&&!head.includes(who)) msg=`이 무기가 「${q}」에서 네 협상 카드야 — 숨기지 말고 이걸로 승부하라는 뜻이야.`;
   else if(/만의 결/.test(head)) msg=`이 결이 「${q}」에서 양날이야 — 좋은 쪽을 만나면 무기, 아닌 쪽을 만나면 파고들리는 틈. 그래서 이 결부터 보여준 거야.`;
   else if(/를 가진|기운이야|기운을 타고/.test(head)) msg=`이 기질이 「${q}」 상황에서 네 기본 반응을 정해 — 아래 답들은 전부 이 기질로 소화 가능한 것만 골랐어.`;
-  else if(new RegExp(who).test(head)||/궁합|맞대보기|가까워지는/.test(head)) msg=`${who}의 사주까지 보는 이유 — 「${q}」는 너 혼자가 아니라 두 기운의 합으로 정해지는 질문이니까.`;
+  else if(head.includes(who)||/궁합|맞대보기|가까워지는/.test(head)) msg=`${who}의 사주까지 보는 이유 — 「${q}」는 너 혼자가 아니라 두 기운의 합으로 정해지는 질문이니까.`;
   if(!msg) return html;
   return html+`<div class="qlink rv">🔎 <b>이게 네 질문과 무슨 상관이냐면</b> — ${msg}</div>`;
 }
@@ -2629,13 +2633,13 @@ function reasonCards(c, domKey){
      <p style="padding-top:8px">이 뿌리를 ${d.arena}에 세우면 — <b>기본기가 "${dm[1].split('.')[0]}"인 사람</b>이 뛰는 거야. 그래서 네 전략은 남의 성공담을 베끼는 게 아니라, <b>이 뿌리가 시키는 방향</b>을 따라가는 게 먼저야.</p>
      ${RV.quote(`같은 조언도 뿌리가 다르면 결과가 달라. 이 리포트의 조언이 전부 "너 기준"인 이유야.`)}`,
     `<h2>2️⃣ ${EN[s0]} 기운이 강해서 — 순방향</h2>
-     <p>네 사주엔 <b style="color:${ELEM_COLOR[s0]}">${EN[s0]}</b>이 ${ec.cnt[s0]}개로 제일 많아. 그래서 ${d.arena}에서 이 기운을 그대로 쓰면 — <b>${RG_WIN[s0]}</b>. 이게 "${d.actA}"가 너의 정답인 사주적 이유야.</p>
+     <p>네 사주엔 <b style="color:${ELEM_COLOR[s0]}">${EN[s0]}</b>${josa(EN[s0],'이','가')} ${ec.cnt[s0]}개로 제일 많아. 그래서 ${d.arena}에서 이 기운을 그대로 쓰면 — <b>${RG_WIN[s0]}</b>. 이게 "${d.actA}"가 너의 정답인 사주적 이유야.</p>
      ${RV.gauges('선택별 '+d.goal.replace(/것$/,'') +' 확률',[
        ['A · '+d.actA, okA,'grn','네 강한 기운의 순방향'],
        ['B · '+d.actB, okB,'red','기운을 거스르는 방향'],
      ])}`,
-    `<h2>⚠️ 단, ${EN[s0]}이 과속하면</h2>
-     <p>강한 기운은 양날이야. ${EN[s0]}을 브레이크 없이 쓰면 — <b>${RG_OVER[s0]}</b>. 강점이 강점으로 남으려면 "쓰는 순간"과 "쉬는 순간"을 갈라야 해.</p>
+    `<h2>⚠️ 단, ${EN[s0]}${josa(EN[s0],'이','가')} 과속하면</h2>
+     <p>강한 기운은 양날이야. ${EN[s0]}${josa(EN[s0],'을','를')} 브레이크 없이 쓰면 — <b>${RG_OVER[s0]}</b>. 강점이 강점으로 남으려면 "쓰는 순간"과 "쉬는 순간"을 갈라야 해.</p>
      ${RV.dos([
        [true,'잘 풀릴 때일수록 하루 한 번 "지금 과속인가?" 자문하기'],
        [false,'잘 된다고 같은 카드를 연달아 꺼내기 — 과속의 전형적인 시작'],
@@ -2644,7 +2648,7 @@ function reasonCards(c, domKey){
      <div class="script-box"><b>순방향으로 갔을 때</b>${sc[0].replaceAll('{nm}',c.nm)}</div>
      ${RV.quote('소름 돋게 구체적이지? 네 강한 기운이 실제로 일하는 방식이 이래.')}`,
     `<h2>3️⃣ ${EN[l0]} 기운이 옅어서 — 함정 주의</h2>
-     <p>반대로 네 사주엔 <b style="color:${ELEM_COLOR[l0]}">${EN[l0]}</b>이 거의 없어. ${EN[l0]}이 하는 일이 "${ELEM_RICH_SHORT[l0]}"인데 그 결이 옅으니, ${d.arena}에서 너는 <b>${RG_TRAP[l0]}</b>에 빠지기 쉬워.</p>
+     <p>반대로 네 사주엔 <b style="color:${ELEM_COLOR[l0]}">${EN[l0]}</b>${josa(EN[l0],'이','가')} 거의 없어. ${EN[l0]}${josa(EN[l0],'이','가')} 하는 일이 "${ELEM_RICH_SHORT[l0]}"인데 그 결이 옅으니, ${d.arena}에서 너는 <b>${RG_TRAP[l0]}</b>에 빠지기 쉬워.</p>
      <p style="padding-top:8px">부족한 기운은 성격을 고쳐서가 아니라 <b>장치로 메꾸는 거야</b> — ${RG_FIX[l0]}.</p>
      ${RV.picto('이 장치 하나로 막히는 함정',7,'성격 개조(불가능)가 아니라 장치 설치(5분)라서, 오늘 바로 할 수 있어.','🛠️')}`,
     `<h2>4️⃣ 네 십신의 축이 <span class="gold">${RG_STYLE[st][0]}</span>이라서</h2>
@@ -2664,7 +2668,7 @@ function reasonCards(c, domKey){
     `<h2>📌 일반론 말고, 너 맞춤 정리</h2>
      ${RV.vs('아무에게나 하는 말','네 사주라서 하는 말',[
        ['조언','"열심히 해봐"',`"${d.actA}" — ${EN[s0]} 순방향`],
-       ['주의','"조심해"',`"${RG_TRAP[l0].slice(0,16)}…" 함정 방지 장치`],
+       ['주의','"조심해"',`"${RG_TRAP[l0].length>16?RG_TRAP[l0].slice(0,16)+'…':RG_TRAP[l0]}" 함정 방지 장치`],
        ['시기','"좋은 날 오겠지"',`${t[0]}.${t[1]} — ${EN[l0]} 보충 구간`],
      ])}
      ${RV.quote(`${c.nm}, 이제 "왜"까지 알았으니 — 남은 건 제일 쉬운 것 하나부터야 🐾`)}`,
@@ -2730,6 +2734,7 @@ function explainTerms(html, seen){
     if(lastLt>lastGt) { continue; }
     const after=html.slice(idx+term.length, idx+term.length+2);
     if(after.startsWith('(')||after.startsWith('<s')) { seen.add(term); continue; }
+    if(/^[가-힣]/.test(after)) continue; /* 단어 중간이면 삽입 금지 — "도화(해설)살" 처럼 단어가 쪼개지는 것 방지 */
     html=html.slice(0,idx+term.length)+`<small class="term-tip">(${TERM_TIPS[term]})</small>`+html.slice(idx+term.length);
     seen.add(term);
   }
@@ -2739,7 +2744,7 @@ function warmCard(c,line){
   return `<div class="big">💜</div><h2>마지막으로, 이것만</h2><p class="ctr">${END_WARM[c.seed%END_WARM.length]}</p>
     ${RV.ring(rpct(c.seed,999,86,99),'응원 지수','보리의 진심이야',line,'pur')}`;
 }
-const CUR_M=(new Date().getMonth()+1)%12+1;
+const CUR_M=new Date().getMonth()+1; /* 이번 달 */
 
 /* ── 🌅 2026 신년 운세 (38장) ── */
 function buildNewyear(c){
@@ -2913,6 +2918,7 @@ function buildSoloexit(c){
 function buildLovecount(c){
   const s=c.seed, n=2+(s%2);
   const profs=LC_PROFILE.slice(3-n);
+  const lcLabels = n===2 ? ['다음 연애','마지막 연애'] : ['다음 연애','그 다음 연애','마지막 연애']; /* n=2일 때 "그 다음"부터 시작하던 라벨 어긋남 방지 */
   const t=futureTimes(s,1)[0];
   const cards=[
     `<div class="big">😮</div><h2>${c.nm}에게 남은 연애,<br>몇 번일까?</h2>
@@ -2923,7 +2929,7 @@ function buildLovecount(c){
      <p class="ctr"><span class="gold" style="font-size:46px;font-weight:900">${n}번</span></p>
      <p class="ctr">적어도 ${n}번의 의미 있는 인연이 남아 있어. 스치는 썸은 뺀 숫자야.</p>
      ${RV.picto('남은 인연',n,'하나하나가 너를 완성으로 데려가는 계단이야.','💘')}`,
-    ...profs.map((p,i)=>`<h2>${p[0]} — ${['배움','온기','정착'][3-n+i]}의 인연</h2><p>${p[1]}</p>
+    ...profs.map((p,i)=>`<h2>${lcLabels[i]} — ${['배움','온기','정착'][3-n+i]}의 인연</h2><p>${p[1]}</p>
      ${RV.gauges('이 인연의 결',[
        ['설렘', rpct(s,420+i,55,95),p[2]],
        ['배움', rpct(s,423+i,50,92),'pur'],
@@ -2942,9 +2948,9 @@ function buildLovecount(c){
     `<div class="big" style="font-size:38px">🐶</div>
      <div class="rnote"><h4>📒 남은 연애, 한장 정리!</h4><ul>
        <li>남은 횟수: 적어도 ${n}번</li>
-       <li>다음 인연: ${t[0]}.${t[1]} 즈음 · ${profs[0][0]}의 결</li>
+       <li>다음 인연: ${t[0]}.${t[1]} 즈음 · ${['배움','온기','정착'][3-n]}의 결</li>
        <li>마지막 인연 신호: 편안함 + 불안 없음</li></ul></div>`,
-    warmCard(c,`남은 횟수가 몇이든, 마지막 한 번을 위해 앞의 것들이 있는 거야. ${c.nm}는 잘 가고 있어 🐾`),
+    warmCard(c,`남은 횟수가 몇이든, 마지막 한 번을 위해 앞의 것들이 있는 거야. ${c.nm}${josa(c.nm,'은','는')} 잘 가고 있어 🐾`),
   ];
   return cards;
 }
@@ -3013,7 +3019,7 @@ function buildDohwa(c){
        <li>유형: ${lv[0]} (${lv[1]}점)</li>
        <li>최대 화력: 1:1과 집중하는 순간</li>
        <li>규칙: 선 긋기가 도화를 명품으로 만든다</li></ul></div>`,
-    warmCard(c,`매력은 타고나는 게 아니라 알아차리는 거야 — 오늘 ${c.nm}는 자기 매력을 알아차린 사람이 됐어 🐾`),
+    warmCard(c,`매력은 타고나는 게 아니라 알아차리는 거야 — 오늘 ${c.nm}${josa(c.nm,'은','는')} 자기 매력을 알아차린 사람이 됐어 🐾`),
   ];
   return cards;
 }
@@ -3034,7 +3040,7 @@ function buildCrush(c){
      ${RV.table(CR_SIGNAL.slice(0,3).map(x=>[x[0].slice(0,14)+'…',x[1]]))}`,
     female
       ? `<h2>👣 ${c.nm}의 전략 — 티는 최대로, 고백은 그 사람 몫</h2>
-     <p>네 사주 흐름에선 <b>직접 고백은 아껴두는 게 정답</b>이야. 대신 결정적인 말만 빼고 <b>전부 티를 내</b> — 시선, 웃음, 먼저 챙기는 사소함까지. 확신이 쌓이면 결정타는 ${who}가 치게 돼 있어.</p>
+     <p>네 사주 흐름에선 <b>직접 고백은 아껴두는 게 정답</b>이야. 대신 결정적인 말만 빼고 <b>전부 티를 내</b> — 시선, 웃음, 먼저 챙기는 사소함까지. 확신이 쌓이면 결정타는 ${who}${josa(who,'이','가')} 치게 돼 있어.</p>
      ${RV.dos([
        [true,'둘일 때 3초 더 눈 맞추기 · 이름 부르며 말 걸기'],
        [true,'"너랑 있으면 편해" 수준까지는 다 말해도 돼'],
@@ -3063,16 +3069,16 @@ function buildCrush(c){
   return cards;
 }
 
-/* ── 😺 연락 기다려도 될까 ── */
+/* ── 📮 연락 기다려도 될까 ── */
 function buildWaitcall(c){
   const s=c.seed, who=c.x||'그 사람', v=WC_VERDICT[s%WC_VERDICT.length];
   const cards=[
-    `<div class="big">😺</div><h2>${c.nm},<br>${who}의 연락…<br>기다리는 게 맞을까?</h2>
+    `<div class="big">🐶</div><h2>${c.nm},<br>${who}의 연락…<br>기다리는 게 맞을까?</h2>
      <p class="ctr">폰 그만 봐도 되게, <span class="gold">오늘 기준의 답</span>을 딱 정해줄게.</p>
-     <div class="icon-row"><span>😺 판정</span><span>📡 신호</span><span>⏳ 마감기한</span><span>💬 문장</span></div>`,
+     <div class="icon-row"><span>🐶 판정</span><span>📡 신호</span><span>⏳ 마감기한</span><span>💬 문장</span></div>`,
     ...selfDeep(c),
     ...partnerDeep(c,who),
-    `<h2>😺 오늘의 판정 — <span class="gold">${v[0]}</span></h2><p>${v[1]}</p>
+    `<h2>🐶 오늘의 판정 — <span class="gold">${v[0]}</span></h2><p>${v[1]}</p>
      ${RV.ring(rpct(s,460,45,85),'연락 기류','오늘 기준의 흐름','이 수치는 매일 움직여 — 오늘은 이 판정을 믿어도 돼.',v[2])}`,
     `<h2>📡 ${who}의 신호 읽기</h2>
      ${RV.table(pickN(RE_SIGNALS,s,4).map(x=>[x[0],`<b>${x[1]}</b><br><span style="color:#8792ab;font-size:12px">→ ${x[2]}</span>`]))}`,
@@ -3099,10 +3105,11 @@ function buildWaitcall(c){
 /* ── 🔍 나를 좋아하는 사람 ── */
 function buildWholikes(c){
   const s=c.seed;
-  const ini=TODAY_WARN.person[s%TODAY_WARN.person.length];
+  const WL_INI=['ㅅㅈ','ㄱㅎ','ㅁㄴ','ㅈㅇ','ㅎㅅ','ㄷㅇ']; /* 전용 풀 — 오늘운세 '조심할 사람' 풀과 분리(같은 날 같은 이니셜 충돌 방지) */
+  const ini=WL_INI[s%WL_INI.length];
   const t=futureTimes(s,1)[0];
   const cards=[
-    `<div class="big">🔍</div><h2>지금 ${c.nm}를<br>좋아하는 사람이 있을까?</h2>
+    `<div class="big">🔍</div><h2>지금 ${c.nm}${josa(c.nm,'을','를')}<br>좋아하는 사람이 있을까?</h2>
      <p class="ctr">있어. 그것도 <span class="gold">생각보다 가까이.</span> 어디쯤의 누구인지 좁혀볼게.</p>
      <div class="icon-row"><span>🔍 위치</span><span>📡 신호</span><span>🪞 반한 포인트</span><span>🗓️ 시기</span></div>`,
     ...selfDeep(c),
@@ -3129,7 +3136,7 @@ function buildWholikes(c){
        <li>위치: 지인 반경 · 이니셜 ${ini} 근처</li>
        <li>신호: 자주 마주침 · 조용한 조회 · 다른 말투</li>
        <li>드러나는 시기: ${t[0]}.${t[1]} 전후</li></ul></div>`,
-    warmCard(c,`누군가에게 ${c.nm}는 이미 "설레는 사람"이야. 그 사실 하나로 오늘 어깨 펴도 돼 🐾`),
+    warmCard(c,`누군가에게 ${c.nm}${josa(c.nm,'은','는')} 이미 "설레는 사람"이야. 그 사실 하나로 오늘 어깨 펴도 돼 🐾`),
   ];
   return cards;
 }
@@ -3165,7 +3172,7 @@ function buildNextlove(c){
        <li>결: 꾸준함형 · 지쳤을 때 옆에 있는 사람</li>
        <li>경로: ${meet}</li>
        <li>시기: ${t[0][0]}.${t[0][1]} 전후</li></ul></div>`,
-    warmCard(c,`다음 사람이 누구든, 그 사람은 지금의 ${c.nm}를 만나서 운이 좋은 거야 🐾`),
+    warmCard(c,`다음 사람이 누구든, 그 사람은 지금의 ${c.nm}${josa(c.nm,'을','를')} 만나서 운이 좋은 거야 🐾`),
   ];
   return cards;
 }
@@ -3249,7 +3256,7 @@ function buildWhybroken(c){
        <li>패턴: ${loop[0]}</li>
        <li>개입 시점: 패턴 발동 직후 (2~3개월 차)</li>
        <li>수리 포인트 하나만 — 나머지는 그대로 둬도 돼</li></ul></div>`,
-    warmCard(c,`고장난 적 없어 — 설명서가 없었을 뿐이야. 오늘부로 ${c.nm}는 설명서 있는 사람이야 🐾`),
+    warmCard(c,`고장난 적 없어 — 설명서가 없었을 뿐이야. 오늘부로 ${c.nm}${josa(c.nm,'은','는')} 설명서 있는 사람이야 🐾`),
   ];
   return cards;
 }
@@ -3257,7 +3264,7 @@ function buildWhybroken(c){
 /* ── 👰 나 결혼할 수 있을까 ── */
 function buildCanmarry(c){
   const s=c.seed, age=new Date().getFullYear()-c.y+1;
-  const w1=age+1+(s%4), w2=w1+2+(s%3);
+  const w1=Math.max(age+1+(s%4),25), w2=w1+2+(s%3); /* 하한 25 — 미성년·초년생에게 "N살 결혼 창"이 나오는 것 방지 */
   const cards=[
     `<div class="big">👰</div><h2>${c.nm},<br>"나 결혼할 수 있을까?"<br>정면으로 답해줄게</h2>
      <p class="ctr">밤에 몰래 검색해 본 그 질문 — 오늘 사주로 끝까지 가보자.</p>
@@ -3281,7 +3288,7 @@ function buildCanmarry(c){
        ['확신의 신호','미래 얘기가 부담스럽지 않은 사람'],
      ])}`,
     `<h2>🗓️ 창이 열리기 전 인연 흐름</h2>
-     ${RV.heat('앞으로 12개월 인연운','진할수록 만남이 잘 풀리는 달이야.',Array.from({length:12},(_,i)=>rpct(s,520+i,30,92)))}`,
+     ${RV.heat('올해 열두 달 인연운','진할수록 만남이 잘 풀리는 달이야.',Array.from({length:12},(_,i)=>rpct(s,520+i,30,92)))}`,
     `<h2>✅ 창이 열렸을 때 할 일</h2>
      ${RV.dos([
        [true,'소개 제안 거절하지 않기 — 창이 열린 해의 소개는 확률이 달라'],
@@ -3302,7 +3309,7 @@ function buildCanmarry(c){
 function buildCominglove(c){
   const s=c.seed, t=futureTimes(s,2);
   const cards=[
-    `<div class="big">🌸</div><h2>${c.nm}를 향해<br>걸어오는 인연이 있어</h2>
+    `<div class="big">🌸</div><h2>${c.nm}${josa(c.nm,'을','를')} 향해<br>걸어오는 인연이 있어</h2>
      <p class="ctr">아직 얼굴은 안 보이지만 <span class="gold">발소리는 들려.</span> 어떤 사람인지, 언제쯤인지 미리 볼게.</p>
      <div class="icon-row"><span>🌸 프로필</span><span>🚪 경로</span><span>📡 징조</span><span>✅ 알아보기</span></div>`,
     ...selfDeep(c),
@@ -3319,7 +3326,7 @@ function buildCominglove(c){
      ${RV.ring(rpct(s,533,60,88),'접근 지수',`${t[0][0]}년 ${t[0][1]}월 전후 주목`,'이 무렵의 새 얼굴·새 자리·새 연락을 흘려보내지 마.','gold')}`,
     `<h2>📡 이미 시작된 징조</h2>
      ${RV.checks(CL_SIGN.map(x=>[x[0],true]))}
-     ${RV.table(CL_SIGN.map(x=>[x[0].slice(0,16)+'…',x[1]]))}`,
+     ${RV.table(CL_SIGN.map(x=>[x[0].length>16?x[0].slice(0,16)+'…':x[0],x[1]]))}`,
     `<h2>✅ 그 사람을 알아보는 법</h2>
      ${RV.dos([
        [true,'"처음인데 편하다"는 느낌을 신뢰하기 — 네 사주의 인연 감지기야'],
@@ -3331,7 +3338,7 @@ function buildCominglove(c){
        <li>결: 쉬게 해주는 사람 · 꾸준함형</li>
        <li>경로: ${NL_MEET[s%NL_MEET.length]}</li>
        <li>주목 시기: ${t[0][0]}.${t[0][1]} 전후</li></ul></div>`,
-    warmCard(c,`좋은 인연은 준비된 사람에게 늦지 않게 와. ${c.nm}는 이미 준비돼 있어 🐾`),
+    warmCard(c,`좋은 인연은 준비된 사람에게 늦지 않게 와. ${c.nm}${josa(c.nm,'은','는')} 이미 준비돼 있어 🐾`),
   ];
   return cards;
 }
@@ -3374,7 +3381,7 @@ function buildMoneybowl(c){
        <li>유형: ${ty[0]}</li>
        <li>이번 달 막을 구멍 1개: ${MB_LEAK[s%3][0]}</li>
        <li>유입 길목: ${t[0][0]}.${t[0][1]} 주목</li></ul></div>`,
-    warmCard(c,`부자의 첫 단계는 자기 그릇을 아는 것 — ${c.nm}는 오늘 그 단계를 지났어 🐾`),
+    warmCard(c,`부자의 첫 단계는 자기 그릇을 아는 것 — ${c.nm}${josa(c.nm,'은','는')} 오늘 그 단계를 지났어 🐾`),
   ];
   return cards;
 }
@@ -3459,7 +3466,7 @@ function buildCutkeep(c){
        <li>손절 = 미움이 아니라 거리 조절</li>
        <li>귀인 신호: 축하 · 예의 있는 쓴소리 · 오래감</li>
        <li>이번 주: 귀인 1명에게 먼저 안부</li></ul></div>`,
-    warmCard(c,`사람을 고르는 건 못됐서가 아니라 네 기운을 아끼는 거야. ${c.nm}의 곁이 점점 좋은 사람들로 채워질 거야 🐾`),
+    warmCard(c,`사람을 고르는 건 못돼서가 아니라 네 기운을 아끼는 거야. ${c.nm}의 곁이 점점 좋은 사람들로 채워질 거야 🐾`),
   ];
   return cards;
 }
@@ -3471,7 +3478,7 @@ function buildLifelong(c){
   const t=futureTimes(s,2);
   const longSc=rpct(s,610,55,93);
   const cards=[
-    `<div class="big">💞</div><h2>${c.nm},<br>${who}와의 이 인연…<br>평생일까, 한 계절일까?</h2>
+    `<div class="big">💞</div><h2>${c.nm},<br>${who}${josa(who,'과','와')}의 이 인연…<br>평생일까, 한 계절일까?</h2>
      <p class="ctr">어느 쪽이 나와도 도망가지 말고 끝까지 봐 줘 — <span class="gold">스침에도 뜻이 있고, 평생에도 조건이 있으니까.</span></p>
      <div class="icon-row"><span>💞 판정</span><span>📡 신호</span><span>🌊 고비</span><span>🌱 늘리는 법</span></div>`,
     ...selfDeep(c),
@@ -3502,7 +3509,7 @@ function buildLifelong(c){
        <li>판정: ${v[0].replace(/^\S+ /,'')} (지속력 ${longSc}점)</li>
        <li>첫 고비: ${t[0][0]}.${t[0][1]} — 익숙함의 벽 = 급유 구간</li>
        <li>연장 습관: 새 기억 · 고마움 소리내기 · 먼저 묻기</li></ul></div>`,
-    warmCard(c,`평생이든 한 계절이든, ${who}와의 지금이 ${c.nm}의 진짜 인생 한 페이지야. 그건 어느 쪽이어도 손해가 아니야 🐾`),
+    warmCard(c,`평생이든 한 계절이든, ${who}${josa(who,'과','와')}의 지금이 ${c.nm}의 진짜 인생 한 페이지야. 그건 어느 쪽이어도 손해가 아니야 🐾`),
   ];
   return cards;
 }
