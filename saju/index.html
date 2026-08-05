@@ -80,7 +80,7 @@
         <span class="logo">강아지사주일기 🐾</span>
         <span class="right">
           <span class="days" id="days-line"></span>
-          <span class="wallet">🐾 <span class="jelly-n">1,500</span> 젤리</span>
+          <span class="wallet">🍪 <span class="cookie-n">0</span> 쿠키</span>
         </span>
       </div>
       <div class="hero-band">
@@ -96,8 +96,8 @@
         <button class="q" onclick="showTab('scr-diary')"><span class="qi">📔</span><span class="ql">일기장</span></button>
         <button class="q" onclick="openMail()"><span class="qi">📮<span class="noti" id="mail-noti">♥1</span></span><span class="ql">편지함</span></button>
         <button class="q" onclick="go('scr-box');renderBox()"><span class="qi">📦</span><span class="ql">운세보관함</span></button>
-        <button class="q" onclick="go('scr-jelly')"><span class="qi">🏭</span><span class="ql">젤리공장</span></button>
-        <button class="q" onclick="go('scr-jelly')"><span class="qi">🎁</span><span class="ql">무료젤리</span></button>
+        <button class="q" onclick="go('scr-cookie')"><span class="qi">🏭</span><span class="ql">쿠키공장</span></button>
+        <button class="q" onclick="go('scr-cookie')"><span class="qi">🎁</span><span class="ql">무료쿠키</span></button>
         <button class="q" onclick="showTab('scr-more')"><span class="qi">⚙️</span><span class="ql">더보기</span></button>
       </div>
       <div id="home-sections"><!-- data.js CATALOG로 렌더 --></div>
@@ -157,12 +157,12 @@
         <div class="sub">🐾 보리의 1호 친구</div>
         <div class="sub" id="m-birth"></div>
       </div>
-      <div class="more-jelly"><span>🐾 <b class="jelly-n">1,500</b> 젤리</span><button class="chg" onclick="go('scr-jelly')">충전하기</button></div>
+      <div class="more-cookie"><span>🍪 <b class="cookie-n">0</b> 쿠키</span><button class="chg" onclick="go('scr-cookie')">충전하기</button></div>
       <div class="menu">
         <button class="stub-off" onclick="stub('알림 설정')">알림 설정<span class="wip-tag">준비중</span><span class="ar">›</span></button>
         <button onclick="go('scr-box');renderBox()">운세 보관함<span class="ar">›</span></button>
         <button class="stub-off" onclick="stub('내 쿠폰')">내 쿠폰<span class="wip-tag">준비중</span><span class="ar">›</span></button>
-        <button onclick="go('scr-jelly')">내 젤리 · 젤리 충전<span class="ar">›</span></button>
+        <button onclick="go('scr-cookie')">내 쿠키 · 쿠키 충전<span class="ar">›</span></button>
         <button onclick="renameMe()">이름 바꾸기<span class="ar">›</span></button>
         <button onclick="openPrivacy()">약관·개인정보 확인하기<span class="ar">›</span></button>
         <button class="stub-off" onclick="stub('고객센터')">고객센터<span class="wip-tag">준비중</span><span class="ar">›</span></button>
@@ -171,14 +171,18 @@
     </div>
   </div>
 
-  <!-- 젤리공장 -->
-  <div class="screen" id="scr-jelly">
+  <!-- 쿠키공장 -->
+  <div class="screen" id="scr-cookie">
     <div class="topbar"><button class="back" onclick="showTab('scr-home')">←</button></div>
-    <div class="jf-head"><h2>🏭 젤리 공장</h2><span>🐾 <b class="jelly-n">1,500</b> 젤리</span></div>
+    <div class="jf-head"><h2>🍪 쿠키 공장</h2><span>🍪 <b class="cookie-n">0</b> 쿠키</span></div>
     <div class="scroll">
-      <div class="jf-row"><span class="paw">🐾</span><div class="tx"><b>말랑 젤리</b><span>매일 1 젤리 받기</span></div><button class="get" onclick="earn(this,1)">받기</button></div>
+      <div class="jf-sec">🍪 쿠키 충전 <span>1개 100원</span></div>
+      <div id="cookie-shop"></div>
+      <p class="jf-note" id="cookie-shop-note"></p>
+      <div class="jf-sec">🎁 무료로 받기</div>
+      <div class="jf-row"><span class="paw">🍪</span><div class="tx"><b>말랑 쿠키</b><span>매일 1 쿠키 받기</span></div><button class="get" onclick="earn(this,1)">받기</button></div>
     </div>
-    <div class="toast" id="toast-jelly">젤리가 도착했다멍 🐾</div>
+    <div class="toast" id="toast-cookie">쿠키가 도착했다멍 🍪</div>
   </div>
 
   <!-- 편지함 -->
@@ -286,7 +290,7 @@
       <div class="fun-hero">
         <h1>사주로 보는<br>절대 결혼하면 안되는 사람</h1>
         <p class="hook">앞으로 만날 인연 중에 꼭 피해야 할 사람이 숨어 있어.<br>식장 들어가기 전에, 미리 알고 가자 🥊</p>
-        <div class="proof"><span>⭐ <b>4.8</b></span><span>조회수 <b>4만+</b></span><span>🐾 <b>1,100 젤리</b></span></div>
+        <div class="proof"><span>⭐ <b>4.8</b></span><span>조회수 <b>4만+</b></span><span>🍪 <b>220 쿠키</b></span></div>
       </div>
       <div class="visual">
         <span class="v-pill">결혼 전 꼭 확인해야 하는</span>
@@ -367,11 +371,11 @@
   <div class="screen" id="scr-pay">
     <div class="topbar"><button class="back" onclick="go('scr-step')">←</button><span class="h-title">결제하기</span></div>
     <div class="scroll">
-      <div class="q-block" style="padding-top:18px;font-size:17.5px">준비됐어!<br>젤리만 내면 바로 봐줄게 🐾</div>
+      <div class="q-block" style="padding-top:18px;font-size:17.5px">준비됐어!<br>쿠키만 내면 바로 봐줄게 🍪</div>
       <div class="pay-box" id="pay-box"></div>
       <p class="wallet-line" style="color:#b8b0a2">결제하면 운세보관함에 영구 저장돼 언제든 다시 볼 수 있어요.</p>
     </div>
-    <button class="btn-cta" id="pay-btn" onclick="pay()">젤리 내고 보기</button>
+    <button class="btn-cta" id="pay-btn" onclick="pay()">쿠키 내고 보기</button>
     <div class="toast" id="toast-pay">쿠폰이 자동으로 적용됐다멍 🎟️</div>
   </div>
 
@@ -413,8 +417,9 @@ const S = {
   /* 08-02: 성(姓) — 사주 프로필용. 결과지는 항상 이름만 부르고, 성은 시드·기록에만 쓴다 */
   get sn(){ return localStorage.catsaju_sn || ''; },
   set sn(v){ localStorage.catsaju_sn = v; },
-  get jelly(){ return 999999; },   /* 테스트 모드: 젤리 무한 (저장값 무시) */
-  set jelly(v){ renderJelly(); },  /* 테스트 중 차감 안 함 — 결과지 항상 볼 수 있게 */
+  /* 쿠키 = 실제 결제 통화(1개 100원). 무한 테스트 모드는 결제 붙이면서 제거 */
+  get cookie(){ return +(localStorage.catsaju_cookie || 0); },
+  set cookie(v){ localStorage.catsaju_cookie = Math.max(0, Math.round(v)); renderCookie(); },
   get onboarded(){ return localStorage.catsaju_onboarded === '1'; },
   set onboarded(v){ localStorage.catsaju_onboarded = v ? '1' : '0'; },
   get firstDay(){ if(!localStorage.catsaju_first) localStorage.catsaju_first = Date.now(); return +localStorage.catsaju_first; },
@@ -500,7 +505,7 @@ function toggleHomeExtras(){
 }
 function flash(id){ const t=$(id); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400); }
 function segPick(btn){ [...btn.parentElement.children].forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
-function renderJelly(){ document.querySelectorAll('.jelly-n').forEach(e=>e.textContent = S.jelly>=999000 ? '∞' : S.jelly.toLocaleString()); }
+function renderCookie(){ document.querySelectorAll('.cookie-n').forEach(e=>e.textContent = S.cookie.toLocaleString()); }
 
 /* ═══ 온보딩 ═══ */
 function obName(){
@@ -524,7 +529,7 @@ function saveNameDlg(){
   S.sn=sn; S.name=gn;
   $('dlg-name').classList.remove('show');
   const cb=_nmCb; _nmCb=null; if(cb) cb();
-  renderJelly();
+  renderCookie();
 }
 function finishOnboard(notif){ S.onboarded=true; S.firstDay; initLetters(); showTab('scr-home'); if(notif){ const t=$('toast-global'); t.textContent='좋아! 알림이 열리는 대로 아침마다 들고 올게. 이제 친구니까 말도 놓는다? 🐾'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); } }
 
@@ -559,7 +564,7 @@ function cardHtml(item,nm,secKey){
   else if(item.act&&item.act.startsWith('intro:')){ on="openIntro('"+item.act.split(':')[1]+"')"; isStub=false; }
   /* 준비중 항목: 가격 대신 '준비중' 배지 + 비활성 티 나는 디자인 (08-02 지시) */
   const price=isStub?`<span class="badge b-wip">준비중</span>`
-    :(item.price===0?`<span class="badge b-free">무료</span>`:(item.price?`<span class="badge b-price">🐾${item.price.toLocaleString()}</span>`:''));
+    :(item.price===0?`<span class="badge b-free">무료</span>`:(item.price?`<span class="badge b-price">🍪${item.price.toLocaleString()}</span>`:''));
   const more = secKey ? `<button class="card-more" onclick="event.stopPropagation();openCardSheet('${secKey}','${t.replace(/'/g,'')}')">⋯</button>` : '';
   return `<button class="c-card${isStub?' c-stub':''}" onclick="${on}"><span class="ct">${t}</span>${badge}${price}${more}</button>`;
 }
@@ -657,7 +662,7 @@ function heroCardHtml(nm){
         <h3>${it.t}</h3>
         <div class="blur-prev"><p>${S.name}님의 사주로 본 결과, 핵심은 <b>정확히 ○○</b>이고 가장 중요한 타이밍은 ○요일이야. 이때 꼭 기억할 한 가지는…</p>
           <div class="lock"><div class="k">🔒</div><div class="t">잠금 해제하고 내 결과 보기</div></div></div>
-        <div class="hero-cta"><span>🐾 지금 열기 · ${it.price.toLocaleString()}젤리</span></div>
+        <div class="hero-cta"><span>🍪 지금 열기 · ${it.price.toLocaleString()}쿠키</span></div>
       </div>
     </div>
     <div class="fixlink" onclick="_intSel=null;go('scr-ob-int');renderInterestChips()">이 추천, 안 맞아? 관심사 고치기 ✏️</div>`;
@@ -712,7 +717,7 @@ function shortKeep(){
 }
 
 function renderHome(){
-  renderJelly();
+  renderCookie();
   const days=Math.floor((Date.now()-S.firstDay)/86400000)+1;
   $('days-line').innerHTML=`${S.name}님이 보리와<br>함께한 지 ${days}일째 🔥`;
   $('mascot-talk').textContent=MASCOT_TALK[hashN(S.name+new Date().getHours(),MASCOT_TALK.length)];
@@ -743,9 +748,9 @@ function renderHome(){
   html += `</div>`;
   /* 💘 연애사주 3종 (기존 유지) */
   const yeonae=[
-    {t:'🔮 그 사람과 재회의 골든타임은?',badge:'HOT',price:990,act:'intro:reunion'},
-    {t:'💖 이 사랑, 연애로 끝날까 결혼까지 갈까?',badge:'HOT',price:990,act:'intro:love2marry'},
-    {t:'💞 이 사람, 평생 갈까 잠깐 스칠까?',badge:'NEW',price:880,act:'intro:lifelong'},
+    {t:'🔮 그 사람과 재회의 골든타임은?',badge:'HOT',price:200,act:'intro:reunion'},
+    {t:'💖 이 사랑, 연애로 끝날까 결혼까지 갈까?',badge:'HOT',price:200,act:'intro:love2marry'},
+    {t:'💞 이 사람, 평생 갈까 잠깐 스칠까?',badge:'NEW',price:180,act:'intro:lifelong'},
   ];
   html += `<div class="sec-label" style="color:var(--purple)">💘 연애사주 · 결제 전 전체보기</div>`;
   html += `<div class="card-list">${yeonae.map(i=>cardHtml(i,nm,'love')).join('')}</div>`;
@@ -1088,7 +1093,7 @@ function renderFunnelG(F){
     <div class="fun-hero">
       <h1>${F.emoji} ${F.title}</h1>
       <p class="hook">${F.hook}</p>
-      <div class="proof"><span>⭐ <b>${F.star}</b></span><span>조회수 <b>${F.views}회+</b></span><span>🐾 <b>${F.price.toLocaleString()} 젤리</b></span></div>
+      <div class="proof"><span>⭐ <b>${F.star}</b></span><span>조회수 <b>${F.views}회+</b></span><span>🍪 <b>${F.price.toLocaleString()} 쿠키</b></span></div>
     </div>
     <div class="visual" style="background:${F.grad}">
       <span class="v-pill">${F.pill}</span>
@@ -1230,22 +1235,100 @@ function stepBack(){
 }
 function wobble(id){ const el=$(id); el.style.animation='none'; el.offsetHeight; el.style.animation='wob .4s'; el.focus(); }
 
-/* ═══ 젤리·결제·보관함 ═══ */
-function earn(btn,n){ S.jelly=S.jelly+n; btn.disabled=true; btn.textContent='완료'; flash('toast-jelly'); }
+/* ═══ 쿠키·결제·보관함 ═══ */
+function earn(btn,n){ S.cookie=S.cookie+n; btn.disabled=true; btn.textContent='완료'; flash('toast-cookie'); }
+
+/* ═══ 쿠키 충전 — Google Play 인앱결제 (Digital Goods API) ═══
+   TWA(Play 설치본)에서만 동작한다. 일반 웹브라우저엔 getDigitalGoodsService가 없어
+   충전 버튼이 안내문으로 바뀐다.
+   ⚠️ 서버가 없는 정적 호스팅이라 영수증 검증은 기기 안에서만 이뤄진다(베타 한정). */
+const COOKIE_WON = 100;                       /* 쿠키 1개 = 100원 */
+const PLAY_BILLING = 'https://play.google.com/billing';
+const COOKIE_PACKS = [
+  { sku:'cookie_10',  n:10,  won:1000  },
+  { sku:'cookie_50',  n:50,  won:5000,  tag:'인기' },
+  { sku:'cookie_100', n:100, won:10000 },
+  { sku:'cookie_200', n:200, won:20000, tag:'리포트 1편' },
+  { sku:'cookie_500', n:500, won:50000 },
+];
+const packBySku = s => COOKIE_PACKS.find(p => p.sku === s);
+
+async function dgs(){
+  if(!('getDigitalGoodsService' in window)) return null;
+  try { return await window.getDigitalGoodsService(PLAY_BILLING); } catch(e){ return null; }
+}
+
+/* 결제는 됐는데 지급 전에 앱이 죽은 경우 — 다음 실행 때 살려낸다 */
+async function restoreCookies(){
+  const svc = await dgs(); if(!svc || !svc.listPurchases) return;
+  try {
+    for(const p of await svc.listPurchases()){
+      const pack = packBySku(p.itemId); if(!pack) continue;
+      S.cookie = S.cookie + pack.n;
+      await svc.consume(p.purchaseToken);
+      toastMsg(`못 받은 쿠키 ${pack.n}개를 넣어뒀어 🍪`);
+    }
+  } catch(e){}
+}
+
+async function renderShop(){
+  const box = $('cookie-shop'), note = $('cookie-shop-note');
+  if(!box) return;
+  const svc = await dgs();
+  box.innerHTML = COOKIE_PACKS.map(p => `
+    <div class="jf-row">
+      <span class="paw">🍪</span>
+      <div class="tx"><b>쿠키 ${p.n.toLocaleString()}개${p.tag?` <i class="pk-tag">${p.tag}</i>`:''}</b>
+        <span>${p.won.toLocaleString()}원</span></div>
+      <button class="get" ${svc?'':'disabled'} onclick="buyCookies('${p.sku}')">${svc?'충전':'앱에서'}</button>
+    </div>`).join('');
+  note.textContent = svc ? '' : '충전은 Play 스토어에서 설치한 앱에서만 할 수 있어. 웹에선 무료 콘텐츠만 볼 수 있어 🍪';
+}
+
+async function buyCookies(sku){
+  const pack = packBySku(sku); if(!pack) return;
+  const svc = await dgs();
+  if(!svc){ toastMsg('앱에서만 충전할 수 있어 — Play 스토어에서 설치해줘 🍪'); return; }
+  try {
+    const [item] = await svc.getDetails([sku]);
+    if(!item){ toastMsg('지금은 충전을 열 수 없어. 잠시 뒤 다시 해볼래? 🍪'); return; }
+    const req = new PaymentRequest(
+      [{ supportedMethods: PLAY_BILLING, data: { sku } }],
+      { total: { label: item.title, amount: { currency: item.price.currency, value: item.price.value } } }
+    );
+    const res = await req.show();
+    const token = res.details && res.details.token;
+    if(!token){ await res.complete('fail'); toastMsg('결제를 확인하지 못했어 🍪'); return; }
+    S.cookie = S.cookie + pack.n;                 /* 먼저 지급 — 소비 실패해도 사용자가 손해보지 않게 */
+    try { await svc.consume(token); } catch(e){}
+    await res.complete('success');
+    flash('toast-cookie');
+    renderShop();
+  } catch(e){
+    if(e && e.name === 'AbortError') return;      /* 사용자가 그냥 닫은 것 */
+    toastMsg('충전 중에 문제가 생겼어. 다시 해볼래? 🍪');
+  }
+}
+
+function toastMsg(msg){
+  const t=$('toast-global'); if(!t) return;
+  t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400);
+}
+
 function renderPay(){
   const F=FUNNELS[PRODUCT];
   const disc=Math.round(F.price*0.3), fin=F.price-disc;
   $('pay-box').innerHTML=`
-    <div class="pay-row"><span>상품 금액</span><span><b>${F.price.toLocaleString()} 젤리</b></span></div>
-    <div class="pay-row"><span>내 젤리</span><span><span class="jelly-n">${S.jelly>=999000?'∞':S.jelly.toLocaleString()}</span> 젤리</span></div>
-    <div class="pay-row"><span>🎟️ 보리의 응원 쿠폰 (30%)</span><span class="minus">− ${disc.toLocaleString()} 젤리</span></div>
-    <div class="pay-row total"><span>최종 금액</span><span>🐾 ${fin.toLocaleString()} 젤리</span></div>`;
-  $('pay-btn').textContent=`🐾 ${fin.toLocaleString()} 젤리 내고 보기`;
+    <div class="pay-row"><span>상품 금액</span><span><b>${F.price.toLocaleString()} 쿠키</b></span></div>
+    <div class="pay-row"><span>내 쿠키</span><span><span class="cookie-n">${S.cookie.toLocaleString()}</span> 쿠키</span></div>
+    <div class="pay-row"><span>🎟️ 보리의 응원 쿠폰 (30%)</span><span class="minus">− ${disc.toLocaleString()} 쿠키</span></div>
+    <div class="pay-row total"><span>최종 금액</span><span>🍪 ${fin.toLocaleString()} 쿠키 <em class="won">(${(fin*COOKIE_WON).toLocaleString()}원)</em></span></div>`;
+  $('pay-btn').textContent=`🍪 ${fin.toLocaleString()} 쿠키 내고 보기`;
 }
 function pay(){
   const F=FUNNELS[PRODUCT], fin=F.price-Math.round(F.price*0.3);
-  if(S.jelly<fin){ const t=$('toast-global'); t.textContent='젤리가 조금 모자라! 젤리공장에서 모으고 오자 🐾'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2300); go('scr-jelly'); return; }
-  S.jelly=S.jelly-fin;
+  if(S.cookie<fin){ toastMsg(`쿠키가 ${(fin-S.cookie).toLocaleString()}개 모자라 — 쿠키 공장에서 충전하자 🍪`); go('scr-cookie'); renderShop(); return; }
+  S.cookie=S.cookie-fin;
   S.addBox({ type:'report', product:PRODUCT, title:F.emoji+' '+F.title, date:new Date().toLocaleDateString('ko-KR'),
     n:INPUT.name, sn:INPUT.sname||'', d:INPUT.d, t:INPUT.unknown?'':INPUT.t, g:INPUT.gender,
     x:INPUT.partner.name, xsn:INPUT.partner.sname||'', xd:INPUT.partner.has?INPUT.partner.d:'', xt:(INPUT.partner.has&&!INPUT.partner.tunknown)?INPUT.partner.t:'' });
@@ -3515,7 +3598,9 @@ function buildLifelong(c){
 }
 
 /* ═══ 시작 ═══ */
-renderJelly();
+renderCookie();
+renderShop();
+restoreCookies();
 if(S.onboarded){ initLetters(); showTab('scr-home'); } else { go('scr-ob1'); }
 /* 소개 페이지(11_)에서 #p=상품키 로 넘어오면 그 퍼널을 바로 연다 */
 (function bootDeepLink(){

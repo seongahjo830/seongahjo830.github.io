@@ -1,77 +1,77 @@
 /* ═══ 강아지사주 데이터 (콘텐츠 카탈로그 · 타로덱 · 문구 풀) ═══
    콘텐츠 추가/수정은 대부분 이 파일만 고치면 됨 — 앱 로직(01)은 안 건드려도 됨. */
 
-/* 홈 카탈로그 — price: 젤리(0=무료), badge: HOT/NEW, act: 동작(funnel/tarot:덱키/stub) */
+/* 홈 카탈로그 — price: 쿠키(0=무료), badge: HOT/NEW, act: 동작(funnel/tarot:덱키/stub) */
 const CATALOG = {
   /* ⭐ 간판 상품 — 은근한 카피(07 원리) 적용, 홈 최상단 */
   signature: [
-    { t:"🚩 절대 결혼하면 안되는 사람은?", badge:'HOT', price:1100, act:'funnel' },
-    { t:"💍 내 애인이 결혼하고 싶은 사람은 어떤 사람일까?", badge:'HOT', price:990, act:'funnel:marryTarget' },
-    { t:'🏡 이 사람과의 10년 뒤, 나는 어떤 감정일까?', badge:'NEW', price:990, act:'funnel:future10' },
-    { t:'🎯 재회의 골든타임', badge:'HOT', price:990, act:'funnel:golden' },
-    { t:'💖 이 사랑, 연애로 끝날까 결혼까지 갈까?', badge:'NEW', price:990, act:'funnel:lovemarry' },
-    { t:"💌 지금 그 사람 마음속 '내 지분', 몇 %일까", badge:'HOT', price:250, act:'funnel:simhwa' },
-    { t:'🎣 밀당, 지금 놓으면 안 되는 타이밍 · 고백 골든타임', badge:'NEW', price:770, act:'funnel:gobaek' },
+    { t:"🚩 절대 결혼하면 안되는 사람은?", badge:'HOT', price:220, act:'funnel' },
+    { t:"💍 내 애인이 결혼하고 싶은 사람은 어떤 사람일까?", badge:'HOT', price:200, act:'funnel:marryTarget' },
+    { t:'🏡 이 사람과의 10년 뒤, 나는 어떤 감정일까?', badge:'NEW', price:200, act:'funnel:future10' },
+    { t:'🎯 재회의 골든타임', badge:'HOT', price:200, act:'funnel:golden' },
+    { t:'💖 이 사랑, 연애로 끝날까 결혼까지 갈까?', badge:'NEW', price:200, act:'funnel:lovemarry' },
+    { t:"💌 지금 그 사람 마음속 '내 지분', 몇 %일까", badge:'HOT', price:50, act:'funnel:simhwa' },
+    { t:'🎣 밀당, 지금 놓으면 안 되는 타이밍 · 고백 골든타임', badge:'NEW', price:150, act:'funnel:gobaek' },
   ],
   featured: [
-    { t:'💖 최애와 나의 심화궁합 리포트', badge:'NEW', price:1100, act:'funnel:choeae' },
-    { t:'🔮 이 사람과 나의 전생 테스트', badge:'NEW', price:770, act:'funnel:pastlife' },
-    { t:'🌅 2026 신년 운세', badge:'NEW', price:2000, act:'funnel:newyear' },
+    { t:'💖 최애와 나의 심화궁합 리포트', badge:'NEW', price:220, act:'funnel:choeae' },
+    { t:'🔮 이 사람과 나의 전생 테스트', badge:'NEW', price:150, act:'funnel:pastlife' },
+    { t:'🌅 2026 신년 운세', badge:'NEW', price:400, act:'funnel:newyear' },
   ],
   love: [ /* 나는 연애운 전문이야 */
-    { t:'❤️ 솔로 탈출 시기', badge:'HOT', price:770, act:'funnel:soloexit' },
-    { t:'😮 남은 연애 횟수', badge:'HOT', price:770, act:'funnel:lovecount' },
-    { t:'💑 사주로 보는 궁합', badge:'HOT', price:990, act:'funnel:gunghap' },
-    { t:'💔 사주로 보는 심화 재회운', badge:'NEW', price:250, act:'funnel:simhwa' },
-    { t:'🙅‍♀️ 절대 결혼하면 안되는 상대', price:1100, act:'funnel' },
-    { t:'🌸 나에게 도화살이 있을까?', badge:'NEW', price:550, act:'funnel:dohwa' },
+    { t:'❤️ 솔로 탈출 시기', badge:'HOT', price:150, act:'funnel:soloexit' },
+    { t:'😮 남은 연애 횟수', badge:'HOT', price:150, act:'funnel:lovecount' },
+    { t:'💑 사주로 보는 궁합', badge:'HOT', price:200, act:'funnel:gunghap' },
+    { t:'💔 사주로 보는 심화 재회운', badge:'NEW', price:50, act:'funnel:simhwa' },
+    { t:'🙅‍♀️ 절대 결혼하면 안되는 상대', price:220, act:'funnel' },
+    { t:'🌸 나에게 도화살이 있을까?', badge:'NEW', price:110, act:'funnel:dohwa' },
   ],
-  monthly: [ /* {M}월 운세가 궁금해? — 월간 400젤리 티어 */
-    { t:'💌 {M}월 사주 애정운', price:400, act:'funnel:mlove' },
-    { t:'💘 {M}월 사주 재회운', price:400, act:'funnel:mreunion' },
-    { t:'💰 {M}월 사주 재물운', price:400, act:'funnel:mmoney' },
-    { t:'💪 {M}월 사주 건강운', price:400, act:'funnel:mhealth' },
-    { t:'📚 {M}월 사주 학업운', price:400, act:'funnel:mstudy' },
-    { t:'💼 {M}월 사주 업무운', price:400, act:'funnel:mwork' },
-    { t:'🤝 {M}월 사주 대인관계운', price:400, act:'funnel:mpeople' },
+  monthly: [ /* {M}월 운세가 궁금해? — 월간 80쿠키 티어 */
+    { t:'💌 {M}월 사주 애정운', price:80, act:'funnel:mlove' },
+    { t:'💘 {M}월 사주 재회운', price:80, act:'funnel:mreunion' },
+    { t:'💰 {M}월 사주 재물운', price:80, act:'funnel:mmoney' },
+    { t:'💪 {M}월 사주 건강운', price:80, act:'funnel:mhealth' },
+    { t:'📚 {M}월 사주 학업운', price:80, act:'funnel:mstudy' },
+    { t:'💼 {M}월 사주 업무운', price:80, act:'funnel:mwork' },
+    { t:'🤝 {M}월 사주 대인관계운', price:80, act:'funnel:mpeople' },
   ],
   tarotMonthly: [
-    { t:'💜 {M}월 솔로 연애운', price:400, act:'funnel:tmsolo' },
-    { t:'💝 {M}월 타로 커플 애정운', price:400, act:'funnel:tmcouple' },
-    { t:'💼 타로로 보는 취업·이직운', badge:'NEW', price:400, act:'funnel:tmjob' },
+    { t:'💜 {M}월 솔로 연애운', price:80, act:'funnel:tmsolo' },
+    { t:'💝 {M}월 타로 커플 애정운', price:80, act:'funnel:tmcouple' },
+    { t:'💼 타로로 보는 취업·이직운', badge:'NEW', price:80, act:'funnel:tmjob' },
   ],
   loveMore: [ /* 다른 연애운도 궁금하다면… */
-    { t:'🙈 짝사랑 속마음', price:250, act:'funnel:crush' },
+    { t:'🙈 짝사랑 속마음', price:50, act:'funnel:crush' },
     { t:'🌈 오늘의 재회 확률', price:0, act:'tarot:reodds' },
     { t:'🙋‍♀️ 오늘 솔로 연애운', price:0, act:'tarot:solo' },
     { t:'💕 오늘 커플 연애운', price:0, act:'tarot:couple' },
     { t:'😊 오늘 썸 연애운', price:0, act:'tarot:some' },
     { t:'💔 오늘 이별/재회운', price:0, act:'tarot:breakup' },
     { t:'💭 그 사람에게 연락이 올까?', price:0, act:'tarot:contact' },
-    { t:'🎯 재회 골든타임: 운과 전략', badge:'HOT', price:990, act:'funnel:golden' },
-    { t:'💗 심화 재회운: 그 사람 속마음', price:250, act:'funnel:simhwa' },
-    { t:'📮 심화 재회운: 연락 기다려도 될까', price:250, act:'funnel:waitcall' },
-    { t:'🔍 나를 좋아하는 사람', price:550, act:'funnel:wholikes' },
-    { t:'😉 다음 연애 상대 알아보기', price:550, act:'funnel:nextlove' },
-    { t:'😤 애인 화 풀어주는 법', price:250, act:'funnel:appease' },
+    { t:'🎯 재회 골든타임: 운과 전략', badge:'HOT', price:200, act:'funnel:golden' },
+    { t:'💗 심화 재회운: 그 사람 속마음', price:50, act:'funnel:simhwa' },
+    { t:'📮 심화 재회운: 연락 기다려도 될까', price:50, act:'funnel:waitcall' },
+    { t:'🔍 나를 좋아하는 사람', price:110, act:'funnel:wholikes' },
+    { t:'😉 다음 연애 상대 알아보기', price:110, act:'funnel:nextlove' },
+    { t:'😤 애인 화 풀어주는 법', price:50, act:'funnel:appease' },
   ],
   anxiety1: [ /* 확장: 요즘 그 사람 생각나지? */
-    { t:'🎯 재회 골든타임: 운과 전략', badge:'HOT', price:990, act:'funnel:golden' },
-    { t:'😢 그 사람도 내 생각할까?', badge:'HOT', price:250, act:'funnel:simhwa' },
-    { t:'💌 지금 고백하면 받아줄까 (골든타임+첫마디)', badge:'NEW', price:770, act:'funnel:gobaek' },
-    { t:'💍 내 애인이 결혼하고 싶어하는 상대는?', badge:'NEW', price:990, act:'funnel:marryTarget' },
-    { t:'🌗 우리가 자꾸 같은 걸로 싸우는 이유', badge:'NEW', price:990, act:'funnel:couple' },
+    { t:'🎯 재회 골든타임: 운과 전략', badge:'HOT', price:200, act:'funnel:golden' },
+    { t:'😢 그 사람도 내 생각할까?', badge:'HOT', price:50, act:'funnel:simhwa' },
+    { t:'💌 지금 고백하면 받아줄까 (골든타임+첫마디)', badge:'NEW', price:150, act:'funnel:gobaek' },
+    { t:'💍 내 애인이 결혼하고 싶어하는 상대는?', badge:'NEW', price:200, act:'funnel:marryTarget' },
+    { t:'🌗 우리가 자꾸 같은 걸로 싸우는 이유', badge:'NEW', price:200, act:'funnel:couple' },
   ],
   anxiety2: [ /* 확장: 혹시 내가 문제인 걸까? */
-    { t:'🪞 남들 눈에 비친 나의 매력', badge:'HOT', price:550, act:'funnel:selfworth' },
-    { t:'🔧 내 연애가 자꾸 고장나는 이유', badge:'NEW', price:550, act:'funnel:whybroken' },
-    { t:'👰 나 결혼할 수 있을까? 몇 살에?', badge:'HOT', price:990, act:'funnel:canmarry' },
-    { t:'🌸 나에게 다가오는 인연 미리보기', price:550, act:'funnel:cominglove' },
+    { t:'🪞 남들 눈에 비친 나의 매력', badge:'HOT', price:110, act:'funnel:selfworth' },
+    { t:'🔧 내 연애가 자꾸 고장나는 이유', badge:'NEW', price:110, act:'funnel:whybroken' },
+    { t:'👰 나 결혼할 수 있을까? 몇 살에?', badge:'HOT', price:200, act:'funnel:canmarry' },
+    { t:'🌸 나에게 다가오는 인연 미리보기', price:110, act:'funnel:cominglove' },
   ],
   money: [ /* 확장: 돈 걱정도 내가 봐줄게 */
-    { t:'🧧 내 재물그릇 크기, 돈 들어오는 시기', badge:'NEW', price:990, act:'funnel:moneybowl' },
-    { t:'🚪 지금 회사, 언제까지 다녀야 할까?', price:550, act:'funnel:quitwhen' },
-    { t:'✂️ 손절할 사람, 잡아야 할 귀인', price:550, act:'funnel:cutkeep' },
+    { t:'🧧 내 재물그릇 크기, 돈 들어오는 시기', badge:'NEW', price:200, act:'funnel:moneybowl' },
+    { t:'🚪 지금 회사, 언제까지 다녀야 할까?', price:110, act:'funnel:quitwhen' },
+    { t:'✂️ 손절할 사람, 잡아야 할 귀인', price:110, act:'funnel:cutkeep' },
   ],
   daily: [ /* 내가 타로 봐줄게! (무료) */
     { t:'🤑 둘 중 뭐살까?', badge:'HOT', price:0, act:'tarot:ab' },
@@ -168,12 +168,12 @@ const DAILY_CFG = {
 /* ═══ 판매 퍼널 설정 (범용 템플릿 — 화면은 01이 렌더) ═══ */
 const FUNNELS = {
   marriage: { /* 기존 정적 퍼널 유지, 결제·리포트 라우팅용 메타만 */
-    title:'절대 결혼하면 안되는 상대', emoji:'🙅‍♀️', price:1100, report:'marriage', static:true,
+    title:'절대 결혼하면 안되는 상대', emoji:'🙅‍♀️', price:220, report:'marriage', static:true,
     needs:['self'],
   },
   golden: {
     needs:['self',{key:'partner',label:'그 사람 이름·별명 (선택)',ph:'비워도 돼 — 그 사람이라고 부를게',birth:true,time:true,birthLabel:'그 사람 생년월일 (알면 더 정확해)'}],
-    title:'재회의 골든타임', emoji:'🎯', price:990, report:'reunion',
+    title:'재회의 골든타임', emoji:'🎯', price:200, report:'reunion',
     grad:'linear-gradient(160deg,#cfd8f6,#8fa3d8)', star:4.9, views:'1.2만', seen:'1,847',
     hook:'재회는 매달리는 게 아니라 <b>타이밍</b>이야.<br>그 사람 마음이 다시 열리는 <b>D-day</b>와, 그때 쓸 전략까지 같이 봐줄게.',
     pill:'그 마음이 열리는 D-day', vcat:'🐶🎯', vtitle:'그 사람 마음이 다시<br>열리는 골든타임',
@@ -188,7 +188,7 @@ const FUNNELS = {
   },
   simhwa: {
     needs:['self',{key:'partner',label:'그 사람 이름·별명 (선택)',ph:'비워도 돼 — 그 사람이라고 부를게',birth:true,time:true,birthLabel:'그 사람 생년월일 (알면 더 정확해)'}],
-    title:"지금 그 사람 마음속 '내 지분', 몇 %일까", emoji:'💌', price:250, report:'simhwa',
+    title:"지금 그 사람 마음속 '내 지분', 몇 %일까", emoji:'💌', price:50, report:'simhwa',
     grad:'linear-gradient(160deg,#cfe8f6,#9db8d8)', star:4.8, views:'2만 4,000', seen:'18,747',
     hook:"멀어진 우리… 그 사람 마음속에 <b>내 자리가 몇 %</b> 남았을까?<br>지금 그 사람 마음부터 확인해보자.",
     pill:"내 지분, 몇 % 남았을까", vcat:'🐶💔', vtitle:"그 사람 마음속<br>'내 지분'은 몇 %?",
@@ -203,7 +203,7 @@ const FUNNELS = {
   },
   choeae: {
     needs:['self',{key:'partner',label:'최애 이름 (필수)',ph:'예: 지호 · 아이돌/배우 OK',required:true,birth:true,time:true,birthLabel:'최애 생년월일 (검색하면 나와)',who:'최애'}],
-    title:'최애와 나의 심화궁합 리포트', emoji:'💖', price:1100, report:'choeae',
+    title:'최애와 나의 심화궁합 리포트', emoji:'💖', price:220, report:'choeae',
     grad:'linear-gradient(160deg,#f6cfe0,#c98fb8)', star:4.9, views:'6,000', seen:'3,755',
     hook:'나는 그저 수많은 팬 중 한 명일까?…아님 운명일까?<br>성덕을 꿈꾼다면 나와 최애의 사주 속 궁합을 확인해보자!',
     pill:'우리가 현실에서 만난다면?', vcat:'🐶💖', vtitle:'영혼까지 묶인 찰떡궁합 💖<br>만나면 파국인 상극 💔',
@@ -218,7 +218,7 @@ const FUNNELS = {
   },
   couple: {
     needs:['self',{key:'partner',label:'배우자/애인 이름 (선택)',ph:'비워도 돼',birth:true,time:true,birthLabel:'배우자/애인 생년월일 (알면 더 정확)'}],
-    title:'우리가 자꾸 같은 걸로 싸우는 이유', emoji:'🌗', price:990, report:'couple',
+    title:'우리가 자꾸 같은 걸로 싸우는 이유', emoji:'🌗', price:200, report:'couple',
     grad:'linear-gradient(160deg,#d9cfe8,#a89bc8)', star:4.8, views:'9,000', seen:'6,120',
     hook:'싸울 때마다 "또 이 얘기야?" 싶지 않아?<br>두 사람 기운이 어디서 부딪히는지, 언제 다시 편해지는지 짚어줄게.',
     pill:'우리, 왜 자꾸 부딪힐까', vcat:'🐶🌗', vtitle:'우리가 자꾸<br>같은 걸로 싸우는 이유',
@@ -233,7 +233,7 @@ const FUNNELS = {
   },
   marryTarget: {
     needs:['self',{key:'partner',label:'애인 이름 (선택)',ph:'비워도 돼',birth:true,time:true,birthLabel:'애인 생년월일 (알면 더 정확)'}],
-    title:'내 애인이 결혼하고 싶은 사람은 어떤 사람일까?', emoji:'💍', price:990, report:'marryTarget',
+    title:'내 애인이 결혼하고 싶은 사람은 어떤 사람일까?', emoji:'💍', price:200, report:'marryTarget',
     grad:'linear-gradient(160deg,#f6dccf,#c8a89b)', star:4.9, views:'1.4만', seen:'8,430',
     hook:"그 사람이 <b>몰래 그리는 '결혼하고 싶은 사람'</b> —<br>지금의 나랑 <b>몇 %</b> 닮았을까? 사주로 살짝 들여다보자.",
     pill:'나랑 몇 % 닮았나', vcat:'🐶💍', vtitle:'내 애인이 결혼하고 싶은<br>사람은 어떤 사람일까?',
@@ -248,7 +248,7 @@ const FUNNELS = {
   },
   selfworth: {
     needs:['self'],
-    title:'남들 눈에 비친 나의 매력', emoji:'🪞', price:550, report:'selfworth',
+    title:'남들 눈에 비친 나의 매력', emoji:'🪞', price:110, report:'selfworth',
     grad:'linear-gradient(160deg,#f6eccf,#c8b89b)', star:4.9, views:'2.1만', seen:'15,200',
     hook:'"나 정도면 괜찮은 사람일까?"<br>내가 모르는, 남들은 이미 아는 내 매력을 사주로 꺼내줄게.',
     pill:'내가 모르는 나의 매력', vcat:'🐶🪞', vtitle:'남들 눈에 비친<br>나의 매력',
@@ -263,7 +263,7 @@ const FUNNELS = {
   },
   gobaek: {
     needs:['self',{key:'partner',label:'그 사람 이름 (선택)',ph:'비워도 돼 — 그 사람이라고 부를게',birth:true,time:true,birthLabel:'그 사람 생년월일 (알면 더 정확)'}],
-    title:'밀당, 지금 놓으면 안 되는 타이밍 · 고백 골든타임', emoji:'🎣', price:770, report:'gobaek',
+    title:'밀당, 지금 놓으면 안 되는 타이밍 · 고백 골든타임', emoji:'🎣', price:150, report:'gobaek',
     grad:'linear-gradient(160deg,#f6cfe0,#d89bb8)', star:4.9, views:'1.7만', seen:'11,300',
     hook:'고백은 용기보다 <b>타이밍</b>이야.<br>지금 놓치면 안 되는 <b>밀당 순간</b>과, 그 사람이 열리는 날·첫마디까지.',
     pill:'놓치면 안 되는 타이밍', vcat:'🐶🎣', vtitle:'지금 놓으면 안 되는<br>밀당 타이밍',
@@ -278,7 +278,7 @@ const FUNNELS = {
   },
   future10: {
     needs:['self',{key:'partner',label:'애인 이름 (선택)',ph:'비워도 돼',birth:true,time:true,birthLabel:'애인 생년월일 (알면 더 정확)'}],
-    title:'이 사람과의 10년 뒤, 나는 어떤 감정일까?', emoji:'🏡', price:990, report:'future10',
+    title:'이 사람과의 10년 뒤, 나는 어떤 감정일까?', emoji:'🏡', price:200, report:'future10',
     grad:'linear-gradient(160deg,#ffe9cf,#e8c8a0)', star:4.9, views:'1.1만', seen:'7,240',
     hook:'10년 뒤, 이 사람과 함께라면 <b>우리 집 현관은 어떤 모습</b>일까?<br>사주로 미리 한 장면 그려볼게.',
     pill:'10년 뒤의 내 마음', vcat:'🐶🏡', vtitle:'이 사람과의 10년 뒤,<br>나는 어떤 감정일까?',
@@ -293,7 +293,7 @@ const FUNNELS = {
   },
   pastlife: {
     needs:['self',{key:'partner',label:'그 사람 이름 (선택)',ph:'비워도 돼 — 그 사람이라고 부를게',birth:true,time:true,birthLabel:'그 사람 생년월일 (알면 전생 인연이 더 또렷해)',who:'그 사람'}],
-    title:'이 사람과 나의 전생 테스트', emoji:'🔮', price:770, report:'pastlife',
+    title:'이 사람과 나의 전생 테스트', emoji:'🔮', price:150, report:'pastlife',
     grad:'linear-gradient(160deg,#d9cfe8,#9b8fc8)', star:4.9, views:'1.3만', seen:'9,120',
     hook:'처음 봤는데 이상하게 익숙한 그 사람 —<br>혹시 <b>전생부터 이어진 인연</b>일까? 두 사주로 그때의 이야기를 꺼내볼게.',
     pill:'전생에 우리는?', vcat:'🐶🔮', vtitle:'이 사람과 나의<br>전생 테스트',
@@ -308,7 +308,7 @@ const FUNNELS = {
   },
   lovemarry: {
     needs:['self',{key:'partner',label:'그 사람 이름 (필수)',ph:'예: 준호 · 별명도 OK',required:true,birth:true,time:true,birthLabel:'그 사람 생년월일 (연애합·결혼합을 가르는 핵심이야)',who:'그 사람'}],
-    title:'이 사랑, 연애로 끝날까 결혼까지 갈까', emoji:'💖', price:990, report:'lovemarry',
+    title:'이 사랑, 연애로 끝날까 결혼까지 갈까', emoji:'💖', price:200, report:'lovemarry',
     grad:'linear-gradient(160deg,#ffd9e4,#b89bc8)', star:4.9, views:'1.6만', seen:'10,214',
     hook:'설레는 건 확실한데… 이 사람이 <b>연애용 인연</b>인지 <b>결혼용 인연</b>인지 헷갈리지?<br>두 사람 사주로 <b>연애합과 결혼합을 따로</b> 재서, 이 사랑의 끝그림을 보여줄게.',
     pill:'연애합 vs 결혼합, 따로 봐야 해', vcat:'🐶💖', vtitle:'이 사랑,<br>연애로 끝날까 결혼까지 갈까',
@@ -600,7 +600,7 @@ const LOADING_BY_REPORT={
   pastlife:  ['전생의 기록을 더듬는 중…'],
   lovemarry: ['두 사람의 연애합을 재는 중…','결혼합은 따로 재야 해서 조금만 더…'],
 };
-const MASCOT_TALK=['오늘도 와줬구나!','네 운세 벌써 봐뒀다멍','편지 확인했어…?','수영 중이야, 시원해 🌊','젤리 냄새가 난다…'];
+const MASCOT_TALK=['오늘도 와줬구나!','네 운세 벌써 봐뒀다멍','편지 확인했어…?','수영 중이야, 시원해 🌊','쿠키 냄새가 난다…'];
 
 /* ═══ ver10.3 — 30장+ 심층 리포트용 공용 풀 ═══ */
 /* 일간(日干) 성격 — 천간 index 0~9 (갑을병정무기경신임계) */
@@ -1072,91 +1072,91 @@ function _mkF(key,o){
 }
 const _PN={key:'partner',label:'그 사람 이름 (선택)',ph:'비워도 돼 — 그 사람이라고 부를게',birth:true,time:true,birthLabel:'그 사람 생년월일 (알면 더 정확해)'};
 
-_mkF('newyear',{ title:'2026 신년 운세', emoji:'🌅', price:2000,
+_mkF('newyear',{ title:'2026 신년 운세', emoji:'🌅', price:400,
   grad:'linear-gradient(160deg,#ffe3c2,#d8a06b)',
   hook:'2026년, 너의 한 해를 <b>총운·분기·12개월·영역별</b>로 전부 펼쳐볼게.<br>올해 어디서 힘을 쓰고 어디서 쉬어야 하는지, 지도 한 장으로.',
   pill:'한 해를 지도 한 장으로', vcat:'🐶🌅', vtitle:'2026년 너의 운,<br>전부 펼쳐볼게',
   checks:['올해 <em>큰 흐름</em>이 궁금하다','<em>언제 움직이고 언제 쉴지</em> 알고 싶다','연애·돈·건강·일 <em>영역별</em>로 보고 싶다'],
   toc:['🌅 <b>2026 총운과 한 해의 키워드</b>','🗓️ 분기별 흐름 + 12개월 월별 운세','💘💰💪💼 영역별 심층','⚡ 최고의 달과 조심할 달'] });
-_mkF('soloexit',{ title:'솔로 탈출 시기', emoji:'❤️', price:770,
+_mkF('soloexit',{ title:'솔로 탈출 시기', emoji:'❤️', price:150,
   hook:'"나 연애 언제 해?" — 그 질문에 <b>시기</b>로 답해줄게.<br>네 인연의 문이 열리는 달과, 그 문 앞에서 준비할 것까지.',
   pill:'인연의 문이 열리는 달', vcat:'🐶❤️', vtitle:'너의 솔로 탈출,<br>언제쯤일까?',
   checks:['<em>연애를 언제 하게 될지</em> 궁금하다','요즘 <em>만남 자체가 없다</em>','좋은 사람을 <em>알아볼 준비</em>를 하고 싶다'],
   toc:['🗓️ <b>솔로 탈출 골든타임</b>','🚪 인연이 들어오는 통로','🪞 네가 아직 솔로인 진짜 이유 (매력 문제 아님)','✅ 그 전까지 준비 3가지'] });
-_mkF('lovecount',{ title:'남은 연애 횟수', emoji:'😮', price:770,
+_mkF('lovecount',{ title:'남은 연애 횟수', emoji:'😮', price:150,
   hook:'앞으로 몇 번의 사랑이 남았을까?<br>남은 연애의 <b>횟수</b>와, 각 연애가 너에게 <b>어떤 의미</b>일지 미리 볼게.',
   pill:'몇 번의 사랑이 남았을까', vcat:'🐶😮', vtitle:'너에게 남은 연애,<br>몇 번일까?',
   checks:['<em>앞으로 몇 명</em>을 더 만날지 궁금하다','<em>마지막 연애</em>가 어떤 모습일지 궁금하다','지난 연애가 <em>왜 그랬는지</em> 정리하고 싶다'],
   toc:['😮 <b>남은 연애 횟수</b>','💘 각 연애의 프로필 (배움·온기·정착)','🗓️ 첫 번째 인연이 오는 시기','💍 마지막 연애를 알아보는 법'] });
-_mkF('gunghap',{ title:'사주로 보는 궁합', emoji:'💑', price:990,
+_mkF('gunghap',{ title:'사주로 보는 궁합', emoji:'💑', price:200,
   needs:['self',Object.assign({},_PN,{label:'상대 이름 (필수)',required:true,ph:'예: 준호 · 별명도 OK'})],
   hook:'두 사람의 사주를 <b>나란히 펼쳐서</b> 궁합을 재볼게.<br>첫끌림부터 생활합·회복력까지 — 점수만 주고 끝내지 않아.',
   pill:'점수 말고 사용설명서', vcat:'🐶💑', vtitle:'두 사람의 궁합,<br>사주로 재볼게',
   checks:['우리 <em>궁합 점수</em>가 궁금하다','<em>어디서 부딪히는지</em> 알고 싶다','오래 가는 <em>관리법</em>이 궁금하다'],
   toc:['💞 <b>궁합 총점과 4축 분해</b>','⚖️ 두 사람 기운 맞대보기','🏠 생활 궁합 (리듬·돈·회복)','📅 가까워지는 시기'] });
-_mkF('dohwa',{ title:'나에게 도화살이 있을까?', emoji:'🌸', price:550,
+_mkF('dohwa',{ title:'나에게 도화살이 있을까?', emoji:'🌸', price:110,
   grad:'linear-gradient(160deg,#ffd9e4,#d89bb8)',
   hook:'도화살 = 사람을 끌어당기는 기운.<br>너에게 있는지, <b>어떤 모양</b>인지, 어떻게 쓰면 무기가 되는지 알려줄게.',
   pill:'내 매력의 정체', vcat:'🐶🌸', vtitle:'나의 도화,<br>있을까? 어떤 모양일까?',
   checks:['내가 <em>도화살이 있는지</em> 궁금하다','내 <em>매력의 정체</em>를 알고 싶다','매력을 <em>연애·일에 쓰는 법</em>이 궁금하다'],
   toc:['🌸 <b>도화 진단 (유형·세기)</b>','✨ 네 도화가 빛나는 순간','🛡️ 도화의 부작용과 선 긋기','💼 연애 밖에서 쓰는 법'] });
-_mkF('crush',{ title:'짝사랑, 그 사람 속마음', emoji:'🙈', price:250,
+_mkF('crush',{ title:'짝사랑, 그 사람 속마음', emoji:'🙈', price:50,
   needs:['self',_PN],
   hook:'말 못 하고 바라보는 그 사람 —<br>지금 그 사람 마음속에 <b>내 자리</b>가 있긴 한 걸까? 조심스럽게 들여다볼게.',
   pill:'그 사람 마음속 내 자리', vcat:'🐶🙈', vtitle:'짝사랑 중인 그 사람의<br>속마음',
   checks:['그 사람의 <em>속마음</em>이 궁금하다','<em>호감 신호</em>인지 헷갈리는 행동이 있다','<em>다가가도 될지</em> 고민된다'],
   toc:['🙈 <b>그 사람의 현재 속마음</b>','📡 호감 신호 체크리스트','👣 반 발짝 다가가는 법','🗓️ 마음이 움직이는 타이밍'] });
-_mkF('waitcall',{ title:'심화 재회운: 연락 기다려도 될까', emoji:'📮', price:250,
+_mkF('waitcall',{ title:'심화 재회운: 연락 기다려도 될까', emoji:'📮', price:50,
   needs:['self',_PN],
   hook:'폰만 보게 되는 요즘 —<br>기다리는 게 맞을까, 먼저 두드리는 게 맞을까. <b>오늘 기준의 답</b>을 줄게.',
   pill:'기다림 vs 노크, 오늘의 답', vcat:'🐶📮', vtitle:'그 사람 연락,<br>기다려도 될까?',
   checks:['<em>연락을 기다리는 중</em>이다','먼저 하자니 <em>후회할까 봐</em> 겁난다','<em>언제까지 기다릴지</em> 기준이 필요하다'],
   toc:['📮 <b>오늘의 판정: 기다림 vs 노크</b>','📡 그 사람 신호 해석','⏳ 기다림의 마감기한 정하기','💬 두드린다면 이 문장으로'] });
-_mkF('wholikes',{ title:'나를 좋아하는 사람', emoji:'🔍', price:550,
+_mkF('wholikes',{ title:'나를 좋아하는 사람', emoji:'🔍', price:110,
   hook:'지금 이 순간에도 <b>너를 마음에 둔 사람</b>이 있어.<br>어디쯤 있는 누구인지, 어떤 신호를 보내는 중인지 찾아볼게.',
   pill:'숨은 마음 찾기', vcat:'🐶🔍', vtitle:'지금 나를<br>좋아하는 사람은?',
   checks:['<em>나를 좋아하는 사람</em>이 있는지 궁금하다','최근 <em>묘한 신호</em>를 받은 적 있다','놓치고 있는 <em>인연</em>이 있을까 싶다'],
   toc:['🔍 <b>그 사람의 위치와 특징</b>','📡 이미 오고 있는 신호들','🪞 그 사람이 반한 너의 포인트','🗓️ 마음이 드러나는 시기'] });
-_mkF('nextlove',{ title:'다음 연애 상대 알아보기', emoji:'😉', price:550,
+_mkF('nextlove',{ title:'다음 연애 상대 알아보기', emoji:'😉', price:110,
   hook:'다음에 만날 사람, 미리 보고 싶지 않아?<br><b>성격·첫인상·만나는 경로·시기</b>까지 프로필로 정리해줄게.',
   pill:'다음 인연의 프로필', vcat:'🐶😉', vtitle:'다음 연애 상대,<br>미리 만나보기',
   checks:['<em>다음 인연</em>이 어떤 사람일지 궁금하다','<em>어디서 만나게 될지</em> 알고 싶다','이번엔 <em>좋은 사람</em>을 알아보고 싶다'],
   toc:['😉 <b>다음 상대 프로필 (성격·케미)</b>','📍 만나게 되는 경로','🗓️ 시기 예측','✅ 그 사람을 알아보는 신호'] });
-_mkF('appease',{ title:'애인 화 풀어주는 법', emoji:'😤', price:250,
+_mkF('appease',{ title:'애인 화 풀어주는 법', emoji:'😤', price:50,
   needs:['self',Object.assign({},_PN,{label:'애인 이름 (선택)'})],
   hook:'지금 그 사람, 화가 난 게 아니라 <b>서운한 거야.</b><br>그 마음의 구조와, 3단계 화해 각본을 줄게 — 오늘 안에 풀자.',
   pill:'오늘 안에 푸는 3단계', vcat:'🐶😤', vtitle:'애인 화,<br>오늘 안에 풀어주기',
   checks:['지금 <em>애인이 화나</em> 있다','사과했는데 <em>더 꼬였다</em>','<em>반복되는 다툼</em>을 끊고 싶다'],
   toc:['🌡️ <b>그 사람 화의 진짜 구조</b>','💬 3단계 화해 각본','🚫 하면 더 꼬이는 3가지','🛡️ 같은 싸움 재발 방지'] });
-_mkF('whybroken',{ title:'내 연애가 자꾸 고장나는 이유', emoji:'🔧', price:550,
+_mkF('whybroken',{ title:'내 연애가 자꾸 고장나는 이유', emoji:'🔧', price:110,
   hook:'만나는 사람은 다른데 <b>끝나는 방식이 비슷하다면</b> — 그건 우연이 아니야.<br>네 연애의 반복 루프를 찾아서, 딱 한 지점만 고쳐보자.',
   pill:'반복 루프 한 지점 수리', vcat:'🐶🔧', vtitle:'내 연애는 왜<br>비슷하게 끝날까?',
   checks:['연애가 <em>비슷한 방식으로</em> 끝난다','<em>내가 문제인가</em> 싶을 때가 있다','다음 연애는 <em>다르게</em> 하고 싶다'],
   toc:['🔧 <b>네 연애의 반복 루프 진단</b>','🔍 루프가 시작되는 순간','✂️ 끊는 지점 딱 하나','🌱 다음 연애가 달라지는 신호'] });
-_mkF('canmarry',{ title:'나 결혼할 수 있을까? 몇 살에?', emoji:'👰', price:990,
+_mkF('canmarry',{ title:'나 결혼할 수 있을까? 몇 살에?', emoji:'👰', price:200,
   hook:'"나 결혼할 수 있을까?" 그 밤의 질문에 정면으로 답해줄게.<br><b>결혼 창이 열리는 나이</b>와, 그때 만날 사람의 모양까지.',
   pill:'결혼 창이 열리는 나이', vcat:'🐶👰', vtitle:'나의 결혼,<br>언제쯤일까?',
   checks:['<em>결혼을 할 수 있을지</em> 궁금하다','<em>몇 살쯤</em>일지 알고 싶다','<em>어떤 사람</em>과 하게 될지 궁금하다'],
   toc:['👰 <b>결혼 창이 열리는 시기</b>','💍 배우자상 미리보기','🗓️ 그 전까지의 인연 흐름','✅ 창이 열렸을 때 할 일'] });
-_mkF('cominglove',{ title:'나에게 다가오는 인연 미리보기', emoji:'🌸', price:550,
+_mkF('cominglove',{ title:'나에게 다가오는 인연 미리보기', emoji:'🌸', price:110,
   grad:'linear-gradient(160deg,#ffe9f0,#c8a0b8)',
   hook:'지금 너를 향해 <b>걸어오고 있는 인연</b>이 있어.<br>어떤 사람인지, 언제 어디서 마주칠지, 신호는 뭔지 미리 볼게.',
   pill:'걸어오는 중인 인연', vcat:'🐶🌸', vtitle:'다가오는 인연,<br>미리보기',
   checks:['<em>새 인연</em>이 올지 궁금하다','요즘 <em>징조 같은 변화</em>가 있다','인연을 <em>놓치지 않고</em> 싶다'],
   toc:['🌸 <b>다가오는 인연의 프로필</b>','🚪 들어오는 경로와 시기','📡 이미 시작된 신호 3가지','✅ 알아보는 법'] });
-_mkF('moneybowl',{ title:'내 재물그릇 크기, 돈 들어오는 시기', emoji:'🧧', price:990,
+_mkF('moneybowl',{ title:'내 재물그릇 크기, 돈 들어오는 시기', emoji:'🧧', price:200,
   grad:'linear-gradient(160deg,#ffeccf,#c8a86b)',
   hook:'돈이 안 모이는 게 아니라 <b>그릇 모양을 몰랐던 거야.</b><br>네 재물그릇의 크기·모양·새는 구멍·차오르는 시기까지 전부 볼게.',
   pill:'내 그릇의 모양과 시기', vcat:'🐶🧧', vtitle:'내 재물그릇,<br>얼마나 클까?',
   checks:['<em>돈이 모이는 구조</em>가 궁금하다','<em>목돈 들어오는 시기</em>를 알고 싶다','<em>새는 구멍</em>을 막고 싶다'],
   toc:['🧧 <b>재물그릇 진단 (크기·모양)</b>','💧 새는 구멍 3곳','📈 돈이 들어오는 시기','🌱 그릇을 키우는 법'] });
-_mkF('quitwhen',{ title:'지금 회사, 언제까지 다녀야 할까?', emoji:'🚪', price:550,
+_mkF('quitwhen',{ title:'지금 회사, 언제까지 다녀야 할까?', emoji:'🚪', price:110,
   grad:'linear-gradient(160deg,#d9e8f6,#8fa3c8)',
   hook:'매일 아침 드는 그 생각 — "여기 계속 다녀야 하나?"<br>지금 자리의 남은 값어치와 <b>이직 창이 열리는 시기</b>로 답해줄게.',
   pill:'버티기 vs 움직이기', vcat:'🐶🚪', vtitle:'지금 회사,<br>언제까지?',
   checks:['<em>이직 타이밍</em>이 고민된다','지금 자리가 <em>맞는지</em> 모르겠다','움직인다면 <em>언제가 좋을지</em> 궁금하다'],
   toc:['🚪 <b>지금 자리의 남은 값어치</b>','📅 이직 창이 열리는 시기','⚖️ 잔류 vs 이동 비교표','✅ 창이 열리기 전 준비'] });
-_mkF('cutkeep',{ title:'손절할 사람, 잡아야 할 귀인', emoji:'✂️', price:550,
+_mkF('cutkeep',{ title:'손절할 사람, 잡아야 할 귀인', emoji:'✂️', price:110,
   grad:'linear-gradient(160deg,#e3e8d9,#9bb89b)',
   hook:'운은 사람을 타고 들어와 — 그리고 사람을 타고 <b>새어 나가.</b><br>네 곁에서 기운을 빼는 사람과 채우는 귀인을 갈라줄게.',
   pill:'기운 빼는 사람 vs 귀인', vcat:'🐶✂️', vtitle:'손절할 사람,<br>잡아야 할 귀인',
@@ -1166,7 +1166,7 @@ _mkF('cutkeep',{ title:'손절할 사람, 잡아야 할 귀인', emoji:'✂️',
 /* 월간 사주 7종 + 월간 타로 3종 — 한 빌더(monthly/tarotm) 공유 */
 Object.keys(MO_DOM).forEach(k=>{
   const d=MO_DOM[k];
-  _mkF(k,{ title:_NM2+'월 사주 '+d.label, emoji:d.emo, price:400, report:'monthly',
+  _mkF(k,{ title:_NM2+'월 사주 '+d.label, emoji:d.emo, price:80, report:'monthly',
     hook:_NM2+'월 너의 <b>'+d.label+'</b>을 주차별로 펼쳐볼게.<br>좋은 날과 조심할 날, 이 달의 전략까지 달력처럼 한눈에.',
     pill:_NM2+'월 '+d.label+' 달력', vcat:'🐶'+d.emo, vtitle:_NM2+'월, 너의<br>'+d.label+' 흐름',
     checks:['이 달 <em>'+d.label+'</em> 흐름이 궁금하다','<em>좋은 날과 조심할 날</em>을 알고 싶다','한 달 <em>전략</em>을 세우고 싶다'],
@@ -1174,7 +1174,7 @@ Object.keys(MO_DOM).forEach(k=>{
 });
 Object.keys(TM_THEME).forEach(k=>{
   const t=TM_THEME[k];
-  _mkF(k,{ title:(k==='tmjob'?'타로로 보는 취업·이직운':_NM2+'월 '+(k==='tmsolo'?'솔로 연애운':'타로 커플 애정운')), emoji:t.emo, price:400, report:'tarotm',
+  _mkF(k,{ title:(k==='tmjob'?'타로로 보는 취업·이직운':_NM2+'월 '+(k==='tmsolo'?'솔로 연애운':'타로 커플 애정운')), emoji:t.emo, price:80, report:'tarotm',
     hook:'이 달의 <b>'+t.label+'</b>을 타로 3장으로 볼게 — 초반·중반·후반.<br>'+t.q+'까지, 카드가 짚어주는 대로.',
     pill:'3장으로 보는 한 달', vcat:'🐶'+t.emo, vtitle:'이 달의 '+t.label+',<br>카드 3장으로',
     checks:['이 달 <em>'+t.label+'</em>이 궁금하다','<em>언제쯤 움직여야 할지</em> 알고 싶다','타로의 <em>구체적 조언</em>이 필요하다'],
@@ -1323,7 +1323,7 @@ const LL_SIGNS_SHORT=[
   '그 사람의 미래 계획에 내 자리가 그려지지 않는다',
 ];
 
-_mkF('lifelong',{ title:'이 사람, 평생 갈까 잠깐 스칠까', emoji:'💞', price:880,
+_mkF('lifelong',{ title:'이 사람, 평생 갈까 잠깐 스칠까', emoji:'💞', price:180,
   needs:['self',Object.assign({},_PN,{label:'그 사람 이름 (필수)',required:true,ph:'예: 준호 · 별명도 OK'})],
   grad:'linear-gradient(160deg,#d9f6e8,#8fc8a3)',
   hook:'이 사람과의 시간이 <b>평생의 서사</b>가 될지, <b>한 계절의 페이지</b>로 남을지 —<br>두 사람 사주의 지속력을 정면으로 재볼게.',
