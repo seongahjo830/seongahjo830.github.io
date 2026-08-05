@@ -1282,7 +1282,11 @@ async function renderShop(){
         <span>${p.won.toLocaleString()}원</span></div>
       <button class="get" ${svc?'':'disabled'} onclick="buyCookies('${p.sku}')">${svc?'충전':'앱에서'}</button>
     </div>`).join('');
-  note.textContent = svc ? '' : '충전은 Play 스토어에서 설치한 앱에서만 할 수 있어. 웹에선 무료 콘텐츠만 볼 수 있어 🍪';
+  /* 앱으로 실행 중인데 결제가 없으면 = 결제 빠진 구버전 → 안내를 다르게 (웹과 헷갈리면 안 됨) */
+  const inApp = matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches;
+  note.textContent = svc ? ''
+    : inApp ? '충전 기능이 담긴 새 버전이 곧 올라와. 조금만 기다려줘 🍪'
+            : '충전은 Play 스토어에서 설치한 앱에서만 할 수 있어. 웹에선 무료 콘텐츠만 볼 수 있어 🍪';
 }
 
 async function buyCookies(sku){
