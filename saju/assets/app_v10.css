@@ -638,3 +638,7 @@ select.f-input.f-time:disabled{opacity:.45;background:#f2efe8}
 .jf-note{margin:2px 22px 10px;font-size:12px;line-height:1.6;color:var(--sub)}
 .pk-tag{display:inline-block;margin-left:5px;padding:1px 7px;border-radius:8px;background:var(--purple);color:#fff;font-size:10.5px;font-style:normal;font-weight:800;vertical-align:1px}
 .pay-row .won{font-style:normal;font-size:12px;font-weight:700;color:var(--sub);margin-left:3px}
+
+/* 상시 고지 (2026-08-06 법적 리스크 완화) */
+.rp-legal{margin:8px 18px 0;font-size:11.5px;line-height:1.5;color:#8792ab;text-align:center;opacity:.85}
+.rp-legal b{color:#a9b4cd}

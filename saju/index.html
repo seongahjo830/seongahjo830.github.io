@@ -34,7 +34,7 @@
   <!-- 온보딩 1~6 -->
   <div class="screen" id="scr-ob1">
     <button class="skip" onclick="finishOnboard()">건너뛰기</button>
-    <div class="ob"><div id="obcat1"></div><h2>안녕하세요.<br>저는 강아지사주일기의 보리예요.</h2></div>
+    <div class="ob"><div id="obcat1"></div><h2>안녕하세요.<br>저는 강아지사주일기의 뭉치예요.</h2></div>
     <p class="terms">앱을 사용함으로써 <u onclick="openPrivacy()" style="cursor:pointer">개인정보처리방침</u> 및 <u onclick="openPrivacy()" style="cursor:pointer">이용약관</u>에 동의하게 됩니다.</p>
     <button class="btn-cta" onclick="go('scr-ob2')">안녕!</button>
   </div>
@@ -86,7 +86,7 @@
       <div class="hero-band">
         <div class="hero-txt">
           <div class="blurb" id="mascot-talk">‥</div>
-          <div class="hero-sub">오늘의 기운을 보리가 먼저 읽어뒀어요</div>
+          <div class="hero-sub">오늘의 기운을 뭉치가 먼저 읽어뒀어요</div>
         </div>
         <div class="hero-dog" id="homecat"></div>
       </div>
@@ -141,7 +141,7 @@
       <div class="cal-nav"><span onclick="diaryNav(-1)" style="cursor:pointer;padding:0 8px">‹</span><span id="cal-title"></span><span onclick="diaryNav(1)" style="cursor:pointer;padding:0 8px">›</span></div>
       <div class="cal" id="cal"></div>
       <div class="diary-editor">
-        <textarea id="diary-text" placeholder="오늘의 일기 쓰기 (보리가 답글을 달아줘요)"></textarea>
+        <textarea id="diary-text" placeholder="오늘의 일기 쓰기 (뭉치가 답글을 달아줘요)"></textarea>
         <button class="save" onclick="saveDiary()">오늘의 일기 쓰기</button>
         <div id="diary-replies"></div>
       </div>
@@ -154,7 +154,7 @@
     <div class="scroll">
       <div class="more-prof">
         <div class="nm" id="m-name">보호자</div>
-        <div class="sub">🐾 보리의 1호 친구</div>
+        <div class="sub">🐾 뭉치의 1호 친구</div>
         <div class="sub" id="m-birth"></div>
       </div>
       <div class="more-cookie"><span>🍪 <b class="cookie-n">0</b> 쿠키</span><button class="chg" onclick="go('scr-cookie')">충전하기</button></div>
@@ -164,7 +164,8 @@
         <button class="stub-off" onclick="stub('내 쿠폰')">내 쿠폰<span class="wip-tag">준비중</span><span class="ar">›</span></button>
         <button onclick="go('scr-cookie')">내 쿠키 · 쿠키 충전<span class="ar">›</span></button>
         <button onclick="renameMe()">이름 바꾸기<span class="ar">›</span></button>
-        <button onclick="openPrivacy()">약관·개인정보 확인하기<span class="ar">›</span></button>
+        <button onclick="aboutApp()">이 앱에 대하여<span class="ar">›</span></button>
+      <button onclick="openPrivacy()">약관·개인정보 확인하기<span class="ar">›</span></button>
         <button class="stub-off" onclick="stub('고객센터')">고객센터<span class="wip-tag">준비중</span><span class="ar">›</span></button>
         <button onclick="resetAll()">처음부터 다시 시작하기<span class="ar">›</span></button>
       </div>
@@ -188,11 +189,11 @@
   <!-- 편지함 -->
   <div class="screen" id="scr-mail-intro">
     <div class="topbar"><button class="back" onclick="showTab('scr-home')">←</button></div>
-    <div class="mail-intro"><div class="env">💌</div><p><span id="mi-name">보호자</span>님, 편지가 도착했어요.<br>보리의 편지를 열어볼까요?</p></div>
+    <div class="mail-intro"><div class="env">💌</div><p><span id="mi-name">보호자</span>님, 편지가 도착했어요.<br>뭉치의 편지를 열어볼까요?</p></div>
     <button class="btn-cta" onclick="go('scr-mail')">보러가기</button>
   </div>
   <div class="screen" id="scr-mail">
-    <div class="topbar"><button class="back" onclick="showTab('scr-home')">←</button><span class="h-title">보리의 편지 🐾</span></div>
+    <div class="topbar"><button class="back" onclick="showTab('scr-home')">←</button><span class="h-title">뭉치의 편지 🐾</span></div>
     <div class="scroll">
       <div id="letters"></div>
       <div class="mail-actions">
@@ -200,12 +201,12 @@
         <button class="like" onclick="this.textContent='♥'">♡</button>
       </div>
       <div class="reply-box" id="reply-area" style="display:none">
-        <textarea id="reply-text" placeholder="보리에게 편지 쓰기 🐶"></textarea>
+        <textarea id="reply-text" placeholder="뭉치에게 편지 쓰기 🐶"></textarea>
         <button class="save" onclick="sendReply()">편지 보내기</button>
       </div>
       <div style="height:30px"></div>
     </div>
-    <div class="dlg" id="dlg-sent"><div class="box">보리에게 편지가 전달되었어요<br><button class="ok" onclick="closeSent()">확인</button></div></div>
+    <div class="dlg" id="dlg-sent"><div class="box">뭉치에게 편지가 전달되었어요<br><button class="ok" onclick="closeSent()">확인</button></div></div>
   </div>
 
   <!-- 운세보관함 -->
@@ -268,6 +269,7 @@
       <span id="rp-cnt">1 / 15</span>
     </div>
     <div class="prog"><i id="rp-prog" style="width:6%"></i></div>
+    <p class="rp-legal">사주·타로 해석은 <b>재미로 보는 콘텐츠</b>예요 · 의료·법률·재무 조언이 아니에요</p>
     <div class="rp-chap" id="rp-chap"></div>
     <!-- 08-02: 사주풀이 반복 지루함 해소 — 건너뛰기 + 주제만 모아보기 -->
     <div class="rp-tools" id="rp-tools" style="display:none">
@@ -373,7 +375,7 @@
     <div class="scroll">
       <div class="q-block" style="padding-top:18px;font-size:17.5px">준비됐어!<br>쿠키만 내면 바로 봐줄게 🍪</div>
       <div class="pay-box" id="pay-box"></div>
-      <p class="wallet-line" style="color:#b8b0a2">결제하면 운세보관함에 영구 저장돼 언제든 다시 볼 수 있어요.</p>
+      <p class="wallet-line" style="color:#b8b0a2">결제하면 운세보관함에 영구 저장돼 언제든 다시 볼 수 있어요.<br>사주·타로 해석은 <b>재미로 보는 콘텐츠</b>이며, 결과를 보장하지 않아요.</p>
     </div>
     <button class="btn-cta" id="pay-btn" onclick="pay()">쿠키 내고 보기</button>
     <div class="toast" id="toast-pay">쿠폰이 자동으로 적용됐다멍 🎟️</div>
@@ -470,7 +472,7 @@ function showTab(id){
   go(id); if(id==='scr-today') renderToday(); if(id==='scr-diary') renderDiary(); if(id==='scr-more') renderMore(); if(id==='scr-home') renderHome();
 }
 /* 준비중 항목 클릭 → 통일 토스트 (08-02 지시: 떴다가 사라지는 팝업) */
-function stub(name){ const t=$('toast-global'); const nm=name.replace(/^[^가-힣A-Za-z0-9]+\s*/,''); t.textContent='「'+nm+'」은 보리가 열심히 만들고 있어요 — 조금만 기다려 줘! 🐾'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2300); }
+function stub(name){ const t=$('toast-global'); const nm=name.replace(/^[^가-힣A-Za-z0-9]+\s*/,''); t.textContent='「'+nm+'」은 뭉치가 열심히 만들고 있어요 — 조금만 기다려 줘! 🐾'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2300); }
 function couponToast(){ setTimeout(()=>flash('toast-funnel'),600); }
 /* 08-02: 준비중이던 더보기 메뉴 2종을 진짜 기능으로 */
 function renameMe(){
@@ -505,6 +507,9 @@ function toggleHomeExtras(){
 }
 function flash(id){ const t=$(id); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400); }
 function segPick(btn){ [...btn.parentElement.children].forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
+function aboutApp(){
+  toastMsg('강아지사주일기는 명리학(사주)을 바탕으로 만든 창작 콘텐츠예요. 재미로 봐주세요 🍪');
+}
 function renderCookie(){ document.querySelectorAll('.cookie-n').forEach(e=>e.textContent = S.cookie.toLocaleString()); }
 
 /* ═══ 온보딩 ═══ */
@@ -688,7 +693,7 @@ function shortsHtml(){
 /* 쇼츠 결과 — 토스트로 흘려보내지 않고 제대로 된 결과 시트 + 보관함 저장 */
 const SHORT_DESC={
   '오늘 뭐 먹지?':['오늘 네 기운엔 이게 제일 잘 맞아. 고민할 시간에 그냥 이걸로 🍽️','속이 편한 쪽을 고르면 오후 컨디션이 달라져.'],
-  '강아지 속마음':['보리가 오늘 너한테 하고 싶은 말이야 🐾','오늘은 이 말이 유독 필요한 날 같아서.'],
+  '강아지 속마음':['뭉치가 오늘 너한테 하고 싶은 말이야 🐾','오늘은 이 말이 유독 필요한 날 같아서.'],
   'YES or NO':['오늘 흐름 기준의 답이야. 참고만 해 🙆','확신이 안 서면 하루 재워두는 것도 답이야.'],
   '오늘 행운 컬러':['오늘 이 색을 한 점만 지녀도 기운이 붙어 🎨','옷·소품·폰 배경 어디든 좋아.'],
   '행운 카드':['오늘 너에게 들어온 기운이야 🍀','작은 신호를 놓치지 마.'],
@@ -719,7 +724,7 @@ function shortKeep(){
 function renderHome(){
   renderCookie();
   const days=Math.floor((Date.now()-S.firstDay)/86400000)+1;
-  $('days-line').innerHTML=`${S.name}님이 보리와<br>함께한 지 ${days}일째 🔥`;
+  $('days-line').innerHTML=`${S.name}님이 뭉치와<br>함께한 지 ${days}일째 🔥`;
   $('mascot-talk').textContent=MASCOT_TALK[hashN(S.name+new Date().getHours(),MASCOT_TALK.length)];
   const nm=new Date().getMonth()+1;
   const interests=S.interests, hidden=S.hidden, views=S.views;
@@ -764,7 +769,7 @@ function renderHome(){
     html += `<div class="sec-label grey" style="color:#a89f90">덜 보는 것 같아서 접어뒀어 🐾</div>`;
     html += collapsed.map(s=>`<div class="muted-card" onclick="unhideSec('${s.key}')"><span class="e">${s.label.match(/\p{Extended_Pictographic}/u)?.[0]||'🔸'}</span><span class="t">${s.label.replace(/ *·.*/,'')}</span><span class="x">펼치기 ⌄</span></div>`).join('');
   }
-  html += carou({key:'makers',label:'보리를 만드는 사람들',items:CATALOG.makers});
+  html += carou({key:'makers',label:'뭉치를 만드는 사람들',items:CATALOG.makers});
   $('home-sections').innerHTML=html;
   startHeroTimer();
 
@@ -892,7 +897,7 @@ function tarotDraw(){
   }
   if(tarotKind==='yesno'&&extra){
     const yes=seed%2===0;
-    head=`"${extra}"<br>보리의 대답은… ${yes?'YES! 🙆':'조금만 기다려 (NO) 🙅'}`;
+    head=`"${extra}"<br>뭉치의 대답은… ${yes?'YES! 🙆':'조금만 기다려 (NO) 🙅'}`;
     sub=yes?'카드가 등을 밀어주고 있어.':'지금은 때가 아니라는 뜻이야 — 나쁜 게 아니라.';
   }
   if(tarotKind==='ab'&&extra){
@@ -902,14 +907,14 @@ function tarotDraw(){
     if(opts.length<2){ const sp=extra.split(/\s+/); if(sp.length===2) opts=sp; }
     if(opts.length>=2){
       const pick=opts[seed%opts.length];
-      head=`보리의 선택은…<br>「${pick}」! 🐾`;
+      head=`뭉치의 선택은…<br>「${pick}」! 🐾`;
       sub=`${c.ko} 카드가 ${pick} 쪽에서 반짝였어.`;
       p1=`${c.ko} 카드는 ${c.kw[0]}·${c.kw[1]}의 기운이야. 두 갈래 중 「${pick}」 쪽에 오늘의 흐름이 실려 있어.`;
       p2=`물론 마지막 선택은 네 몫이야 — 근데 오늘은 「${pick}」을 골랐을 때 후회가 적은 날이야.`;
     }else{
       head=`둘을 알려줘야 골라줄 수 있어 🐾`;
       sub=`「떡볶이 vs 마라탕」처럼 vs·쉼표로 나눠서 다시 물어봐 줘!`;
-      p1=`이번엔 「${extra}」 하나만 들려서 보리가 못 골랐어. 그래도 카드는 뽑아뒀어 — ${c.ko}.`;
+      p1=`이번엔 「${extra}」 하나만 들려서 뭉치가 못 골랐어. 그래도 카드는 뽑아뒀어 — ${c.ko}.`;
       p2=c.p2;
     }
   }
@@ -1028,7 +1033,7 @@ function renderDiary(){
   }
   $('cal').innerHTML=cells;
   $('diary-replies').innerHTML=diary.slice(-3).map(e=>
-    `<div class="bora-reply"><b>${e.d} 내 일기</b>${e.t}<div style="padding-top:8px"><b>🐶 보리의 답글</b>${e.r}</div></div>`).join('');
+    `<div class="bora-reply"><b>${e.d} 내 일기</b>${e.t}<div style="padding-top:8px"><b>🐶 뭉치의 답글</b>${e.r}</div></div>`).join('');
 }
 function saveDiary(){
   const t=$('diary-text').value.trim(); if(!t){ $('diary-text').placeholder='한 줄이면 충분해! 오늘 어땠어?'; return; }
@@ -1047,7 +1052,7 @@ function initLetters(){
 function openMail(){ initLetters(); const unread=S.letters.some(l=>!l.read); $('mi-name').textContent=S.name; renderLetters(); go(unread?'scr-mail-intro':'scr-mail'); }
 function renderLetters(){
   const ls=S.letters||[]; ls.forEach(l=>l.read=true); S.letters=ls;
-  $('letters').innerHTML=ls.map(l=>`<div class="letter"><div class="to">To. ${S.name}님</div><div>${l.text}</div><div class="from">${l.date}<br>from. 보리</div></div>`).join('');
+  $('letters').innerHTML=ls.map(l=>`<div class="letter"><div class="to">To. ${S.name}님</div><div>${l.text}</div><div class="from">${l.date}<br>from. 뭉치</div></div>`).join('');
 }
 function sendReply(){ const t=$('reply-text').value.trim(); if(!t) return; $('dlg-sent').classList.add('show'); $('reply-text').value=''; }
 function closeSent(){
@@ -1325,7 +1330,7 @@ function renderPay(){
   $('pay-box').innerHTML=`
     <div class="pay-row"><span>상품 금액</span><span><b>${F.price.toLocaleString()} 쿠키</b></span></div>
     <div class="pay-row"><span>내 쿠키</span><span><span class="cookie-n">${S.cookie.toLocaleString()}</span> 쿠키</span></div>
-    <div class="pay-row"><span>🎟️ 보리의 응원 쿠폰 (30%)</span><span class="minus">− ${disc.toLocaleString()} 쿠키</span></div>
+    <div class="pay-row"><span>🎟️ 뭉치의 응원 쿠폰 (30%)</span><span class="minus">− ${disc.toLocaleString()} 쿠키</span></div>
     <div class="pay-row total"><span>최종 금액</span><span>🍪 ${fin.toLocaleString()} 쿠키 <em class="won">(${(fin*COOKIE_WON).toLocaleString()}원)</em></span></div>`;
   $('pay-btn').textContent=`🍪 ${fin.toLocaleString()} 쿠키 내고 보기`;
 }
@@ -2805,7 +2810,7 @@ function answerCards(c, domKey){
        ['안 되면 어떻게 할지도 정해뒀다',true],
        ['컨디션이 바닥인 날은 피했다',true],
      ])}`,
-    `<h2>🎁 보리의 원포인트</h2>
+    `<h2>🎁 뭉치의 원포인트</h2>
      <div class="script-box"><b>딱 하나만 가져간다면</b>${faq[0][1]}</div>
      ${RV.ring(rpct(s,633,82,97),'가능성','네가 해낼 확률','이 수치가 높은 이유는 간단해 — 여기까지 읽는 사람이 원래 잘 되는 사람이거든.','gold')}`,
   ];
@@ -2829,7 +2834,7 @@ function explainTerms(html, seen){
 }
 function warmCard(c,line){
   return `<div class="big">💜</div><h2>마지막으로, 이것만</h2><p class="ctr">${END_WARM[c.seed%END_WARM.length]}</p>
-    ${RV.ring(rpct(c.seed,999,86,99),'응원 지수','보리의 진심이야',line,'pur')}`;
+    ${RV.ring(rpct(c.seed,999,86,99),'응원 지수','뭉치의 진심이야',line,'pur')}`;
 }
 const CUR_M=new Date().getMonth()+1; /* 이번 달 */
 
@@ -2920,7 +2925,7 @@ function buildMonthly(c){
        <li>골든 위크: ${bestW+1}주차 · 최고의 날: ${bestD}일</li>
        <li>조심: ${warnD}일 전후의 급한 결정</li>
        <li>열쇠: ${dom.focus[s%dom.focus.length].slice(0,30)}…</li></ul></div>`,
-    warmCard(c,`한 달은 생각보다 길어 — 이번 달 ${c.nm}의 ${dom.label}, 보리가 응원할게 🐾`),
+    warmCard(c,`한 달은 생각보다 길어 — 이번 달 ${c.nm}의 ${dom.label}, 뭉치가 응원할게 🐾`),
   ];
   return cards;
 }
@@ -3151,7 +3156,7 @@ function buildCrush(c){
        <li>${who}의 온도: 차갑지 않음, 이름표 없음</li>
        <li>전략: ${female?'티는 최대 · 결정타는 그 사람 몫':'신호 2개 확인 후 직진'}</li>
        <li>반 발짝 문장 준비 완료</li></ul></div>`,
-    warmCard(c,`짝사랑도 사랑이야 — 지금의 두근거림까지가 전부 ${c.nm}의 이야기야. 잘 되길 보리가 빌게 🐾`),
+    warmCard(c,`짝사랑도 사랑이야 — 지금의 두근거림까지가 전부 ${c.nm}의 이야기야. 잘 되길 뭉치가 빌게 🐾`),
   ];
   return cards;
 }
@@ -3298,7 +3303,7 @@ function buildAppease(c){
        <li>순서: 인정 → 구체 사과 → 재발 방지 한 줄</li>
        <li>금지: 심문 · 장문 해명 · 선물로 덮기</li>
        <li>마무리는 내일 아침이 확률 높음</li></ul></div>`,
-    warmCard(c,`싸웠다는 건 아직 서로가 중요하다는 뜻이야. 오늘 밤 ${c.nm}의 첫 마디를 보리가 응원할게 🐾`),
+    warmCard(c,`싸웠다는 건 아직 서로가 중요하다는 뜻이야. 오늘 밤 ${c.nm}의 첫 마디를 뭉치가 응원할게 🐾`),
   ];
   return cards;
 }

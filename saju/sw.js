@@ -1,4 +1,4 @@
-const CACHE = 'dogsaju-202608060930-cookie2';
+const CACHE = 'dogsaju-202608061000-safe';
 const CORE = ['./', './index.html', './intro.html', './manifest.json',
   './assets/app_v10.css', './assets/engine.js', './assets/data_v10.js',
   './icon-192.png', './icon-512.png'];
