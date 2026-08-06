@@ -1271,28 +1271,37 @@ function earn(btn,n){
 const COOKIE_WON = 100;                       /* 쿠키 1개 = 100원 */
 
 /* ═══════════════════════════════════════════════════════════════════
-   ⚠️⚠️ 비공개 테스트 모드 — 프로덕션 출시 전 반드시 false 로 되돌릴 것 ⚠️⚠️
+   🎁 무료 개방 정책 (FREE_LAUNCH) — 의도된 운영 설정이다. 끄지 말 것.
 
    true 이면 ① 첫 진입에 쿠키 100개를 1회 무료 지급하고
             ② 모든 유료 항목의 가격이 1쿠키가 된다(무료 항목 0은 그대로).
-   테스터가 결제 없이 전 기능을 돌려보게 하려는 설정이다.
-   ⛔ 이대로 프로덕션에 나가면 매출이 0이 된다. 아래 한 줄만 false 로 바꾸면
-      원래 가격표(50·80·110·150·180·200·220·400)가 그대로 되살아난다 —
-      가격 숫자 자체는 하나도 건드리지 않았다.
+
+   ⚠️ 여기 헷갈리지 말 것: 예전엔 이게 "비공개 테스트용, 출시 전 반드시 끌 것"이었다.
+      2026-08-06 사용자가 **정식 출시에도 이대로 간다**고 결정했다. 그래서 이건
+      임시 설정이 아니라 **현재의 가격 정책**이다. "출시 전이니 꺼야지" 하고
+      false 로 되돌리지 말 것 — 그건 사용자 의도를 깨는 것이다.
+
+   ℹ️ 되돌리는 건 사용자가 명시적으로 요청할 때만. false 로 바꾸면 원래 가격표
+      (50·80·110·150·180·200·220·400)가 그대로 살아난다 — 가격 숫자 자체는
+      한 번도 건드린 적이 없고 price0() 한 곳만 거쳐 가기 때문이다.
+
+   참고: 쿠키 100개 + 항목당 1쿠키 = 사실상 리포트 100편이 무료다. 인앱상품
+      (cookie_10~500)은 등록·활성 상태지만 이 정책 아래선 거의 팔릴 일이 없다.
+      이것도 알고 내린 결정이다.
    ═══════════════════════════════════════════════════════════════════ */
-const TEST_MODE = true;
-const TEST_FREE_COOKIES = 100;
+const FREE_LAUNCH = true;
+const FREE_LAUNCH_COOKIES = 100;
 
 /* 유료(>0)만 1쿠키로 낮춘다. 0(무료)·준비중(undefined)은 손대지 않는다. */
-const price0 = p => (TEST_MODE && typeof p === 'number' && p > 0) ? 1 : p;
+const price0 = p => (FREE_LAUNCH && typeof p === 'number' && p > 0) ? 1 : p;
 
 /* 첫 진입 1회 무료 지급. 이미 준 적 있으면(플래그) 다시 주지 않는다 —
    앱을 껐다 켤 때마다 100개씩 불어나면 안 되니까. */
 function grantFirstRunCookies(){
-  if(!TEST_MODE) return;
+  if(!FREE_LAUNCH) return;
   if(localStorage.catsaju_grant === '1') return;
   localStorage.catsaju_grant = '1';
-  S.cookie = S.cookie + TEST_FREE_COOKIES;
+  S.cookie = S.cookie + FREE_LAUNCH_COOKIES;
 }
 const PLAY_BILLING = 'https://play.google.com/billing';
 const COOKIE_PACKS = [
