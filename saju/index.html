@@ -510,7 +510,7 @@ function segPick(btn){ [...btn.parentElement.children].forEach(b=>b.classList.re
 function aboutApp(){
   toastMsg('강아지사주일기는 명리학(사주)을 바탕으로 만든 창작 콘텐츠예요. 재미로 봐주세요 🍪');
 }
-function renderCookie(){ document.querySelectorAll('.cookie-n').forEach(e=>e.textContent = S.cookie.toLocaleString()); }
+function renderCookie(){ document.querySelectorAll('.cookie-n').forEach(e=>e.textContent = S.cookie.toLocaleString()); if(typeof syncDailyEarn==='function') syncDailyEarn(); }
 
 /* ═══ 온보딩 ═══ */
 function obName(){
@@ -569,7 +569,7 @@ function cardHtml(item,nm,secKey){
   else if(item.act&&item.act.startsWith('intro:')){ on="openIntro('"+item.act.split(':')[1]+"')"; isStub=false; }
   /* 준비중 항목: 가격 대신 '준비중' 배지 + 비활성 티 나는 디자인 (08-02 지시) */
   const price=isStub?`<span class="badge b-wip">준비중</span>`
-    :(item.price===0?`<span class="badge b-free">무료</span>`:(item.price?`<span class="badge b-price">🍪${item.price.toLocaleString()}</span>`:''));
+    :(item.price===0?`<span class="badge b-free">무료</span>`:(item.price?`<span class="badge b-price">🍪${price0(item.price).toLocaleString()}</span>`:''));
   const more = secKey ? `<button class="card-more" onclick="event.stopPropagation();openCardSheet('${secKey}','${t.replace(/'/g,'')}')">⋯</button>` : '';
   return `<button class="c-card${isStub?' c-stub':''}" onclick="${on}"><span class="ct">${t}</span>${badge}${price}${more}</button>`;
 }
@@ -667,7 +667,7 @@ function heroCardHtml(nm){
         <h3>${it.t}</h3>
         <div class="blur-prev"><p>${S.name}님의 사주로 본 결과, 핵심은 <b>정확히 ○○</b>이고 가장 중요한 타이밍은 ○요일이야. 이때 꼭 기억할 한 가지는…</p>
           <div class="lock"><div class="k">🔒</div><div class="t">잠금 해제하고 내 결과 보기</div></div></div>
-        <div class="hero-cta"><span>🍪 지금 열기 · ${it.price.toLocaleString()}쿠키</span></div>
+        <div class="hero-cta"><span>🍪 지금 열기 · ${price0(it.price).toLocaleString()}쿠키</span></div>
       </div>
     </div>
     <div class="fixlink" onclick="_intSel=null;go('scr-ob-int');renderInterestChips()">이 추천, 안 맞아? 관심사 고치기 ✏️</div>`;
@@ -954,6 +954,9 @@ function tarotDraw(){
   go('scr-tarot-res');
 }
 function keepTarot(){
+  /* 카드를 안 뽑은 채로 이 버튼이 눌리면 tarotCard 가 null 이라 여기서 죽는다.
+     정상 흐름(뽑기→결과)에선 안 생기지만, 죽는 것보다는 조용히 넘기는 게 낫다. */
+  if(!tarotCard){ toastMsg('먼저 카드를 뽑아줘 🔮'); return; }
   S.addBox({ type:'tarot', title:'🔮 '+tarotTitle+' — '+tarotCard.ko, date:new Date().toLocaleDateString('ko-KR') });
   $('dlg-keep').classList.add('show');
 }
@@ -1098,7 +1101,7 @@ function renderFunnelG(F){
     <div class="fun-hero">
       <h1>${F.emoji} ${F.title}</h1>
       <p class="hook">${F.hook}</p>
-      <div class="proof"><span>⭐ <b>${F.star}</b></span><span>조회수 <b>${F.views}회+</b></span><span>🍪 <b>${F.price.toLocaleString()} 쿠키</b></span></div>
+      <div class="proof"><span>⭐ <b>${F.star}</b></span><span>조회수 <b>${F.views}회+</b></span><span>🍪 <b>${price0(F.price).toLocaleString()} 쿠키</b></span></div>
     </div>
     <div class="visual" style="background:${F.grad}">
       <span class="v-pill">${F.pill}</span>
@@ -1241,13 +1244,56 @@ function stepBack(){
 function wobble(id){ const el=$(id); el.style.animation='none'; el.offsetHeight; el.style.animation='wob .4s'; el.focus(); }
 
 /* ═══ 쿠키·결제·보관함 ═══ */
-function earn(btn,n){ S.cookie=S.cookie+n; btn.disabled=true; btn.textContent='완료'; flash('toast-cookie'); }
+/* 매일 1개 무료 쿠키.
+   예전엔 btn.disabled 만 걸어서 새로고침하면 버튼이 되살아났다 — 하루 한 번이 아니라
+   "새로고침 한 번에 하나"라 사실상 무한 파밍이었다(정가 모드에선 매출 구멍).
+   날짜를 저장해 실제로 하루 1회로 막고, 화면을 다시 그릴 때 상태를 되살린다. */
+function earnedToday(){ return localStorage.catsaju_earn === new Date().toDateString(); }
+function syncDailyEarn(){
+  document.querySelectorAll('button[onclick^="earn("]').forEach(b=>{
+    const done = earnedToday();
+    b.disabled = done;
+    b.textContent = done ? '내일 또' : '받기';
+  });
+}
+function earn(btn,n){
+  if(earnedToday()){ toastMsg('오늘 몫은 이미 받았어 — 내일 또 와줘 🍪'); syncDailyEarn(); return; }
+  localStorage.catsaju_earn = new Date().toDateString();
+  S.cookie = S.cookie + n;
+  flash('toast-cookie');
+  syncDailyEarn();
+}
 
 /* ═══ 쿠키 충전 — Google Play 인앱결제 (Digital Goods API) ═══
    TWA(Play 설치본)에서만 동작한다. 일반 웹브라우저엔 getDigitalGoodsService가 없어
    충전 버튼이 안내문으로 바뀐다.
    ⚠️ 서버가 없는 정적 호스팅이라 영수증 검증은 기기 안에서만 이뤄진다(베타 한정). */
 const COOKIE_WON = 100;                       /* 쿠키 1개 = 100원 */
+
+/* ═══════════════════════════════════════════════════════════════════
+   ⚠️⚠️ 비공개 테스트 모드 — 프로덕션 출시 전 반드시 false 로 되돌릴 것 ⚠️⚠️
+
+   true 이면 ① 첫 진입에 쿠키 100개를 1회 무료 지급하고
+            ② 모든 유료 항목의 가격이 1쿠키가 된다(무료 항목 0은 그대로).
+   테스터가 결제 없이 전 기능을 돌려보게 하려는 설정이다.
+   ⛔ 이대로 프로덕션에 나가면 매출이 0이 된다. 아래 한 줄만 false 로 바꾸면
+      원래 가격표(50·80·110·150·180·200·220·400)가 그대로 되살아난다 —
+      가격 숫자 자체는 하나도 건드리지 않았다.
+   ═══════════════════════════════════════════════════════════════════ */
+const TEST_MODE = true;
+const TEST_FREE_COOKIES = 100;
+
+/* 유료(>0)만 1쿠키로 낮춘다. 0(무료)·준비중(undefined)은 손대지 않는다. */
+const price0 = p => (TEST_MODE && typeof p === 'number' && p > 0) ? 1 : p;
+
+/* 첫 진입 1회 무료 지급. 이미 준 적 있으면(플래그) 다시 주지 않는다 —
+   앱을 껐다 켤 때마다 100개씩 불어나면 안 되니까. */
+function grantFirstRunCookies(){
+  if(!TEST_MODE) return;
+  if(localStorage.catsaju_grant === '1') return;
+  localStorage.catsaju_grant = '1';
+  S.cookie = S.cookie + TEST_FREE_COOKIES;
+}
 const PLAY_BILLING = 'https://play.google.com/billing';
 const COOKIE_PACKS = [
   { sku:'cookie_10',  n:10,  won:1000  },
@@ -1264,13 +1310,31 @@ async function dgs(){
 }
 
 /* 결제는 됐는데 지급 전에 앱이 죽은 경우 — 다음 실행 때 살려낸다 */
+/* 이미 쿠키로 바꿔준 구매 토큰 목록. consume 이 실패해도 두 번 지급하지 않으려고 남긴다. */
+function creditedTokens(){ try { return JSON.parse(localStorage.catsaju_credited || '[]'); } catch(e){ return []; } }
+function markCredited(token){
+  const a = creditedTokens();
+  if(a.includes(token)) return;
+  a.push(token);
+  /* 무한정 쌓지 않게 최근 200건만 (소비된 구매는 어차피 다시 안 올라온다) */
+  localStorage.catsaju_credited = JSON.stringify(a.slice(-200));
+}
+
 async function restoreCookies(){
   const svc = await dgs(); if(!svc || !svc.listPurchases) return;
   try {
     for(const p of await svc.listPurchases()){
       const pack = packBySku(p.itemId); if(!pack) continue;
+      /* 예전엔 지급 → consume 순서였는데, consume 이 실패하면 catch 로 빠지면서
+         그 구매가 소비되지 않은 채 남는다. 다음 부팅에 listPurchases 가 같은 걸
+         또 돌려주니 쿠키가 중복 지급됐다. 그래서 토큰 단위로 1회만 지급한다. */
+      if(creditedTokens().includes(p.purchaseToken)){
+        try { await svc.consume(p.purchaseToken); } catch(e){}  /* 지급은 끝났고 소비만 밀린 건 조용히 재시도 */
+        continue;
+      }
       S.cookie = S.cookie + pack.n;
-      await svc.consume(p.purchaseToken);
+      markCredited(p.purchaseToken);        /* 지급 직후 기록 — consume 이 실패해도 재지급 안 되게 */
+      try { await svc.consume(p.purchaseToken); } catch(e){}
       toastMsg(`못 받은 쿠키 ${pack.n}개를 넣어뒀어 🍪`);
     }
   } catch(e){}
@@ -1309,6 +1373,8 @@ async function buyCookies(sku){
     const token = res.details && res.details.token;
     if(!token){ await res.complete('fail'); toastMsg('결제를 확인하지 못했어 🍪'); return; }
     S.cookie = S.cookie + pack.n;                 /* 먼저 지급 — 소비 실패해도 사용자가 손해보지 않게 */
+    markCredited(token);                          /* 지급했다고 기록 — consume 이 실패해 구매가 남아도
+                                                     다음 부팅의 restoreCookies 가 또 주지 않게 */
     try { await svc.consume(token); } catch(e){}
     await res.complete('success');
     flash('toast-cookie');
@@ -1326,16 +1392,17 @@ function toastMsg(msg){
 
 function renderPay(){
   const F=FUNNELS[PRODUCT];
-  const disc=Math.round(F.price*0.3), fin=F.price-disc;
+  const base=price0(F.price);                 /* 테스트 모드면 1쿠키 */
+  const disc=Math.round(base*0.3), fin=base-disc;
   $('pay-box').innerHTML=`
-    <div class="pay-row"><span>상품 금액</span><span><b>${F.price.toLocaleString()} 쿠키</b></span></div>
+    <div class="pay-row"><span>상품 금액</span><span><b>${base.toLocaleString()} 쿠키</b></span></div>
     <div class="pay-row"><span>내 쿠키</span><span><span class="cookie-n">${S.cookie.toLocaleString()}</span> 쿠키</span></div>
     <div class="pay-row"><span>🎟️ 뭉치의 응원 쿠폰 (30%)</span><span class="minus">− ${disc.toLocaleString()} 쿠키</span></div>
     <div class="pay-row total"><span>최종 금액</span><span>🍪 ${fin.toLocaleString()} 쿠키 <em class="won">(${(fin*COOKIE_WON).toLocaleString()}원)</em></span></div>`;
   $('pay-btn').textContent=`🍪 ${fin.toLocaleString()} 쿠키 내고 보기`;
 }
 function pay(){
-  const F=FUNNELS[PRODUCT], fin=F.price-Math.round(F.price*0.3);
+  const F=FUNNELS[PRODUCT], base=price0(F.price), fin=base-Math.round(base*0.3);
   if(S.cookie<fin){ toastMsg(`쿠키가 ${(fin-S.cookie).toLocaleString()}개 모자라 — 쿠키 공장에서 충전하자 🍪`); go('scr-cookie'); renderShop(); return; }
   S.cookie=S.cookie-fin;
   S.addBox({ type:'report', product:PRODUCT, title:F.emoji+' '+F.title, date:new Date().toLocaleDateString('ko-KR'),
@@ -3607,6 +3674,7 @@ function buildLifelong(c){
 }
 
 /* ═══ 시작 ═══ */
+grantFirstRunCookies();   /* 테스트 모드 첫 진입 1회 100쿠키 (renderCookie 앞에 둬야 잔액이 바로 보인다) */
 renderCookie();
 renderShop();
 restoreCookies();
