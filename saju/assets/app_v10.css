@@ -747,3 +747,10 @@ select.f-input.f-time:disabled{opacity:.45;background:#f2efe8}
 .sp-note{font-size:13.5px;color:#6b6459;line-height:1.6;margin-bottom:16px}
 .stamp-box button.sp-ok{width:100%;border:none;border-radius:14px;padding:14px;font-size:15.5px;
   font-weight:800;background:#3d3833;color:#ffe9a8;cursor:pointer;font-family:inherit}
+
+/* 오늘 운세 풀이 다시 보기 (08-07) */
+.btn-again{display:block;width:calc(100% - 32px);margin:10px 16px 2px;border:none;border-radius:14px;
+  padding:13px;font-size:14.5px;font-weight:800;font-family:inherit;cursor:pointer;
+  background:linear-gradient(135deg,#3d3833,#544b41);color:#ffe9a8;
+  box-shadow:0 4px 14px rgba(61,56,51,.22)}
+.btn-again:active{transform:translateY(1px)}

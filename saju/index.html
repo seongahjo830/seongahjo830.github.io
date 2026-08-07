@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>강아지사주일기 🐾</title>
-<link rel="stylesheet" href="assets/app_v10.css?v=202608070133">
+<link rel="stylesheet" href="assets/app_v10.css?v=202608070142">
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#34456b">
@@ -152,6 +152,7 @@
       <div class="pillars" id="pillars"></div>
       <div class="pil-lbl"><span>시주</span><span>일주</span><span>월주</span><span>연주</span></div>
       <div class="ilju-line" id="ilju-line"></div>
+      <button class="btn-again" onclick="openTodayFortune()">🔮 오늘 운세 풀이 다시 보기</button>
       <div class="tscore" onclick="openTodayFortune()" style="cursor:pointer;position:relative">
         <div class="d" id="t-today-label"></div>
         <div class="s" id="t-today-score"></div>
@@ -442,8 +443,8 @@
 <!-- 쇼츠(3초 도파민) 결과 시트 -->
 <div class="short-dim" id="short-dim" onclick="if(event.target===this)shortClose()"><div class="short-box" id="short-body"></div></div>
 
-<script src="assets/engine.js?v=202608070133"></script>
-<script src="assets/data_v10.js?v=202608070133"></script>
+<script src="assets/engine.js?v=202608070142"></script>
+<script src="assets/data_v10.js?v=202608070142"></script>
 <script>
 /* ═══ 상태 ═══ */
 const S = {
@@ -510,6 +511,15 @@ function updateTabbar(cur){
 function showTab(id){
   /* 08-02: 오늘운세는 사주 — 성·이름 등록 후에만 (미등록이면 1회 등록 게이트) */
   if(id==='scr-today' && !(S.sn&&S.name)){ ensureName(()=>showTab('scr-today')); return; }
+  /* 오늘 아직 풀이를 안 봤으면 요약 대신 풀이(로딩→12장)부터 태운다.
+     예전엔 탭을 누르는 순간 요약이 통째로 펼쳐져서, 만들어둔 12장 풀이를
+     한 번도 안 보고 지나칠 수 있었다. 한 번 본 날은 그냥 요약으로 간다. */
+  if(id==='scr-today' && !todaySeen()){
+    go(id); renderToday();      /* 계산에 쓰는 t-date 등을 먼저 채운다 */
+    updateTabbar(id);
+    openTodayFortune();
+    return;
+  }
   go(id); if(id==='scr-today') renderToday(); if(id==='scr-diary') renderDiary(); if(id==='scr-more') renderMore(); if(id==='scr-home') renderHome();
 }
 /* 준비중 항목 클릭 → 통일 토스트 (08-02 지시: 떴다가 사라지는 팝업) */
@@ -1821,7 +1831,10 @@ function openTodayFortune(){
     $('load-msg').textContent=TODAY_LOAD_MSGS[i];
   }, 620);
 }
+function todaySeen(){ return localStorage.catsaju_todayseen === todayKey(); }
+function markTodaySeen(){ try{ localStorage.catsaju_todayseen = todayKey(); }catch(e){} }
 function buildTodayFortune(){
+  markTodaySeen();
   const nm=$('t-name').textContent;
   const [y,m,d]=$('t-date').value.split('-').map(Number);
   const [hh,mm]=$('t-time').value?$('t-time').value.split(':').map(Number):[null,0];

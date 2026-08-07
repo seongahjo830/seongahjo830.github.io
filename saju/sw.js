@@ -1,6 +1,6 @@
-const CACHE = 'dogsaju-202608070133';
+const CACHE = 'dogsaju-202608070142';
 const CORE = ['./', './index.html', './intro.html', './manifest.json',
-  './assets/app_v10.css?v=202608070133', './assets/engine.js?v=202608070133', './assets/data_v10.js?v=202608070133',
+  './assets/app_v10.css?v=202608070142', './assets/engine.js?v=202608070142', './assets/data_v10.js?v=202608070142',
   './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
