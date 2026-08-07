@@ -4036,12 +4036,41 @@ function buildLifelong(c){
   return cards;
 }
 
+/* ═══ 설정 버전 — 온보딩 항목이 늘어나면 이 숫자를 올린다 ═══
+   기존 사용자는 새로 생긴 항목(생년월일·관계상태)이 비어 있어서 어중간한 상태가 된다.
+   버전이 다르면 다음 진입 때 한 번만 싹 비우고 첫 화면부터 다시 받는다.
+   ⚠️ catsaju_credited(결제 중복지급 방지 원장)만은 남긴다 — 이걸 지우면 이미 지급한
+      구매를 다시 지급할 수 있다. 나머지는 지워도 되는 값들이다. */
+const SETUP_VER = '2';   /* 2 = 생년월일·관계상태 온보딩 도입 (2026-08-07) */
+let _didMigrate = false;
+function migrateSetup(){
+  try{
+    if(localStorage.catsaju_setup_ver === SETUP_VER) return false;
+    const keepCredited = localStorage.catsaju_credited;
+    Object.keys(localStorage)
+      .filter(k => k.indexOf('catsaju_') === 0)
+      .forEach(k => localStorage.removeItem(k));
+    if(keepCredited) localStorage.catsaju_credited = keepCredited;
+    localStorage.catsaju_setup_ver = SETUP_VER;
+    return true;
+  }catch(e){ return false; }
+}
+_didMigrate = migrateSetup();
+
 /* ═══ 시작 ═══ */
 grantFirstRunCookies();   /* 테스트 모드 첫 진입 1회 100쿠키 (renderCookie 앞에 둬야 잔액이 바로 보인다) */
 renderCookie();
 renderShop();
 restoreCookies();
 if(S.onboarded){ initLetters(); showTab('scr-home'); } else { go('scr-ob1'); }
+if(_didMigrate){
+  /* 처음 깐 사람은 이 안내가 필요 없다 — 원래 쓰던 사람에게만 */
+  setTimeout(()=>{ try{
+    const t=$('toast-global');
+    t.textContent='앱이 크게 바뀌었어! 설정을 처음부터 다시 맞춰보자 🐾';
+    t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200);
+  }catch(e){} }, 600);
+}
 /* 소개 페이지(11_)에서 #p=상품키 로 넘어오면 그 퍼널을 바로 연다 */
 (function bootDeepLink(){
   const m=(location.hash||'').match(/^#p=(\w+)$/);
