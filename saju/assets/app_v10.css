@@ -642,3 +642,65 @@ select.f-input.f-time:disabled{opacity:.45;background:#f2efe8}
 /* 상시 고지 (2026-08-06 법적 리스크 완화) */
 .rp-legal{margin:8px 18px 0;font-size:11.5px;line-height:1.5;color:#8792ab;text-align:center;opacity:.85}
 .rp-legal b{color:#a9b4cd}
+
+/* ═══ 쿠키 연출 (08-07) — 쿠키가 오가는 게 눈에 보이게 ═══ */
+@keyframes ck-fly{
+  0%{opacity:0;transform:translate(-50%,6px) scale(.7)}
+  18%{opacity:1;transform:translate(-50%,-6px) scale(1.15)}
+  100%{opacity:0;transform:translate(-50%,-46px) scale(.95)}
+}
+.ck-float{position:fixed;left:50%;top:66px;z-index:9000;pointer-events:none;
+  font-weight:900;font-size:19px;padding:7px 15px;border-radius:999px;
+  background:#3d3833;color:#ffe9a8;box-shadow:0 8px 22px rgba(0,0,0,.28);
+  animation:ck-fly 1.15s cubic-bezier(.22,1,.36,1) forwards;white-space:nowrap}
+.ck-float.plus{background:#1c7a4a;color:#eafff3}
+@keyframes ck-pop{0%{transform:scale(1)}35%{transform:scale(1.42)}100%{transform:scale(1)}}
+.cookie-n.bump{display:inline-block;animation:ck-pop .5s cubic-bezier(.22,1,.36,1);color:#e8a33c}
+/* 첫 100쿠키 축하 오버레이 */
+@keyframes gift-in{0%{opacity:0;transform:scale(.86) translateY(14px)}100%{opacity:1;transform:none}}
+@keyframes gift-coin{0%{opacity:0;transform:translateY(0) rotate(0)}
+  12%{opacity:1}100%{opacity:0;transform:translateY(320px) rotate(340deg)}}
+.gift-wrap{position:fixed;inset:0;z-index:9500;display:none;align-items:center;justify-content:center;
+  background:rgba(28,24,20,.72);backdrop-filter:blur(3px);padding:24px}
+.gift-wrap.show{display:flex}
+.gift-box{background:#fffdf7;border-radius:22px;padding:30px 24px 24px;max-width:340px;width:100%;
+  text-align:center;animation:gift-in .5s cubic-bezier(.22,1,.36,1);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.gift-emo{font-size:62px;line-height:1;margin-bottom:6px}
+.gift-num{font-size:46px;font-weight:900;color:#e8a33c;letter-spacing:-1px;margin:6px 0 2px}
+.gift-box h3{font-size:20px;margin:2px 0 8px;color:#3d3833}
+.gift-box p{font-size:14px;color:#6b6459;line-height:1.65;margin:0 0 18px}
+.gift-box button{width:100%;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:800;
+  background:#3d3833;color:#ffe9a8;cursor:pointer;font-family:inherit}
+.gift-coin{position:fixed;top:-30px;font-size:26px;z-index:9490;pointer-events:none;
+  animation:gift-coin 1.9s ease-in forwards}
+/* 출석체크 */
+.att-card{background:linear-gradient(135deg,#fff6e2,#ffeccd);border:1px solid #f0d9a8;
+  border-radius:16px;padding:14px 16px;margin:12px 16px 0}
+.att-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.att-top b{font-size:14.5px;color:#5b4a12}
+.att-btn{border:none;border-radius:999px;padding:9px 18px;font-size:13.5px;font-weight:800;
+  background:#3d3833;color:#ffe9a8;cursor:pointer;font-family:inherit;white-space:nowrap}
+.att-btn:disabled{background:#e3ddd2;color:#9a9287;cursor:default}
+.att-dots{display:flex;gap:6px;margin-top:11px}
+.att-dot{flex:1;height:30px;border-radius:8px;background:#fff;border:1px solid #ecdfc4;
+  display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:800;color:#b9ad96}
+.att-dot.on{background:#ffd98a;border-color:#e8c47c;color:#5b4a12}
+.att-dot.gift{background:#3d3833;border-color:#3d3833;color:#ffe9a8}
+.att-note{font-size:12px;color:#8a7b57;margin-top:8px}
+
+/* ═══ 오늘의 운세 풀이 (08-07) ═══ */
+.mini-pillars{display:flex;gap:8px;justify-content:center;margin:14px 0 6px}
+.mp-cell{flex:1;max-width:76px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);
+  border-radius:12px;padding:10px 4px;text-align:center}
+.mp-cell.dim{opacity:.45}
+.mp-l{font-size:11px;color:#8792ab;margin-bottom:5px}
+.mp-s{font-size:21px;font-weight:900;color:#e8c47c;line-height:1.2}
+.mp-b{font-size:15px;font-weight:700;color:#c2cbdd}
+.edist{display:flex;align-items:center;gap:9px;margin:7px 0}
+.edist .el{width:56px;font-size:12.5px;color:#c2cbdd;flex:0 0 56px}
+.edist .eln{width:18px;text-align:right;font-size:12.5px;color:#8792ab}
+.edist-track{flex:1;height:9px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden}
+.edist-bar{height:100%;border-radius:999px;transition:width .7s cubic-bezier(.22,1,.36,1)}
+.edist-bar[data-d="0"]{background:#7bc47f}.edist-bar[data-d="1"]{background:#e8746a}
+.edist-bar[data-d="2"]{background:#d2a86a}.edist-bar[data-d="3"]{background:#b9c3d1}
+.edist-bar[data-d="4"]{background:#6aa8e8}
