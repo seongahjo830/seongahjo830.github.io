@@ -195,6 +195,8 @@
         <button class="stub-off" onclick="stub('내 쿠폰')">내 쿠폰<span class="wip-tag">준비중</span><span class="ar">›</span></button>
         <button onclick="go('scr-cookie')">내 쿠키 · 쿠키 충전<span class="ar">›</span></button>
         <button onclick="renameMe()">이름 바꾸기<span class="ar">›</span></button>
+        <button onclick="editRelstat()">내 상황 바꾸기 <small style="color:var(--sub);font-weight:400">(솔로·연애·결혼…)</small><span class="ar">›</span></button>
+        <button onclick="editInterests()">관심사 바꾸기<span class="ar">›</span></button>
         <button onclick="aboutApp()">이 앱에 대하여<span class="ar">›</span></button>
       <button onclick="openPrivacy()">약관·개인정보 확인하기<span class="ar">›</span></button>
         <button class="stub-off" onclick="stub('고객센터')">고객센터<span class="wip-tag">준비중</span><span class="ar">›</span></button>
@@ -605,6 +607,68 @@ function attendClaim(){
   renderAttend();
   if(isBonus) toastMsg('🎉 '+streak+'일 연속이라 보너스 '+ATT_BONUS+'쿠키! 대단한데? 🐾');
 }
+/* 들어오자마자 도장이 쾅 찍히면서 쿠키를 주는 연출.
+   버튼을 누르게 하지 않고 자동으로 찍어준다 — "출석했다"는 걸 몸으로 느끼게. */
+let _attendShown=false;
+function attendAuto(){
+  if(_attendShown) return; _attendShown=true;
+  if(attendState().done) return;                 /* 오늘 이미 찍었으면 조용히 */
+  setTimeout(()=>{ if(!document.querySelector('.gift-wrap')) attendStamp(); }, 700);
+}
+function attendStamp(){
+  const a=S.attend||{last:'',streak:0};
+  const streak=(a.last===yesterdayKey())?(a.streak||0)+1:1;
+  const isBonus=streak%ATT_CYCLE===0;
+  const gain=isBonus?ATT_BONUS:ATT_DAILY;
+
+  const w=document.createElement('div');
+  w.className='stamp-wrap';
+  let slots='';
+  for(let i=0;i<ATT_CYCLE;i++){
+    const idx=(streak-1)%ATT_CYCLE;
+    const filled=i<idx;
+    const isNow=i===idx;
+    const isG=i===ATT_CYCLE-1;
+    slots+='<div class="sp-slot'+(filled?' done':'')+(isNow?' now':'')+(isG?' gift':'')+'" data-i="'+i+'">'+
+      (filled?'🐾':(isG?'🎁':(i+1)))+
+      (isNow?'<span class="sp-stamp">🐾</span>':'')+'</div>';
+  }
+  w.innerHTML='<div class="stamp-box">'+
+    '<div class="sp-ttl">'+streak+'일 연속 출석!</div>'+
+    '<div class="sp-slots">'+slots+'</div>'+
+    '<div class="sp-gain">🍪 +'+gain+'</div>'+
+    '<div class="sp-note">'+(isBonus
+      ? ATT_CYCLE+'일 연속 보너스야! 대단한데 🐾'
+      : (ATT_CYCLE-(streak%ATT_CYCLE))+'일 더 오면 🎁 '+ATT_BONUS+'쿠키!')+'</div>'+
+    '<button class="sp-ok">받았다멍!</button></div>';
+  document.body.appendChild(w);
+  requestAnimationFrame(()=>w.classList.add('show'));
+
+  /* 도장이 내려꽂히는 타이밍에 맞춰 실제 지급 + 화면 흔들기 */
+  setTimeout(()=>{
+    const box=w.querySelector('.stamp-box'); if(box) box.classList.add('hit');
+    const now=w.querySelector('.sp-slot.now'); if(now) now.classList.add('inked');
+    S.attend={last:todayKey(),streak};
+    S.cookie=S.cookie+gain;
+    cookieFx(gain, isBonus? streak+'일 연속 보너스!' : streak+'일차 출석');
+    renderAttend();
+    if(navigator.vibrate){ try{ navigator.vibrate(isBonus?[18,50,18,50,30]:[22,40,14]); }catch(e){} }
+  }, 620);
+
+  const close=()=>{ w.classList.remove('show'); setTimeout(()=>w.remove(),260); };
+  w.querySelector('.sp-ok').addEventListener('click',close);
+  w.addEventListener('click',e=>{ if(e.target===w) close(); });
+}
+/* 더보기에서 다시 고르기 — 온보딩 화면을 그대로 재사용하고, 저장 후 더보기로 돌아온다 */
+let _settingReturn=null;
+function editRelstat(){
+  _relSel=[...(S.relstat||[])]; _settingReturn='scr-more';
+  go('scr-ob-rel'); renderRelChips();
+}
+function editInterests(){
+  _intSel=[...(S.interests||[])]; _settingReturn='scr-more';
+  go('scr-ob-int'); renderInterestChips();
+}
 function renderAttend(){
   const box=$('att-box'); if(!box) return;
   const st=attendState();
@@ -719,6 +783,8 @@ function saveRelstat(){
     /* 관계상태를 바꾸면 관심사도 다시 뽑는다 — 사용자가 관심사를 직접 고르면 그게 우선 */
     localStorage.removeItem('catsaju_interests');
   }
+  if(_settingReturn){ const r=_settingReturn; _settingReturn=null; _relSel=null;
+    renderHome(); showTab(r); renderMore(); toastMsg('내 상황을 바꿨어! 홈 순서도 맞춰뒀어 🐾'); return; }
   go('scr-ob-int'); renderInterestChips();
 }
 const INTEREST_OPTS=[
@@ -904,7 +970,7 @@ function shortKeep(){
 
 function renderHome(){
   renderCookie();
-  setTimeout(renderAttend,0);
+  setTimeout(()=>{ renderAttend(); attendAuto(); },0);   /* 출석칸 채우고, 오늘 안 찍었으면 도장 */
   const LATE_HTML=[];      /* 내 상황과 안 맞아서 아래로 미룬 블록들 */   /* 홈 html 이 붙은 뒤에 출석칸을 채운다 */
   const days=Math.floor((Date.now()-S.firstDay)/86400000)+1;
   $('days-line').innerHTML=`${S.name}님이 뭉치와<br>함께한 지 ${days}일째 🔥`;
@@ -1421,10 +1487,15 @@ function startSajuInput(){
      상대 정보처럼 상품마다 달라지는 것만 남긴다. 프로필 수정은 더보기 탭에서. */
   if(S.birth && S.sn && S.name){
     const KNOWN=['너를 알려줘','성별','생년월일','태어난 시간'];
-    const kept=STEPS.filter(s=>!KNOWN.includes(s.title));
-    if(kept.length) STEPS=kept;      /* 전부 빠지면(상대 없는 상품) 원래 단계 유지 */
+    STEPS=STEPS.filter(s=>!KNOWN.includes(s.title));
   }
   stepDone=()=>go('scr-pay');
+  if(S.birth && S.sn && S.name){
+    const K2=['너를 알려줘','성별','생년월일','태어난 시간'];
+    const kept2=STEPS.filter(s=>!K2.includes(s.title));
+    /* 물어볼 게 하나도 안 남으면 입력 화면을 건너뛰고 바로 결제로 */
+    if(!kept2.length){ go('scr-pay'); renderPay(); return; }
+  }
   go('scr-step'); renderStep(1);
 }
 function renderStep(dir){

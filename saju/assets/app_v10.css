@@ -704,3 +704,46 @@ select.f-input.f-time:disabled{opacity:.45;background:#f2efe8}
 .edist-bar[data-d="0"]{background:#7bc47f}.edist-bar[data-d="1"]{background:#e8746a}
 .edist-bar[data-d="2"]{background:#d2a86a}.edist-bar[data-d="3"]{background:#b9c3d1}
 .edist-bar[data-d="4"]{background:#6aa8e8}
+
+/* ═══ 출석 도장 (08-07) — 들어오면 쾅 찍히는 느낌 ═══ */
+.stamp-wrap{position:fixed;inset:0;z-index:9600;display:flex;align-items:center;justify-content:center;
+  background:rgba(28,24,20,.70);backdrop-filter:blur(3px);padding:24px;opacity:0;transition:opacity .22s}
+.stamp-wrap.show{opacity:1}
+@keyframes sp-in{0%{opacity:0;transform:scale(.88) translateY(16px)}100%{opacity:1;transform:none}}
+.stamp-box{background:#fffdf7;border-radius:22px;padding:26px 22px 20px;max-width:340px;width:100%;
+  text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);animation:sp-in .32s cubic-bezier(.22,1,.36,1)}
+/* 도장이 내려꽂힐 때 상자 전체가 한 번 '쿵' */
+@keyframes sp-hit{0%{transform:none}18%{transform:translateY(5px) scale(.985)}
+  42%{transform:translateY(-2px) scale(1.008)}100%{transform:none}}
+.stamp-box.hit{animation:sp-hit .42s cubic-bezier(.22,1,.36,1)}
+.sp-ttl{font-size:21px;font-weight:900;color:#3d3833;margin-bottom:16px}
+.sp-slots{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+.sp-slot{position:relative;flex:1;max-width:40px;aspect-ratio:1;border-radius:11px;
+  background:#f4efe4;border:2px dashed #ddd2bd;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:#b9ad96}
+.sp-slot.done{background:#ffe6b8;border-style:solid;border-color:#f0d09a;color:#8a6a1e}
+.sp-slot.gift{background:#3d3833;border-color:#3d3833;color:#ffe9a8}
+.sp-slot.now{border-color:#e8a33c}
+/* 도장 — 위에서 크게 내려와 꽉 박힌다 */
+@keyframes sp-slam{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(4.2) rotate(-24deg)}
+  55%{opacity:1;transform:translate(-50%,-50%) scale(.86) rotate(-6deg)}
+  70%{transform:translate(-50%,-50%) scale(1.14) rotate(-9deg)}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(-8deg)}
+}
+.sp-stamp{position:absolute;left:50%;top:50%;font-size:26px;line-height:1;
+  transform:translate(-50%,-50%);animation:sp-slam .62s cubic-bezier(.3,1.5,.4,1) forwards;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.28))}
+/* 찍힌 자리에서 퍼지는 잉크 링 */
+@keyframes sp-ink{0%{opacity:.55;transform:translate(-50%,-50%) scale(.3)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(2.6)}}
+.sp-slot.inked:after{content:'';position:absolute;left:50%;top:50%;width:38px;height:38px;
+  border-radius:50%;border:3px solid #e8a33c;animation:sp-ink .55s ease-out forwards;pointer-events:none}
+.sp-slot.inked{background:#ffd98a;border-style:solid;border-color:#e8a33c}
+@keyframes sp-gain{0%{opacity:0;transform:translateY(10px) scale(.8)}
+  60%{opacity:1;transform:translateY(0) scale(1.18)}100%{opacity:1;transform:none}}
+.sp-gain{font-size:32px;font-weight:900;color:#e8a33c;margin:4px 0 6px;
+  animation:sp-gain .5s .58s cubic-bezier(.22,1,.36,1) backwards}
+.sp-note{font-size:13.5px;color:#6b6459;line-height:1.6;margin-bottom:16px}
+.stamp-box button.sp-ok{width:100%;border:none;border-radius:14px;padding:14px;font-size:15.5px;
+  font-weight:800;background:#3d3833;color:#ffe9a8;cursor:pointer;font-family:inherit}
